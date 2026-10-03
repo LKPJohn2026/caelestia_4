@@ -9,7 +9,7 @@ Item {
 
     default property alias content: holder.data
 
-    implicitWidth: 560
+    implicitWidth: 840 // same as Caelestia's Weather tab, so the dashboard width stays steady
     implicitHeight: 480
 
     Item {

@@ -17,6 +17,14 @@ Item {
     required property var tabs
 
     readonly property alias count: bar.count
+    // caelestia4: smallest width at which every uniform tab slot still fits its widest label (+ padding).
+    // Content.qml keeps the dashboard at least this wide (6 tabs with Todo/Timer squeezed labels before).
+    readonly property real minimumWidth: {
+        let widest = 0;
+        for (let i = 0; i < bar.count; i++)
+            widest = Math.max(widest, bar.itemAt(i)?.implicitWidth ?? 0);
+        return (widest + Tokens.padding.large * 2) * bar.count;
+    }
 
     implicitHeight: bar.implicitHeight + bar.anchors.topMargin + indicator.implicitHeight + indicator.anchors.topMargin + separator.implicitHeight
 
@@ -142,10 +150,12 @@ Item {
             StateLayer {
                 id: stateLayer
 
+                // caelestia4: hover/press box hugs the label (was the full slot width), so every tab gets
+                // the same margin around its icon + text, matching the underline indicator
                 anchors.fill: undefined
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
+                implicitWidth: mouse.implicitWidth + Tokens.padding.large * 2
                 implicitHeight: parent.height + Tokens.sizes.dashboard.tabIndicatorSpacing * 2
 
                 radius: Tokens.rounding.medium
