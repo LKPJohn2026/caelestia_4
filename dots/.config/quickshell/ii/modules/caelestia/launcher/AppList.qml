@@ -9,6 +9,8 @@ import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.launcher.items
 import qs.modules.caelestia.launcher.services
+import qs.services as E4 // caelestia4: keep
+import qs.modules.common as E4C // caelestia4: keep
 
 StyledListView {
     id: root
@@ -26,8 +28,21 @@ StyledListView {
             displayText = search.text;
     }
 
+    // caelestia4: end-4 search prefixes (clipboard ; emoji : math = command $ web ? actions /) route to end-4's
+    // LauncherSearch ("e4" state). end-4's app prefix is skipped: it clashes with Caelestia's actionPrefix (">").
+    function isE4Text(text: string): bool {
+        const p = E4C.Config.options.search.prefix;
+        const caelestiaPrefix = GlobalConfig.launcher.actionPrefix;
+        for (const e4p of [p.clipboard, p.emojis, p.math, p.shellCommand, p.webSearch, p.action])
+            if (e4p && e4p !== caelestiaPrefix && text.startsWith(e4p))
+                return true;
+        return false;
+    }
+
     function stateForText(text: string): string {
         const prefix = GlobalConfig.launcher.actionPrefix;
+        if (isE4Text(text))
+            return "e4";
         if (text.startsWith(prefix)) {
             for (const action of ["calc", "scheme", "variant"])
                 if (text.startsWith(`${prefix}${action} `))
@@ -35,6 +50,10 @@ StyledListView {
 
             return "actions";
         }
+
+        // caelestia4: no app matches -> end-4 fallbacks (math result, run command, web search, actions)
+        if (text.trim() !== "" && Apps.search(text).length === 0)
+            return "e4";
 
         return "apps";
     }
@@ -49,9 +68,19 @@ StyledListView {
             return Schemes.query(text);
         case "variant":
             return M3Variants.query(text);
+        case "e4":
+            return E4.LauncherSearch.results;
         default:
             return Apps.search(text);
         }
+    }
+
+    // caelestia4: feed the typed text to end-4's search while in the "e4" state
+    property Binding e4QueryBinding: Binding {
+        target: E4.LauncherSearch
+        property: "query"
+        value: root.displayText
+        when: root.displayState === "e4"
     }
 
     model: ScriptModel {
@@ -125,6 +154,13 @@ StyledListView {
 
             PropertyChanges {
                 root.delegate: variantItem
+            }
+        },
+        State {
+            name: "e4"
+
+            PropertyChanges {
+                root.delegate: e4Item
             }
         }
     ]
@@ -244,6 +280,14 @@ StyledListView {
             type: Anim.DefaultEffects
             property: "opacity"
             to: 1
+        }
+    }
+
+    Component {
+        id: e4Item
+
+        E4ResultItem {
+            screenState: root.screenState
         }
     }
 
