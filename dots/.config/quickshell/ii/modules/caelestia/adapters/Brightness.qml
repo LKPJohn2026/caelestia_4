@@ -1,3 +1,5 @@
+pragma Singleton
+
 // caelestia4 ADAPTER: Brightness
 // Backed by end-4's Brightness service, so only ONE ddcutil/brightnessctl manager touches the monitors
 // (two would race on the DDC/CI bus). Caelestia's UI declares `Brightness.Monitor`, so this file keeps a
@@ -5,7 +7,6 @@
 // Contract used by Caelestia UI: Monitor, getMonitorForScreen(screen), monitor.brightness, monitor.setBrightness(v),
 // increaseBrightness(), decreaseBrightness().
 // Brightness keys and IPC stay owned by end-4 (IPC target "brightness"); nothing is registered here.
-pragma Singleton
 
 import QtQuick
 import Quickshell

@@ -1,7 +1,8 @@
+pragma Singleton
+
 // caelestia4 ADAPTER: IdleInhibitor ("keep awake")
 // Backed by end-4's Idle service, so both panel families share one inhibitor and one state.
 // Contract used by Caelestia UI: enabled (read/write), enabledSince.
-pragma Singleton
 
 import QtQuick
 import Quickshell

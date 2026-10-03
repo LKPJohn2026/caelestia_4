@@ -1,3 +1,6 @@
+pragma Singleton
+pragma ComponentBehavior: Bound
+
 // caelestia4 ADAPTER: Colours
 // Caelestia's colour logic is kept (transparency layers, tPalette, blur layer rules, wallpaper luminance).
 // Data source changed: the palette is bound live to end-4's Appearance.m3colors, so end-4's matugen
@@ -6,8 +9,6 @@
 // scheme, setMode(), showPreview, wallLuminance.
 // Not supported: colour *preview* (needs caelestia-cli). `preview` mirrors `current`; showPreview stays false.
 // term0..15 keep Caelestia's defaults (end-4 has no terminal palette here).
-pragma Singleton
-pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
