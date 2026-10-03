@@ -83,4 +83,14 @@ Read before running: `setup`, `sdata/lib/*.sh`, `sdata/subcmd-install/*.sh`, `sd
     - a user D-Bus override `~/.local/share/dbus-1/services/org.freedesktop.secrets.service` with `Exec=/usr/bin/ksecretd`
     - log out and back in.
     `e4test` keeps gnome-keyring, as upstream intends.
+  - **Resolved 2026-10-03** after a full reboot: `ksecretd` owns `org.freedesktop.secrets`, and `gh auth status` is OK again. A PAM-started `gnome-keyring-daemon --daemonize --login` still runs at login but doesn't hold the secrets name, which is harmless.
   - **Plan impact:** caelestia_4 in the main account uses **KWallet (`ksecretd`) as the only secrets backend in both sessions.** end-4's `KeyringStorage` goes through libsecret, so this should work; verify in Phase 2. Don't let gnome-keyring run in the main account.
+
+### 0.9: Caelestia reference (in progress)
+- Conflicts met while installing Caelestia over end-4:
+  - `adw-gtk-theme` (Caelestia) vs `adw-gtk-theme-git` (required by `illogical-impulse-fonts-themes`). Removed with `pacman -Rdd` for the test.
+  - `pipewire-jack` replaced `jack2`.
+- ⚠️ **`illogical-impulse-quickshell-git` declares `provides=quickshell-git`,** so yay treats Caelestia's `quickshell-git` dependency as already satisfied, and Caelestia ends up on end-4's pinned Quickshell (`7511545e`, reports "0.2.1").
+- **Result: Caelestia v2.5.0 does not start on end-4's pin.** Headless load: `ERROR: Unrecognized pragma "DefaultEnv QS_NO_RELOAD_POPUP=1"` (shell.qml line 2). Hyprland runs with keybinds but no shell UI.
+- **Phase 1 input:** end-4's pin is too old for Caelestia v2.5.0 as-is. Either move to a newer `quickshell-git` and re-test `ii`, or patch the Caelestia QML that needs newer APIs (`DefaultEnv` → `Env` is the first one; there may be more).
+- Workaround for the test: `yay -S aur/quickshell-git` (replaces end-4's package).
