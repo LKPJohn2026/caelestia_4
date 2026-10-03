@@ -52,10 +52,14 @@ on the same user account. Plasma's settings are not touched.
 - **fcitx5 + Bamboo (Vietnamese):**
   - Hyprland: `custom/env.lua` sets `XMODIFIERS=@im=fcitx`, `QT_IM_MODULE=fcitx`, `QT_IM_MODULES=wayland;fcitx`, `SDL_IM_MODULE=fcitx` (no `GTK_IM_MODULE`: GTK uses Wayland text-input); `custom/execs.lua` runs `fcitx5 -d --replace`.
   - Plasma: KWin "Virtual Keyboard" = Fcitx 5.
-  - Shared profile `~/.config/fcitx5/profile` (keyboard-us + bamboo).
-  - Chromium/Electron apps need `--enable-wayland-ime`.
+  - Shared profile `~/.config/fcitx5/profile` (keyboard-us + bamboo, `DefaultIM=bamboo`) and `~/.config/fcitx5/config` (trigger = `Super+space`, `ShareInputState=All`).
+  - **Super+Space** toggles US ⇄ Bamboo. Plasma: fcitx5's own trigger key (KWin `[Wayland] InputMethod` = `org.fcitx.Fcitx5.desktop`). Hyprland: `custom/keybinds.lua` binds `SUPER + Space` → `fcitx5-remote -t` (works in every window) plus `quickshell:searchToggleReleaseInterrupt` so the Super-tap launcher does not open.
+  - Chromium/Electron apps need `--enable-wayland-ime` (set for Brave and Obsidian in their flags files).
 - **KDE Connect in Hyprland:**
-  - `custom/execs.lua` runs `kdeconnectd` (Hyprland has no XDG autostart; pairings shared with Plasma).
+  - `custom/execs.lua` runs `kdeconnectd` + `kdeconnect-indicator` (tray) (Hyprland has no XDG autostart; pairings shared with Plasma).
   - Remote input via AUR `hypr-kdeconnect-fix-git`, routed only in `~/.config/xdg-desktop-portal/hyprland-portals.conf` (`org.freedesktop.impl.portal.RemoteDesktop = hypr-kdeconnect`).
   - **Caveats (from its README):** no permission dialog (any portal client can inject input in the Hyprland session); "99% vibe coded … manually audited".
+- **KWallet unlock + logins kept across sessions:**
+  - Cause 1, password prompts in Hyprland: Plasma Login Manager's PAM (`/usr/lib/pam.d/plasmalogin`) already runs `pam_kwallet5`, but the session must then run `/usr/lib/pam_kwallet_init` (Plasma autostarts it). Hyprland didn't, so a second D-Bus-activated `ksecretd` asked for the password. Fixed: `custom/execs.lua` runs it first. The wallet password must equal the login password, or PAM can't unlock it.
+  - Cause 2, logged out after switching: Chromium/Electron apps get their cookie key from the Secret portal (KWallet in Plasma), but Hyprland had no Secret backend. They fell back to a different libsecret key, and cookies from the other session couldn't be decrypted. Fixed: `hyprland-portals.conf` adds `org.freedesktop.impl.portal.Secret = kwallet`, and the fallback backend is pinned with `--password-store=kwallet6` (`~/.config/brave-origin-flags.conf`, `~/.config/obsidian/user-flags.conf`, `~/.cursor/argv.json`). Claude Desktop relies on the portal.
 - **Test user `e4test` removed.** To test builds before the main account again, create a throwaway user and use `tools/stage-for-test.sh`.
