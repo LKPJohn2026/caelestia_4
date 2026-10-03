@@ -94,3 +94,4 @@ Read before running: `setup`, `sdata/lib/*.sh`, `sdata/subcmd-install/*.sh`, `sd
 - **Result: Caelestia v2.5.0 does not start on end-4's pin.** Headless load: `ERROR: Unrecognized pragma "DefaultEnv QS_NO_RELOAD_POPUP=1"` (shell.qml line 2). Hyprland runs with keybinds but no shell UI.
 - **Phase 1 input:** end-4's pin is too old for Caelestia v2.5.0 as-is. Either move to a newer `quickshell-git` and re-test `ii`, or patch the Caelestia QML that needs newer APIs (`DefaultEnv` → `Env` is the first one; there may be more).
 - Workaround for the test: `yay -S aur/quickshell-git` (replaces end-4's package).
+- **With `quickshell-git 0.3.1.r18.g41651d7` (`41651d7d`) Caelestia v2.5.0 runs fully** (confirmed by the user). Reference captures: `docs/reference/` (17 frames from a phone recording + README with design notes).
