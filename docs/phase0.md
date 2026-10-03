@@ -61,4 +61,26 @@ Read before running: `setup`, `sdata/lib/*.sh`, `sdata/subcmd-install/*.sh`, `sd
 - [ ] **0.10** Remove the test users (`sudo userdel -r e4test caetest`) once the references are saved.
 
 ## 4. Results
-_(filled in as steps complete)_
+
+### 0.1–0.7: done (2026-10-03)
+- `pacman -Syu`: 4 packages, no kernel/driver; snapper pre/post #79/#80.
+- Manual snapshot created; `e4test` created (`wheel`), installer run with `--skip-sysupdate`.
+- 14 `illogical-impulse-*` packages installed, plus `illogical-impulse-quickshell-git 0.1.0.r1-8`, `hyprland 0.56.2`, `gnome-keyring 1:50.0`, `darkly-bin`, `breeze-plus`.
+- `e4test` groups: `wheel input video i2c`. `/etc/modules-load.d/i2c-dev.conf` added.
+- **end-4 works in the `e4test` Hyprland session.**
+
+### 0.8: main account check
+- **Plasma Oxygen intact:** `widgetStyle=oxygen`, `ColorScheme=OxygenDark`, Plasma theme `oxygen`, decoration `org.kde.oxygen`. The only diffs against `oxygen-plasma` are expected: GTK sound theme `ocean→oxygen` (from Plan E) and desktop icon `screenMapping`.
+- **Hyprland in the main account shows only stock Hyprland.** That is expected: end-4's config exists only in `e4test`'s home. Hyprland wrote its default `~/.config/hypr/hyprland.lua` (04:04) because no config existed. Harmless; replaced in later phases.
+- ⚠️ **Problem: gnome-keyring took over the secrets service in the main Plasma session.**
+  - Cause: the `gnome-keyring` package (pulled in by `illogical-impulse-kde`)
+    1. enables `gnome-keyring-daemon.socket` for **all users** (`/etc/systemd/user/sockets.target.wants/`, 03:56), and
+    2. ships `/usr/share/dbus-1/services/org.freedesktop.secrets.service` → `gnome-keyring-daemon`.
+  - At the 04:10 Plasma login, gnome-keyring claimed `org.freedesktop.secrets` before KDE's `ksecretd`.
+  - Effect: apps that use the Secret Service lost access to secrets stored in KWallet. **Confirmed: `gh auth status` → "token in default is invalid".**
+  - Fix for the main account only, at user level (run by the user):
+    - `systemctl --user mask gnome-keyring-daemon.socket gnome-keyring-daemon.service`
+    - a user D-Bus override `~/.local/share/dbus-1/services/org.freedesktop.secrets.service` with `Exec=/usr/bin/ksecretd`
+    - log out and back in.
+    `e4test` keeps gnome-keyring, as upstream intends.
+  - **Plan impact:** caelestia_4 in the main account uses **KWallet (`ksecretd`) as the only secrets backend in both sessions.** end-4's `KeyringStorage` goes through libsecret, so this should work; verify in Phase 2. Don't let gnome-keyring run in the main account.
