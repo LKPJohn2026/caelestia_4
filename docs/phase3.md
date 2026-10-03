@@ -49,3 +49,4 @@ Caelestia's own shortcuts (`caelestia:launcher`, `:dashboard`, `:utilities`, `:s
   - Family cycle reordered `["ii", "caelestia", "waffle"]`: one Ctrl+Super+P press reaches caelestia.
   - New **`tools/compile-check.sh`**: compiles a family's whole type tree without instantiating it. Fake HOME, private D-Bus, private **headless sway** (Quickshell `PanelWindow` needs layer-shell, so `offscreen` fails with "No PanelWindow backend loaded"). Needs `sway` installed. From now on, staging requires compile-check OK for both CaelestiaFamily and IllogicalImpulseFamily.
 - Lesson: syntax checks (`qmlformat`) can't catch type errors. A compile check must pass before anything is staged.
+- 2026-10-03: `sway` installed. compile-check: **CaelestiaFamily OK, IllogicalImpulseFamily OK**. Negative test: restoring the old `Nexus.qml` reproduces the exact e4test error chain (`Wrapper.qml[147] … currentPageIdx`). `stage-for-test.sh` now refuses to stage unless compile-check passes.
