@@ -34,10 +34,16 @@ handle_kde_material_you_colors() {
     "$XDG_CONFIG_HOME"/matugen/templates/kde/kde-material-you-colors-wrapper.sh --scheme-variant "$kde_scheme_variant"
 }
 
+# caelestia4: on an account shared with Plasma (marker file), don't touch settings Plasma also reads:
+# gsettings gtk-theme/color-scheme, kdeglobals (kde-material-you-colors), VS Code settings.json.
+caelestia4_shared_desktop() { [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/caelestia4/shared-desktop" ]]; }
+
 pre_process() {
     local mode_flag="$1"
     # Set GNOME color-scheme if mode_flag is dark or light
-    if [[ "$mode_flag" == "dark" ]]; then
+    if caelestia4_shared_desktop; then
+        : # caelestia4: skip shared gsettings
+    elif [[ "$mode_flag" == "dark" ]]; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
         gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
     elif [[ "$mode_flag" == "light" ]]; then
@@ -55,8 +61,10 @@ post_process() {
     local screen_height="$2"
     local wallpaper_path="$3"
 
-    handle_kde_material_you_colors &
-    "$SCRIPT_DIR/code/material-code-set-color.sh" &
+    if ! caelestia4_shared_desktop; then
+        handle_kde_material_you_colors &
+        "$SCRIPT_DIR/code/material-code-set-color.sh" &
+    fi
 }
 
 check_and_prompt_upscale() {
