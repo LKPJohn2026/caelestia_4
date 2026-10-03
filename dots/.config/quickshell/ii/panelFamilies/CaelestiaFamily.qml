@@ -3,8 +3,8 @@
 //    sidebar, utilities, popouts, toasts) and the background, running on end-4 services via adapters.
 //  - Launcher = Caelestia launcher + end-4 LauncherSearch (Phase 5 merge); WorkspaceOverview = end-4 overview
 //    grid without its search (Super+Tab).
-//  - end-4 modules reused as-is (re-skinned in Phase 7): cheatsheet, left sidebar (AI,
-//    translator), region tools, screen translator, OSK, overlay, wallpaper selector, lock, polkit.
+//  - Assistant drawer (assistant/Wrapper.qml) hosts end-4's left-sidebar content (AI, translator) in the frame.
+//  - end-4 modules reused as-is (re-skinned in Phase 7): cheatsheet, region tools, screen translator, OSK, overlay, wallpaper selector, lock, polkit.
 //  - KeybindBridge routes end-4's session / right-sidebar / media keys to the Caelestia drawers.
 import QtQuick
 import Quickshell
@@ -20,7 +20,6 @@ import qs.modules.ii.overlay
 import qs.modules.ii.polkit
 import qs.modules.ii.regionSelector
 import qs.modules.ii.screenTranslator
-import qs.modules.ii.sidebarLeft
 import qs.modules.ii.wallpaperSelector
 
 Scope {
@@ -42,7 +41,6 @@ Scope {
     PanelLoader { component: Polkit {} }
     PanelLoader { component: RegionSelector {} }
     PanelLoader { component: ScreenTranslator {} }
-    PanelLoader { component: SidebarLeft {} }
     PanelLoader { component: WallpaperSelector {} }
 
     // Phase 2 adapter self-test (Config.options.caelestia.debugProbe)
