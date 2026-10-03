@@ -30,3 +30,32 @@
 - The machine currently has AUR `quickshell-git` at `41651d7d`. **It isn't pinned yet:** a yay devel update (`yay -Syu --devel`) would rebuild it from a newer commit.
   - Next Phase 1 step: package it as `caelestia4-quickshell` with `#commit=41651d7…` and `provides/conflicts=(quickshell quickshell-git)`, like end-4's PKGBUILD. Until then, avoid `--devel` updates.
 - end-4's installer will try to reinstall `illogical-impulse-quickshell-git` (pinned `7511545e`) on its next run. Our install flow must skip that metapackage or replace it with ours.
+
+## 1.2 Repo layout: ✅ (2026-10-03)
+- **end-4 upstream:** remote `upstream` = `end-4/dots-hyprland`, merged at **`547836f1b0`** with `--allow-unrelated-histories`. Submodule `dots/.config/quickshell/ii/modules/common/widgets/shapes` initialized (`e31ec4cb`).
+- **Caelestia source:** `git subtree --squash` at `third_party/caelestia-shell/`, tag **v2.5.0** (tag object `96470e43` → commit **`d999d487`**).
+
+## 1.3 Caelestia C++ plugin, built user-locally: ✅
+- `tools/build-caelestia-plugin.sh`: `ENABLE_MODULES=plugin` only, prefix `~/.local`, `INSTALL_QMLDIR=lib/qt6/qml`. Installs `~/.local/lib/qt6/qml/Caelestia/` with 9 modules: `Caelestia`, `.Blobs`, `.Components`, `.Config`, `.I18n`, `.Images`, `.Models`, `.Services`, `.Settings`. Backing libraries go to `Caelestia/lib/` and are found through `$ORIGIN` rpath, so the install can be moved.
+- Build deps added to the system: `aubio` (repo), `libcava` (AUR, LukashonakV fork; the repo `cava` package has no library). 5 compiler warnings, 0 errors.
+- **Smoke test** `tools/tests/plugin-smoke/` (offscreen, Quickshell `41651d7d`):
+  - with `QML_IMPORT_PATH=~/.local/lib/qt6/qml` → `SMOKE OK … BlobRect = caelestia::blobs::BlobRect(…)` ✅
+  - without it → `module "Caelestia.Blobs" is not installed` ✅. This proves the plugin is invisible outside sessions that set the import path, so Plasma is unaffected.
+- Still needed at **runtime** for the ported UI (Phase 3): `qt6-m3shapes-git` (AUR, by Caelestia's author). Not needed for the plugin build.
+
+## 1.4 Pinned Quickshell package: written, not installed yet
+`packaging/caelestia4-quickshell/PKGBUILD`: `git+…#commit=41651d7d…`, `provides=(quickshell quickshell-git)`, `conflicts=(quickshell quickshell-git illogical-impulse-quickshell-git)`. It's the same revision as the currently installed AUR `quickshell-git`, so installing it changes nothing functionally. It only stops `--devel` updates from moving the version.
+Install (user): `cd packaging/caelestia4-quickshell && makepkg -si`
+
+## 1.5 Tools: ✅
+- `tools/port-imports.sh`: rewrites `qs.components|utils|services|modules.*` → `qs.modules.caelestia.{components,utils,adapters,*}` in place. Tested on a copy of all of Caelestia's `components/ modules/ services/ utils/`: **688/688 imports rewritten, 0 left, 0 double rewrites, idempotent.** (First version double-rewrote 588 lines because sed kept applying rules after a match; fixed with `;t`.)
+- `tools/sync-upstreams.sh end4 <ref>` / `caelestia <tag>`: refuses to run on a dirty tree, merges or subtree-pulls, rebuilds the plugin, reruns the smoke test.
+
+## 1.6 Remaining (needs sudo, user)
+- [ ] `makepkg -si` the pinned Quickshell package (1.4)
+- [ ] GPU udev symlink for `AQ_DRM_DEVICES` (Phase 0 note): a rule matching PCI `0000:01:00.0` → `/dev/dri/nvidia-dgpu`
+- [ ] `yay -S qt6-m3shapes-git` (can wait until Phase 3)
+
+**Phase 1 done criteria:**
+- `qs -c ii` runs on the chosen Quickshell ✅ (user-tested in `e4test`)
+- a test QML importing `Caelestia.Config` + `Caelestia.Blobs` loads ✅
