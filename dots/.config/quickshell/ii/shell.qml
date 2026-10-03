@@ -34,7 +34,7 @@ ShellRoot {
 
 
     // Panel families
-    property list<string> families: ["ii", "waffle", "caelestia"]
+    property list<string> families: ["ii", "caelestia", "waffle"] // caelestia4: caelestia right after ii
     function cyclePanelFamily() {
         const currentIndex = families.indexOf(Config.options.panelFamily)
         const nextIndex = (currentIndex + 1) % families.length
