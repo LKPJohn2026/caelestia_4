@@ -8,6 +8,7 @@ STAGE=/var/tmp/caelestia4-stage
 PLUGIN="$HOME/.local/lib/qt6/qml/Caelestia"
 [[ -d "$PLUGIN" ]] || { echo "Plugin not built: run tools/build-caelestia-plugin.sh" >&2; exit 1; }
 ./tools/lint-caelestia.sh
+./tools/compile-check.sh || { echo "Refusing to stage: compile-check failed" >&2; exit 1; }
 
 rm -rf "$STAGE"
 mkdir -p "$STAGE/qml"
