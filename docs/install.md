@@ -45,3 +45,17 @@ on the same user account. Plasma's settings are not touched.
   - Shell: config loaded first time; probe 18/18; only end-4 upstream warnings (`Notifications.qml[70] isTransient`, Hyprland IPC "openwindow for workspace 1 not tracked").
   - Shell env: `AQ_DRM_DEVICES=/dev/dri/nvidia-dgpu`, `QML_IMPORT_PATH=~/.local/lib/qt6/qml`, `QT_QPA_PLATFORMTHEME=kde`.
   - Secrets: `org.freedesktop.secrets` owned by **ksecretd**; `gh auth status` OK in the Hyprland session. The only gnome-keyring process belongs to `e4test`.
+
+## Main-account extras (2026-10-03)
+- **VRR:** `~/.config/hypr/custom/general.lua` → `misc.vrr = 2` (fullscreen only). Applied live with `hyprctl reload`; no config errors.
+- **gnome-keyring removed:** `sdata/dist-arch/illogical-impulse-kde/PKGBUILD` pkgrel 4 drops the `gnome-keyring` dependency (KWallet `provides=org.freedesktop.secrets`, which satisfies `qtkeychain-qt6`). `pacman -Rns gnome-keyring` also removes `gcr` (only needed by gnome-keyring). The user-level mask + D-Bus override stay as a guard.
+- **fcitx5 + Bamboo (Vietnamese):**
+  - Hyprland: `custom/env.lua` sets `XMODIFIERS=@im=fcitx`, `QT_IM_MODULE=fcitx`, `QT_IM_MODULES=wayland;fcitx`, `SDL_IM_MODULE=fcitx` (no `GTK_IM_MODULE`: GTK uses Wayland text-input); `custom/execs.lua` runs `fcitx5 -d --replace`.
+  - Plasma: KWin "Virtual Keyboard" = Fcitx 5.
+  - Shared profile `~/.config/fcitx5/profile` (keyboard-us + bamboo).
+  - Chromium/Electron apps need `--enable-wayland-ime`.
+- **KDE Connect in Hyprland:**
+  - `custom/execs.lua` runs `kdeconnectd` (Hyprland has no XDG autostart; pairings shared with Plasma).
+  - Remote input via AUR `hypr-kdeconnect-fix-git`, routed only in `~/.config/xdg-desktop-portal/hyprland-portals.conf` (`org.freedesktop.impl.portal.RemoteDesktop = hypr-kdeconnect`).
+  - **Caveats (from its README):** no permission dialog (any portal client can inject input in the Hyprland session); "99% vibe coded … manually audited".
+- **Test user `e4test` removed.** To test builds before the main account again, create a throwaway user and use `tools/stage-for-test.sh`.
