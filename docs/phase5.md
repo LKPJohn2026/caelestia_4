@@ -30,4 +30,10 @@ end-4's `Overview` module is **no longer loaded** in the caelestia family, becau
 
 ## Verification
 - `lint-caelestia.sh` OK; `compile-check.sh`: CaelestiaFamily OK, IllogicalImpulseFamily OK.
-- Runtime (e4test): pending.
+- **Runtime (e4test, 2026-10-03): ✅ works** (user-confirmed: launcher apps, prefixes, Super / Super+V / Super+. / Super+Tab).
+- Log (`/var/tmp/caelestia4-phase3.log` @07:30): clean load + one successful live reload; probe 36 OK / 0 FAIL (two runs).
+  Warnings, none blocking:
+  - `adapters/Time.qml[9-14] Unable to assign [undefined]` ×1 each: only right after the live reload (old SystemClock torn down). Upstream file unchanged; reload artifact.
+  - `ii/overview/OverviewWidget.qml[94] Row … polish() loop` ×5 while Super+Tab was open. end-4's grid re-laying out rows; cosmetic. TODO: check whether stock ii shows it too.
+  - `CachingImage … /home/e4test/.face does not exist`: dashboard user card avatar; test user has no `~/.face`.
+  - `qt.svg.draw: requested buffer size is too big` ×1: an oversized SVG icon render was skipped. Watch.
