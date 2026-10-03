@@ -44,5 +44,7 @@ service **owns**, the rule became:
 - Runtime: in `e4test` only. The full end-4 shell must not run in the main Plasma session (e.g. `ConflictKiller` targets `kded6`).
   1. As main user: `tools/stage-for-test.sh` → `/var/tmp/caelestia4-stage/`
   2. As `e4test`: `bash /var/tmp/caelestia4-stage/deploy.sh`. This backs up upstream `ii` once, installs the config + plugin, and adds `QML_IMPORT_PATH` to `~/.config/hypr/custom/env.lua`.
-  3. Log out/in. Super+Alt+W ×2 → `caelestia`, then check the probe output in `qs log -c ii`.
-- **Done when:** Super+Alt+W cycles ii → waffle → caelestia (blank) → ii without errors, and the log shows `[caelestia4 probe] OK` for every adapter.
+  3. Log out/in. Ctrl+Super+P ×2 → `caelestia`, then check the probe output in `qs log -c ii`.
+- **Done when:** Ctrl+Super+P cycles ii → waffle → caelestia (blank) → ii without errors, and the log shows `[caelestia4 probe] OK` for every adapter.
+
+> Correction: the panel-family key is **Ctrl+Super+P** (`hypr/hyprland/keybinds.lua:58`, `quickshell:panelFamilyCycle`). Super+Alt+W came from end-4's outdated waffle README. Alternative: `qs -c ii ipc call panelFamily cycle`.

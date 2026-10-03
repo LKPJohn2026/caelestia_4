@@ -54,7 +54,7 @@ Read before running: `setup`, `sdata/lib/*.sh`, `sdata/subcmd-install/*.sh`, `sd
 - [ ] **0.7** Checks:
   - bar, sidebars, overview, launcher, notifications, lock;
   - Dolphin, System Settings, polkit prompt (`pkexec true`), Wi-Fi/Bluetooth applets, screen share through the KDE portal;
-  - Super+Alt+W → `waffle` and back;
+  - Ctrl+Super+P → `waffle` and back;
   - 240 Hz + VRR.
 - [ ] **0.8** Back in the main account: Plasma still Oxygen? `git -C ~/oxygen-plasma diff --stat` after copying the current config. KWallet still unlocks?
 - [ ] **0.9** Caelestia reference (second throwaway user `caetest`, since it needs `quickshell-git`, which conflicts with end-4's build): snapshot, install, capture every drawer at 7680×2160 into `docs/reference/`, then roll back the snapshot or remove the packages.

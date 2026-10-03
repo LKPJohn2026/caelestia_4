@@ -30,7 +30,7 @@ The opposite direction would be Caelestia as the base, with end-4's ~25–30 ext
 | Settings for new features | New `caelestia` section in end-4's QML `Config.qml` | New C++ config sections in `Caelestia.Config` → **a modified plugin**, rebuilt and conflicting on every update |
 | KDE integration | Comes with end-4 (packages, env, portal) | Rebuilt from scratch. Caelestia uses Thunar, its own Qt theme engine, foot |
 | Stability | Pinned Quickshell, unmodified plugin | `quickshell-git` + other `-git` deps; plugin modified |
-| When the custom UI breaks | Super+Alt+W back to stock `ii` | Log out to another session |
+| When the custom UI breaks | Ctrl+Super+P back to stock `ii` | Log out to another session |
 | Compatibility layer | Adapters: Caelestia-shaped facades over end-4 services | The mirror image: a shim for end-4's `Config`, `Persistent`, `Directories`, `functions` and script paths |
 
 **Decision:** end-4 is the base. The features and KDE integration are the functional core and the part upstream changes most, so they should keep updating through merges. The visual layer is where this project customizes anyway, so that is the part maintained by hand. Revisit only if an exact Caelestia look becomes more important than keeping up with end-4.
@@ -40,7 +40,7 @@ The opposite direction would be Caelestia as the base, with end-4's ~25–30 ext
 end-4 was designed for this:
 
 - `shell.qml` loads services once, then loads one **panel family** through `PanelFamilyLoader`, chosen by `Config.options.panelFamily`.
-- `families: ["ii", "waffle"]` plus the `panelFamilyCycle` global shortcut (Super+Alt+W) switch families live, without restarting.
+- `families: ["ii", "waffle"]` plus the `panelFamilyCycle` global shortcut (Ctrl+Super+P) switch families live, without restarting.
 - `waffle` (a Windows 11 look, 142 QML files) shows a full alternate UI can sit on the same 46 services.
 
 ## 2. Source facts (checked 2026-10-03)
@@ -187,7 +187,7 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [ ] `Config.qml`: `caelestia` section. `panelFamily` comment lists the new value.
 - [ ] `modules/caelestia/adapters/`: all adapters from §3.3, each with a short contract comment (properties and functions the UI uses).
 - [ ] Copy `modules/caelestia/components/` and run the import rewrite.
-- **Done when:** Super+Alt+W cycles ii → waffle → caelestia (blank) → ii without errors in `qs log`.
+- **Done when:** Ctrl+Super+P cycles ii → waffle → caelestia (blank) → ii without errors in `qs log`.
 
 ### Phase 3: Frame + bar, the signature look (3–4 sessions) ⭐ first usable milestone
 - [ ] Port `modules/drawers/*` (Drawers, Panels, Exclusions, Regions, Interactions, ContentWindow).
