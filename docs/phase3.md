@@ -39,3 +39,13 @@ Caelestia's own shortcuts (`caelestia:launcher`, `:dashboard`, `:utilities`, `:s
 ## 3.4 Verification
 - Static: `tools/lint-caelestia.sh` OK; 203/203 files parse (`qmlformat --ignore-settings`).
 - Runtime (e4test): pending.
+
+## 3.5 Test 1 in e4test (2026-10-03): the caelestia family never loaded
+- Log: `Type CaelestiaFamily unavailable` ← … ← `bar/popouts/Wrapper.qml[147]: Cannot assign to non-existent property "currentPageIdx"`.
+- **Cause:** the `Nexus` stand-in declared `property QtObject nState`. The wrapper uses grouped assignments (`nState.currentPageIdx: …`), which QML checks against the **declared** type. One bad leaf type makes the whole chain (`Wrapper` → `ClipWrapper` → `Panels` → `ContentWindow` → `Drawers` → family) unavailable.
+- **Effect on the test:** the deploy triggered a live reload, which failed, so Quickshell kept the previous (Phase 2, blank) config. Every check the user ran actually exercised **waffle** (end-4's Windows-style family): Super+N = action center, Super+M = media pane, etc. **No Phase 3 code ran.**
+- **Fixes:**
+  - `nexus/Nexus.qml`: `nState` is now a declared inline component type (`NexusState`).
+  - Family cycle reordered `["ii", "caelestia", "waffle"]`: one Ctrl+Super+P press reaches caelestia.
+  - New **`tools/compile-check.sh`**: compiles a family's whole type tree without instantiating it. Fake HOME, private D-Bus, private **headless sway** (Quickshell `PanelWindow` needs layer-shell, so `offscreen` fails with "No PanelWindow backend loaded"). Needs `sway` installed. From now on, staging requires compile-check OK for both CaelestiaFamily and IllogicalImpulseFamily.
+- Lesson: syntax checks (`qmlformat`) can't catch type errors. A compile check must pass before anything is staged.
