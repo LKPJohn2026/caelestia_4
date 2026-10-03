@@ -18,6 +18,25 @@ Option 3 of three. The other two were rejected.
 | 2. Run both shells side by side | Two notification daemons, two polkit agents, two lock screens, two Quickshell builds | Rejected: too fragile for daily use |
 | **3. A `caelestia` panel family in end-4** | All end-4 services + KDE integration; Caelestia UI on top; one shortcut switches families | **Chosen** |
 
+### 1.1 Why end-4 is the base and not Caelestia
+
+The opposite direction would be Caelestia as the base, with end-4's ~25–30 extra services ported in. That is less work up front, because ~130 UI files don't need porting. It is more expensive later:
+
+| | **end-4 as base (chosen)** | Caelestia as base |
+|---|---|---|
+| Work up front | Higher: port ~130 Caelestia UI files + adapters | Lower: port ~25–30 end-4 services + scripts + Python venv |
+| How faithful the look is | Close; checked against Phase 0 reference captures | Exact out of the box |
+| Upstream updates | end-4: `git merge`. Caelestia: scripted re-sync of the UI port | Caelestia: merge, with conflicts in the C++ plugin. end-4: **every feature ported by hand, forever** |
+| Settings for new features | New `caelestia` section in end-4's QML `Config.qml` | New C++ config sections in `Caelestia.Config` → **a modified plugin**, rebuilt and conflicting on every update |
+| KDE integration | Comes with end-4 (packages, env, portal) | Rebuilt from scratch. Caelestia uses Thunar, its own Qt theme engine, foot |
+| Stability | Pinned Quickshell, unmodified plugin | `quickshell-git` + other `-git` deps; plugin modified |
+| When the custom UI breaks | Super+Alt+W back to stock `ii` | Log out to another session |
+| Compatibility layer | Adapters: Caelestia-shaped facades over end-4 services | The mirror image: a shim for end-4's `Config`, `Persistent`, `Directories`, `functions` and script paths |
+
+**Decision:** end-4 is the base. The features and KDE integration are the functional core and the part upstream changes most, so they should keep updating through merges. The visual layer is where this project customizes anyway, so that is the part maintained by hand. Revisit only if an exact Caelestia look becomes more important than keeping up with end-4.
+
+### 1.2 The extension point
+
 end-4 was designed for this:
 
 - `shell.qml` loads services once, then loads one **panel family** through `PanelFamilyLoader`, chosen by `Config.options.panelFamily`.
