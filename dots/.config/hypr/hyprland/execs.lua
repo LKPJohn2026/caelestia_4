@@ -7,7 +7,11 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
 
     -- Core components (authentication, lock screen, notification daemon)
-    hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
+    -- caelestia4: on an account shared with Plasma (marker file), KWallet owns org.freedesktop.secrets.
+    -- Starting gnome-keyring here would take the secrets name and hide KWallet's stored logins.
+    if not is_file_exists(HOME .. "/.config/caelestia4/shared-desktop") then
+        hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
+    end
     hl.exec_cmd("hypridle")
     hl.exec_cmd("dbus-update-activation-environment --all")
     hl.exec_cmd("sleep 1 && dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP") -- Some fix idk

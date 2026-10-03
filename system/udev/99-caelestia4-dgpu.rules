@@ -1,0 +1,6 @@
+# caelestia4: stable name for the GPU that drives the monitor (RTX 5090, PCI 0000:01:00.0).
+# /dev/dri/cardN numbering can swap between boots; AQ_DRM_DEVICES uses ':' as a separator, so the
+# by-path name (which contains ':') can't be used there. This gives /dev/dri/nvidia-dgpu instead.
+# Install:  sudo install -m644 system/udev/99-caelestia4-dgpu.rules /etc/udev/rules.d/
+#           sudo udevadm control --reload && sudo udevadm trigger --subsystem-match=drm
+SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="0000:01:00.0", SYMLINK+="dri/nvidia-dgpu"
