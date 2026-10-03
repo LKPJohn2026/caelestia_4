@@ -63,3 +63,24 @@ on the same user account. Plasma's settings are not touched.
   - Cause 1, password prompts in Hyprland: Plasma Login Manager's PAM (`/usr/lib/pam.d/plasmalogin`) already runs `pam_kwallet5`, but the session must then run `/usr/lib/pam_kwallet_init` (Plasma autostarts it). Hyprland didn't, so a second D-Bus-activated `ksecretd` asked for the password. Fixed: `custom/execs.lua` runs it first. The wallet password must equal the login password, or PAM can't unlock it.
   - Cause 2, logged out after switching: Chromium/Electron apps get their cookie key from the Secret portal (KWallet in Plasma), but Hyprland had no Secret backend. They fell back to a different libsecret key, and cookies from the other session couldn't be decrypted. Fixed: `hyprland-portals.conf` adds `org.freedesktop.impl.portal.Secret = kwallet`, and the fallback backend is pinned with `--password-store=kwallet6` (`~/.config/brave-origin-flags.conf`, `~/.config/obsidian/user-flags.conf`, `~/.cursor/argv.json`). Claude Desktop relies on the portal.
 - **Test user `e4test` removed.** To test builds before the main account again, create a throwaway user and use `tools/stage-for-test.sh`.
+
+## Session restore (2026-10-03)
+KDE-style "reopen my apps on the same workspaces" for the Hyprland session: `dots/.config/hypr/hyprland/session.lua`
+(loaded from `hyprland.lua`), all inside Hyprland's Lua config, with no extra daemon or package.
+- Why not an AUR tool: hyprsession / hyprdrover / hyprflow (0–1 votes) predate Hyprland 0.56's Lua config and use
+  `hyprctl dispatch <legacy-dispatcher>`, which 0.56 rejects (`dispatch` is now `hl.dispatch(...)`).
+- **Save:** every 10 s, `hl.get_windows()` → class + workspace + title, plus a launch command: the `.desktop`
+  entry, matched by `StartupWMClass` or file name and run with `gtk-launch` so flags files and wrappers apply, or else
+  `/proc/<pid>/cmdline`. A layout is only written after it stayed the same for one tick, so the windows closing during
+  logout/shutdown are never saved. File: `~/.local/state/caelestia4/hypr-session.lua`.
+- **Restore** (2.5 s after login): launch each saved app with `hl.exec_cmd(cmd, { workspace = "N silent" })`.
+  For 60 s, every new window of a saved class is moved to its saved workspace (title match preferred). Apps
+  already open (autostarted) are moved, not relaunched. Browsers/Electron apps are launched once and restore their
+  own windows; terminals and file managers (`MULTI_INSTANCE`) are launched once per saved window.
+- `misc.focus_on_activate` is switched off during the 60 s window; otherwise each launched app's activation
+  request pulls the view to its workspace.
+- Manual: `hyprctl dispatch 'function() C4_SESSION.save() end'` (or `.restore()`). Opt out:
+  `touch ~/.config/caelestia4/no-session-restore`.
+- Tested live: a kitty pair saved on workspaces 4 and 5, closed, then restored to 4 and 5, with the active workspace unchanged.
+- Limits: restores which apps are open and their workspaces, not window sizes or positions, and not documents/tabs
+  (apps do that themselves, e.g. Brave "Continue where you left off").
