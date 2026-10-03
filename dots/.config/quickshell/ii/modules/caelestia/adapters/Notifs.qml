@@ -1,11 +1,12 @@
+pragma Singleton
+pragma ComponentBehavior: Bound
+
 // caelestia4 ADAPTER: Notifs
 // end-4's Notifications service stays the ONLY notification server (D-Bus org.freedesktop.Notifications),
 // with its own history file and popup timeouts. This singleton mirrors end-4's list as NotifData wrappers,
 // newest first, so both panel families show the same notifications.
 // Contract used by Caelestia UI: list, notClosed, popups, dnd (read/write), hasFullscreen().
 // dnd <-> end-4 `silent`. IPC target "notifs" (no clash with end-4).
-pragma Singleton
-pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell

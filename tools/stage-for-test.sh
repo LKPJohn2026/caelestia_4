@@ -7,6 +7,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 STAGE=/var/tmp/caelestia4-stage
 PLUGIN="$HOME/.local/lib/qt6/qml/Caelestia"
 [[ -d "$PLUGIN" ]] || { echo "Plugin not built: run tools/build-caelestia-plugin.sh" >&2; exit 1; }
+./tools/lint-caelestia.sh
 
 rm -rf "$STAGE"
 mkdir -p "$STAGE/qml"
