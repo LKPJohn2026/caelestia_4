@@ -78,7 +78,13 @@ Singleton {
         JsonAdapter {
             id: configOptionsJsonAdapter
 
-            property string panelFamily: "ii" // "ii", "waffle"
+            property string panelFamily: "ii" // "ii", "waffle", "caelestia"
+
+            // caelestia4: behaviour settings for the Caelestia-design panel family.
+            // Visual tokens (rounding, spacing, animation) live in Caelestia's ~/.config/caelestia/shell.json.
+            property JsonObject caelestia: JsonObject {
+                property bool debugProbe: true // log an adapter self-test when the family loads (Phase 2)
+            }
 
             property JsonObject policies: JsonObject {
                 property int ai: 1 // 0: No | 1: Yes | 2: Local
