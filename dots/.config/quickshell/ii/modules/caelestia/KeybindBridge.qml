@@ -5,15 +5,98 @@
 //   Ctrl+Alt+Delete  sessionToggle      -> session menu
 //   Super+N          sidebarRightToggle -> notification sidebar
 //   Super+M          mediaControlsToggle -> dashboard (media lives there)
-// Everything else (Super search/overview, clipboard, emoji, cheatsheet, region tools, left sidebar, lock…)
-// is handled by the end-4 modules the family loads as-is.
+//   Super (tap)      searchToggleRelease (+Interrupt) -> Caelestia launcher (merged with end-4 search)
+//   Super+V / Super+.  overviewClipboardToggle / overviewEmojiToggle -> launcher pre-filled with ";" / ":"
+// Super+Tab (workspaces) is WorkspaceOverview.qml. Cheatsheet, region tools, left sidebar, lock… are the
+// end-4 modules the family loads as-is.
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import qs // caelestia4: keep
+import qs.modules.common as E4C // caelestia4: keep
 import qs.modules.caelestia.adapters
 
 Scope {
     id: root
+
+    // Open/close the Caelestia launcher on the focused screen. With a prefix, (re)open it pre-filled
+    // (e.g. ";" clipboard); pressing the same key again while showing that prefix closes it.
+    function launcher(prefix: var): void {
+        const s = ShellState.forActive();
+        if (!s)
+            return;
+        if (prefix === undefined) {
+            s.launcher = !s.launcher;
+            return;
+        }
+        const field = ShellState.componentsForActive()?.find("launcherSearch");
+        if (s.launcher && field && field.text === prefix) {
+            s.launcher = false;
+            return;
+        }
+        s.launcher = true;
+        prefillTimer.prefix = prefix;
+        prefillTimer.tries = 0;
+        prefillTimer.restart();
+    }
+
+    // The launcher's search field only exists once the drawer has opened, so retry briefly
+    Timer {
+        id: prefillTimer
+
+        property string prefix
+        property int tries
+
+        interval: 25
+        repeat: true
+        onTriggered: {
+            const field = ShellState.componentsForActive()?.find("launcherSearch");
+            if (field) {
+                field.text = prefix;
+                field.forceActiveFocus();
+                stop();
+            } else if (++tries > 40) {
+                stop();
+            }
+        }
+    }
+
+    GlobalShortcut {
+        name: "searchToggle"
+        description: "Toggles search on press"
+        onPressed: root.launcher(undefined)
+    }
+
+    GlobalShortcut {
+        name: "searchToggleRelease"
+        description: "Toggles search on release"
+        onPressed: GlobalStates.superReleaseMightTrigger = true
+        onReleased: {
+            if (!GlobalStates.superReleaseMightTrigger) {
+                GlobalStates.superReleaseMightTrigger = true;
+                return;
+            }
+            root.launcher(undefined);
+        }
+    }
+
+    GlobalShortcut {
+        name: "searchToggleReleaseInterrupt"
+        description: "Interrupts possibility of search being toggled on release"
+        onPressed: GlobalStates.superReleaseMightTrigger = false
+    }
+
+    GlobalShortcut {
+        name: "overviewClipboardToggle"
+        description: "Toggle clipboard query in the launcher"
+        onPressed: root.launcher(E4C.Config.options.search.prefix.clipboard)
+    }
+
+    GlobalShortcut {
+        name: "overviewEmojiToggle"
+        description: "Toggle emoji query in the launcher"
+        onPressed: root.launcher(E4C.Config.options.search.prefix.emojis)
+    }
 
     function setDrawer(name: string, value: var): void {
         const s = ShellState.forActive();

@@ -59,7 +59,7 @@ Item {
         topPadding: Math.round((Tokens.padding.medium + Tokens.padding.large) / 2)
         bottomPadding: Math.round((Tokens.padding.medium + Tokens.padding.large) / 2)
 
-        placeholderText: Tr.tr("Type \"%1\" for commands").arg(GlobalConfig.launcher.actionPrefix)
+        placeholderText: Tr.tr("Type \"%1\" for commands, ; clipboard, : emoji, = math, $ run, ? web").arg(GlobalConfig.launcher.actionPrefix) // caelestia4
 
         onAccepted: {
             const currentItem = list.currentList?.currentItem;
@@ -69,6 +69,8 @@ Item {
                         Wallpapers.previewColourLock = true;
                     Wallpapers.setWallpaper(currentItem.modelData.path);
                     root.screenState.launcher = false;
+                } else if (list.currentList?.state === "e4") {
+                    currentItem.activate(); // caelestia4: end-4 search result
                 } else if (text.startsWith(GlobalConfig.launcher.actionPrefix)) {
                     if (text.startsWith(`${GlobalConfig.launcher.actionPrefix}calc `))
                         currentItem.onClicked();
