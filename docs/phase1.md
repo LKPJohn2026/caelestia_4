@@ -43,7 +43,7 @@
   - without it → `module "Caelestia.Blobs" is not installed` ✅. This proves the plugin is invisible outside sessions that set the import path, so Plasma is unaffected.
 - Still needed at **runtime** for the ported UI (Phase 3): `qt6-m3shapes-git` (AUR, by Caelestia's author). Not needed for the plugin build.
 
-## 1.4 Pinned Quickshell package: written, not installed yet
+## 1.4 Pinned Quickshell package: ✅ installed (2026-10-03)
 `packaging/caelestia4-quickshell/PKGBUILD`: `git+…#commit=41651d7d…`, `provides=(quickshell quickshell-git)`, `conflicts=(quickshell quickshell-git illogical-impulse-quickshell-git)`. It's the same revision as the currently installed AUR `quickshell-git`, so installing it changes nothing functionally. It only stops `--devel` updates from moving the version.
 Install (user): `cd packaging/caelestia4-quickshell && makepkg -si`
 
@@ -52,7 +52,7 @@ Install (user): `cd packaging/caelestia4-quickshell && makepkg -si`
 - `tools/sync-upstreams.sh end4 <ref>` / `caelestia <tag>`: refuses to run on a dirty tree, merges or subtree-pulls, rebuilds the plugin, reruns the smoke test.
 
 ## 1.6 Remaining (needs sudo, user)
-- [ ] `makepkg -si` the pinned Quickshell package (1.4)
+- [x] `makepkg -si` the pinned Quickshell package (1.4): replaced AUR `quickshell-git`; `qs --version` → "distributed by caelestia_4", plugin smoke test re-passed, `pacman -Dk` clean
 - [ ] GPU udev symlink for `AQ_DRM_DEVICES` (Phase 0 note): a rule matching PCI `0000:01:00.0` → `/dev/dri/nvidia-dgpu`
 - [ ] `yay -S qt6-m3shapes-git` (can wait until Phase 3)
 
