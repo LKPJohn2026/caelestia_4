@@ -22,7 +22,7 @@ set -euo pipefail
 STAGE=/var/tmp/caelestia4-stage
 QS="$HOME/.config/quickshell"
 [[ "$(id -un)" != "windy_dust_2026" ]] || { echo "Refusing: run this as a TEST user, not the main account." >&2; exit 1; }
-mkdir -p "$QS" "$HOME/.local/lib/qt6/qml"
+mkdir -p "$QS" "$HOME/.local/lib/qt6/qml" "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"  # caelestia4: dirs caelestia-cli would create
 if [[ -d "$QS/ii" && ! -d "$QS/ii.upstream-backup" ]]; then
   cp -a "$QS/ii" "$QS/ii.upstream-backup"
   echo "Backed up upstream end-4 config to $QS/ii.upstream-backup"
