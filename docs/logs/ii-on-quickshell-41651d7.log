@@ -1,0 +1,31 @@
+  INFO: Launching config: "/home/e4test/.config/quickshell/ii/shell.qml"
+  INFO: Shell ID: "a23b1fe173b59edabcd264f6bebb7bc1" Path ID "a23b1fe173b59edabcd264f6bebb7bc1"
+  INFO: Saving logs to "/run/user/1001/quickshell/by-id/h1nz5vbmt/log.qslog"
+  INFO: Configuration Loaded
+  WARN scene: QML FileView at @services/FirstRunExperience.qml[33:5]: Read of /home/e4test/.local/state/quickshell/user/first_run.txt failed: File does not exist.
+ DEBUG qml: [GlobalFocusGrab] Initialized
+ DEBUG qml: [Translation] Language changed to vi_VN
+  WARN scene: @modules/ii/notificationPopup/NotificationPopup.qml[17:-1]: TypeError: Cannot read property 'enable' of undefined
+  WARN scene: @modules/ii/bar/BarContent.qml[134:13]: Unable to assign [undefined] to double
+  WARN qt.qpa.services: Failed to register with host portal QDBusError("org.freedesktop.portal.Error.Failed", "Could not register app ID: Connection already associated with an application ID")
+  WARN quickshell.io.fileview: got operation finished from dropped operation qs::io::FileViewOperation(0x7fb933f30760)
+  WARN scene: QML TranslationReader at @services/Translation.qml[68:5]: Read of /home/e4test/.config/illogical-impulse/translations/vi_VN.json failed: File does not exist.
+  WARN scene: @modules/common/widgets/ToolbarTabBar.qml[59:9]: Unable to assign [undefined] to QQuickItem*
+  WARN scene: @modules/ii/sidebarLeft/AiChat.qml[760:-1]: TypeError: Cannot read property 'commandPrefix' of null
+  WARN scene: @modules/ii/sidebarLeft/AiChat.qml[753:-1]: TypeError: Cannot read property 'commandPrefix' of null
+  WARN scene: @modules/ii/sidebarLeft/AiChat.qml[520:-1]: TypeError: Cannot read property 'commandPrefix' of null
+  WARN scene: @modules/common/widgets/ToolbarTabBar.qml[59:9]: Unable to assign [undefined] to QQuickItem*
+  WARN scene: @modules/ii/sidebarLeft/Anime.qml[496:-1]: TypeError: Cannot read property 'commandPrefix' of null
+  WARN scene: @modules/ii/sidebarLeft/Anime.qml[352:-1]: TypeError: Cannot read property 'commandPrefix' of null
+ DEBUG qml: [To Do] File loaded
+ DEBUG qml: [Notifications] File loaded
+  WARN scene: QML FileView at @modules/ii/background/widgets/clock/CookieClock.qml[69:5]: Read of /home/e4test/.local/state/quickshell/user/generated/wallpaper/category.txt failed: File does not exist.
+ DEBUG qml: [Updates] Checking for system updates
+ ERROR qml: [KeyringStorage] Entry not found, initializing.
+  WARN qt.qml.context: qs:@/qs/modules/common/widgets/NotificationGroup.qml:88:9 Parameter "mouse" is not declared. Injection of parameters into signal handlers is deprecated. Use JavaScript functions with formal parameters instead.
+ DEBUG qml: [Notifications] Discarding notification with ID: 3
+ DEBUG qml: [Notifications] Discarding notification with ID: 2
+ DEBUG qml: [Notifications] Discarding notification with ID: 4
+ DEBUG qml: [Notifications] Discarding notification with ID: 4
+ DEBUG qml: [Notifications] Discarding notification with ID: 1
+  WARN qt.qpa.input.methods: failed to create compose table
