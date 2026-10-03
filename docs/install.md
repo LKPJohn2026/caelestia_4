@@ -35,3 +35,13 @@ on the same user account. Plasma's settings are not touched.
 - Log into Plasma as usual: nothing there was changed.
 - To remove the Hyprland setup: restore from `~/.local/state/caelestia4/backup-*`, or delete `~/.config/{quickshell/ii,hypr,matugen,illogical-impulse,caelestia4}`.
 - The snapshot from step 1 covers system-level changes (udev rule).
+
+## Install log: main account (2026-10-03) ✅
+- Snapshot taken; udev rule installed → `/dev/dri/nvidia-dgpu -> card1` (nvidia, PCI 0000:01:00.0). It applied on install; the reload/trigger was a no-op.
+- `tools/install-main.sh`: no warnings. Only the old auto-generated `~/.config/hypr/hyprland.lua` needed a backup. Plasma files (`kdeglobals`, `kwinrc`, `plasmarc`, GTK `settings.ini`) are byte-identical to the `oxygen-plasma` backup.
+  - `kdeglobals` mtime changed to 08:17:17 during the install with identical content. Most likely KDE re-saved it after the new icon in `~/.local/share/icons` appeared; the script doesn't open it.
+- **First Hyprland login:**
+  - Hyprland: Lua config loaded, `hyprctl configerrors` empty; `drm: Explicit device list /dev/dri/nvidia-dgpu` → card1 / nvidia-drm; DP-2 7680×2160@240, scale 1.5. VRR off (end-4 default `misc:vrr = 0`).
+  - Shell: config loaded first time; probe 18/18; only end-4 upstream warnings (`Notifications.qml[70] isTransient`, Hyprland IPC "openwindow for workspace 1 not tracked").
+  - Shell env: `AQ_DRM_DEVICES=/dev/dri/nvidia-dgpu`, `QML_IMPORT_PATH=~/.local/lib/qt6/qml`, `QT_QPA_PLATFORMTHEME=kde`.
+  - Secrets: `org.freedesktop.secrets` owned by **ksecretd**; `gh auth status` OK in the Hyprland session. The only gnome-keyring process belongs to `e4test`.
