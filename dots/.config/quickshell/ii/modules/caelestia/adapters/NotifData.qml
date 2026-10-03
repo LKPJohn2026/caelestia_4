@@ -1,10 +1,11 @@
+pragma ComponentBehavior: Bound
+
 // caelestia4 ADAPTER: NotifData
 // A Caelestia-shaped view of ONE end-4 notification (end-4's Notifications.Notif in `source`).
 // end-4 owns the notification server, history, persistence and popup timeouts; this object only maps fields.
 // Contract used by Caelestia UI: popup (read/write), closed, time, timeStr, ageMins, notification, notificationId,
 // summary, body, appIcon, appName, image, hints, expireTimeout, urgency (NotificationUrgency), resident,
 // hasActionIcons, actions[{identifier,text,invoke}], hasFullscreen, timer.start()/stop(), lock/unlock/close.
-pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell

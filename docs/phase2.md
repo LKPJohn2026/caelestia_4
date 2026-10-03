@@ -48,3 +48,10 @@ service **owns**, the rule became:
 - **Done when:** Ctrl+Super+P cycles ii → waffle → caelestia (blank) → ii without errors, and the log shows `[caelestia4 probe] OK` for every adapter.
 
 > Correction: the panel-family key is **Ctrl+Super+P** (`hypr/hyprland/keybinds.lua:58`, `quickshell:panelFamilyCycle`). Super+Alt+W came from end-4's outdated waffle README. Alternative: `qs -c ii ipc call panelFamily cycle`.
+
+## 2.4 First runtime test in e4test (2026-10-03)
+- Family cycle (Ctrl+Super+P): ii → waffle → caelestia (blank) → ii works.
+- Probe: **16/17 OK** (Notifs, Wallpapers, Recorder, IdleInhibitor, Brightness, Brightness.Monitor + all 10 kept Caelestia services).
+- **Colours FAIL**: every member "missing", no error from Colours.qml. **Cause:** Quickshell's `pragma Singleton` pre-scan stops at the first `{` in the file, and the adapter's header comment contained `transparency{enabled,base,layers}` *above* the pragma. So `Colours` was registered as a plain type, not a singleton instance. The other adapters had pragma-after-comment too, but no `{` in their comments, so they worked by luck.
+- **Fix:** all hand-written adapters now start with their `pragma` lines; comments follow. New `tools/lint-caelestia.sh` (run by `stage-for-test.sh`) fails if `{` comes before `pragma Singleton`, or if an unported `qs.*` import exists. Verified: it flags the old file and passes the fixed one.
+- Other new warnings in the log are **upstream end-4** behaviour when switching ii ↔ waffle (duplicate IpcHandler registration while the old family unloads, waffle `AppButton` anchor, `WorkspaceModel` null id). None involve caelestia4 code.

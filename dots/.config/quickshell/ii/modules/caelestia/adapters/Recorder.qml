@@ -1,3 +1,5 @@
+pragma Singleton
+
 // caelestia4 ADAPTER: Recorder
 // Backed by end-4's scripts/videos/record.sh (wf-recorder) instead of `caelestia record`
 // (caelestia-cli is not installed). record.sh toggles: running it while recording stops it.
@@ -8,7 +10,6 @@
 //   ["-s"]        full screen + sound  -> --fullscreen --sound
 //   ["-sr"/"-rs"] region + sound       -> --sound
 // Not supported: pause (wf-recorder has no pause). `paused` stays false; togglePause() only logs.
-pragma Singleton
 
 import QtQuick
 import Quickshell

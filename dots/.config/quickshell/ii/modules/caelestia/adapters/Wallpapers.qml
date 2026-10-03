@@ -1,3 +1,5 @@
+pragma Singleton
+
 // caelestia4 ADAPTER: Wallpapers
 // Kept from Caelestia: the searchable wallpaper list (FileSystemModel over Paths.wallsdir + Searcher/fuzzy)
 // and image preview for the launcher.
@@ -7,7 +9,6 @@
 // preview(path), stopPreview(), previewColourLock, getCategoryFor(entry), setRandom().
 // Not supported: *colour* preview while browsing (needs caelestia-cli); the image preview still works.
 // Keep Caelestia's wallpaper dir (shell.json paths.wallpaperDir) and end-4's wallpaper folder the same.
-pragma Singleton
 
 import QtQuick
 import Quickshell
