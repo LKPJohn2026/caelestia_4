@@ -1,0 +1,40 @@
+# caelestia_4: Quickshell pinned to the one revision verified to run BOTH
+# end-4 `ii` (@547836f1b0) and Caelestia v2.5.0. See docs/phase1.md.
+# Based on the AUR quickshell-git PKGBUILD (maintainer: Entailz).
+# Replaces both quickshell-git (AUR) and illogical-impulse-quickshell-git (end-4).
+
+_pkgname=quickshell
+_commit=41651d7dcd62a9400eb6f4f8a8580efe00901efb
+pkgname=caelestia4-quickshell
+pkgver=0.3.1.r18.g41651d7
+pkgrel=1
+pkgdesc='Quickshell pinned for caelestia_4 (end-4 + Caelestia)'
+arch=(x86_64)
+url='https://git.outfoxxed.me/quickshell/quickshell'
+options=(!strip)
+license=('LGPL-3.0-only')
+depends=(qt6-declarative qt6-base jemalloc qt6-svg libpipewire libxcb wayland libdrm mesa cpptrace polkit)
+makedepends=(vulkan-headers spirv-tools qt6-shadertools wayland-protocols cli11 ninja cmake git)
+provides=("$_pkgname" "$_pkgname-git")
+conflicts=("$_pkgname" "$_pkgname-git" illogical-impulse-quickshell-git)
+source=("$_pkgname::git+$url.git#commit=$_commit"
+        quickshell-check.hook)
+sha256sums=('SKIP'
+            '8543e21aeaaa5441b73a679160e7601a957f16c433e8d6bd9257e80bd0e94083')
+
+build() {
+  cd "$_pkgname"
+  cmake -GNinja -B build \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DDISTRIBUTOR="caelestia_4 (package: caelestia4-quickshell)" \
+    -DINSTALL_QML_PREFIX=lib/qt6/qml
+  cmake --build build
+}
+
+package() {
+  install -Dm644 quickshell-check.hook -t "$pkgdir/usr/share/libalpm/hooks"
+  cd "$_pkgname"
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+}

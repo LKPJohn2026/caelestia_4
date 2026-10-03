@@ -162,23 +162,23 @@ Each adapter is a QML `Singleton` that exposes the **property and function names
 Effort is in working sessions (~2–4 h each), as a rough guide.
 
 ### Phase 0: Baseline (1–2 sessions)
-- [ ] Manual snapper snapshot.
-- [ ] Create throwaway user `e4test`. Install **upstream end-4** there with its official installer. Log in, check that it works: services, the KDE bits (Dolphin, polkit-kde, plasma-nm, bluedevil, `xdg-desktop-portal-kde`), and the `waffle` family switch.
-- [ ] Hardware check in that session:
+- [x] Manual snapper snapshot.
+- [x] Create throwaway user `e4test`. Install **upstream end-4** there with its official installer. Log in, check that it works: services, the KDE bits (Dolphin, polkit-kde, plasma-nm, bluedevil, `xdg-desktop-portal-kde`), and the `waffle` family switch.
+- [x] Hardware check in that session:
   - which GPU drives the screen (`AQ_DRM_DEVICES` → the card with the monitor attached; confirm with `/dev/dri/by-path`);
   - 240 Hz + VRR, scale 1.5, `QT_SCALE_FACTOR` behavior.
-- [ ] Separately, install **upstream Caelestia** for `e4test` (swapping Quickshell packages) to record its look as a visual reference: screenshots and screen recordings of every drawer at 7680×2160.
+- [x] Separately, install **upstream Caelestia** for `e4test` (swapping Quickshell packages) to record its look as a visual reference: screenshots and screen recordings of every drawer at 7680×2160.
 - **Done when:** both upstreams were seen working on this hardware, the references are saved in `docs/reference/`, and Plasma is unchanged (`git diff` is clean in `oxygen-plasma`).
 
 ### Phase 1: Repo and toolchain (1–2 sessions)
-- [ ] Bring end-4 into this repo as **upstream**: `git remote add upstream https://github.com/end-4/dots-hyprland`, merge `main` at a pinned commit. A private GitHub repo can't be a fork of a public one, hence the remote.
-- [ ] Vendor Caelestia **shell source at tag `v2.5.0`** under `third_party/caelestia-shell/` with `git subtree`. Used for the plugin build and as the UI port source.
+- [x] Bring end-4 into this repo as **upstream**: `git remote add upstream https://github.com/end-4/dots-hyprland`, merge `main` at a pinned commit. A private GitHub repo can't be a fork of a public one, hence the remote.
+- [x] Vendor Caelestia **shell source at tag `v2.5.0`** under `third_party/caelestia-shell/` with `git subtree`. Used for the plugin build and as the UI port source.
 - [x] **Choose one Quickshell commit** → `41651d7d` (see docs/phase1.md) that runs both end-4 `ii` and the Caelestia UI:
   - try end-4's pin `7511545e` with the Caelestia plugin;
   - if the Caelestia QML needs newer APIs, move to the oldest `quickshell-git` commit that Caelestia v2.5.0 accepts, then re-test `ii`;
   - package it as `caelestia4-quickshell` (`provides/conflicts` like end-4's PKGBUILD).
-- [ ] Build the Caelestia plugin into `~/.local` (CMake `-DCMAKE_INSTALL_PREFIX=$HOME/.local`). Needs `qt6-m3shapes-git` from the AUR.
-- [ ] `tools/port-imports.sh` (import rewrite, §3.2) and `tools/sync-upstreams.sh`.
+- [x] Build the Caelestia plugin into `~/.local` (CMake `-DCMAKE_INSTALL_PREFIX=$HOME/.local`). Needs `qt6-m3shapes-git` from the AUR.
+- [x] `tools/port-imports.sh` (import rewrite, §3.2) and `tools/sync-upstreams.sh`.
 - **Done when:** `qs -c ii` runs the `ii` family on the chosen Quickshell, and a test QML that imports `Caelestia.Config` and `Caelestia.Blobs` loads in that session.
 
 ### Phase 2: Family skeleton + adapters (2 sessions)
