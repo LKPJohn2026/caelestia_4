@@ -50,12 +50,14 @@ Item {
                 component: todoComponent,
                 iconName: "checklist",
                 text: Tr.tr("Todo"),
+                keepLoaded: true, // caelestia4: fixed-size pane, never lazy-unloaded (see Loader.active below)
                 enabled: E4C.Config.options.caelestia.dashboardTodo
             },
             {
                 component: timerComponent,
                 iconName: "timer",
                 text: Tr.tr("Timer"),
+                keepLoaded: true,
                 enabled: E4C.Config.options.caelestia.dashboardTimer
             }
         ];
@@ -159,6 +161,10 @@ Item {
                         sourceComponent: modelData.component
 
                         Component.onCompleted: active = Qt.binding(() => {
+                            // caelestia4: end-4 panes stay loaded. Lazily (un)loading them changed their width,
+                            // which fed back into this binding (binding loop) and collapsed the pane.
+                            if (modelData.keepLoaded)
+                                return true;
                             if (index === view.currentIndex)
                                 return true;
                             const vx = Math.floor(view.visibleArea.xPosition * view.contentWidth);
