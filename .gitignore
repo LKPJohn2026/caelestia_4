@@ -18,3 +18,10 @@ __pycache__/
 
 # caelestia_4 build output
 build/
+
+# makepkg output
+packaging/*/src/
+packaging/*/pkg/
+packaging/*/*.pkg.tar.*
+packaging/*/*.log
+packaging/caelestia4-quickshell/quickshell/
