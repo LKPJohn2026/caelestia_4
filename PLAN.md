@@ -173,7 +173,7 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 ### Phase 1: Repo and toolchain (1–2 sessions)
 - [ ] Bring end-4 into this repo as **upstream**: `git remote add upstream https://github.com/end-4/dots-hyprland`, merge `main` at a pinned commit. A private GitHub repo can't be a fork of a public one, hence the remote.
 - [ ] Vendor Caelestia **shell source at tag `v2.5.0`** under `third_party/caelestia-shell/` with `git subtree`. Used for the plugin build and as the UI port source.
-- [ ] **Choose one Quickshell commit** that runs both end-4 `ii` and the Caelestia UI:
+- [x] **Choose one Quickshell commit** → `41651d7d` (see docs/phase1.md) that runs both end-4 `ii` and the Caelestia UI:
   - try end-4's pin `7511545e` with the Caelestia plugin;
   - if the Caelestia QML needs newer APIs, move to the oldest `quickshell-git` commit that Caelestia v2.5.0 accepts, then re-test `ii`;
   - package it as `caelestia4-quickshell` (`provides/conflicts` like end-4's PKGBUILD).
