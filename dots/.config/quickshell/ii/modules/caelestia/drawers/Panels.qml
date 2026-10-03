@@ -12,6 +12,7 @@ import qs.modules.caelestia.sidebar as Sidebar
 import qs.modules.caelestia.utilities as Utilities
 import qs.modules.caelestia.bar.popouts as BarPopouts
 import qs.modules.caelestia.utilities.toasts as Toasts
+import qs.modules.caelestia.assistant as Assistant // caelestia4
 
 Item {
     id: root
@@ -33,6 +34,7 @@ Item {
     readonly property alias utilities: utilities
     readonly property alias toasts: toasts
     readonly property alias sidebar: sidebar
+    readonly property alias assistant: assistant // caelestia4
 
     anchors.fill: parent
     anchors.margins: borderThickness
@@ -151,5 +153,16 @@ Item {
         anchors.bottom: utilities.top
         anchors.right: parent.right
         anchors.topMargin: -notifications.anchors.topMargin
+    }
+
+    // caelestia4: Assistant drawer (end-4 AI chat / translator), slides out next to the bar
+    Assistant.Wrapper {
+        id: assistant
+
+        screenState: root.screenState
+
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
     }
 }
