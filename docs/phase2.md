@@ -55,3 +55,13 @@ service **owns**, the rule became:
 - **Colours FAIL**: every member "missing", no error from Colours.qml. **Cause:** Quickshell's `pragma Singleton` pre-scan stops at the first `{` in the file, and the adapter's header comment contained `transparency{enabled,base,layers}` *above* the pragma. So `Colours` was registered as a plain type, not a singleton instance. The other adapters had pragma-after-comment too, but no `{` in their comments, so they worked by luck.
 - **Fix:** all hand-written adapters now start with their `pragma` lines; comments follow. New `tools/lint-caelestia.sh` (run by `stage-for-test.sh`) fails if `{` comes before `pragma Singleton`, or if an unported `qs.*` import exists. Verified: it flags the old file and passes the fixed one.
 - Other new warnings in the log are **upstream end-4** behaviour when switching ii ↔ waffle (duplicate IpcHandler registration while the old family unloads, waffle `AppButton` anchor, `WorkspaceModel` null id). None involve caelestia4 code.
+
+## 2.5 Re-test after the fix: ✅ PHASE 2 COMPLETE (2026-10-03)
+Two passes into the `caelestia` family, identical results:
+- **18/18 checks OK, 0 FAIL**: all 17 adapters plus `Colours.palette` and `Brightness.Monitor`. The probe reaches `done`.
+- Live data through the adapters:
+  - `notifs mirrored: 8` (end-4's history)
+  - `wallpaper: …/ii/assets/images/default_wallpaper.png` (end-4 config)
+  - `light: false`, `primary: #d1c2d2` (end-4's generated palette)
+- A real Caelestia component (`StyledText`) was created, so the plugin + ported components load in the session.
+- No warnings or errors from any caelestia4 file.
