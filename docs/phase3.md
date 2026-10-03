@@ -57,3 +57,15 @@ After a fresh login the family loads; probe 18/18 OK; no warnings from any caele
    **Deliberate divergence:** view `"both"` when on Ethernet; `Network.qml` conditions changed to `view !== "ethernet"` / `view !== "wireless"`, so both sections show.
 2. **Session menu missing the spinning GIF** (also the dashboard's media bongocat). Caelestia's config defaults are `root:/assets/kurukuru.gif|bongocat.gif|dino.png`, and `root:` = shell root = end-4's `ii/`. **Fix:** `utils/Paths.qml absolutePath()` maps `root:/assets/` → `root:/modules/caelestia/assets/`.
 3. Log: 78× `QSqlDatabase: unable to open database file`. The plugin's app DB (`~/.local/state/caelestia/apps.sqlite`, used for launcher ranking) can't be created because `caelestia-cli` normally creates the dir. **Fix:** `deploy.sh` creates `~/.local/state/caelestia` + `~/.cache/caelestia/imagecache/notifs`; `ServiceLoader` also runs `mkdir -p` at startup as a fallback (async, so deploy/install is the reliable path).
+
+## 3.7 Test 3 in e4test (2026-10-03): fixes confirmed ✅
+- User: Wi-Fi section now shows on Ethernet; session menu GIF and dashboard bongocat work.
+- Log (fresh start, `Configuration Loaded`, no reload failure): probe **18/18 OK**, **0** `qt.sql` errors (was 78), **0** warnings from caelestia4 files.
+- New, once at startup: `QObject: Cannot create children for a parent that is in a different thread` (parent QApplication, current thread `QQuickPixmapReader`) + `installEventFilter … different thread`. This comes from Qt's async image loader creating a QObject off the main thread; the source isn't identifiable from the log (end-4 icons and the now-loading GIFs both use it). Harmless so far; watch for it in future logs.
+
+### Phase 3 status
+Done: frame + bar + all drawers render and work (user-tested); keybind bridge; end-4 modules (search, AI sidebar, lock, polkit, …) inside the family.
+Open:
+- Visual comparison against `docs/reference/` at 7680×2160 @ 1.5×
+- Caelestia launcher keybind (vs end-4 Super search; Phase 5 decision)
+- A day of normal use (PLAN Phase 3 "done when")
