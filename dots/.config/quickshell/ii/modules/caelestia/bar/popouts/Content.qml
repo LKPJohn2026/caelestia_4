@@ -42,7 +42,7 @@ Item {
             name: "network"
             sourceComponent: Network {
                 popouts: root.popouts
-                view: Nmcli.activeEthernet ? "ethernet" : "wireless"
+                view: Nmcli.activeEthernet ? "both" : "wireless" // caelestia4: show Wi-Fi too when on Ethernet (upstream: "ethernet" only)
             }
         }
 

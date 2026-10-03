@@ -29,6 +29,9 @@ Singleton {
     }
 
     function absolutePath(path: string): string {
+        // caelestia4: Caelestia's config defaults use root:/assets/… (shell root). The shell root is now
+        // end-4's ii/, and Caelestia's assets live in modules/caelestia/assets/.
+        path = path.replace(/^root:\/assets\//, "root:/modules/caelestia/assets/");
         return toLocalFile(path.replace(/~|(\$({?)HOME(}?))+/, home));
     }
 
