@@ -62,13 +62,14 @@ StyledWindow {
         screenState.launcher = false;
         screenState.session = false;
         screenState.dashboard = false;
+        screenState.assistant = false; // caelestia4
         panels.popouts.close();
     }
 
     name: "drawers"
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: (fsTransitionProg > 0 && contentItem.Config.general.showOverFullscreen) || (hasSpecialWorkspace && hasFullscreenOnNormalWs) ? WlrLayer.Overlay : WlrLayer.Top
-    WlrLayershell.keyboardFocus: screenState.launcher || screenState.session ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+    WlrLayershell.keyboardFocus: screenState.launcher || screenState.session || screenState.assistant || screenState.dashboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None // caelestia4: + assistant, dashboard (Todo input)
 
     mask: hasFullscreen ? emptyRegion : regions
 
@@ -117,6 +118,8 @@ StyledWindow {
             const conf = root.contentItem.Config;
             if ((s.launcher && conf.launcher.enabled) || (s.session && conf.session.enabled) || (s.sidebar && conf.sidebar.enabled))
                 return true;
+            if (s.assistant) // caelestia4
+                return true;
             if (!conf.dashboard.showOnHover && s.dashboard && conf.dashboard.enabled)
                 return true;
             if (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1)
@@ -129,6 +132,7 @@ StyledWindow {
             root.screenState.session = false;
             root.screenState.sidebar = false;
             root.screenState.dashboard = false;
+            root.screenState.assistant = false; // caelestia4
             panels.popouts.hasCurrent = false;
             bar.closeTray();
         }
@@ -205,6 +209,14 @@ StyledWindow {
             implicitHeight: panel.height * (1 / rawDeformMatrix.m22) + 2
             exclude: panels.sidebar.offsetScale > 0.08 ? [] : [utilsBg]
             bottomLeftRadius: Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius
+        }
+
+        PanelBg {
+            // caelestia4: Assistant drawer surface (grows out of the bar side of the frame)
+            id: assistantBg
+
+            panel: panels.assistant
+            deformAmount: 0.03
         }
 
         PanelBg {

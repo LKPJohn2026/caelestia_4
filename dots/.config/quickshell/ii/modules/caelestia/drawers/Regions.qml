@@ -50,6 +50,12 @@ Region {
     }
 
     R {
+        // caelestia4: Assistant drawer takes input while (partly) shown
+        panel: root.panels.assistant
+        width: panel.width * (1 - root.panels.assistant.offsetScale)
+    }
+
+    R {
         panel: root.panels.osdWrapper
         x: root.win.width - width
         width: panel.width * (1 - root.panels.osd.offsetScale) + root.borderThickness + sessionRegion.width

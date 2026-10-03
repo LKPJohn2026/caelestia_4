@@ -84,6 +84,8 @@ Singleton {
             // Visual tokens (rounding, spacing, animation) live in Caelestia's ~/.config/caelestia/shell.json.
             property JsonObject caelestia: JsonObject {
                 property bool debugProbe: true // log an adapter self-test when the family loads (Phase 2)
+                property bool dashboardTodo: true // end-4 Todo as a dashboard tab
+                property bool dashboardTimer: true // end-4 Pomodoro/Stopwatch as a dashboard tab
             }
 
             property JsonObject policies: JsonObject {

@@ -9,6 +9,7 @@ import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
+import qs.services as E4 // caelestia4: keep
 import qs.modules.caelestia.nexus
 import qs.modules.caelestia.bar.popouts as BarPopouts
 
@@ -35,8 +36,19 @@ StyledRect {
 
             seenIds.add(item.id);
             return true;
-        });
+        }).concat([ // caelestia4: end-4 extras (night light via hyprsunset, EasyEffects)
+            {
+                id: "nightLight",
+                enabled: true
+            },
+            ...(E4.EasyEffects.available ? [{
+                        id: "easyEffects",
+                        enabled: true
+                    }] : [])
+        ]);
     }
+    Component.onCompleted: E4.EasyEffects.fetchAvailability() // caelestia4: end-4 only fetches this from its own toggle
+
     readonly property int splitIndex: Math.ceil(quickToggles.length / 2)
     readonly property bool needExtraRow: quickToggles.length > 6
 
@@ -129,6 +141,23 @@ StyledRect {
                         icon: "gamepad"
                         checked: GameMode.enabled
                         onClicked: GameMode.enabled = !GameMode.enabled
+                    }
+                }
+                // caelestia4: end-4 night light (hyprsunset) and EasyEffects
+                DelegateChoice {
+                    roleValue: "nightLight"
+                    delegate: Toggle {
+                        icon: "nightlight"
+                        checked: E4.Hyprsunset.temperatureActive
+                        onClicked: E4.Hyprsunset.toggleTemperature()
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "easyEffects"
+                    delegate: Toggle {
+                        icon: "instant_mix"
+                        checked: E4.EasyEffects.active
+                        onClicked: E4.EasyEffects.toggle()
                     }
                 }
                 DelegateChoice {

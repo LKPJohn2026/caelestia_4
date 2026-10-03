@@ -9,6 +9,9 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.filedialog
+import qs.modules.common as E4C // caelestia4: keep
+import qs.modules.ii.sidebarRight.todo as E4Todo // caelestia4: keep
+import qs.modules.ii.sidebarRight.pomodoro as E4Timer // caelestia4: keep
 
 Item {
     id: root
@@ -41,6 +44,19 @@ Item {
                 iconName: "cloud",
                 text: Tr.tr("Weather"),
                 enabled: Config.dashboard.showWeather
+            },
+            // caelestia4: end-4 Todo and Timer (pomodoro + stopwatch) as dashboard tabs
+            {
+                component: todoComponent,
+                iconName: "checklist",
+                text: Tr.tr("Todo"),
+                enabled: E4C.Config.options.caelestia.dashboardTodo
+            },
+            {
+                component: timerComponent,
+                iconName: "timer",
+                text: Tr.tr("Timer"),
+                enabled: E4C.Config.options.caelestia.dashboardTimer
             }
         ];
         return allTabs.filter(tab => tab.enabled);
@@ -180,6 +196,27 @@ Item {
                 id: weatherComponent
 
                 WeatherTab {}
+            }
+
+            // caelestia4: end-4 widgets in Caelestia-sized panes
+            Component {
+                id: todoComponent
+
+                E4Pane {
+                    E4Todo.TodoWidget {
+                        anchors.fill: parent
+                    }
+                }
+            }
+
+            Component {
+                id: timerComponent
+
+                E4Pane {
+                    E4Timer.PomodoroWidget {
+                        anchors.fill: parent
+                    }
+                }
             }
 
             Behavior on contentX {

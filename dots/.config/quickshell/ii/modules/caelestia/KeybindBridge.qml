@@ -7,6 +7,7 @@
 //   Super+M          mediaControlsToggle -> dashboard (media lives there)
 //   Super (tap)      searchToggleRelease (+Interrupt) -> Caelestia launcher (merged with end-4 search)
 //   Super+V / Super+.  overviewClipboardToggle / overviewEmojiToggle -> launcher pre-filled with ";" / ":"
+//   Super+A/B/O      sidebarLeftToggle(+Open/Close/ToggleDetach) -> Assistant drawer (end-4 AI / translator)
 // Super+Tab (workspaces) is WorkspaceOverview.qml. Cheatsheet, region tools, left sidebar, lock… are the
 // end-4 modules the family loads as-is.
 import QtQuick
@@ -157,5 +158,53 @@ Scope {
         name: "mediaControlsClose"
         description: "Closes media controls on press"
         onPressed: root.setDrawer("dashboard", false)
+    }
+
+    // ---- Assistant drawer (end-4 left sidebar content) ----
+    GlobalShortcut {
+        name: "sidebarLeftToggle"
+        description: "Toggles left sidebar on press"
+        onPressed: root.setDrawer("assistant", "toggle")
+    }
+
+    GlobalShortcut {
+        name: "sidebarLeftOpen"
+        description: "Opens left sidebar on press"
+        onPressed: root.setDrawer("assistant", true)
+    }
+
+    GlobalShortcut {
+        name: "sidebarLeftClose"
+        description: "Closes left sidebar on press"
+        onPressed: root.setDrawer("assistant", false)
+    }
+
+    GlobalShortcut {
+        name: "sidebarLeftToggleDetach"
+        description: "Toggles left sidebar (detach is not supported in the caelestia family)"
+        onPressed: root.setDrawer("assistant", "toggle")
+    }
+
+    // end-4's AI chat closes "the sidebar" by setting GlobalStates.sidebarLeftOpen = false (e.g. after opening
+    // a link). Keep that flag in sync with the Assistant drawer on the focused screen.
+    Connections {
+        function onSidebarLeftOpenChanged(): void {
+            const s = ShellState.forActive();
+            if (s && s.assistant !== GlobalStates.sidebarLeftOpen)
+                s.assistant = GlobalStates.sidebarLeftOpen;
+        }
+
+        target: GlobalStates
+    }
+
+    Connections {
+        function onAssistantChanged(): void {
+            const s = ShellState.forActive();
+            if (s && GlobalStates.sidebarLeftOpen !== s.assistant)
+                GlobalStates.sidebarLeftOpen = s.assistant;
+        }
+
+        target: ShellState.forActive()
+        ignoreUnknownSignals: true
     }
 }
