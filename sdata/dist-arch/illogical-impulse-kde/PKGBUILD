@@ -1,13 +1,13 @@
 groups=(illogical-impulse)
 pkgname=illogical-impulse-kde
 pkgver=1.0
-pkgrel=3
+pkgrel=4 # caelestia4: gnome-keyring dropped (KWallet provides org.freedesktop.secrets)
 pkgdesc='Illogical Impulse KDE Dependencies'
 arch=(any)
 license=(None)
 depends=(
   bluedevil
-  gnome-keyring
+  # gnome-keyring  # caelestia4: removed; on a Plasma account KWallet owns the Secret Service
   networkmanager
   plasma-nm
   polkit-kde-agent

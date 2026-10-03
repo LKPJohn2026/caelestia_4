@@ -25,3 +25,6 @@ packaging/*/pkg/
 packaging/*/*.pkg.tar.*
 packaging/*/*.log
 packaging/caelestia4-quickshell/quickshell/
+sdata/dist-arch/*/src/
+sdata/dist-arch/*/pkg/
+sdata/dist-arch/*/*.pkg.tar.*
