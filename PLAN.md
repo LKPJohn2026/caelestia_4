@@ -182,11 +182,11 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - **Done when:** `qs -c ii` runs the `ii` family on the chosen Quickshell, and a test QML that imports `Caelestia.Config` and `Caelestia.Blobs` loads in that session.
 
 ### Phase 2: Family skeleton + adapters (2 sessions)
-- [ ] `shell.qml`: `families: ["ii", "waffle", "caelestia"]` plus a `PanelFamilyLoader { identifier: "caelestia" }`.
-- [ ] `panelFamilies/CaelestiaFamily.qml` (empty `Scope` + `PanelLoader`s).
-- [ ] `Config.qml`: `caelestia` section. `panelFamily` comment lists the new value.
-- [ ] `modules/caelestia/adapters/`: all adapters from §3.3, each with a short contract comment (properties and functions the UI uses).
-- [ ] Copy `modules/caelestia/components/` and run the import rewrite.
+- [x] `shell.qml`: `families: ["ii", "waffle", "caelestia"]` plus a `PanelFamilyLoader { identifier: "caelestia" }`.
+- [x] `panelFamilies/CaelestiaFamily.qml` (empty `Scope` + `PanelLoader`s).
+- [x] `Config.qml`: `caelestia` section. `panelFamily` comment lists the new value.
+- [x] `modules/caelestia/adapters/`: all adapters from §3.3, each with a short contract comment (properties and functions the UI uses).
+- [x] Copy `modules/caelestia/components/` and run the import rewrite.
 - **Done when:** Ctrl+Super+P cycles ii → waffle → caelestia (blank) → ii without errors in `qs log`.
 
 ### Phase 3: Frame + bar, the signature look (3–4 sessions) ⭐ first usable milestone
