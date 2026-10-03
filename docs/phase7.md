@@ -32,4 +32,7 @@ that slides out next to the bar, instead of end-4's own `SidebarLeft` window (no
 
 ## Verification
 - `lint-caelestia.sh` OK; `compile-check.sh`: CaelestiaFamily OK, IllogicalImpulseFamily OK.
-- Runtime (e4test): pending.
+- **Runtime test 1 (e4test, 2026-10-03):** Assistant, toggles OK. Log clean (probe 18/18; no caelestia4 errors) except:
+  - **Bug: Todo / Timer panes collapsed, text overlapping.** Log: `Loader @dashboard/Content.qml[151] Binding loop detected for property "active"`. **Cause:** Caelestia loads dashboard panes lazily (`active` depends on the pane's x/width within the flickable). An unloaded pane has width 0, so (un)loading the end-4 panes changed the row width, which re-evaluated `active` (loop). The pane was measured at 0 and end-4's ColumnLayout squeezed its rows on top of each other.
+  - **Fix:** tab entries get `keepLoaded: true`; the delegate's `active` returns true for them, so they're never lazily unloaded. `E4Pane` now has a plain fixed 560×480 (no token lookups).
+  - `.face` missing ×25: dashboard avatar; the test user has no `~/.face` (harmless).

@@ -1,20 +1,21 @@
-// caelestia4: a dashboard pane hosting an end-4 widget (Todo, Timer) at a fixed, Caelestia-proportioned size.
-// end-4's sidebar widgets fill their parent, so the pane provides the implicit size the dashboard layout needs.
+// caelestia4: a dashboard pane hosting an end-4 widget (Todo, Timer) at a fixed size.
+// end-4's sidebar widgets fill their parent and have no implicit size of their own, so the pane must
+// provide a stable one. The Loader for these panes is kept active (Content.qml, keepLoaded) so the size
+// never flips between 0 and full width.
 import QtQuick
-import Caelestia.Config
 
 Item {
     id: root
 
     default property alias content: holder.data
 
-    implicitWidth: Tokens.sizes.dashboard?.mediaWidth ? Tokens.sizes.dashboard.mediaWidth * 1.6 : 520
-    implicitHeight: 420
+    implicitWidth: 560
+    implicitHeight: 480
 
     Item {
         id: holder
 
         anchors.fill: parent
-        anchors.margins: Tokens.padding.normal ?? 10
+        anchors.margins: 12
     }
 }
