@@ -15,3 +15,6 @@ __pycache__/
 
 # Emacs auto backup file
 *~
+
+# caelestia_4 build output
+build/
