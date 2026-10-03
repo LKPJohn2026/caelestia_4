@@ -214,8 +214,8 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - **Done when:** every tab shows live data and the new tabs keep their state across switching families.
 
 ### Phase 7: end-4 exclusives in Caelestia style (3–5 sessions)
-- [ ] **Assistant drawer** (left edge): AI chat (`Ai`, with end-4's provider config and keyring), Translator. Booru is optional and off by default.
-- [ ] Sidebar/utilities quick toggles: night light, EasyEffects, keep awake, game mode, Bluetooth, Wi-Fi.
+- [x] **Assistant drawer** (left edge): AI chat (`Ai`, with end-4's provider config and keyring), Translator. Booru is optional and off by default.
+- [x] Sidebar/utilities quick toggles: night light, EasyEffects, keep awake, game mode, Bluetooth, Wi-Fi.
 - [ ] Overview, cheatsheet, polkit dialog: end-4 modules with a Caelestia skin (tokens, blob containers, fonts).
 - [ ] Lower priority: region selector/OCR, screen translator, on-screen keyboard, media controls.
 - **Done when:** every end-4 feature you use daily is reachable in the `caelestia` family without switching back to `ii`.

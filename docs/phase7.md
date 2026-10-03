@@ -40,3 +40,10 @@ that slides out next to the bar, instead of end-4's own `SidebarLeft` window (no
 - **Runtime test 2:** Todo/Timer panes render correctly (collapse fixed). New issue (screenshot): with 6 tabs the dashboard tab bar was cramped. "Performance" overflowed its grey hover box, and box widths didn't match the words.
   - **Cause (upstream design):** tabs are uniform slots that split the bar width (`Layout.preferredWidth: 1`), and the bar is only as wide as the **current pane** (560 px Todo pane ÷ 6 ≈ 93 px per slot); the hover `StateLayer` filled the whole slot.
   - **Fix:** `Tabs.minimumWidth` = (widest label + 2×padding) × tab count; `Content.nonAnimWidth` = max(pane, that). The hover box now hugs icon+label (+ padding) and is centered, like the underline indicator. `E4Pane` width 840 (= Weather), so the dashboard width stays steady across tabs.
+- **Runtime test 3 (2026-10-03): ✅ tab bar fixed** (user-confirmed). Log: dashboard `Loader.active` binding loop **gone**; probe 36/36 OK. Remaining warnings are not caelestia4 bugs:
+  - `Time.qml`, `NotifData.qml[50-70]` and end-4's own `services/Notifications.qml[23-35]` "Unable to assign [undefined]": all logged right after the live reload (old objects torn down). `NotifData` mirrors end-4's `Notif`, so both warn at the same moment. Reload-only.
+  - `common/widgets/FloatingActionButton.qml[45] Revealer … Binding loop … implicitHeight` ×2: end-4's Todo "+" FAB expand animation (end-4 widget code).
+
+## Phase 7 status
+Done: Assistant drawer, Todo + Timer dashboard tabs, night light + EasyEffects toggles, dashboard tab bar fitting 6 tabs.
+Open: widget-level restyle inside the Assistant (tabs, chat bubbles); Caelestia skin for cheatsheet / polkit / region selector / screen translator / OSK.
