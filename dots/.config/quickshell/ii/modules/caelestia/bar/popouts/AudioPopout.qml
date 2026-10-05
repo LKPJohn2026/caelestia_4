@@ -3,17 +3,27 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Widgets
 import Quickshell.Services.Pipewire
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
+import qs.modules.caelestia.utils
 
 Item {
     id: root
 
     required property PopoutState popouts
+
+    // caelestia4: per-app mixer (end-4 volumeMixer) — playback streams only
+    readonly property list<PwNode> appStreams: Audio.streams.filter(s => s.isSink)
+
+    PwObjectTracker {
+        objects: root.appStreams
+    }
 
     implicitWidth: Tokens.sizes.bar.audioWidth
     implicitHeight: layout.implicitHeight + Tokens.padding.medium * 2
@@ -102,6 +112,105 @@ Item {
             }
         }
 
+        // caelestia4: microphone level (end-4 quick sliders), only with an input device
+        StyledText {
+            Layout.topMargin: Tokens.spacing.medium
+            visible: Audio.source !== null
+            text: Audio.sourceMuted ? Tr.tr("Microphone (muted)") : Tr.tr("Microphone (%1%)").arg(Math.round(Audio.sourceVolume * 100))
+            font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
+        }
+
+        CustomMouseArea {
+            Layout.fillWidth: true
+            implicitHeight: Tokens.padding.medium * 3
+            visible: Audio.source !== null
+
+            onWheel: event => {
+                if (event.angleDelta.y > 0)
+                    Audio.incrementSourceVolume();
+                else if (event.angleDelta.y < 0)
+                    Audio.decrementSourceVolume();
+            }
+
+            StyledSlider {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                implicitHeight: parent.implicitHeight
+
+                value: Audio.sourceVolume
+                onInteraction: value => Audio.setSourceVolume(value)
+            }
+        }
+
+        // caelestia4: per-app volume mixer (end-4 volumeMixer)
+        StyledText {
+            Layout.topMargin: Tokens.spacing.medium
+            visible: root.appStreams.length > 0
+            text: Tr.tr("Apps")
+            font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
+        }
+
+        Repeater {
+            model: root.appStreams
+
+            RowLayout {
+                id: streamRow
+
+                required property PwNode modelData
+                readonly property bool muted: Audio.getStreamMuted(modelData)
+
+                Layout.fillWidth: true
+                spacing: Tokens.spacing.small
+
+                StateLayerIcon {
+                    source: {
+                        const props = streamRow.modelData.properties;
+                        const fallback = Icons.getAppIcon(props["application.process.binary"] || props["application.name"] || "", "audio-x-generic");
+                        return props["application.icon-name"] ? Quickshell.iconPath(props["application.icon-name"], fallback) : fallback;
+                    }
+                    muted: streamRow.muted
+                    onClicked: Audio.setStreamMuted(streamRow.modelData, !streamRow.muted)
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 0
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: {
+                            const app = Audio.getStreamName(streamRow.modelData);
+                            const media = streamRow.modelData.properties["media.name"];
+                            return media && media !== app ? `${app} · ${media}` : app;
+                        }
+                        font: Tokens.font.body.small
+                        color: Colours.palette.m3onSurfaceVariant
+                        elide: Text.ElideRight
+                    }
+
+                    CustomMouseArea {
+                        Layout.fillWidth: true
+                        implicitHeight: Tokens.padding.medium * 2.5
+
+                        onWheel: event => {
+                            const step = event.angleDelta.y > 0 ? 0.05 : -0.05;
+                            Audio.setStreamVolume(streamRow.modelData, Audio.getStreamVolume(streamRow.modelData) + step);
+                        }
+
+                        StyledSlider {
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            implicitHeight: parent.implicitHeight
+                            opacity: streamRow.muted ? 0.5 : 1
+
+                            value: Audio.getStreamVolume(streamRow.modelData)
+                            onInteraction: value => Audio.setStreamVolume(streamRow.modelData, value)
+                        }
+                    }
+                }
+            }
+        }
+
         IconTextButton {
             Layout.fillWidth: true
             Layout.topMargin: Tokens.spacing.medium
@@ -112,6 +221,40 @@ Item {
             icon: "settings"
 
             onClicked: root.popouts.detachRequested("audio")
+        }
+    }
+
+    // caelestia4: app icon that mutes/unmutes its stream on click
+    component StateLayerIcon: Item {
+        id: appIcon
+
+        property alias source: image.source
+        property bool muted
+
+        signal clicked
+
+        implicitWidth: Tokens.padding.medium * 4
+        implicitHeight: implicitWidth
+
+        IconImage {
+            id: image
+
+            anchors.fill: parent
+            anchors.margins: Tokens.padding.extraSmall
+            asynchronous: true
+            opacity: appIcon.muted ? 0.35 : 1
+        }
+
+        MaterialIcon {
+            anchors.centerIn: parent
+            visible: appIcon.muted
+            text: "volume_off"
+            color: Colours.palette.m3error
+        }
+
+        StateLayer {
+            radius: Tokens.rounding.full
+            onClicked: appIcon.clicked()
         }
     }
 }
