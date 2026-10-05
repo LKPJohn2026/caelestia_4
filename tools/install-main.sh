@@ -102,6 +102,7 @@ say "installed $CFG/matugen (no GTK templates)"
 # ---- small app configs: only if the user has none ----
 for d in fuzzel kitty foot wlogout; do copy_if_missing "$DOTS/$d" "$CFG/$d"; done
 copy_if_missing "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf"
+copy_if_missing "$DOTS/caelestia/shell.json" "$CFG/caelestia/shell.json" # caelestia4: bar speaker icon on (opens the audio popout / per-app mixer)
 mkdir -p "$HOME/.local/share/icons"; cp -n "$REPO/dots/.local/share/icons/illogical-impulse.svg" "$HOME/.local/share/icons/" 2>/dev/null || true
 
 # ---- end-4 shell config: start in the caelestia family; never auto-kill KDE daemons ----
