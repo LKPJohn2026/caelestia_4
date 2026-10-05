@@ -40,3 +40,6 @@ Review of end-4's right sidebar, left sidebar and dock against the Caelestia fam
 - After many hot reloads the running shell lost **theme** icons (file-path icons still worked, in the launcher too). A clean restart fixes it: `pkill -x qs; hyprctl dispatch 'hl.dsp.exec_cmd("qs -c ii")'`. A standalone test shell rendered the same icons fine, so it is a Quickshell icon-cache issue from reloads, not the code.
 - Verified live: compile-check OK; the utilities drawer and the pinned dock render (screenshots); 1 warning in a fresh log (missing `vi_VN.json` translation, upstream).
 - Not yet clicked through (needs the user's pointer): hover previews, right-click menus, edit mode, eye-protection controls, per-app mixer.
+
+## Follow-up: audio popout had no button (2026-10-05)
+Caelestia's default `bar.statusIcons` has `audio` (and `microphone`) **disabled**, so the speaker icon that opens the audio popout, and with it the per-app mixer, was not on the bar. `dots/.config/caelestia/shell.json` (installed only if missing) enables `audio`. Caelestia only picked up the newly created `~/.config/caelestia/shell.json` after a shell restart.
