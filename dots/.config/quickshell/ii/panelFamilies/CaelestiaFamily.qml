@@ -5,6 +5,7 @@
 //    grid without its search (Super+Tab).
 //  - Assistant drawer (assistant/Wrapper.qml) hosts end-4's left-sidebar content (AI, translator) in the frame.
 //  - end-4 modules reused as-is (re-skinned in Phase 7): cheatsheet, region tools, screen translator, OSK, overlay, wallpaper selector, lock, polkit.
+//  - Dock (modules/caelestia/dock): Caelestia-style dock with end-4's dock features (caelestia.dock.enable).
 //  - KeybindBridge routes end-4's session / right-sidebar / media keys to the Caelestia drawers.
 import QtQuick
 import Quickshell
@@ -13,6 +14,7 @@ import qs.modules.common
 import qs.modules.caelestia
 import qs.modules.caelestia.background as CBackground
 import qs.modules.caelestia.drawers as CDrawers
+import qs.modules.caelestia.dock as CDock
 import qs.modules.ii.cheatsheet
 import qs.modules.ii.lock
 import qs.modules.ii.onScreenKeyboard
@@ -32,6 +34,7 @@ Scope {
     PanelLoader { component: BatteryMonitor {} }
     PanelLoader { component: KeybindBridge {} }
     PanelLoader { component: WorkspaceOverview {} }
+    PanelLoader { extraCondition: Config.options.caelestia.dock.enable; component: CDock.Dock {} }
 
     // end-4 modules, as-is
     PanelLoader { component: Cheatsheet {} }

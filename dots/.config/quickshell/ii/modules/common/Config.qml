@@ -86,6 +86,18 @@ Singleton {
                 property bool debugProbe: true // log an adapter self-test when the family loads (Phase 2)
                 property bool dashboardTodo: true // end-4 Todo as a dashboard tab
                 property bool dashboardTimer: true // end-4 Pomodoro/Stopwatch as a dashboard tab
+                // Utilities drawer: quick toggle order + enabled state, as [{ "id": "wifi", "enabled": true }, ...].
+                // Empty = default order (Caelestia's toggles, then the end-4 extras). Written by the toggles' edit mode.
+                property list<var> quickToggles: []
+                property bool utilitiesSystem: true // uptime + reload / end-4 settings / session buttons
+                property bool utilitiesSliders: true // brightness / volume / mic sliders
+                property JsonObject dock: JsonObject { // Caelestia-style dock (pinned apps: dock.pinnedApps)
+                    property bool enable: true
+                    property bool pinnedOnStartup: false // keep the dock shown (and reserve space)
+                    property bool hoverToReveal: true // reveal when the pointer touches the bottom edge
+                    property bool revealOnEmptyWorkspace: true
+                    property int iconSize: 40
+                }
             }
 
             property JsonObject policies: JsonObject {
