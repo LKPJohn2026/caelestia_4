@@ -43,3 +43,10 @@ Review of end-4's right sidebar, left sidebar and dock against the Caelestia fam
 
 ## Follow-up: audio popout had no button (2026-10-05)
 Caelestia's default `bar.statusIcons` has `audio` (and `microphone`) **disabled**, so the speaker icon that opens the audio popout, and with it the per-app mixer, was not on the bar. `dots/.config/caelestia/shell.json` (installed only if missing) enables `audio`. Caelestia only picked up the newly created `~/.config/caelestia/shell.json` after a shell restart.
+
+## Follow-up: mixer icons (2026-10-05)
+Brave Origin's stream says `application.icon-name = brave-browser` (not installed) and `binary = brave`, and no desktop entry matches either. The old fallback rendered a broken image. `StreamIcon` (AudioPopout.qml) now resolves, best first:
+1. `application.icon-name`, if it exists in the icon theme.
+2. The owning window: walk `/proc/<pid>/stat` parents from `application.process.id` to a pid with a Hyprland window (`HyprlandData.windowList`). Among windows of that process, the shortest class wins (`brave-origin` over web-app classes). The icon is resolved with `AppSearch.guessIcon`, like the dock.
+3. A desktop entry for the binary / app name.
+4. A `music_note` symbol (never a broken image).
