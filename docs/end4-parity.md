@@ -50,3 +50,6 @@ Brave Origin's stream says `application.icon-name = brave-browser` (not installe
 2. The owning window: walk `/proc/<pid>/stat` parents from `application.process.id` to a pid with a Hyprland window (`HyprlandData.windowList`). Among windows of that process, the shortest class wins (`brave-origin` over web-app classes). The icon is resolved with `AppSearch.guessIcon`, like the dock.
 3. A desktop entry for the binary / app name.
 4. A `music_note` symbol (never a broken image).
+
+## Follow-up: default terminal (2026-10-06)
+Caelestia's `general.apps.terminal` defaults to `["foot"]`, which isn't installed. So launcher entries with `Terminal=true` (btop) and terminal actions (calculator `qalc`) silently did nothing. `shell.json` now sets `["kitty"]`, the same terminal as Super+Enter (Hyprland `terminal` variable → `kitty -1`) and end-4's `apps.terminal` (`kitty -1`, used by end-4 search results and `$sudo …`). Verified: the launcher's command (`kitty wrap_term_launch.sh btop`) opens btop in kitty.
