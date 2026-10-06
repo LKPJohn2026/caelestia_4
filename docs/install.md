@@ -49,6 +49,7 @@ on the same user account. Plasma's settings are not touched.
 ## Main-account extras (2026-10-03)
 - **VRR:** `~/.config/hypr/custom/general.lua` → `misc.vrr = 2` (fullscreen only). Applied live with `hyprctl reload`; no config errors.
 - **Vertical workspace animation (ultrawide):** `~/.config/hypr/custom/general.lua` overrides end-4's `workspaces` animation `style = "slide"` with `"slidevert"` (same speed and curve). It matches the Caelestia bar's vertical workspace column.
+- **On-screen keyboard:** end-4's OSK is a QML keyboard that types through `ydotool`, not `wvkbd` (no extra package needed). `ydotoold` was not running, so key presses went nowhere. `custom/execs.lua` now runs `systemctl --user start ydotool.service` (started from Hyprland only, not enabled, so Plasma is untouched). The user already has rw on `/dev/uinput` via the seat ACL. Verified: `ydotool` reaches the socket; `qs -c ii ipc call osk open` shows the keyboard.
 - **gnome-keyring removed:** `sdata/dist-arch/illogical-impulse-kde/PKGBUILD` pkgrel 4 drops the `gnome-keyring` dependency (KWallet `provides=org.freedesktop.secrets`, which satisfies `qtkeychain-qt6`). `pacman -Rns gnome-keyring` also removes `gcr` (only needed by gnome-keyring). The user-level mask + D-Bus override stay as a guard.
 - **fcitx5 + Bamboo (Vietnamese):**
   - Hyprland: `custom/env.lua` sets `XMODIFIERS=@im=fcitx`, `QT_IM_MODULE=fcitx`, `QT_IM_MODULES=wayland;fcitx`, `SDL_IM_MODULE=fcitx` (no `GTK_IM_MODULE`: GTK uses Wayland text-input); `custom/execs.lua` runs `fcitx5 -d --replace`.
