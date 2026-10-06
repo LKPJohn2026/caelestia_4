@@ -4,7 +4,7 @@
 //  - Launcher = Caelestia launcher + end-4 LauncherSearch (Phase 5 merge); WorkspaceOverview = end-4 overview
 //    grid without its search (Super+Tab).
 //  - Assistant drawer (assistant/Wrapper.qml) hosts end-4's left-sidebar content (AI, translator) in the frame.
-//  - end-4 modules reused as-is (re-skinned in Phase 7): cheatsheet, region tools, screen translator, OSK, overlay, wallpaper selector, lock, polkit.
+//  - end-4 modules reused as-is (re-skinned in Phase 7): cheatsheet, region tools, screen translator, overlay, wallpaper selector, lock, polkit.
 //  - Dock (modules/caelestia/dock): Caelestia-style dock with end-4's dock features (caelestia.dock.enable).
 //  - KeybindBridge routes end-4's session / right-sidebar / media keys to the Caelestia drawers.
 import QtQuick
@@ -15,9 +15,9 @@ import qs.modules.caelestia
 import qs.modules.caelestia.background as CBackground
 import qs.modules.caelestia.drawers as CDrawers
 import qs.modules.caelestia.dock as CDock
+import qs.modules.caelestia.osk as COsk
 import qs.modules.ii.cheatsheet
 import qs.modules.ii.lock
-import qs.modules.ii.onScreenKeyboard
 import qs.modules.ii.overlay
 import qs.modules.ii.polkit
 import qs.modules.ii.regionSelector
@@ -35,11 +35,11 @@ Scope {
     PanelLoader { component: KeybindBridge {} }
     PanelLoader { component: WorkspaceOverview {} }
     PanelLoader { extraCondition: Config.options.caelestia.dock.enable; component: CDock.Dock {} }
+    PanelLoader { component: COsk.Osk {} } // on-screen keyboard (end-4 logic, Caelestia style)
 
     // end-4 modules, as-is
     PanelLoader { component: Cheatsheet {} }
     PanelLoader { component: Lock {} }
-    PanelLoader { component: OnScreenKeyboard {} }
     PanelLoader { component: Overlay {} }
     PanelLoader { component: Polkit {} }
     PanelLoader { component: RegionSelector {} }
