@@ -59,3 +59,13 @@ end-4's `$` results ran the command detached (invisible output) and added a calc
 - only `$` typed: a hint row ("Type a command to run · Opens in kitty, window stays open");
 - `$<command>`: one row, "Run in kitty", which runs `[...general.apps.terminal, "fish", "-C", command]`. The output is printed, then an interactive fish stays open.
 end-4's `LauncherSearch` service is unchanged, so the ii family keeps the original behaviour. Verified with typed input: hint row, single run row, and Enter opened kitty showing the command output.
+
+## Follow-up: Caelestia-style on-screen keyboard (2026-10-06)
+`modules/caelestia/osk/Osk.qml` replaces end-4's `OnScreenKeyboard` in the Caelestia family.
+- Unchanged from end-4:
+  - layouts from end-4's `layouts.js` (`osk.layout`);
+  - the key logic from `OskKey` (press on down; Shift once = next key, twice quickly = caps lock; sticky modifiers), typing through `Ydotool` (needs ydotoold);
+  - the `osk` IPC target and `oskToggle`/`oskOpen`/`oskClose` shortcuts;
+  - the end-4 focus grab, so it works alongside other panels.
+- New look: a Caelestia panel (`m3surfaceContainer`, large rounding, elevation); keys use `surfaceContainerHigh`, special keys `surfaceContainerHighest`. Pressed = `secondaryContainer` with a radius morph, toggled (Shift/caps/mods) = primary. Tonal pin/hide buttons; the window opens on the focused monitor.
+- Verified: compile-check OK, renders (screenshot), no warnings.
