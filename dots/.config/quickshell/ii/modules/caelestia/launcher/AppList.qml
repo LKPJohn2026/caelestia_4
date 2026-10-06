@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Caelestia.Config
+import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.components.controls
@@ -11,6 +12,7 @@ import qs.modules.caelestia.launcher.items
 import qs.modules.caelestia.launcher.services
 import qs.services as E4 // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep
+import qs.modules.common.models as E4M // caelestia4: keep
 
 StyledListView {
     id: root
@@ -58,7 +60,37 @@ StyledListView {
         return "apps";
     }
 
+    // caelestia4: the run prefix ($) gets its own results instead of end-4's (which runs the command invisibly
+    // and adds a calculator/web-search row for "$…"): a hint while only "$" is typed, else one row that runs
+    // the command in the launcher's terminal (Caelestia general.apps.terminal) with an interactive fish left
+    // open afterwards, so the output stays visible.
+    function shellResults(text: string): var {
+        const command = text.slice(E4C.Config.options.search.prefix.shellCommand.length).trim();
+        const terminal = GlobalConfig.general.apps.terminal;
+        const base = {
+            iconType: E4M.LauncherSearchResult.IconType.Material,
+            iconName: "terminal",
+            fontType: E4M.LauncherSearchResult.FontType.Monospace
+        };
+        if (command.length === 0)
+            return [Object.assign({}, base, {
+                    name: Tr.tr("Type a command to run"),
+                    type: Tr.tr("Opens in %1, window stays open").arg(terminal[0] ?? "terminal"),
+                    verb: "",
+                    execute: () => {}
+                })];
+        return [Object.assign({}, base, {
+                name: command,
+                type: Tr.tr("Run in %1").arg(terminal[0] ?? "terminal"),
+                verb: Tr.tr("Run"),
+                execute: () => Quickshell.execDetached([...terminal, "fish", "-C", command])
+            })];
+    }
+
     function resultsForText(text: string): var {
+        const runPrefix = E4C.Config.options.search.prefix.shellCommand;
+        if (runPrefix.length > 0 && text.startsWith(runPrefix))
+            return shellResults(text);
         switch (stateForText(text)) {
         case "actions":
             return Actions.query(text);
