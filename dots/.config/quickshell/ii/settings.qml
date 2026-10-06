@@ -28,6 +28,11 @@ ApplicationWindow {
             icon: "instant_mix",
             component: "modules/settings/QuickConfig.qml"
         },
+        { // caelestia4: options added by caelestia_4 (dock, drawer, games, display, panel family)
+            name: Translation.tr("Caelestia"),
+            icon: "auto_awesome",
+            component: "modules/settings/CaelestiaConfig.qml"
+        },
         {
             name: Translation.tr("General"),
             icon: "browse",
