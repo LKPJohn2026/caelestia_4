@@ -91,6 +91,10 @@ Singleton {
                 property list<var> quickToggles: []
                 property bool utilitiesSystem: true // uptime + reload / end-4 settings / session buttons
                 property bool utilitiesSliders: true // brightness / volume / mic sliders
+                property JsonObject backgroundMute: JsonObject { // mute games' audio while their window isn't focused
+                    property bool enable: true
+                    property string classes: "^(steam_app_\\d+|gamescope)$" // window classes treated as games (regex)
+                }
                 property JsonObject dock: JsonObject { // Caelestia-style dock (pinned apps: dock.pinnedApps)
                     property bool enable: true
                     property bool pinnedOnStartup: false // keep the dock shown (and reserve space)
