@@ -85,3 +85,17 @@ end-4's `LauncherSearch` service is unchanged, so the ii family keeps the origin
   - Why the pid works: Wine games emit audio from the window's own process (Star Rail: `StarRail.exe` pid = stream pid).
   - Why the shell has to do it: games only see focus through Wine/X11 focus events, and many have no "mute in background" option.
   - Verified: with Claude focused, Star Rail's 3 streams became muted.
+
+## Follow-up: "Caelestia" page in end-4's settings app (2026-10-06)
+`modules/settings/CaelestiaConfig.qml`, the second page in `settings.qml`. It edits the same `config.json`, so changes apply live:
+- **Panel style:** panel family (Caelestia / illogical-impulse / Waffle).
+- **Dock (Caelestia):** enable, keep shown on startup, reveal at bottom edge, show on empty workspace, icon size, pinned apps (`dock.pinnedApps`, comma separated, committed on editing finished).
+- **Utilities drawer:** System card, quick sliders; reset the quick-toggle order and visibility.
+- **Dashboard tabs:** To do, Timer.
+- **Games:** mute in background, game class regex (validated; an invalid regex keeps the old one), background game FPS.
+- **Display:** VRR (off / always / fullscreen / fullscreen games).
+- **Debug:** adapter self-test.
+
+Background FPS and VRR use end-4's `HyprlandConfigOption`. It reads `hyprctl getoption` and writes `hyprland/shellOverrides/main.lua`, which loads last, so these override `custom/*.lua`.
+
+Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on every shell start because `kded6` runs on a Plasma account (KDE apps start it; the tray works alongside it). With the `shared-desktop` marker, only mako/dunst count as conflicts now.
