@@ -99,3 +99,14 @@ end-4's `LauncherSearch` service is unchanged, so the ii family keeps the origin
 Background FPS and VRR use end-4's `HyprlandConfigOption`. It reads `hyprctl getoption` and writes `hyprland/shellOverrides/main.lua`, which loads last, so these override `custom/*.lua`.
 
 Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on every shell start because `kded6` runs on a Plasma account (KDE apps start it; the tray works alongside it). With the `shared-desktop` marker, only mako/dunst count as conflicts now.
+
+## Follow-up: Caelestia-style settings app (2026-10-06)
+- `settings.qml` now hosts `modules/caelestia/settings/SettingsFrame.qml`:
+  - sidebar with title, a tonal "Config file" button (right-click copies the path) and pill navigation;
+  - rounded page container with a close button and the same page fade/slide.
+- The frame is a separate file because `import Caelestia.Config` brings its own `Config` type, which shadows end-4's `Config` (`Config.ready` broke in the first attempt).
+- Page paths go through `Quickshell.shellPath()`, since they're relative to settings.qml.
+- `ContentSection` (shared widget) renders each section as a card (title with the icon in primary, then options on `surfaceContainer`, large rounding). `OptionalMaterialSymbol` gained `iconColor`.
+- Pages and their end-4 controls are unchanged. `ContentSection` is also used by end-4's welcome app, which gets the same cards.
+- Ctrl+PgUp/PgDn/Tab still switch pages (the layout takes focus).
+- Verified: screenshot, Ctrl+PgDn page switch, clean log.
