@@ -1,13 +1,41 @@
 {
     "bar": {
         "statusIcons": [
-            { "id": "lockStatus", "enabled": true },
-            { "id": "audio", "enabled": true },
-            { "id": "microphone", "enabled": false },
-            { "id": "kbLayout", "enabled": false },
-            { "id": "network", "enabled": true },
-            { "id": "bluetooth", "enabled": true },
-            { "id": "battery", "enabled": true }
+            {
+                "id": "lockStatus",
+                "enabled": true
+            },
+            {
+                "id": "audio",
+                "enabled": true
+            },
+            {
+                "id": "microphone",
+                "enabled": false
+            },
+            {
+                "id": "kbLayout",
+                "enabled": false
+            },
+            {
+                "id": "network",
+                "enabled": true
+            },
+            {
+                "id": "bluetooth",
+                "enabled": true
+            },
+            {
+                "id": "battery",
+                "enabled": true
+            }
         ]
+    },
+    "general": {
+        "apps": {
+            "terminal": [
+                "kitty"
+            ]
+        }
     }
 }
