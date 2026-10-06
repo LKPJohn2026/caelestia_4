@@ -44,7 +44,7 @@ StyledRect {
                 continue;
             ids.push(item.id);
         }
-        const extras = ["nightLight", "easyEffects", "darkMode", "powerProfile", "idleInhibitor", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "cloudflareWarp"];
+        const extras = ["nightLight", "easyEffects", "darkMode", "powerProfile", "idleInhibitor", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
         for (const id of extras) {
             if (id === "easyEffects" && !E4.EasyEffects.available)
                 continue;
@@ -353,6 +353,15 @@ StyledRect {
                         toggleModel: E4QT.ColorPickerToggle {}
                         isToggle: false
                         closesDrawer: true
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "backgroundMute"
+                    delegate: Toggle {
+                        icon: "sports_esports"
+                        tip: Tr.tr("Mute games in background")
+                        checked: E4C.Config.options.caelestia.backgroundMute.enable
+                        onActivated: E4C.Config.options.caelestia.backgroundMute.enable = !E4C.Config.options.caelestia.backgroundMute.enable
                     }
                 }
                 DelegateChoice {

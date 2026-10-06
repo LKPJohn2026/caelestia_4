@@ -69,3 +69,19 @@ end-4's `LauncherSearch` service is unchanged, so the ii family keeps the origin
   - the end-4 focus grab, so it works alongside other panels.
 - New look: a Caelestia panel (`m3surfaceContainer`, large rounding, elevation); keys use `surfaceContainerHigh`, special keys `surfaceContainerHighest`. Pressed = `secondaryContainer` with a radius morph, toggled (Shift/caps/mods) = primary. Tonal pin/hide buttons; the window opens on the focused monitor.
 - Verified: compile-check OK, renders (screenshot), no warnings.
+
+## Follow-up: cheatsheet restyle, background games, background mute (2026-10-06)
+- **Cheatsheet** (`modules/caelestia/cheatsheet/`) replaces end-4's in the Caelestia family.
+  - Same data: `HyprlandKeybinds` categories and end-4's filtering/substitution logic and options; `periodic_table.js`.
+  - Same `cheatsheet` IPC and shortcuts.
+  - New look: Caelestia panel with tonal tab buttons; category cards with key caps (main key in `secondaryContainer`); Caelestia periodic-table tiles.
+  - Esc, clicking outside, and Ctrl+Tab/PgUp/PgDn work as before.
+- **Background rendering**, in user files (not the repo):
+  - `custom/rules.lua`: `hl.window_rule({ match = { class = "^(steam_app_\\d+|gamescope)$" }, render_unfocused = true })`;
+  - `custom/general.lua`: `misc.render_unfocused_fps = 60` (default 15).
+  - Verified: `hyprctl getprop address:<Star Rail> render_unfocused` = `true`.
+- **Background mute** (`modules/caelestia/BackgroundMute.qml`, `caelestia.backgroundMute { enable, classes }`, quick toggle "Mute games in background").
+  - What it does: playback streams whose `application.process.id` owns a game window are muted while that window isn't focused, and unmuted when it is. Only streams it muted are unmuted.
+  - Why the pid works: Wine games emit audio from the window's own process (Star Rail: `StarRail.exe` pid = stream pid).
+  - Why the shell has to do it: games only see focus through Wine/X11 focus events, and many have no "mute in background" option.
+  - Verified: with Claude focused, Star Rail's 3 streams became muted.
