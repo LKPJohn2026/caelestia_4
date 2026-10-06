@@ -53,3 +53,9 @@ Brave Origin's stream says `application.icon-name = brave-browser` (not installe
 
 ## Follow-up: default terminal (2026-10-06)
 Caelestia's `general.apps.terminal` defaults to `["foot"]`, which isn't installed. So launcher entries with `Terminal=true` (btop) and terminal actions (calculator `qalc`) silently did nothing. `shell.json` now sets `["kitty"]`, the same terminal as Super+Enter (Hyprland `terminal` variable → `kitty -1`) and end-4's `apps.terminal` (`kitty -1`, used by end-4 search results and `$sudo …`). Verified: the launcher's command (`kitty wrap_term_launch.sh btop`) opens btop in kitty.
+
+## Follow-up: launcher run prefix `$` (2026-10-06)
+end-4's `$` results ran the command detached (invisible output) and added a calculator row ("$echo hi" parsed as maths) and a web-search row. In the Caelestia launcher (`launcher/AppList.qml`, `shellResults`), `$` now gives:
+- only `$` typed: a hint row ("Type a command to run · Opens in kitty, window stays open");
+- `$<command>`: one row, "Run in kitty", which runs `[...general.apps.terminal, "fish", "-C", command]`. The output is printed, then an interactive fish stays open.
+end-4's `LauncherSearch` service is unchanged, so the ii family keeps the original behaviour. Verified with typed input: hint row, single run row, and Enter opened kitty showing the command output.
