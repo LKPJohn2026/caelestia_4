@@ -110,3 +110,10 @@ Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on eve
 - Pages and their end-4 controls are unchanged. `ContentSection` is also used by end-4's welcome app, which gets the same cards.
 - Ctrl+PgUp/PgDn/Tab still switch pages (the layout takes focus).
 - Verified: screenshot, Ctrl+PgDn page switch, clean log.
+
+## Follow-up: Wallhaven in the Anime tab (2026-10-06)
+`services/Booru.qml` gains a `wallhaven` provider (`/mode wallhaven`).
+- **API:** `https://wallhaven.cc/api/v1/search`: `q` = tags (empty = `toplist`), `categories` (config `sidebar.booru.wallhaven.categories`, default `010` = anime), `purity` (`100` safe; with `/lewd`, `110`, or `111` when an API key is set), `sorting` (config, default `relevance`), `page`. Wallhaven returns 24 per page.
+- **Mapping:** grid `preview_url` = `thumbs.large`; Open/Download `file_url` = full `path`; `source` = the wallhaven page. "Tags" show the category, resolution and palette (the search API returns no tags).
+- **API key:** `/wallhavenkey <key>` stores it in the keyring (`KeyringStorage` `apiKeys.wallhaven`, i.e. KWallet via Secret Service; `/wallhavenkey` alone clears it). It is sent as the `X-API-Key` header, and unlocks NSFW plus your account's filters. Get it at https://wallhaven.cc/settings/account.
+- Verified: the live API response matches the mapping; both families compile; clean shell log.
