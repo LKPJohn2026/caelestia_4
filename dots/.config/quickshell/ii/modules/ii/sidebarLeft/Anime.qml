@@ -69,6 +69,15 @@ Item {
                 }
             }
         },
+        { // caelestia4: Wallhaven API key -> keyring (apiKeys.wallhaven); /wallhavenkey with no argument clears it
+            name: "wallhavenkey",
+            description: Translation.tr("Set your Wallhaven API key (wallhaven.cc/settings/account); empty to clear"),
+            execute: (args) => {
+                const key = args.join(" ").trim();
+                Booru.setWallhavenApiKey(key);
+                Booru.addSystemMessage(key.length > 0 ? Translation.tr("Wallhaven API key saved to the keyring") : Translation.tr("Wallhaven API key cleared"));
+            }
+        },
         {
             name: "safe",
             description: Translation.tr("Disable NSFW content"),

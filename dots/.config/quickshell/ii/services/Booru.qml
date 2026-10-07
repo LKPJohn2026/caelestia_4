@@ -20,6 +20,18 @@ Singleton {
     property var responses: []
     property int runningRequests: 0
     property var defaultUserAgent: Config.options?.networking?.userAgent || "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+    // caelestia4: Wallhaven API key from the keyring (KeyringStorage apiKeys.wallhaven; /wallhavenkey in the Anime tab)
+    readonly property string wallhavenApiKey: KeyringStorage.keyringData?.apiKeys?.wallhaven ?? ""
+    function setWallhavenApiKey(key) {
+        KeyringStorage.setNestedField(["apiKeys", "wallhaven"], key.trim());
+    }
+    onCurrentProviderChanged: {
+        if (currentProvider === "wallhaven" && !KeyringStorage.loaded) KeyringStorage.fetchKeyringData();
+    }
+    Component.onCompleted: {
+        if (currentProvider === "wallhaven" && !KeyringStorage.loaded) KeyringStorage.fetchKeyringData();
+    }
+
     property var providerList: Object.keys(providers).filter(provider => provider !== "system" && providers[provider].api)
     property var providers: {
         "system": { "name": Translation.tr("System") },
@@ -187,6 +199,34 @@ Singleton {
                 })
             }
         },
+        // caelestia4: Wallhaven (wallpapers). API: https://wallhaven.cc/help/api . Anime category by default
+        // (sidebar.booru.wallhaven.categories). The API key (keyring apiKeys.wallhaven, set with /wallhavenkey) unlocks
+        // NSFW results and your account's settings; without it only SFW/sketchy content is returned.
+        "wallhaven": {
+            "name": "Wallhaven",
+            "url": "https://wallhaven.cc",
+            "api": "https://wallhaven.cc/api/v1/search",
+            "description": Translation.tr("Wallpapers | Huge high-resolution library (anime category by default). NSFW needs an API key: /wallhavenkey"),
+            "mapFunc": (response) => {
+                return response.data.map(item => {
+                    return {
+                        "id": item.id,
+                        "width": item.dimension_x,
+                        "height": item.dimension_y,
+                        "aspect_ratio": item.dimension_x / item.dimension_y,
+                        "tags": [item.category, item.resolution, ...(item.colors ?? [])].join(" "),
+                        "rating": item.purity === "sfw" ? "s" : item.purity === "sketchy" ? "q" : "e",
+                        "is_nsfw": item.purity !== "sfw",
+                        "md5": item.id,
+                        "preview_url": item.thumbs.large,
+                        "sample_url": item.thumbs.original,
+                        "file_url": item.path,
+                        "file_ext": (item.file_type ?? "image/jpeg").split("/")[1],
+                        "source": item.url,
+                    }
+                })
+            },
+        },
         "waifu.im": {
             "name": "waifu.im",
             "url": "https://waifu.im",
@@ -311,7 +351,7 @@ Singleton {
         var baseUrl = provider.api
         var url = baseUrl
         var tagString = tags.join(" ")
-        if (!nsfw && !(["zerochan", "waifu.im", "t.alcy.cc"].includes(currentProvider))) {
+        if (!nsfw && !(["zerochan", "waifu.im", "t.alcy.cc", "wallhaven"].includes(currentProvider))) {
             if (currentProvider == "gelbooru") 
                 tagString += " rating:general";
             else 
@@ -333,6 +373,16 @@ Singleton {
             });
             params.push("PageSize=" + Math.min(limit, 30)) // Only admin can do > 30
             params.push("IsNsfw=" + (nsfw ? "All" : "False")) // null is random
+        }
+        else if (currentProvider === "wallhaven") { // caelestia4
+            const wh = Config.options?.sidebar?.booru?.wallhaven
+            const hasKey = (root.wallhavenApiKey ?? "").length > 0
+            if (tagString.trim().length > 0) params.push("q=" + encodeURIComponent(tagString.trim()))
+            params.push("categories=" + (wh?.categories ?? "010"))
+            // purity bits: sfw, sketchy, nsfw. nsfw only works with an API key
+            params.push("purity=" + (nsfw ? (hasKey ? "111" : "110") : "100"))
+            params.push("sorting=" + (tagString.trim().length > 0 ? (wh?.sorting ?? "relevance") : "toplist"))
+            params.push("page=" + page)
         }
         else if (currentProvider === "t.alcy.cc") {
             url += tagString
@@ -408,6 +458,9 @@ Singleton {
             // Required for danbooru and konachan
             if (["danbooru", "konachan"].includes(currentProvider)) {
                 xhr.setRequestHeader("User-Agent", defaultUserAgent)
+            }
+            else if (currentProvider == "wallhaven" && (root.wallhavenApiKey ?? "").length > 0) { // caelestia4
+                xhr.setRequestHeader("X-API-Key", root.wallhavenApiKey)
             }
             else if (currentProvider == "zerochan") {
                 const userAgent = Config.options?.sidebar?.booru?.zerochan?.username ? `Desktop sidebar booru viewer - username: ${Config.options.sidebar.booru.zerochan.username}` : defaultUserAgent
