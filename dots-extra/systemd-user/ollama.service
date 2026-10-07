@@ -1,0 +1,17 @@
+# caelestia4: Ollama as the user (not the packaged system service), with its model store on the games drive
+# next to LM Studio's GGUFs, so imported models are hard links to LM Studio's files (no second copy).
+[Unit]
+Description=Ollama (user)
+After=network-online.target local-fs.target
+RequiresMountsFor=/mnt/games
+
+[Service]
+ExecStart=/usr/bin/ollama serve
+Environment=OLLAMA_MODELS=/mnt/games/Users/windy_dust_2025/.ollama/models
+Environment=OLLAMA_HOST=127.0.0.1:11434
+Environment=OLLAMA_FLASH_ATTENTION=1
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

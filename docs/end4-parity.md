@@ -117,3 +117,18 @@ Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on eve
 - **Mapping:** grid `preview_url` = `thumbs.large`; Open/Download `file_url` = full `path`; `source` = the wallhaven page. "Tags" show the category, resolution and palette (the search API returns no tags).
 - **API key:** `/wallhavenkey <key>` stores it in the keyring (`KeyringStorage` `apiKeys.wallhaven`, i.e. KWallet via Secret Service; `/wallhavenkey` alone clears it). It is sent as the `X-API-Key` header, and unlocks NSFW plus your account's filters. Get it at https://wallhaven.cc/settings/account.
 - Verified: the live API response matches the mapping; both families compile; clean shell log.
+
+## Follow-up: Ollama on LM Studio's models, no copies (2026-10-06)
+- Install `ollama-cuda` (0.35.1; detects the RTX 5090 as CUDA compute 12.0, 31.4 GiB).
+- It runs as a **user** service, `~/.config/systemd/user/ollama.service` (copy in `dots-extra/systemd-user/`, enabled), not the packaged system one:
+  - `OLLAMA_MODELS=/mnt/games/Users/windy_dust_2025/.ollama/models`, on the same NTFS volume as LM Studio's `downloadsFolder`;
+  - `OLLAMA_HOST=127.0.0.1:11434`, `OLLAMA_FLASH_ATTENTION=1`.
+- `tools/ollama-import-lmstudio.sh [filter]`: for each LM Studio repo, sha256 each GGUF, **hard-link** it into the blob store as `sha256-<digest>`, then `ollama create lmstudio/<repo>` from a Modelfile with one `FROM` per file (split parts and `mmproj` projectors included). Ollama reports "using existing layer", so there is no copy and no extra space.
+- Imported 7 models (~380 GB, 0 bytes extra): qwen3.8-27b (+vision), muse-glimmer-30b (+vision), qwen3-coder-next, gpt-oss-safeguard-120b, devstral-2-123b, laguna-s-2.1, nemotron-3-super-120b.
+- Ollama 0.35 handles split GGUFs.
+- Tested:
+  - qwen3.8-27b: 2.4 s load, 78 tok/s (fully on the GPU);
+  - gpt-oss-safeguard-120b (split): 36 s load, 39 tok/s (partly on the CPU).
+- The AI chat lists Ollama models via `scripts/ai/show-installed-ollama-models.sh` when its service starts (restart the shell after importing).
+- New LM Studio downloads: re-run the script; already-linked files are skipped.
+- Caveat: if LM Studio deletes or re-downloads a model, Ollama keeps its hard link, so the space is only freed after `ollama rm`.
