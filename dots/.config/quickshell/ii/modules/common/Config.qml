@@ -535,6 +535,10 @@ Singleton {
                     property JsonObject zerochan: JsonObject {
                         property string username: "[unset]"
                     }
+                    property JsonObject wallhaven: JsonObject { // caelestia4
+                        property string categories: "010" // general/anime/people bits: "010" = anime only, "111" = all
+                        property string sorting: "relevance" // for searches: relevance, date_added, views, favorites, toplist, random
+                    }
                 }
                 property JsonObject cornerOpen: JsonObject {
                     property bool enable: true
