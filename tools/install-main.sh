@@ -91,6 +91,11 @@ fi
 # ---- matugen (colour generation) without the GTK templates (GTK css is shared with Plasma) ----
 backup "$CFG/matugen"
 rsync -a --delete "$DOTS/matugen/" "$CFG/matugen/"
+# caelestia4: Caelestia's UI font for hyprlock (the shell loads its bundled copy itself; hyprlock needs it installed)
+mkdir -p "$HOME/.local/share/fonts/caelestia4"
+cp "$DOTS/quickshell/ii/modules/caelestia/assets/google-sans-flex/"* "$HOME/.local/share/fonts/caelestia4/"
+fc-cache -f "$HOME/.local/share/fonts" >/dev/null 2>&1 || true
+say "installed Google Sans Flex to ~/.local/share/fonts/caelestia4 (hyprlock)"
 python3 - "$CFG/matugen/config.toml" <<'PY'
 import re, sys, pathlib
 p = pathlib.Path(sys.argv[1]); s = p.read_text()

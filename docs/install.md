@@ -99,3 +99,13 @@ KDE-style "reopen my apps on the same workspaces" for the Hyprland session: `dot
   - Fix: `lock.useHyprlock = true` in `~/.config/illogical-impulse/config.json` (end-4 option; also the installer default now). The idle path stays `loginctl lock-session` → hypridle → `quickshell:lock` → `hyprlock`. hyprlock is a separate process (shell restarts can't kill it) that handles outputs coming and going.
   - Test: lock, then DPMS off 20 s / on. DP-2 disconnected (1920×1080 fallback) and reconnected at 7680×2160@240; hyprlock stayed up and the user unlocked with the password.
   - Recovery if it ever happens: Ctrl+Alt+F3 → `hyprctl --instance 0 eval 'hl.clear_crashed_lockscreen()'` → `hyprctl --instance 0 dispatch 'hl.dsp.exec_cmd("hyprlock")'` (`misc.allow_session_lock_restore` is on).
+- **Caelestia-style hyprlock theme (2026-10-08):** `dots/.config/hypr/hyprlock.conf` is modelled on Caelestia's lock (`third_party/caelestia-shell/modules/lock`).
+  - Layout: blurred wallpaper and one rounded translucent panel with three columns.
+    - Left: weather, system, media.
+    - Centre: hours in primary over minutes in secondary (Google Sans Flex 150), date `DDDD • D MMM` in caps, round avatar (person symbol; no `~/.face`), pill password field.
+    - Right: resources, "Locked since" + keyboard layout.
+  - Card scripts: `hypr/hyprlock/caelestia/{weather,fetch,resources,media}.sh`. Weather is cached 30 min; memory is read from `/proc/meminfo` because `free` prints Vietnamese labels.
+  - Colours: the matugen template `hyprlock-colors.conf` now exports the full palette (`$primary`, `$secondary`, `$surface_container*`, `$on_surface*`, `$outline`, `$error`, …), so the lock recolours with the wallpaper.
+  - Font: Google Sans Flex is installed to `~/.local/share/fonts/caelestia4` (installer step). end-4's old theme referenced this font without it being installed.
+  - Verified: a real lock with a screenshot (grim works while locked); no hyprlock config errors; then the layout was balanced (right column, panel height, media ellipsis).
+  - end-4's original theme is backed up at `~/.local/state/caelestia4/hyprlock.conf.end4-backup`.
