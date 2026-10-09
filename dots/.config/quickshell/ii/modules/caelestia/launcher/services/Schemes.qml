@@ -3,15 +3,17 @@ pragma Singleton
 import ".."
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Caelestia.Config
 import qs.modules.caelestia.utils
+import qs.modules.common as E4C // caelestia4: keep
 
 Searcher {
     id: root
 
+    // caelestia4: named schemes come from caelestia-cli (not installed) -> empty list (the "Scheme" action is hidden).
+    // The current variant mirrors end-4's palette type ("scheme-tonal-spot" -> "tonalspot", "auto" -> "auto").
     property string currentScheme
-    property string currentVariant
+    readonly property string currentVariant: (E4C.Config.options.appearance.palette.type ?? "auto").replace(/^scheme-/, "").replace(/-/g, "")
 
     function transformSearch(search: string): string {
         return search.slice(`${GlobalConfig.launcher.actionPrefix}scheme `.length);
@@ -22,7 +24,6 @@ Searcher {
     }
 
     function reload(): void {
-        getCurrent.running = true;
     }
 
     list: schemes.instances
@@ -36,44 +37,6 @@ Searcher {
         Scheme {}
     }
 
-    Process {
-        id: getSchemes
-
-        running: true
-        command: ["caelestia", "scheme", "list"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const schemeData = JSON.parse(text);
-                const list = Object.entries(schemeData).map(([name, f]) => Object.entries(f).map(([flavour, colours]) => ({
-                                name,
-                                flavour,
-                                colours
-                            })));
-
-                const flat = [];
-                for (const s of list)
-                    for (const f of s)
-                        flat.push(f);
-
-                schemes.model = flat.sort((a, b) => String(a.name + a.flavour).localeCompare((b.name + b.flavour)));
-            }
-        }
-    }
-
-    Process {
-        id: getCurrent
-
-        running: true
-        command: ["caelestia", "scheme", "get", "-nfv"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const [name, flavour, variant] = text.trim().split("\n");
-                root.currentScheme = `${name} ${flavour}`;
-                root.currentVariant = variant;
-            }
-        }
-    }
-
     component Scheme: QtObject {
         required property var modelData
         readonly property string name: modelData.name
@@ -82,7 +45,7 @@ Searcher {
 
         function onClicked(list: AppList): void {
             list.screenState.launcher = false;
-            Quickshell.execDetached(["caelestia", "scheme", "set", "-n", name, "-f", flavour]);
+            console.warn("[caelestia4] named schemes need caelestia-cli, not available");
         }
     }
 }

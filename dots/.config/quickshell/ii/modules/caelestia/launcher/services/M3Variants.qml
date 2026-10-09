@@ -6,6 +6,7 @@ import Quickshell
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.utils
+import qs.modules.common as E4C // caelestia4: keep
 
 Searcher {
     id: root
@@ -15,11 +16,11 @@ Searcher {
     }
 
     list: [
-        Variant {
-            variant: "vibrant"
-            icon: "sentiment_very_dissatisfied"
-            name: Tr.trCtx("Vibrant", "M3 scheme variant name")
-            description: Tr.tr("A high chroma palette. The primary palette's chroma is at maximum.")
+        Variant { // caelestia4: end-4 has no "vibrant"; its "auto" picks a variant from the wallpaper instead
+            variant: "auto"
+            icon: "auto_awesome"
+            name: Tr.trCtx("Auto", "M3 scheme variant name")
+            description: Tr.tr("Pick the variant that suits the current wallpaper (end-4 default).")
         },
         Variant {
             variant: "tonalspot"
@@ -80,7 +81,23 @@ Searcher {
 
         function onClicked(list: AppList): void {
             list.screenState.launcher = false;
-            Quickshell.execDetached(["caelestia", "scheme", "set", "-v", variant]);
+            // caelestia4: end-4 palette type ("tonalspot" -> "scheme-tonal-spot"), then regenerate colours
+            // from the current wallpaper exactly like end-4's Quick settings page
+            const types = {
+                auto: "auto",
+                tonalspot: "scheme-tonal-spot",
+                expressive: "scheme-expressive",
+                fidelity: "scheme-fidelity",
+                content: "scheme-content",
+                fruitsalad: "scheme-fruit-salad",
+                rainbow: "scheme-rainbow",
+                neutral: "scheme-neutral",
+                monochrome: "scheme-monochrome"
+            };
+            const type = types[variant] ?? "auto";
+            E4C.Config.options.appearance.palette.type = type;
+            // Pass the type explicitly: the shell writes config.json after a delay, so switchwall would still read the old one
+            Quickshell.execDetached([E4C.Directories.wallpaperSwitchScriptPath, "--noswitch", "--type", type]);
         }
     }
 }
