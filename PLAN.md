@@ -4,7 +4,18 @@
 
 **Approach:** add a third **panel family**, `caelestia`, to end-4's Quickshell config (`ii`), next to the existing `ii` and `waffle` families. Port Caelestia's UI into that family and rewire it to end-4's services.
 
-**Status:** planning · **Written:** 2026-10-03 · **Machine:** CachyOS, Plasma 6.7.5 (Oxygen) as the main session, RTX 5090 + AMD iGPU, 57" 7680×2160 @ 1.5× / 240 Hz
+**Status:** in daily use on the main account since 2026-10-03, as a Hyprland session next to Plasma. Phases 0–7 are done; 8–10 are partly done (see §5 and §11). · **Written:** 2026-10-03 · **Reviewed:** 2026-10-09 · **Machine:** CachyOS, Plasma 6.7.5 (Oxygen) as the main session, RTX 5090 + AMD iGPU, Samsung Odyssey Neo G9 57" (G95NC) 7680×2160 @ 1.5× / 240 Hz over DP 2.1
+
+### Current state (2026-10-09)
+| | |
+|---|---|
+| Hyprland | 0.56.2 (Lua config), standard `Hyprland` session (not uwsm, see §10) |
+| Quickshell | own package `caelestia4-quickshell` **0.3.2** (`4f508be`), built against Qt **6.12**. Was `41651d7`; moved because 41651d7 doesn't compile on Qt 6.12 |
+| Caelestia | `third_party/caelestia-shell` v2.5.0; C++ plugin built into `~/.local/lib/qt6/qml` (rebuilt for Qt 6.12) |
+| end-4 | merged at `547836f1b0` (2026-09-28), not re-synced since |
+| Family | `caelestia` is the default `panelFamily`; 216 QML files in `modules/caelestia/`; `ii`/`waffle` are still one Ctrl+Super+P away |
+| Lock | hyprlock with a Caelestia-style theme (§5 Phase 8) |
+| Idle cost | `qs` ~1.0 GB RSS (Caelestia's reference: ~1.5 GB), CPU near idle |
 
 ---
 
@@ -50,6 +61,7 @@ end-4 was designed for this:
 | Version used for the plan | `main` @ `547836f1b0` (2026-09-28) | `v2.5.0` (2026-09-18), `main` @ `454f46da16` |
 | License | GPL-3.0 | GPL-3.0 |
 | Quickshell | Own pinned build `illogical-impulse-quickshell-git` @ `7511545e`. Conflicts with `quickshell` and `quickshell-git` | Needs `quickshell-git`. "Has to be the git version" |
+| → caelestia_4 uses | `caelestia4-quickshell`: first `41651d7d` (Phase 1), now **v0.3.2 `4f508be`** (2026-10-08, Qt 6.12 fix `5d5d498`) | same package |
 | UI size | `modules/ii`: 199 QML · `modules/waffle`: 142 QML | 284 QML total. UI without the `nexus` settings app: ~130 |
 | Services | 46 QML singletons in `services/` | 17 QML singletons in `services/`, plus a large C++ plugin |
 | Config | `modules/common/Config.qml` (JsonObject tree) | C++ `Caelestia.Config`, read from `~/.config/caelestia/shell.json` |
@@ -123,19 +135,20 @@ Each adapter is a QML `Singleton` that exposes the **property and function names
 
 ### 3.4 Where end-4's features go in the Caelestia design
 
-| end-4 feature | Placement in the `caelestia` family |
-|---|---|
-| AI chat (`Ai`), Translator (`Translation`), Booru (optional) | **New "Assistant" drawer** from the left edge, coming out of the bar and frame like the other drawers. Restyled end-4 left sidebar |
-| Quick toggles: night light (`Hyprsunset`), EasyEffects, keep awake (`Idle`), game mode, Bluetooth, Wi-Fi | Caelestia **sidebar / utilities** cards |
-| Todo (`Todo`), Timer/Pomodoro (`TimerService`) | New **dashboard tabs** next to Media / Performance / Weather |
-| Launcher search: apps, calculator, emoji (`Emojis`), clipboard (`Cliphist`), web/actions (`LauncherSearch`) | Caelestia **launcher** UI, end-4 search backend |
-| Wallpaper selector + Material You theming | Caelestia launcher **wallpaper list** → end-4 `Wallpapers` + `MaterialThemeLoader` |
-| Overview (workspaces + window previews) | end-4 `overview` with a Caelestia skin (blob container, tokens) |
-| Cheatsheet (`HyprlandKeybinds`) | end-4 module, Caelestia skin |
-| Region selector / OCR / Lens, screen translator, on-screen keyboard | end-4 modules, Caelestia skin (lower priority) |
-| Polkit dialog (`PolkitService`) | end-4 module, Caelestia skin |
-| Song recognition (`SongRec`), privacy indicators (`Privacy`), updates (`Updates`), keyring (`KeyringStorage`) | Bar status icons and popouts |
-| Settings app | **end-4 `modules/settings`**, plus a "Caelestia family" page. Caelestia's `nexus` (65 files) is **not ported** |
+| end-4 feature | Planned placement in the `caelestia` family | Status (2026-10-09) |
+|---|---|---|
+| AI chat (`Ai`), Translator (`Translation`), Booru (optional) | **New "Assistant" drawer** from the left edge, coming out of the bar and frame like the other drawers. Restyled end-4 left sidebar | ✅ drawer done; contents still end-4 styled. Booru gained a **Wallhaven** provider; AI sees **Ollama** models (LM Studio GGUFs, no copies) |
+| Quick toggles: night light (`Hyprsunset`), EasyEffects, keep awake (`Idle`), game mode, Bluetooth, Wi-Fi | Caelestia **sidebar / utilities** cards | ✅ **all 16** end-4 toggles + edit mode; System card, quick sliders, eye-protection panel |
+| Todo (`Todo`), Timer/Pomodoro (`TimerService`) | New **dashboard tabs** next to Media / Performance / Weather | ✅ |
+| Launcher search: apps, calculator, emoji (`Emojis`), clipboard (`Cliphist`), web/actions (`LauncherSearch`) | Caelestia **launcher** UI, end-4 search backend | ✅ merged; `$` runs in kitty with visible output. ⚠ Caelestia actions Random/Settings/Scheme/Variant still call the missing `caelestia` CLI |
+| Wallpaper selector + Material You theming | Caelestia launcher **wallpaper list** → end-4 `Wallpapers` + `MaterialThemeLoader` | ✅ list; end-4's selector window still end-4 styled |
+| Overview (workspaces + window previews) | end-4 `overview` with a Caelestia skin (blob container, tokens) | ⚠ works (Super+Tab), not reskinned |
+| Cheatsheet (`HyprlandKeybinds`) | end-4 module, Caelestia skin | ✅ Caelestia restyle |
+| Region selector / OCR / Lens, screen translator, on-screen keyboard | end-4 modules, Caelestia skin (lower priority) | OSK ✅ restyled (needs `ydotoold`); region tools + translator ⚠ end-4 styled |
+| Polkit dialog (`PolkitService`) | end-4 module, Caelestia skin | ⚠ end-4 styled |
+| Song recognition (`SongRec`), privacy indicators (`Privacy`), updates (`Updates`), keyring (`KeyringStorage`) | Bar status icons and popouts | ✅ privacy + updates icons/popouts; song recognition as a quick toggle; keyring = KWallet via Secret Service |
+| Settings app | **end-4 `modules/settings`**, plus a "Caelestia family" page. Caelestia's `nexus` (65 files) is **not ported** | ✅ Caelestia page + Caelestia-style frame; About credits Caelestia |
+| Dock (not in the original plan) | — | ✅ new Caelestia-style dock with previews, pinning, `caelestia.dock.*` |
 
 ### 3.5 Config strategy
 - **Behavior** (what's on, positions, timers): end-4 `Config.qml`, new section `caelestia: JsonObject { … }`. Existing keys are reused where they mean the same thing (`bar.vertical` doesn't apply; the frame bar is always vertical-left).
@@ -156,6 +169,12 @@ Each adapter is a QML `Singleton` that exposes the **property and function names
 5. **Environment variables live only in Hyprland's Lua config.** Never in `/etc/environment`, `~/.profile` or `environment.d`.
 6. **Separate login session:** an SDDM entry "Hyprland (caelestia_4)" starts Hyprland with its own config folder.
 7. **First tests in a throwaway user account** (Phase 0), before anything runs in the main home folder.
+
+**How these held up (2026-10-09):**
+- Rule 1: Plasma's look and config are untouched by the installer. User-requested Plasma changes are made on purpose and recorded in the `oxygen-plasma` repo: fcitx5 as KWin's input method, Shake Cursor off, and the boot `display-watchdog` service.
+- Rule 5 holds. The environment additions (fcitx5, `AQ_DRM_DEVICES`, `XDG_CURRENT_DESKTOP=Hyprland:KDE`) all live in `hypr/custom/env.lua`.
+- Rule 6 changed in practice. The login manager is **plasmalogin** (not SDDM), and the session is the stock `Hyprland` entry, which shares the home folder with Plasma. Shared-desktop conflicts are handled by the `~/.config/caelestia4/shared-desktop` marker (gsettings, kdeglobals and kded6 left alone).
+- Rule 7 done. The `e4test` account was used for Phases 0–7, then removed.
 
 ## 5. Phases
 
@@ -189,58 +208,55 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [x] Copy `modules/caelestia/components/` and run the import rewrite.
 - **Done when:** Ctrl+Super+P cycles ii → waffle → caelestia (blank) → ii without errors in `qs log`.
 
-### Phase 3: Frame + bar, the signature look (3–4 sessions) ⭐ first usable milestone
-- [ ] Port `modules/drawers/*` (Drawers, Panels, Exclusions, Regions, Interactions, ContentWindow).
-- [ ] Port `modules/bar/**` (32 files): workspaces, active window, tray (end-4 `TrayService`), clock, status icons, popouts.
-- [ ] Add status icons: privacy, updates, song recognition, keyboard layout.
-- [ ] Hyprland: reserve space for the frame and bar, gaps that match the frame thickness, rules for layer blur on the Caelestia layer namespace.
-- **Done when:** a full day of normal use in the `caelestia` family with no crashes; the frame and bar match the Phase 0 reference at 1.5× scale.
+### Phase 3: Frame + bar, the signature look (3–4 sessions) ⭐ first usable milestone (done 2026-10-03, docs/phase3.md; Phases 4 and 6 were folded in)
+- [x] Port `modules/drawers/*` (Drawers, Panels, Exclusions, Regions, Interactions, ContentWindow).
+- [x] Port `modules/bar/**` (32 files): workspaces, active window, tray (end-4 `TrayService`), clock, status icons, popouts. Network popout shows Wi-Fi + ethernet ("both" view).
+- [x] Add status icons: privacy ✅ + updates ✅ (2026-10-08), keyboard layout (Caelestia `kbLayout`, off by default), speaker on (`shell.json`). Song recognition lives in the quick toggles instead.
+- [x] Hyprland: reserve space for the frame and bar (Caelestia `Exclusions`), Super+J hides/shows the bar (`ScreenState.barHidden`).
+- **Done when:** ✅ daily use since 2026-10-03.
 
-### Phase 4: Notifications, OSD, session (2 sessions)
-- [ ] Notifications (popups + sidebar history) on end-4 `Notifications`. **No second daemon.**
-- [ ] OSD (volume, brightness, keyboard layout) on end-4 services.
-- [ ] Session menu (lock / logout / suspend / reboot / shutdown) using end-4's session actions.
-- **Done when:** a `notify-send` storm, volume and brightness keys, and every session action work. Toggling back to `ii` still shows the same notification history.
+### Phase 4: Notifications, OSD, session (folded into Phase 3)
+- [x] Notifications (popups + sidebar history) on end-4 `Notifications`. **No second daemon.**
+- [x] OSD (volume, brightness, keyboard layout) on end-4 services.
+- [x] Session menu (lock / logout / suspend / reboot / shutdown) using end-4's session actions.
 
-### Phase 5: Launcher + wallpapers + theming (2–3 sessions)
-- [ ] Caelestia launcher UI over `LauncherSearch` / `LauncherApps` / `AppSearch`: apps, calculator, emoji, clipboard, actions.
-- [ ] Wallpaper list over end-4 `Wallpapers`. Selecting one runs end-4's color generation. The `Colours` adapter updates the frame and every drawer live.
-- [ ] Make sure the KDE color hook stays disabled (see §4.4).
-- **Done when:** changing the wallpaper recolors both families, and Plasma's `kdeglobals` is untouched (checked by checksum).
+### Phase 5: Launcher + wallpapers + theming (done 2026-10-03, docs/phase5.md)
+- [x] Caelestia launcher UI over `LauncherSearch` / `LauncherApps` / `AppSearch`: apps, calculator, emoji, clipboard, actions (merged "option C").
+- [x] Wallpaper list over end-4 `Wallpapers`; the `Colours` adapter recolors everything live.
+- [x] KDE colour hook disabled on the shared account (`switchwall.sh` checks the `shared-desktop` marker).
+- [ ] Follow-up: Caelestia launcher actions **Random / Settings / Scheme / Variant** call the missing `caelestia` CLI. Repoint them to end-4 (`switchwall.sh`, settings app) or hide them.
 
-### Phase 6: Dashboard (2–3 sessions)
-- [ ] Port dashboard tabs: Dash, Media (`MprisController`; lyrics from the plugin if they work), Performance (`ResourceUsage` with plugin sparklines), Weather.
-- [ ] New tabs in Caelestia style: **Todo** (`Todo`), **Timer** (`TimerService`).
-- **Done when:** every tab shows live data and the new tabs keep their state across switching families.
+### Phase 6: Dashboard (folded into Phases 3 + 7)
+- [x] Dash, Media (with plugin lyrics), Performance, Weather.
+- [x] **Todo** and **Timer** tabs (end-4 widgets, `keepLoaded` fix for the collapsing panes).
 
-### Phase 7: end-4 exclusives in Caelestia style (3–5 sessions)
-- [x] **Assistant drawer** (left edge): AI chat (`Ai`, with end-4's provider config and keyring), Translator. Booru is optional and off by default.
-- [x] Sidebar/utilities quick toggles: night light, EasyEffects, keep awake, game mode, Bluetooth, Wi-Fi.
-- [ ] Overview, cheatsheet, polkit dialog: end-4 modules with a Caelestia skin (tokens, blob containers, fonts).
-- [ ] Lower priority: region selector/OCR, screen translator, on-screen keyboard, media controls.
-- **Done when:** every end-4 feature you use daily is reachable in the `caelestia` family without switching back to `ii`.
+### Phase 7: end-4 exclusives in Caelestia style (done for daily use; docs/phase7.md, docs/end4-parity.md)
+- [x] **Assistant drawer** (left edge): AI chat, Translator, Anime (Booru + Wallhaven with keyring API key).
+- [x] Utilities drawer: all 16 end-4 quick toggles (edit mode, tooltips, right-click actions), System card (uptime / reload / end-4 settings / session), quick sliders, Eye-protection panel (night light schedule, warmth, gamma, anti-flashbang).
+- [x] Audio popout: per-app mixer (icons resolved via the owning window), mic slider.
+- [x] **Dock** (new): Caelestia style, pinned + running apps, live previews, pin/reveal options.
+- [x] Cheatsheet and on-screen keyboard restyled; settings app framed in Caelestia style.
+- [x] Background mute for games (`BackgroundMute.qml`) + background rendering for Steam/gamescope windows.
+- [ ] Still end-4 styled: workspace overview, polkit dialog, region selector / OCR / Lens / recorder, screen translator, overlay widgets (Super+G), wallpaper selector window, Assistant **contents**, Todo/Timer widgets.
+- [ ] Not handled: holding Super for workspace numbers (end-4 bar feature), Assistant "detach".
 
-### Phase 8: Background + lock (2 sessions)
-- [ ] Background: wallpaper, desktop clock, audio visualiser (plugin `VisualiserBars` + cava).
-- [ ] Lock: Caelestia lock UI with end-4's PAM flow and keyring unlock (`KeyringStorage`), so the keyring still unlocks at login.
-- **Done when:** lock/unlock works with the keyring opened, and idle → lock works through `Idle`.
+### Phase 8: Background + lock (partly done)
+- [x] Background: wallpaper. The desktop clock and visualiser are ported but **off by default** (Caelestia config `background.desktopClock` / `visualiser`).
+- [x] Lock, **changed approach** (2026-10-08): **hyprlock** (`lock.useHyprlock = true`) with a **Caelestia-style hyprlock theme**, instead of a Caelestia QML lock. Reason: the G95NC drops off DP 2.1 for ~30 s on wake, and the in-shell `WlSessionLock` sometimes failed to put a surface back, which gave Hyprland's "lockscreen crashed" screen. hyprlock survived the same test. The keyring is KWallet, unlocked at login by `pam_kwallet5` + `pam_kwallet_init`, so the lock doesn't need to unlock it.
+- **Done when:** ✅ idle → lock → unlock works (tested with a monitor drop).
 
-### Phase 9: Polish + performance (1–2 sessions)
-- [ ] Measure idle RAM/CPU against upstream `ii` (Caelestia's reference is ~1.5 GB idle). Lazy-load drawers.
-- [ ] Turn off visualiser and blur during fullscreen games (`GameMode` adapter).
-- [ ] Settings page for the family in end-4's settings app.
-- [ ] Docs: `docs/INSTALL.md`, `docs/UPDATING.md`, `docs/KEYBINDS.md`, screenshots.
+### Phase 9: Polish + performance (partly done)
+- [x] Settings page for the family in end-4's settings app (Caelestia page; also VRR and background FPS).
+- [ ] Measure idle RAM/CPU against upstream `ii`. First reading: `qs` ~1.0 GB RSS in the caelestia family (2026-10-09); no `ii` comparison yet. Lazy-load drawers if needed.
+- [ ] Turn off visualiser and blur during fullscreen games (moot while the visualiser is off; game mode toggle exists).
+- [ ] Docs: `docs/install.md` exists (main-account install + every later fix); `docs/UPDATING.md`, `docs/KEYBINDS.md` and screenshots are still to do.
 
 ### Phase 10: Keeping up with upstream (ongoing)
-- [ ] `tools/sync-upstreams.sh`:
-  1. Snapshot.
-  2. Merge `upstream/main` (end-4).
-  3. Bump the Caelestia subtree to a new tag.
-  4. Re-run the import rewrite.
-  5. Rebuild the plugin.
-  6. Run smoke tests (qmllint + a launch check).
-- [ ] Keep changes to end-4's own files small. Today only `shell.qml`, `Config.qml` and the installer edits from §4.4 change; everything else lives in new files. That keeps upstream merges easy.
-- [ ] `modules/caelestia/README.md` records the upstream Caelestia commit each ported file came from.
+- [x] `tools/sync-upstreams.sh` exists (end-4 merge / Caelestia tag bump; snapshot first). **Never run for real yet.**
+- [x] Qt minor updates: rebuild `caelestia4-quickshell` (`makepkg -Cf`, clean) + `tools/build-caelestia-plugin.sh`. Done once for Qt 6.12 (docs/install.md).
+- [ ] First real end-4 re-sync (base is `547836f1b0`, 2026-09-28).
+- [ ] Keep changes to end-4's own files small. Grown beyond the original three; current edits are marked `caelestia4:` in: `shell.qml`, `Config.qml`, `settings.qml`, `modules/settings/{About,CaelestiaConfig}.qml`, `modules/common/widgets/{ContentSection,OptionalMaterialSymbol}.qml`, `services/{Booru,ConflictKiller}.qml`, `modules/ii/sidebarLeft/Anime.qml`, `hypr/hyprland.lua` (+ `hyprland/session.lua`), `execs.lua`, `switchwall.sh`, `hyprlock.conf`, matugen hyprlock template, and `sdata/dist-arch/illogical-impulse-kde/PKGBUILD` (gnome-keyring dropped).
+- [ ] `modules/caelestia/README.md` recording the upstream Caelestia commit for each ported file (not written yet).
 
 ## 6. Risks
 
@@ -253,17 +269,17 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 | Upstream end-4 refactors panel families | Low–Medium | Medium | Changes kept small; regular syncs; pin commits |
 | Performance at 7680×2160 with blur + visualiser | Low (RTX 5090) | Low | Phase 9 measurements, game mode |
 | Scope creep (porting everything) | High | Medium | Phases 3–6 are the core; 7–8 are prioritized; `nexus` is out of scope |
+| **Qt minor updates break Quickshell / the plugin** (happened: Qt 6.12, 2026-10-08) | Every Qt release | High (shell crashes) | pacman hook warns; clean rebuild of both; the pin moved to v0.3.2 when 41651d7 stopped compiling (docs/install.md) |
+| **Monitor drops off DP 2.1 on boot / wake** (G95NC + NVIDIA, upstream bug, unfixed) | Frequent | High: black screen, crashed lock | `display-watchdog` boot service (oxygen-plasma repo); hyprlock instead of the in-shell lock; DP 1.4 would avoid it at 120 Hz |
+| Shell restarts while locked kill an in-shell lock | Was possible | High | hyprlock runs as its own process; check `pidof hyprlock` before restarting `qs` |
+| Hot reloads leave Quickshell without theme icons | After many reloads | Low | Clean restart via Hyprland (`pkill -x qs; hyprctl dispatch 'hl.dsp.exec_cmd("qs -c ii")'`) |
 
 ## 7. Open questions
 
-1. **KDE app colors under Hyprland.** With `QT_QPA_PLATFORMTHEME=kde`, Dolphin and other KDE apps read the shared `kdeglobals`, so in Hyprland they show **Oxygen** colors. Options:
-   - (a) accept that, simplest;
-   - (b) a login/logout script that swaps `kdeglobals` per session, which is risky if a session crashes;
-   - (c) use the separate `DankMatugen`-style color-scheme file and switch only the scheme name per session.
-   Decide in Phase 5.
-2. Bar position: Caelestia's frame bar is left and vertical. Keep it, or allow a top bar on the 32:9 screen?
-3. Lyrics and the visualiser come from the Caelestia plugin's services. Keep them as the only plugin *services* in use, or drop them to cut dependencies?
-4. Distribution: keep private, or publish under GPL-3.0 later (needs `LICENSE`, `NOTICE` with both upstreams credited, and the screenshots policy)?
+1. **KDE app colors under Hyprland.** ✅ Decided: **(a) accept**. KDE/Qt apps show Plasma's Oxygen colours in Hyprland (`QT_QPA_PLATFORMTHEME=kde`, shared `kdeglobals`, which the `shared-desktop` marker protects). Options (b) per-session `kdeglobals` swap and (c) a separate scheme file are still possible later.
+2. **Bar position.** ✅ Kept: Caelestia's vertical left bar. Super+J hides it per screen; no top-bar variant.
+3. **Lyrics and visualiser** from the plugin. ✅ Kept: lyrics are used in the dashboard Media tab; the visualiser is ported but off by default.
+4. **Distribution:** still open. Private repo for now; a release needs `LICENSE`/`NOTICE` crediting both upstreams (the settings About page already credits both).
 
 ## 8. Licensing
 
@@ -275,3 +291,27 @@ Both upstreams are GPL-3.0. A private repo is fine. Any release must stay GPL-3.
 - caelestia-dots/caelestia (dots + `manifest.toml`) — https://github.com/caelestia-dots/caelestia
 - Quickshell — https://quickshell.outfoxxed.me
 - Plasma backup — `oxygen-plasma` (private)
+
+## 10. System integration beyond the plan (main account, details in docs/install.md)
+
+| Area | What is in place |
+|---|---|
+| Session | Stock `Hyprland` entry under plasmalogin, next to Plasma. **uwsm rejected** (not installed; would move env handling and break the KWallet fix). |
+| GPU / display | `AQ_DRM_DEVICES=/dev/dri/nvidia-dgpu` (udev symlink to the RTX 5090); VRR fullscreen-only; vertical workspace animation; games keep rendering in the background (`render_unfocused`, 60 fps). |
+| Keyring / logins | gnome-keyring removed; KWallet owns Secret Service; `pam_kwallet_init` in Hyprland; `XDG_CURRENT_DESKTOP=Hyprland:KDE` so Chromium/Electron use the same KWallet key as Plasma; Brave data re-keyed (`tools/brave-rekey.py`). Logins survive session switches. |
+| Input | fcitx5 + Bamboo in both sessions, Super+Space toggle; `ydotoold` (Hyprland only) for the on-screen keyboard. |
+| Apps | KDE Connect daemon + tray + `hypr-kdeconnect-fix` remote input; session restore (`hyprland/session.lua`) reopens apps on their workspaces; default terminal kitty everywhere. |
+| Games | Background mute (shell), background rendering (Hyprland), VRR. |
+| Local AI | `ollama-cuda` as a user service; LM Studio's 7 GGUFs imported as hard links (`tools/ollama-import-lmstudio.sh`, 0 bytes extra); listed in the AI chat. |
+| Lock | hyprlock + Caelestia-style theme (Google Sans Flex installed user-locally, full matugen palette). |
+| Plasma side (oxygen-plasma repo) | Shake Cursor off; `display-watchdog` boot service for the DP 2.1 black screen. |
+
+## 11. Next steps (prioritized, 2026-10-09)
+
+1. **Launcher actions**: repoint Random → `switchwall.sh --random`, Settings → end-4 settings app, Scheme/Variant → end-4 scheme options (or hide them). Small; currently they do nothing.
+2. **Reskin the remaining end-4 surfaces**, most visible first: workspace overview → polkit dialog → region tools / screen translator → overlay widgets → wallpaper selector → Assistant contents and Todo/Timer widgets.
+3. **Phase 9 measurement**: idle RAM/CPU in `caelestia` vs `ii` (the `caelestia` family is ~1.0 GB now); lazy-load drawers only if needed.
+4. **Upstream**: first real `tools/sync-upstreams.sh end4 <ref>` run (base is 11+ days old), then write `modules/caelestia/README.md` (per-file upstream commits) and `docs/UPDATING.md` (sync + Qt-rebuild routine).
+5. **Docs**: `docs/KEYBINDS.md` (the cheatsheet covers it in-app) and screenshots.
+6. Optional: hold-Super workspace numbers, Assistant detach, avatar on the lock screen (`~/.face`), desktop clock / visualiser on.
+
