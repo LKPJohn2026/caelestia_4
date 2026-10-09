@@ -308,7 +308,7 @@ Both upstreams are GPL-3.0. A private repo is fine. Any release must stay GPL-3.
 
 ## 11. Next steps (prioritized, 2026-10-09)
 
-1. **Launcher actions**: repoint Random → `switchwall.sh --random`, Settings → end-4 settings app, Scheme/Variant → end-4 scheme options (or hide them). Small; currently they do nothing.
+1. **Launcher actions**: repoint Random → end-4's `scripts/colors/random/` scripts, Settings → end-4 settings app, Scheme/Variant → end-4 scheme options (or hide them). Small; currently they do nothing.
 2. **Reskin the remaining end-4 surfaces**, most visible first: workspace overview → polkit dialog → region tools / screen translator → overlay widgets → wallpaper selector → Assistant contents and Todo/Timer widgets.
 3. **Phase 9 measurement**: idle RAM/CPU in `caelestia` vs `ii` (the `caelestia` family is ~1.0 GB now); lazy-load drawers only if needed.
 4. **Upstream**: first real `tools/sync-upstreams.sh end4 <ref>` run (base is 11+ days old), then write `modules/caelestia/README.md` (per-file upstream commits) and `docs/UPDATING.md` (sync + Qt-rebuild routine).
