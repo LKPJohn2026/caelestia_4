@@ -24,7 +24,8 @@ Searcher {
 
         model: {
             const enableDangerous = GlobalConfig.launcher.enableDangerousActions;
-            return GlobalConfig.launcher.actions.values.filter(a => a.enabled && (enableDangerous || !a.dangerous));
+            // caelestia4: "Scheme" (named schemes) needs caelestia-cli, which end-4 has no equivalent for: hidden
+            return GlobalConfig.launcher.actions.values.filter(a => a.enabled && (enableDangerous || !a.dangerous) && !(a.command?.[0] === "autocomplete" && a.command?.[1] === "scheme"));
         }
 
         Action {}
@@ -48,6 +49,15 @@ Searcher {
             } else if (command[0] === "setMode" && command.length > 1) {
                 list.screenState.launcher = false;
                 Colours.setMode(command[1]);
+            } else if (command[0] === "caelestia") {
+                // caelestia4: caelestia-cli isn't installed; redirect its actions to end-4
+                list.screenState.launcher = false;
+                if (command[1] === "wallpaper" && command.includes("-r"))
+                    Wallpapers.setRandom(); // random wallpaper from the list -> end-4 switchwall + colours
+                else if (command[1] === "shell" && command[2] === "nexus")
+                    Quickshell.execDetached(["qs", "-p", Quickshell.shellPath("settings.qml")]); // end-4 settings app
+                else
+                    console.warn("[caelestia4] launcher action needs caelestia-cli, not available:", command.join(" "));
             } else {
                 list.screenState.launcher = false;
                 if (!SessionManager.exec(command))

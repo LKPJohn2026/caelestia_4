@@ -140,7 +140,7 @@ Each adapter is a QML `Singleton` that exposes the **property and function names
 | AI chat (`Ai`), Translator (`Translation`), Booru (optional) | **New "Assistant" drawer** from the left edge, coming out of the bar and frame like the other drawers. Restyled end-4 left sidebar | ✅ drawer done; contents still end-4 styled. Booru gained a **Wallhaven** provider; AI sees **Ollama** models (LM Studio GGUFs, no copies) |
 | Quick toggles: night light (`Hyprsunset`), EasyEffects, keep awake (`Idle`), game mode, Bluetooth, Wi-Fi | Caelestia **sidebar / utilities** cards | ✅ **all 16** end-4 toggles + edit mode; System card, quick sliders, eye-protection panel |
 | Todo (`Todo`), Timer/Pomodoro (`TimerService`) | New **dashboard tabs** next to Media / Performance / Weather | ✅ |
-| Launcher search: apps, calculator, emoji (`Emojis`), clipboard (`Cliphist`), web/actions (`LauncherSearch`) | Caelestia **launcher** UI, end-4 search backend | ✅ merged; `$` runs in kitty with visible output. ⚠ Caelestia actions Random/Settings/Scheme/Variant still call the missing `caelestia` CLI |
+| Launcher search: apps, calculator, emoji (`Emojis`), clipboard (`Cliphist`), web/actions (`LauncherSearch`) | Caelestia **launcher** UI, end-4 search backend | ✅ merged; `$` runs in kitty with visible output; Caelestia actions redirected to end-4 (Scheme hidden) |
 | Wallpaper selector + Material You theming | Caelestia launcher **wallpaper list** → end-4 `Wallpapers` + `MaterialThemeLoader` | ✅ list; end-4's selector window still end-4 styled |
 | Overview (workspaces + window previews) | end-4 `overview` with a Caelestia skin (blob container, tokens) | ⚠ works (Super+Tab), not reskinned |
 | Cheatsheet (`HyprlandKeybinds`) | end-4 module, Caelestia skin | ✅ Caelestia restyle |
@@ -224,7 +224,7 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [x] Caelestia launcher UI over `LauncherSearch` / `LauncherApps` / `AppSearch`: apps, calculator, emoji, clipboard, actions (merged "option C").
 - [x] Wallpaper list over end-4 `Wallpapers`; the `Colours` adapter recolors everything live.
 - [x] KDE colour hook disabled on the shared account (`switchwall.sh` checks the `shared-desktop` marker).
-- [ ] Follow-up: Caelestia launcher actions **Random / Settings / Scheme / Variant** call the missing `caelestia` CLI. Repoint them to end-4 (`switchwall.sh`, settings app) or hide them.
+- [x] Follow-up (2026-10-09): Caelestia launcher actions redirected to end-4. Random → `randomFromCurrentFolder`, Settings → settings app, Variant → palette type; Scheme hidden (caelestia-cli only).
 
 ### Phase 6: Dashboard (folded into Phases 3 + 7)
 - [x] Dash, Media (with plugin lyrics), Performance, Weather.
@@ -308,7 +308,7 @@ Both upstreams are GPL-3.0. A private repo is fine. Any release must stay GPL-3.
 
 ## 11. Next steps (prioritized, 2026-10-09)
 
-1. **Launcher actions**: repoint Random → end-4's `scripts/colors/random/` scripts, Settings → end-4 settings app, Scheme/Variant → end-4 scheme options (or hide them). Small; currently they do nothing.
+1. ~~Launcher actions~~ ✅ done 2026-10-09.
 2. **Reskin the remaining end-4 surfaces**, most visible first: workspace overview → polkit dialog → region tools / screen translator → overlay widgets → wallpaper selector → Assistant contents and Todo/Timer widgets.
 3. **Phase 9 measurement**: idle RAM/CPU in `caelestia` vs `ii` (the `caelestia` family is ~1.0 GB now); lazy-load drawers only if needed.
 4. **Upstream**: first real `tools/sync-upstreams.sh end4 <ref>` run (base is 11+ days old), then write `modules/caelestia/README.md` (per-file upstream commits) and `docs/UPDATING.md` (sync + Qt-rebuild routine).
