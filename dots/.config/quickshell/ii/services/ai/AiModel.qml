@@ -11,7 +11,8 @@ import QtQuick;
  * - key_id: The identifier of the API key. Use the same identifier for models that can be accessed with the same key.
  * - key_get_link: Link to get an API key
  * - key_get_description: Description of pricing and how to get an API key
- * - api_format: The API format of the model. Can be "openai" or "gemini". Default is "openai".
+ * - api_format: The API format of the model. Can be "openai", "mistral", "gemini" (generateContent, legacy) or
+ *   "gemini-interactions" (Interactions API, caelestia4). Default is "openai".
  * - extraParams: Extra parameters to be passed to the model. This is a JSON object.
  */
 

@@ -23,6 +23,7 @@ Singleton {
     property Component geminiApiStrategy: GeminiApiStrategy {}
     property Component openaiApiStrategy: OpenAiApiStrategy {}
     property Component mistralApiStrategy: MistralApiStrategy {}
+    property Component interactionsApiStrategy: InteractionsApiStrategy {} // caelestia4: Gemini Interactions API
     readonly property string interfaceRole: "interface"
     readonly property string apiKeyEnvVarName: "API_KEY"
 
@@ -82,6 +83,59 @@ Singleton {
     // OpenAI: https://platform.openai.com/docs/guides/function-calling
     property string currentTool: Config?.options.ai.tool ?? "search"
     property var tools: {
+        // caelestia4: Gemini Interactions API tool format (flat {type, name, description, parameters})
+        "gemini-interactions": {
+            "functions": [
+                {
+                    "type": "function",
+                    "name": "switch_to_search_mode",
+                    "description": "Search the web",
+                },
+                {
+                    "type": "function",
+                    "name": "get_shell_config",
+                    "description": "Get the desktop shell config file contents",
+                },
+                {
+                    "type": "function",
+                    "name": "set_shell_config",
+                    "description": "Set a field in the desktop graphical shell config file. Must only be used after `get_shell_config`.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string",
+                                "description": "The key to set, e.g. `bar.borderless`. MUST NOT BE GUESSED, use `get_shell_config` to see what keys are available before setting.",
+                            },
+                            "value": {
+                                "type": "string",
+                                "description": "The value to set, e.g. `true`"
+                            }
+                        },
+                        "required": ["key", "value"]
+                    }
+                },
+                {
+                    "type": "function",
+                    "name": "run_shell_command",
+                    "description": "Run a shell command in bash and get its output. Use this only for quick commands that don't require user interaction. For commands that require interaction, ask the user to run manually instead.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "command": {
+                                "type": "string",
+                                "description": "The bash command to run",
+                            },
+                        },
+                        "required": ["command"]
+                    }
+                },
+            ],
+            "search": [{
+                "type": "google_search"
+            }],
+            "none": [],
+        },
         "gemini": {
             "functions": [{"functionDeclarations": [
                 {
@@ -255,31 +309,48 @@ Singleton {
     // - api_format: The API format of the model. Can be "openai" or "gemini". Default is "openai".
     // - extraParams: Extra parameters to be passed to the model. This is a JSON object.
     property var models: Config.options.policies.ai === 2 ? {} : {
-        "gemini-2.5-flash": aiModelComponent.createObject(this, {
-            "name": "Gemini 2.5 Flash",
+        // caelestia4: Gemini models on the Interactions API (Google's recommended API; generateContent is legacy).
+        // Model list as of 2026-10 (https://ai.google.dev/gemini-api/docs/models): 2.5 models are restricted to
+        // existing users and not accepted by the Interactions API; 3.8 Flash / 3.5 Flash-Lite are the recommended
+        // ones. Old saved choices (gemini-2.5-flash, gemini-3-flash) map to gemini-3.8-flash (legacyModelIds).
+        "gemini-3.8-flash": aiModelComponent.createObject(this, {
+            "name": "Gemini 3.8 Flash",
             "icon": "google-gemini-symbolic",
-            "description": Translation.tr("Online | Google's model\nNewer model that's slower than its predecessor but should deliver higher quality answers"),
+            "description": Translation.tr("Online | Google's model\nGoogle's recommended model: fast, smart, with Google Search and tools"),
             "homepage": "https://aistudio.google.com",
-            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent",
-            "model": "gemini-2.5-flash",
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/interactions",
+            "model": "gemini-3.8-flash",
             "requires_key": true,
             "key_id": "gemini",
             "key_get_link": "https://aistudio.google.com/app/apikey",
-            "key_get_description": Translation.tr("**Pricing**: free. Data used for training.\n\n**Instructions**: Log into Google account, allow AI Studio to create Google Cloud project or whatever it asks, go back and click Get API key"),
-            "api_format": "gemini",
+            "key_get_description": Translation.tr("**Pricing**: free tier available (data used for training); paid: $0.75 / $3.75 per 1M input / output tokens until end of 2026\n\n**Instructions**: Log into Google account, allow AI Studio to create Google Cloud project or whatever it asks, go back and click Get API key"),
+            "api_format": "gemini-interactions",
         }),
-        "gemini-3-flash": aiModelComponent.createObject(this, {
-            "name": "Gemini 3 Flash",
+        "gemini-3.5-flash-lite": aiModelComponent.createObject(this, {
+            "name": "Gemini 3.5 Flash-Lite",
             "icon": "google-gemini-symbolic",
-            "description": Translation.tr("Online | Google's model\nPro-level intelligence at the speed and pricing of Flash."),
+            "description": Translation.tr("Online | Google's model\nFastest and cheapest Gemini, good for quick questions"),
             "homepage": "https://aistudio.google.com",
-            "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:streamGenerateContent",
-            "model": "gemini-3-flash-preview",
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/interactions",
+            "model": "gemini-3.5-flash-lite",
             "requires_key": true,
             "key_id": "gemini",
             "key_get_link": "https://aistudio.google.com/app/apikey",
-            "key_get_description": Translation.tr("**Pricing**: free. Data used for training.\n\n**Instructions**: Log into Google account, allow AI Studio to create Google Cloud project or whatever it asks, go back and click Get API key"),
-            "api_format": "gemini",
+            "key_get_description": Translation.tr("**Pricing**: free tier available (data used for training); paid: $0.30 / $2.50 per 1M input / output tokens\n\n**Instructions**: Log into Google account, allow AI Studio to create Google Cloud project or whatever it asks, go back and click Get API key"),
+            "api_format": "gemini-interactions",
+        }),
+        "gemini-3.1-pro": aiModelComponent.createObject(this, {
+            "name": "Gemini 3.1 Pro (preview)",
+            "icon": "google-gemini-symbolic",
+            "description": Translation.tr("Online | Google's model\nMost capable Gemini for hard reasoning. Preview, paid only"),
+            "homepage": "https://aistudio.google.com",
+            "endpoint": "https://generativelanguage.googleapis.com/v1beta/interactions",
+            "model": "gemini-3.1-pro-preview",
+            "requires_key": true,
+            "key_id": "gemini",
+            "key_get_link": "https://aistudio.google.com/app/apikey",
+            "key_get_description": Translation.tr("**Pricing**: paid only: $2 / $12 per 1M input / output tokens\n\n**Instructions**: Log into Google account, allow AI Studio to create Google Cloud project or whatever it asks, go back and click Get API key"),
+            "api_format": "gemini-interactions",
         }),
         "mistral-medium-3": aiModelComponent.createObject(this, {
             "name": "Mistral Medium 3",
@@ -296,12 +367,21 @@ Singleton {
         }),
     }
     property var modelList: Object.keys(root.models)
-    property var currentModelId: Persistent.states?.ai?.model || modelList[0]
+    // caelestia4: saved choices of models that were replaced map to their successor
+    readonly property var legacyModelIds: ({
+        "gemini-2.5-flash": "gemini-3.8-flash",
+        "gemini-3-flash": "gemini-3.8-flash"
+    })
+    property var currentModelId: {
+        const saved = Persistent.states?.ai?.model;
+        return root.legacyModelIds[saved] ?? (saved || modelList[0]);
+    }
 
     property var apiStrategies: {
         "openai": openaiApiStrategy.createObject(this),
         "gemini": geminiApiStrategy.createObject(this),
         "mistral": mistralApiStrategy.createObject(this),
+        "gemini-interactions": interactionsApiStrategy.createObject(this), // caelestia4
     }
     property ApiStrategy currentApiStrategy: apiStrategies[models[currentModelId]?.api_format || "openai"]
 
@@ -702,12 +782,25 @@ Singleton {
         }
 
         onExited: (exitCode, exitStatus) => {
-            const result = requester.currentStrategy.onRequestFinished(requester.message);
-            
+            const message = requester.message;
+            const result = requester.currentStrategy.onRequestFinished(message);
+            if (result.tokenUsage) {
+                root.tokenCount.input = result.tokenUsage.input;
+                root.tokenCount.output = result.tokenUsage.output;
+                root.tokenCount.total = result.tokenUsage.total;
+            }
+
             if (result.finished) {
                 requester.markDone();
             } else if (!requester.message.done) {
                 requester.markDone();
+            }
+
+            // caelestia4: the Interactions strategy reports function calls only once curl has exited, so the
+            // follow-up request starts on a stopped Process (and doesn't mark the next message done early)
+            if (result.deferredFunctionCall) {
+                message.functionCall = result.deferredFunctionCall;
+                root.handleFunctionCall(result.deferredFunctionCall.name, result.deferredFunctionCall.args, message);
             }
 
             // Handle error responses
@@ -850,6 +943,7 @@ Singleton {
                 "functionCall": message.functionCall,
                 "functionResponse": message.functionResponse,
                 "visibleToUser": message.visibleToUser,
+                "providerSteps": message.providerSteps, // caelestia4: Gemini Interactions steps (thought signatures)
             })
         })
     }
@@ -906,6 +1000,7 @@ Singleton {
                     "functionCall": message.functionCall,
                     "functionResponse": message.functionResponse,
                     "visibleToUser": message.visibleToUser,
+                    "providerSteps": message.providerSteps ?? [], // caelestia4
                 });
             }
         } catch (e) {
