@@ -109,7 +109,8 @@ mkdir -p "$HOME/.local/share/icons"; cp -n "$REPO/dots/.local/share/icons/illogi
 II="$CFG/illogical-impulse/config.json"
 if [[ ! -f "$II" ]]; then
   mkdir -p "$(dirname "$II")"
-  printf '{\n  "panelFamily": "caelestia",\n  "conflictKiller": { "autoKillTrays": false, "autoKillNotificationDaemons": false }\n}\n' > "$II"
+  # lock.useHyprlock: hyprlock survives the G95NC dropping off DP 2.1 on wake (the in-shell lock can lose its surface)
+  printf '{\n  "panelFamily": "caelestia",\n  "conflictKiller": { "autoKillTrays": false, "autoKillNotificationDaemons": false },\n  "lock": { "useHyprlock": true }\n}\n' > "$II"
   say "created $II (panelFamily: caelestia)"
 fi
 
