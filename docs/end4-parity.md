@@ -140,7 +140,7 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
 1. ~~`Super+J` → `quickshell:barToggle`: no handler~~ **fixed 2026-10-08** (ScreenState.barHidden).
 2. Holding Super → `quickshell:workspaceNumber` (end-4 bar shows workspace numbers): no handler, no effect.
 3. ~~Bar privacy indicators and updates counter~~ **added 2026-10-08** (status icons + popouts).
-4. Launcher actions that call the `caelestia` CLI (not installed) or Caelestia's nexus (not ported): **Random** (`caelestia wallpaper -r`), **Settings** (`caelestia shell nexus open`), **Scheme** list/set and **Variant** set (`caelestia scheme …`). Light/Dark, power actions and Lock work.
+4. ~~Launcher actions calling the `caelestia` CLI~~ **fixed 2026-10-09**: Random → end-4 `randomFromCurrentFolder`, Settings → end-4 settings app, Variant → end-4 palette type, Scheme hidden.
 5. Assistant **detach** (`sidebarLeftToggleDetach`) only toggles the drawer.
 6. ii-only options in the settings app do nothing in this family (ii bar style/position, screen corners, ii dock, ii overview, notification popup monitor).
 
@@ -158,3 +158,9 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
   - Privacy: a red `mic` icon while an audio-in stream is linked to a source; a red `screen_record` icon while any video source is linked. Computed from `Pipewire.linkGroups` (end-4's `Privacy` service assigns lists to bools, so it's always "true"). Popout `Privacy.qml` lists the apps.
   - Updates: `system_update_alt` + count from end-4 `Updates` (`checkupdates`, every `updates.checkInterval` min); red above `stronglyAdviseUpdateThreshold`. Popout `Updates.qml`: count, advice, **Update now** (end-4 `apps.update`: kitty + `pkexec pacman -Syu`), **Check again**.
   - Verified: a GStreamer test Video/Source with a linked consumer showed the red capture icon, which collapsed after; a fake `checkupdates` (3 lines) showed the icon with "3". Popouts not hovered yet.
+
+## Follow-up: launcher actions without caelestia-cli (2026-10-09)
+- `launcher/services/Actions.qml`: `caelestia …` commands are redirected. `wallpaper -r` → `Wallpapers.setRandom()` (end-4 `randomFromCurrentFolder`, colours regenerate); `shell nexus open` → `qs -p settings.qml` (end-4 settings app). Anything else logs a warning. The **Scheme** action (named schemes, caelestia-cli only) is filtered out.
+- `M3Variants.qml`: a variant sets end-4 `appearance.palette.type` (`tonalspot` → `scheme-tonal-spot`, …) and runs `switchwall.sh --noswitch --type <type>`. `--type` is passed explicitly because the shell writes config.json with a delay; without it, switchwall re-read the old type and nothing changed. Caelestia's `vibrant` (no end-4 equivalent) is replaced by end-4's **Auto**.
+- `Schemes.qml`: no caelestia-cli processes; `currentVariant` mirrors end-4's palette type, so the variant list ticks the active one.
+- Verified with typed input: the action list (no Scheme), the variant list (Auto ticked), Monochrome recoloured (primary `#a0cafd` → `#ffffff`), Settings opened the settings app, Random switched the wallpaper and colours. Then restored to Auto + the previous wallpaper.
