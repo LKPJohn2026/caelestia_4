@@ -21,6 +21,16 @@ hl.bind("SUPER_L", hl.dsp.global("quickshell:workspaceNumber"),
 hl.bind("SUPER_R", hl.dsp.global("quickshell:workspaceNumber"),
     { ignore_mods = true, transparent = true, release = true })
 hl.bind("SUPER + Tab", hl.dsp.global("quickshell:overviewWorkspacesToggle"), { description = "Shell: Toggle overview" })
+-- caelestia4: Windows-style Alt+Tab over workspaces (overview/Overview.qml): hold Alt, Tab = next workspace,
+-- Shift+Tab = previous, release Alt = switch. The release binds only act while Alt+Tabbing.
+-- Hyprland only fires a key's release bind if a press bind of that key saw the press, hence the no-op press
+-- binds; non_consuming so apps still get Alt.
+hl.bind("ALT + Tab", hl.dsp.global("quickshell:overviewAltTabNext"), { description = "Shell: Alt+Tab workspaces" })
+hl.bind("ALT + SHIFT + Tab", hl.dsp.global("quickshell:overviewAltTabPrev"))
+hl.bind("ALT_L", hl.dsp.global("quickshell:overviewAltPressed"), { ignore_mods = true, transparent = true, non_consuming = true })
+hl.bind("ALT_R", hl.dsp.global("quickshell:overviewAltPressed"), { ignore_mods = true, transparent = true, non_consuming = true })
+hl.bind("ALT_L", hl.dsp.global("quickshell:overviewAltTabCommit"), { ignore_mods = true, transparent = true, release = true, non_consuming = true })
+hl.bind("ALT_R", hl.dsp.global("quickshell:overviewAltTabCommit"), { ignore_mods = true, transparent = true, release = true, non_consuming = true })
 hl.bind("SUPER + V", hl.dsp.global("quickshell:overviewClipboardToggle"))
 hl.bind("SUPER + Period", hl.dsp.global("quickshell:overviewEmojiToggle"))
 hl.bind("SUPER + A", hl.dsp.global("quickshell:sidebarLeftToggle"), { description = "Shell: Toggle left sidebar" })

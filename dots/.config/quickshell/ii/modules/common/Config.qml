@@ -91,6 +91,9 @@ Singleton {
                 property list<var> quickToggles: []
                 property bool utilitiesSystem: true // uptime + reload / end-4 settings / session buttons
                 property bool utilitiesSliders: true // brightness / volume / mic sliders
+                property JsonObject overview: JsonObject { // Caelestia-style overview (modules/caelestia/overview)
+                    property bool altTabSkipEmpty: true // Alt+Tab cycles only through workspaces with windows (+ the current one)
+                }
                 property JsonObject backgroundMute: JsonObject { // mute games' audio while their window isn't focused
                     property bool enable: true
                     property string classes: "^(steam_app_\\d+|gamescope)$" // window classes treated as games (regex)
