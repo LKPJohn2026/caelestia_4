@@ -145,7 +145,7 @@ Each adapter is a QML `Singleton` that exposes the **property and function names
 | Overview (workspaces + window previews) | end-4 `overview` with a Caelestia skin (blob container, tokens) | ✅ `modules/caelestia/overview`, Caelestia style; Super+Tab + Windows-style Alt+Tab (release Alt = switch) |
 | Cheatsheet (`HyprlandKeybinds`) | end-4 module, Caelestia skin | ✅ Caelestia restyle |
 | Region selector / OCR / Lens, screen translator, on-screen keyboard | end-4 modules, Caelestia skin (lower priority) | OSK ✅ restyled (needs `ydotoold`); region tools + translator ⚠ end-4 styled |
-| Polkit dialog (`PolkitService`) | end-4 module, Caelestia skin | ⚠ end-4 styled |
+| Polkit dialog (`PolkitService`) | end-4 module, Caelestia skin | ✅ `modules/caelestia/polkit` |
 | Song recognition (`SongRec`), privacy indicators (`Privacy`), updates (`Updates`), keyring (`KeyringStorage`) | Bar status icons and popouts | ✅ privacy + updates icons/popouts; song recognition as a quick toggle; keyring = KWallet via Secret Service |
 | Settings app | **end-4 `modules/settings`**, plus a "Caelestia family" page. Caelestia's `nexus` (65 files) is **not ported** | ✅ Caelestia page + Caelestia-style frame; About credits Caelestia |
 | Dock (not in the original plan) | — | ✅ new Caelestia-style dock with previews, pinning, `caelestia.dock.*` |
