@@ -94,3 +94,8 @@ KDE-style "reopen my apps on the same workspaces" for the Hyprland session: `dot
 - Tested live: a kitty pair saved on workspaces 4 and 5, closed, then restored to 4 and 5, with the active workspace unchanged.
 - Limits: restores which apps are open and their workspaces, not window sizes or positions, and not documents/tabs
   (apps do that themselves, e.g. Brave "Continue where you left off").
+- **Lock screen → hyprlock (2026-10-08):** the "Oopsie daisy … lockscreen crashed" screen appeared after waking from suspend or screen-off.
+  - Cause: the Samsung G95NC drops off DP 2.1 for ~25–30 s on wake (the NVIDIA bug from the boot black screen). Quickshell logged "There are no outputs" and "Not creating lock surface … not backed by a valid wayland output", and Hyprland showed a FALLBACK output. end-4's in-shell lock (`WlSessionLock`) sometimes failed to put a surface back on the returning monitor, and Hyprland treats that as a crashed lock. A shell restart while locked has the same effect.
+  - Fix: `lock.useHyprlock = true` in `~/.config/illogical-impulse/config.json` (end-4 option; also the installer default now). The idle path stays `loginctl lock-session` → hypridle → `quickshell:lock` → `hyprlock`. hyprlock is a separate process (shell restarts can't kill it) that handles outputs coming and going.
+  - Test: lock, then DPMS off 20 s / on. DP-2 disconnected (1920×1080 fallback) and reconnected at 7680×2160@240; hyprlock stayed up and the user unlocked with the password.
+  - Recovery if it ever happens: Ctrl+Alt+F3 → `hyprctl --instance 0 eval 'hl.clear_crashed_lockscreen()'` → `hyprctl --instance 0 dispatch 'hl.dsp.exec_cmd("hyprlock")'` (`misc.allow_session_lock_restore` is on).
