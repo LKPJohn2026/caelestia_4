@@ -109,3 +109,11 @@ KDE-style "reopen my apps on the same workspaces" for the Hyprland session: `dot
   - Font: Google Sans Flex is installed to `~/.local/share/fonts/caelestia4` (installer step). end-4's old theme referenced this font without it being installed.
   - Verified: a real lock with a screenshot (grim works while locked); no hyprlock config errors; then the layout was balanced (right column, panel height, media ellipsis).
   - end-4's original theme is backed up at `~/.local/state/caelestia4/hyprlock.conf.end4-backup`.
+- **Qt 6.12 update (2026-10-08):** pacman's `quickshell-check.hook` warned that Quickshell was built against Qt 6.11.2. Quickshell and the Caelestia plugin use Qt **private** API, so they must be rebuilt for every Qt minor update.
+  - The build tools (`ninja`, `vulkan-headers`, `cli11`) had been removed as orphans; reinstall with `pacman -S --needed --asdeps`.
+  - `makepkg -f` reused the old build dir (Qt 6.11 cache), which gave false errors inside Qt headers (`QMetaType::rawId`). Always build clean: `makepkg -Cf`.
+  - The pinned 41651d7 doesn't compile on Qt 6.12 ("Meta Types must be fully defined", `PwNodeIface` in services/pipewire). Upstream fixed it in 5d5d498 ("use MOC includes instead of opaque pointer definitions"). The pin is now **v0.3.2 (`4f508be`)**: 4 commits after 41651d7 (the fix, networking AP security, docs, version).
+  - Both families compile-checked with the new binary. Careful: `pkg/.../usr/bin/qs` is an absolute symlink to the *installed* `/usr/bin/quickshell`, so point PATH at a link to the built binary.
+  - Caelestia plugin rebuilt user-locally (`tools/build-caelestia-plugin.sh`), now linked against Qt_6.12.
+  - `qt6-m3shapes-git`, `darkly-bin` and `hypr-kdeconnect-fix-git` only use public Qt API (checked with `objdump -T`), so no rebuild is needed.
+  - Next Qt update: re-run `makepkg -Cf` in packaging/caelestia4-quickshell + `tools/build-caelestia-plugin.sh`, then `pacman -U` and restart the shell.
