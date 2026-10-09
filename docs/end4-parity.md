@@ -172,3 +172,25 @@ KWallet a missing `illogical-impulse` entry looked "locked" and KeyringStorage n
 Google Cloud for the screen translator, Wallhaven, … never loaded or saved). It now asks the Secret Service for its default
 collection (`kdewallet`). Content-region detection in the region selector and text colours in the translator need end-4's
 Python venv (`~/.local/state/quickshell/.venv`, end-4 installer), not set up here: those features quietly do nothing.
+
+## Follow-up: AI chat on the Gemini Interactions API (2026-10-09)
+- Google now recommends the **Interactions API** (`POST /v1beta/interactions`, GA); `generateContent` (what end-4 used,
+  `…/models/<m>:streamGenerateContent`) is "legacy". Gemini 2.5 is restricted to existing users and isn't accepted by
+  the Interactions API at all.
+- New `api_format: "gemini-interactions"`: `services/ai/InteractionsApiStrategy.qml` + `services/ai/interactions.js`.
+  - Stateless (`store: false`): the whole chat goes out as steps each turn (`user_input`, the model's own steps
+    unchanged incl. thought signatures, `function_result` with the call's `call_id`). Editing / regenerating /
+    switching models / loading saved chats keep working. Raw steps are kept per message (`providerSteps`, saved with chats).
+  - Streaming SSE (`stream: true`): `step.start` / `step.delta` (text, thought_summary, thought_signature,
+    arguments_delta, text_annotation_delta, google_search_call/result) / `step.stop`, `interaction.completed` (usage).
+    Thought summaries show as end-4's collapsible think block; citations as source chips; search queries as chips.
+  - Key in the `x-goog-api-key` header; body via heredoc + attachments base64-inlined by jq (images, PDFs, audio,
+    video, text files; earlier turns' files are resent; no Files API upload).
+  - Function calls are handled after curl exits (Ai.qml `deferredFunctionCall`), so the follow-up request starts on a
+    stopped Process.
+- Models (from https://ai.google.dev/gemini-api/docs/models): **Gemini 3.8 Flash** (default, free tier),
+  **Gemini 3.5 Flash-Lite** (free tier), **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`, paid only). Saved choices
+  `gemini-2.5-flash` / `gemini-3-flash` map to 3.8 Flash. User `extraModels` with `api_format: "gemini"` still use
+  the old strategy.
+- Tests: `node tools/test-gemini-interactions.js` (streams shaped per the API reference). Live run checked up to the
+  API (request accepted by the endpoint, error rendering); no Gemini key is stored yet, so no real answer was tested.
