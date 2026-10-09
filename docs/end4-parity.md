@@ -137,9 +137,9 @@ Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on eve
 Method: every `quickshell:<action>` used by Hyprland keybinds, checked against the GlobalShortcuts/CustomShortcuts registered by the modules the Caelestia family loads. Plus PLAN.md phases, the docs, and runtime logs.
 
 **Not working**
-1. `Super+J` → `quickshell:barToggle`: no handler (end-4's Bar/VerticalBar aren't loaded).
+1. ~~`Super+J` → `quickshell:barToggle`: no handler~~ **fixed 2026-10-08** (ScreenState.barHidden).
 2. Holding Super → `quickshell:workspaceNumber` (end-4 bar shows workspace numbers): no handler, no effect.
-3. Bar **privacy indicators** (`Privacy`: mic in use / screen sharing) and **updates counter** (`Updates`): planned for the bar status icons (PLAN §3.4), never wired.
+3. ~~Bar privacy indicators and updates counter~~ **added 2026-10-08** (status icons + popouts).
 4. Launcher actions that call the `caelestia` CLI (not installed) or Caelestia's nexus (not ported): **Random** (`caelestia wallpaper -r`), **Settings** (`caelestia shell nexus open`), **Scheme** list/set and **Variant** set (`caelestia scheme …`). Light/Dark, power actions and Lock work.
 5. Assistant **detach** (`sidebarLeftToggleDetach`) only toggles the drawer.
 6. ii-only options in the settings app do nothing in this family (ii bar style/position, screen corners, ii dock, ii overview, notification popup monitor).
@@ -151,3 +151,10 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
 **Fixed during the review:** `notifications.forceMonitor` (upstream rename 9e1568f missed `Config.qml`; the settings Interface page threw TypeErrors and the ii notification popup read `undefined`).
 
 **About page:** a "Dotfiles: Caelestia" section (logo tinted for the dark theme, caelestia-dots/caelestia, shell source, issues, Discord).
+
+## Follow-up: Super+J, privacy and update icons (2026-10-08)
+- **Super+J** (`quickshell:barToggle`): `KeybindBridge` toggles `ScreenState.barHidden` on the focused screen. `BarWrapper` uses `persistentNow = Config.bar.persistent && !barHidden` for the exclusive zone and visibility. Hidden = only the frame edge, windows re-flow, and hovering the edge still reveals the bar. Runtime only (shell.json untouched). Verified: global fired, bar hid and returned, the focused window moved 25 px and grew.
+- **Privacy** and **updates** status icons (`bar/components/StatusIcons.qml`), always offered ahead of the configured list (unless shell.json lists `privacy`/`updates`) and collapsed when idle:
+  - Privacy: a red `mic` icon while an audio-in stream is linked to a source; a red `screen_record` icon while any video source is linked. Computed from `Pipewire.linkGroups` (end-4's `Privacy` service assigns lists to bools, so it's always "true"). Popout `Privacy.qml` lists the apps.
+  - Updates: `system_update_alt` + count from end-4 `Updates` (`checkupdates`, every `updates.checkInterval` min); red above `stronglyAdviseUpdateThreshold`. Popout `Updates.qml`: count, advice, **Update now** (end-4 `apps.update`: kitty + `pkexec pacman -Syu`), **Check again**.
+  - Verified: a GStreamer test Video/Source with a linked consumer showed the red capture icon, which collapsed after; a fake `checkupdates` (3 lines) showed the icon with "3". Popouts not hovered yet.
