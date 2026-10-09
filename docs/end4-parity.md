@@ -144,9 +144,9 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
 5. Assistant **detach** (`sidebarLeftToggleDetach`) only toggles the drawer.
 6. ii-only options in the settings app do nothing in this family (ii bar style/position, screen corners, ii dock, ii overview, notification popup monitor).
 
-**Restyled:** workspace overview (`modules/caelestia/overview`: Super+Tab, plus Windows-style Alt+Tab: hold Alt, Tab / Shift+Tab step through workspaces in order, release Alt switches; `caelestia.overview.altTabSkipEmpty`), lock screen (hyprlock, Caelestia theme), polkit dialog (`modules/caelestia/polkit`).
+**Restyled:** workspace overview (`modules/caelestia/overview`: Super+Tab, plus Windows-style Alt+Tab: hold Alt, Tab / Shift+Tab step through workspaces in order, release Alt switches; `caelestia.overview.altTabSkipEmpty`), lock screen (hyprlock, Caelestia theme), polkit dialog (`modules/caelestia/polkit`), region tools (`modules/caelestia/regionSelector`: screenshot / Lens / OCR / record, shape and action switchable from the toolbar), screen translator (`modules/caelestia/screenTranslator`).
 
-**Works, still end-4 styled** (PLAN Phase 7 / 8 restyle not done): region tools (screenshot / OCR / Lens / record), screen translator, overlay widgets (Super+G), wallpaper selector, Assistant contents (AI / translator / anime), Todo / Timer tabs.
+**Works, still end-4 styled** (PLAN Phase 7 / 8 restyle not done): overlay widgets (Super+G), wallpaper selector, Assistant contents (AI / translator / anime), Todo / Timer tabs.
 
 **Plan items open:** Phase 8 Caelestia lock with end-4's PAM + keyring flow; Phase 9 performance measurement, visualiser off in fullscreen games, KEYBINDS/UPDATING docs; open question 1 (KDE apps show Oxygen colours in Hyprland because `kdeglobals` is shared).
 
@@ -166,3 +166,9 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
 - `M3Variants.qml`: a variant sets end-4 `appearance.palette.type` (`tonalspot` → `scheme-tonal-spot`, …) and runs `switchwall.sh --noswitch --type <type>`. `--type` is passed explicitly because the shell writes config.json with a delay; without it, switchwall re-read the old type and nothing changed. Caelestia's `vibrant` (no end-4 equivalent) is replaced by end-4's **Auto**.
 - `Schemes.qml`: no caelestia-cli processes; `currentVariant` mirrors end-4's palette type, so the variant list ticks the active one.
 - Verified with typed input: the action list (no Scheme), the variant list (Auto ticked), Monochrome recoloured (primary `#a0cafd` → `#ffffff`), Settings opened the settings app, Random switched the wallpaper and colours. Then restored to Auto + the previous wallpaper.
+
+**Keyring check fixed for KWallet:** end-4's `scripts/keyring/is_unlocked.sh` asked gnome-keyring's `login` collection, so with
+KWallet a missing `illogical-impulse` entry looked "locked" and KeyringStorage never finished loading (stored API keys:
+Google Cloud for the screen translator, Wallhaven, … never loaded or saved). It now asks the Secret Service for its default
+collection (`kdewallet`). Content-region detection in the region selector and text colours in the translator need end-4's
+Python venv (`~/.local/state/quickshell/.venv`, end-4 installer), not set up here: those features quietly do nothing.
