@@ -8,6 +8,8 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.caelestia.bar.components.status
+import Quickshell.Services.Pipewire
+import qs.services as E4 // caelestia4: keep
 
 StyledRect {
     id: root
@@ -33,10 +35,19 @@ StyledRect {
         return -1;
     }
 
+    // caelestia4: end-4 privacy indicators (computed here: end-4's Privacy service assigns lists to bools)
+    readonly property bool micInUse: Pipewire.linkGroups.values.some(g => g.source?.type === PwNodeType.AudioSource && g.target?.type === PwNodeType.AudioInStream)
+    readonly property bool screenCaptured: Pipewire.linkGroups.values.some(g => g.source?.type === PwNodeType.VideoSource)
+    readonly property bool updatesPending: E4.Updates.available && E4.Updates.count > 0
+
     // Entries that can shrink to nothing, spacing included
     function collapsed(entry: var): bool {
         if (entry.id === "lockStatus")
             return !Hypr.capsLock && !Hypr.numLock;
+        if (entry.id === "privacy") // caelestia4
+            return !root.micInUse && !root.screenCaptured;
+        if (entry.id === "updates") // caelestia4
+            return !root.updatesPending;
         return false;
     }
 
@@ -61,12 +72,85 @@ StyledRect {
             model: ScriptModel {
                 id: model
 
-                values: root.Config.bar.statusIcons.values.filter(e => e.enabled)
+                // caelestia4: privacy + updates are always offered (they collapse when idle) unless shell.json lists them
+                values: {
+                    const list = root.Config.bar.statusIcons.values;
+                    const extras = ["privacy", "updates"].filter(id => !list.some(e => e.id === id)).map(id => ({
+                                id: id,
+                                enabled: true
+                            }));
+                    return [...extras, ...list].filter(e => e.enabled);
+                }
             }
 
             DelegateChooser {
                 role: "id"
 
+                // caelestia4: privacy (mic / screen capture in use) and pending updates
+                DelegateChoice {
+                    roleValue: "privacy"
+                    delegate: EntryWrapper {
+                        margin: Tokens.spacing.extraSmall / 2
+
+                        Item {
+                            clip: true
+                            implicitWidth: privacyCol.implicitWidth
+                            implicitHeight: (root.micInUse || root.screenCaptured) ? privacyCol.implicitHeight : 0
+
+                            Column {
+                                id: privacyCol
+                                spacing: Tokens.spacing.extraSmall
+
+                                MaterialIcon {
+                                    visible: root.micInUse
+                                    text: "mic"
+                                    color: Colours.palette.m3error
+                                    fontStyle: Tokens.font.icon.medium
+                                    fill: 1
+                                }
+
+                                MaterialIcon {
+                                    visible: root.screenCaptured
+                                    text: "screen_record"
+                                    color: Colours.palette.m3error
+                                    fontStyle: Tokens.font.icon.medium
+                                    fill: 1
+                                }
+                            }
+                        }
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "updates"
+                    delegate: EntryWrapper {
+                        margin: Tokens.spacing.extraSmall / 2
+
+                        Item {
+                            clip: true
+                            implicitWidth: updCol.implicitWidth
+                            implicitHeight: root.updatesPending ? updCol.implicitHeight : 0
+
+                            Column {
+                                id: updCol
+
+                                MaterialIcon {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    animate: true
+                                    text: "system_update_alt"
+                                    color: E4.Updates.updateStronglyAdvised ? Colours.palette.m3error : root.colour
+                                    fontStyle: Tokens.font.icon.medium
+                                }
+
+                                StyledText {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    text: E4.Updates.count
+                                    color: root.colour
+                                    font: Tokens.font.label.small
+                                }
+                            }
+                        }
+                    }
+                }
                 DelegateChoice {
                     roleValue: "lockStatus"
                     delegate: EntryWrapper {

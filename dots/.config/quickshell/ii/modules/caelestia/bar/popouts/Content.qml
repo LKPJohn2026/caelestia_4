@@ -124,6 +124,19 @@ Item {
             sourceComponent: LockStatus {}
         }
 
+        // caelestia4: end-4 privacy indicators and update count
+        Popout {
+            name: "privacy"
+            sourceComponent: Privacy {}
+        }
+
+        Popout {
+            name: "updates"
+            sourceComponent: Updates {
+                popouts: root.popouts
+            }
+        }
+
         Repeater {
             model: ScriptModel {
                 values: SystemTray.items.values.filter(i => i.hasMenu && i.status !== Status.Passive && !GlobalConfig.bar.tray.hiddenIcons.includes(i.id))
