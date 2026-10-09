@@ -4,9 +4,9 @@
 # Replaces both quickshell-git (AUR) and illogical-impulse-quickshell-git (end-4).
 
 _pkgname=quickshell
-_commit=41651d7dcd62a9400eb6f4f8a8580efe00901efb
+_commit=4f508be500dea6e5732cc3d50382a0048b17e7b1 # caelestia4: v0.3.2 (Qt 6.12 build fix 5d5d498); was 41651d7
 pkgname=caelestia4-quickshell
-pkgver=0.3.1.r18.g41651d7
+pkgver=0.3.2
 pkgrel=1
 pkgdesc='Quickshell pinned for caelestia_4 (end-4 + Caelestia)'
 arch=(x86_64)
