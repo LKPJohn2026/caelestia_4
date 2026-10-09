@@ -142,7 +142,7 @@ Each adapter is a QML `Singleton` that exposes the **property and function names
 | Todo (`Todo`), Timer/Pomodoro (`TimerService`) | New **dashboard tabs** next to Media / Performance / Weather | ✅ |
 | Launcher search: apps, calculator, emoji (`Emojis`), clipboard (`Cliphist`), web/actions (`LauncherSearch`) | Caelestia **launcher** UI, end-4 search backend | ✅ merged; `$` runs in kitty with visible output; Caelestia actions redirected to end-4 (Scheme hidden) |
 | Wallpaper selector + Material You theming | Caelestia launcher **wallpaper list** → end-4 `Wallpapers` + `MaterialThemeLoader` | ✅ list; end-4's selector window still end-4 styled |
-| Overview (workspaces + window previews) | end-4 `overview` with a Caelestia skin (blob container, tokens) | ⚠ works (Super+Tab), not reskinned |
+| Overview (workspaces + window previews) | end-4 `overview` with a Caelestia skin (blob container, tokens) | ✅ `modules/caelestia/overview`, Caelestia style; Super+Tab + Windows-style Alt+Tab (release Alt = switch) |
 | Cheatsheet (`HyprlandKeybinds`) | end-4 module, Caelestia skin | ✅ Caelestia restyle |
 | Region selector / OCR / Lens, screen translator, on-screen keyboard | end-4 modules, Caelestia skin (lower priority) | OSK ✅ restyled (needs `ydotoold`); region tools + translator ⚠ end-4 styled |
 | Polkit dialog (`PolkitService`) | end-4 module, Caelestia skin | ⚠ end-4 styled |
@@ -237,7 +237,8 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [x] **Dock** (new): Caelestia style, pinned + running apps, live previews, pin/reveal options.
 - [x] Cheatsheet and on-screen keyboard restyled; settings app framed in Caelestia style.
 - [x] Background mute for games (`BackgroundMute.qml`) + background rendering for Steam/gamescope windows.
-- [ ] Still end-4 styled: workspace overview, polkit dialog, region selector / OCR / Lens / recorder, screen translator, overlay widgets (Super+G), wallpaper selector window, Assistant **contents**, Todo/Timer widgets.
+- [x] Workspace overview restyled (+ Alt+Tab mode).
+- [ ] Still end-4 styled: polkit dialog, region selector / OCR / Lens / recorder, screen translator, overlay widgets (Super+G), wallpaper selector window, Assistant **contents**, Todo/Timer widgets.
 - [ ] Not handled: holding Super for workspace numbers (end-4 bar feature), Assistant "detach".
 
 ### Phase 8: Background + lock (partly done)
@@ -309,7 +310,7 @@ Both upstreams are GPL-3.0. A private repo is fine. Any release must stay GPL-3.
 ## 11. Next steps (prioritized, 2026-10-09)
 
 1. ~~Launcher actions~~ ✅ done 2026-10-09.
-2. **Reskin the remaining end-4 surfaces**, most visible first: workspace overview → polkit dialog → region tools / screen translator → overlay widgets → wallpaper selector → Assistant contents and Todo/Timer widgets.
+2. **Reskin the remaining end-4 surfaces**, most visible first: ~~workspace overview~~ (done) → polkit dialog → region tools / screen translator → overlay widgets → wallpaper selector → Assistant contents and Todo/Timer widgets.
 3. **Phase 9 measurement**: idle RAM/CPU in `caelestia` vs `ii` (the `caelestia` family is ~1.0 GB now); lazy-load drawers only if needed.
 4. **Upstream**: first real `tools/sync-upstreams.sh end4 <ref>` run (base is 11+ days old), then write `modules/caelestia/README.md` (per-file upstream commits) and `docs/UPDATING.md` (sync + Qt-rebuild routine).
 5. **Docs**: `docs/KEYBINDS.md` (the cheatsheet covers it in-app) and screenshots.

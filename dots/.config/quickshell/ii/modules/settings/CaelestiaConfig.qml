@@ -123,6 +123,23 @@ ContentPage {
 
     // ---------------------------------------------------------------- utilities drawer
     ContentSection {
+        icon: "grid_view"
+        title: Translation.tr("Overview (Super+Tab / Alt+Tab)")
+
+        ConfigSwitch {
+            buttonIcon: "filter_none"
+            text: Translation.tr("Alt+Tab skips empty workspaces")
+            checked: Config.options.caelestia.overview.altTabSkipEmpty
+            onCheckedChanged: {
+                Config.options.caelestia.overview.altTabSkipEmpty = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Hold Alt and press Tab to step through workspaces in order, release Alt to switch.\nOn: only workspaces with windows (and the current one). Off: every workspace in the grid.\nGrid size and scale are under Interface > Overview.")
+            }
+        }
+    }
+
+    ContentSection {
         icon: "tune"
         title: Translation.tr("Utilities drawer")
 
