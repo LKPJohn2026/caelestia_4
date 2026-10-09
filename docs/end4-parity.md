@@ -132,3 +132,22 @@ Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on eve
 - The AI chat lists Ollama models via `scripts/ai/show-installed-ollama-models.sh` when its service starts (restart the shell after importing).
 - New LM Studio downloads: re-run the script; already-linked files are skipped.
 - Caveat: if LM Studio deletes or re-downloads a model, Ollama keeps its hard link, so the space is only freed after `ollama rm`.
+
+## Gap review: end-4 functions still unavailable in the Caelestia family (2026-10-08)
+Method: every `quickshell:<action>` used by Hyprland keybinds, checked against the GlobalShortcuts/CustomShortcuts registered by the modules the Caelestia family loads. Plus PLAN.md phases, the docs, and runtime logs.
+
+**Not working**
+1. `Super+J` → `quickshell:barToggle`: no handler (end-4's Bar/VerticalBar aren't loaded).
+2. Holding Super → `quickshell:workspaceNumber` (end-4 bar shows workspace numbers): no handler, no effect.
+3. Bar **privacy indicators** (`Privacy`: mic in use / screen sharing) and **updates counter** (`Updates`): planned for the bar status icons (PLAN §3.4), never wired.
+4. Launcher actions that call the `caelestia` CLI (not installed) or Caelestia's nexus (not ported): **Random** (`caelestia wallpaper -r`), **Settings** (`caelestia shell nexus open`), **Scheme** list/set and **Variant** set (`caelestia scheme …`). Light/Dark, power actions and Lock work.
+5. Assistant **detach** (`sidebarLeftToggleDetach`) only toggles the drawer.
+6. ii-only options in the settings app do nothing in this family (ii bar style/position, screen corners, ii dock, ii overview, notification popup monitor).
+
+**Works, still end-4 styled** (PLAN Phase 7 / 8 restyle not done): lock screen, workspace overview (Super+Tab), polkit dialog, region tools (screenshot / OCR / Lens / record), screen translator, overlay widgets (Super+G), wallpaper selector, Assistant contents (AI / translator / anime), Todo / Timer tabs.
+
+**Plan items open:** Phase 8 Caelestia lock with end-4's PAM + keyring flow; Phase 9 performance measurement, visualiser off in fullscreen games, KEYBINDS/UPDATING docs; open question 1 (KDE apps show Oxygen colours in Hyprland because `kdeglobals` is shared).
+
+**Fixed during the review:** `notifications.forceMonitor` (upstream rename 9e1568f missed `Config.qml`; the settings Interface page threw TypeErrors and the ii notification popup read `undefined`).
+
+**About page:** a "Dotfiles: Caelestia" section (logo tinted for the dark theme, caelestia-dots/caelestia, shell source, issues, Discord).

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
+import QtQuick.Effects
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -145,6 +146,87 @@ ContentPage {
             }
 
             
+        }
+    }
+
+    // caelestia4: credit for the second upstream. This setup is end-4's dots with the Caelestia shell design on top.
+    ContentSection {
+        icon: "auto_awesome"
+        title: Translation.tr("Dotfiles: Caelestia")
+
+        RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            spacing: 20
+            Layout.topMargin: 10
+            Layout.bottomMargin: 10
+            IconImage {
+                id: caelestiaLogo
+                implicitSize: 80
+                source: "file://" + Quickshell.shellPath("modules/caelestia/assets/logo.svg")
+                // The logo is black; tint it to the text colour so it shows on the dark theme
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    colorization: 1
+                    colorizationColor: Appearance.colors.colOnLayer1
+                    brightness: 1
+                }
+            }
+            ColumnLayout {
+                Layout.alignment: Qt.AlignVCenter
+                StyledText {
+                    text: "Caelestia"
+                    font.pixelSize: Appearance.font.pixelSize.title
+                }
+                StyledText {
+                    text: "https://github.com/caelestia-dots/caelestia"
+                    font.pixelSize: Appearance.font.pixelSize.normal
+                    textFormat: Text.MarkdownText
+                    onLinkActivated: (link) => {
+                        Qt.openUrlExternally(link)
+                    }
+                    PointingHandLinkHover {}
+                }
+                StyledText {
+                    text: Translation.tr("Shell design: bar, frame, drawers, launcher, dashboard (caelestia-dots/shell)")
+                    font.pixelSize: Appearance.font.pixelSize.small
+                    color: Appearance.colors.colSubtext
+                }
+            }
+        }
+
+        Flow {
+            Layout.fillWidth: true
+            spacing: 5
+
+            RippleButtonWithIcon {
+                materialIcon: "auto_stories"
+                mainText: Translation.tr("Documentation")
+                onClicked: {
+                    Qt.openUrlExternally("https://github.com/caelestia-dots/caelestia#configuring")
+                }
+            }
+            RippleButtonWithIcon {
+                materialIcon: "code"
+                mainText: Translation.tr("Shell source")
+                onClicked: {
+                    Qt.openUrlExternally("https://github.com/caelestia-dots/shell")
+                }
+            }
+            RippleButtonWithIcon {
+                materialIcon: "adjust"
+                materialIconFill: false
+                mainText: Translation.tr("Issues")
+                onClicked: {
+                    Qt.openUrlExternally("https://github.com/caelestia-dots/shell/issues")
+                }
+            }
+            RippleButtonWithIcon {
+                materialIcon: "forum"
+                mainText: Translation.tr("Discord")
+                onClicked: {
+                    Qt.openUrlExternally("https://caelestiashell.com/discord")
+                }
+            }
         }
     }
 }
