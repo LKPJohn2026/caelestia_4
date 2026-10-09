@@ -9,7 +9,7 @@
 //   Super+V / Super+.  overviewClipboardToggle / overviewEmojiToggle -> launcher pre-filled with ";" / ":"
 //   Super+A/B/O      sidebarLeftToggle(+Open/Close/ToggleDetach) -> Assistant drawer (end-4 AI / translator)
 //   Super+J          barToggle -> hide/show the bar (ScreenState.barHidden)
-// Super+Tab (workspaces) is WorkspaceOverview.qml. Cheatsheet, region tools, left sidebar, lock… are the
+// Super+Tab / Alt+Tab (workspaces) is overview/Overview.qml. Cheatsheet, region tools, left sidebar, lock… are the
 // end-4 modules the family loads as-is.
 import QtQuick
 import Quickshell

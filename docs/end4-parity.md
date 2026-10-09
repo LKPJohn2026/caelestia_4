@@ -144,7 +144,9 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
 5. Assistant **detach** (`sidebarLeftToggleDetach`) only toggles the drawer.
 6. ii-only options in the settings app do nothing in this family (ii bar style/position, screen corners, ii dock, ii overview, notification popup monitor).
 
-**Works, still end-4 styled** (PLAN Phase 7 / 8 restyle not done): lock screen, workspace overview (Super+Tab), polkit dialog, region tools (screenshot / OCR / Lens / record), screen translator, overlay widgets (Super+G), wallpaper selector, Assistant contents (AI / translator / anime), Todo / Timer tabs.
+**Restyled:** workspace overview (`modules/caelestia/overview`: Super+Tab, plus Windows-style Alt+Tab: hold Alt, Tab / Shift+Tab step through workspaces in order, release Alt switches; `caelestia.overview.altTabSkipEmpty`), lock screen (hyprlock, Caelestia theme).
+
+**Works, still end-4 styled** (PLAN Phase 7 / 8 restyle not done): polkit dialog, region tools (screenshot / OCR / Lens / record), screen translator, overlay widgets (Super+G), wallpaper selector, Assistant contents (AI / translator / anime), Todo / Timer tabs.
 
 **Plan items open:** Phase 8 Caelestia lock with end-4's PAM + keyring flow; Phase 9 performance measurement, visualiser off in fullscreen games, KEYBINDS/UPDATING docs; open question 1 (KDE apps show Oxygen colours in Hyprland because `kdeglobals` is shared).
 
