@@ -8,6 +8,7 @@
 //   Super (tap)      searchToggleRelease (+Interrupt) -> Caelestia launcher (merged with end-4 search)
 //   Super+V / Super+.  overviewClipboardToggle / overviewEmojiToggle -> launcher pre-filled with ";" / ":"
 //   Super+A/B/O      sidebarLeftToggle(+Open/Close/ToggleDetach) -> Assistant drawer (end-4 AI / translator)
+//   Super+J          barToggle -> hide/show the bar (ScreenState.barHidden)
 // Super+Tab (workspaces) is WorkspaceOverview.qml. Cheatsheet, region tools, left sidebar, lock… are the
 // end-4 modules the family loads as-is.
 import QtQuick
@@ -104,6 +105,14 @@ Scope {
         if (!s)
             return;
         s[name] = value === "toggle" ? !s[name] : value;
+    }
+
+    // Super+J: hide/show the bar on the focused screen (end-4 "barToggle"). Hidden = like Caelestia's
+    // non-persistent bar: only the frame edge, and hovering the edge still reveals it.
+    GlobalShortcut {
+        name: "barToggle"
+        description: "Toggles the bar"
+        onPressed: root.setDrawer("barHidden", "toggle")
     }
 
     GlobalShortcut {

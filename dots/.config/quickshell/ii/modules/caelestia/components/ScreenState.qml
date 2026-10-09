@@ -12,6 +12,7 @@ PersistentProperties {
     property bool utilities
     property bool sidebar
     property bool assistant // caelestia4: end-4 AI/translator drawer (left)
+    property bool barHidden // caelestia4: Super+J (end-4 barToggle) hides the persistent bar; hovering the edge still reveals it
 
     // Dashboard state
     property int dashboardTab

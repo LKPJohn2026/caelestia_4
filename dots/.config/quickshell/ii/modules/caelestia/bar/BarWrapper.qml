@@ -20,8 +20,10 @@ Item {
     readonly property int clampedWidth: Math.max(Config.border.minThickness, implicitWidth)
     readonly property int padding: Math.max(Tokens.padding.small, Config.border.thickness)
     readonly property int contentWidth: Tokens.sizes.bar.innerWidth + padding * 2
-    readonly property int exclusiveZone: !disabled && (Config.bar.persistent || screenState.bar) ? contentWidth : Config.border.thickness
-    readonly property bool shouldBeVisible: !fullscreen && !disabled && (Config.bar.persistent || screenState.bar || isHovered)
+    // caelestia4: barHidden (Super+J) overrides the persistent bar for this screen
+    readonly property bool persistentNow: Config.bar.persistent && !screenState.barHidden
+    readonly property int exclusiveZone: !disabled && (persistentNow || screenState.bar) ? contentWidth : Config.border.thickness
+    readonly property bool shouldBeVisible: !fullscreen && !disabled && (persistentNow || screenState.bar || isHovered)
     property bool isHovered
 
     function closeTray(): void {
