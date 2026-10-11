@@ -4,11 +4,14 @@ import QtQuick
 import Quickshell
 import Caelestia
 import Caelestia.Config
+import Caelestia.I18n
 import Caelestia.Services
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
+import qs.services as E4 // caelestia4: keep
+import qs.modules.common.functions as E4F // caelestia4: keep
 
 Column {
     id: root
@@ -19,12 +22,88 @@ Column {
     rightPadding: CUtils.clamp(padding - Config.border.thickness, 0, padding)
     spacing: Tokens.spacing.large
 
+    // caelestia4: end-4's session-screen warnings (package manager running / download in progress), refreshed on open
+    Connections {
+        function onSessionChanged(): void {
+            if (root.screenState.session)
+                E4.SessionWarnings.refresh();
+        }
+
+        target: root.screenState
+    }
+
+    Repeater {
+        model: [
+            {
+                shown: E4.SessionWarnings.packageManagerRunning,
+                icon: "deployed_code_update",
+                text: Tr.tr("Updating")
+            },
+            {
+                shown: E4.SessionWarnings.downloadRunning,
+                icon: "downloading",
+                text: Tr.tr("Downloading")
+            }
+        ]
+
+        StyledRect {
+            required property var modelData
+
+            visible: modelData.shown
+            implicitWidth: Tokens.sizes.session.button
+            implicitHeight: warnCol.implicitHeight + Tokens.padding.small * 2
+            radius: Tokens.rounding.large
+            color: Colours.palette.m3errorContainer
+
+            Column {
+                id: warnCol
+
+                anchors.centerIn: parent
+                spacing: Tokens.spacing.extraSmall
+
+                MaterialIcon {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: modelData.icon
+                    color: Colours.palette.m3onErrorContainer
+                }
+
+                StyledText {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: modelData.text
+                    color: Colours.palette.m3onErrorContainer
+                    font: Tokens.font.label.small
+                }
+            }
+        }
+    }
+
+    // caelestia4: end-4's extra session actions (lock, sleep), through end-4's Session functions
+    SessionButton {
+        id: lock
+
+        icon: "lock"
+        action: () => E4F.Session.lock()
+
+        KeyNavigation.down: sleep
+    }
+
+    SessionButton {
+        id: sleep
+
+        icon: "dark_mode"
+        action: () => E4F.Session.suspend()
+
+        KeyNavigation.up: lock
+        KeyNavigation.down: logout
+    }
+
     SessionButton {
         id: logout
 
         icon: Config.session.icons.logout
         command: Config.session.commands.logout
 
+        KeyNavigation.up: sleep
         KeyNavigation.down: shutdown
 
         Component.onCompleted: forceActiveFocus()
@@ -78,14 +157,41 @@ Column {
         command: Config.session.commands.reboot
 
         KeyNavigation.up: hibernate
+        KeyNavigation.down: firmware
+    }
+
+    // caelestia4: end-4's reboot to firmware settings (UEFI) and task manager
+    SessionButton {
+        id: firmware
+
+        icon: "settings_applications"
+        action: () => E4F.Session.rebootToFirmware()
+
+        KeyNavigation.up: reboot
+        KeyNavigation.down: taskManager
+    }
+
+    SessionButton {
+        id: taskManager
+
+        icon: "browse_activity"
+        action: () => E4F.Session.launchTaskManager()
+
+        KeyNavigation.up: firmware
     }
 
     component SessionButton: IconButton {
         id: button
 
-        required property list<string> command
+        property list<string> command
+        property var action: null // caelestia4: a function instead of a command (end-4 Session actions)
 
         function exec(): void {
+            if (action) {
+                root.screenState.session = false;
+                action();
+                return;
+            }
             if (!SessionManager.exec(command))
                 Quickshell.execDetached(command);
         }
