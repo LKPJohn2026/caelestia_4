@@ -32,7 +32,8 @@ backup() { # backup <path>
 copy_if_missing() { # copy_if_missing <src> <dst>: only if dst missing or an empty dir
   local src="$1" dst="$2"
   if [[ ! -e "$dst" ]] || { [[ -d "$dst" ]] && [[ -z "$(ls -A "$dst")" ]]; }; then
-    mkdir -p "$(dirname "$dst")"; cp -a "$src" "$dst"; say "installed $dst"
+    # caelestia4: copy the *contents* (cp -a src dst into an existing empty dir nested it: ~/.config/kitty/kitty/)
+    mkdir -p "$dst"; cp -a "$src/." "$dst/"; say "installed $dst"
   else
     say "kept existing $dst"
   fi
@@ -48,6 +49,19 @@ mkdir -p "$CFG/caelestia4"; touch "$CFG/caelestia4/shared-desktop"
 backup "$CFG/quickshell/ii"
 mkdir -p "$CFG/quickshell"
 rsync -a --delete --exclude '.git' "$DOTS/quickshell/ii/" "$CFG/quickshell/ii/"
+
+# end-4 Python venv (end-4's installer makes it; ours didn't): terminal colours from the wallpaper
+# (generate_colors_material.py), screen translator sign-in (google-auth), image regions / text colours (opencv).
+# Python 3.12 as end-4 pins it (uv fetches it); locked deps from sdata/uv/requirements.txt.
+VENV="${XDG_STATE_HOME:-$HOME/.local/state}/quickshell/.venv"
+if [[ -x "$VENV/bin/python" ]]; then
+  say "kept existing $VENV"
+elif command -v uv >/dev/null; then
+  UV_NO_MODIFY_PATH=1 uv venv --prompt .venv "$VENV" -p 3.12 \
+    && VIRTUAL_ENV="$VENV" uv pip install -r "$REPO/sdata/uv/requirements.txt" && say "created $VENV"
+else
+  warn "uv not installed: end-4's Python venv not created (sudo pacman -S uv, then re-run)"
+fi
 say "installed $CFG/quickshell/ii"
 
 # ---- Hyprland config (end-4 + caelestia4 patches); keep user files on re-runs ----
