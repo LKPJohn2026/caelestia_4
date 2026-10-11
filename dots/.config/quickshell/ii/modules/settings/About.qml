@@ -145,7 +145,12 @@ ContentPage {
                 }
             }
 
-        // caelestia4: credit for the second upstream. This setup is end-4's dots with the Caelestia shell design on top.
+            
+        }
+    }
+
+    // caelestia4: credit for the second upstream. This setup is end-4's dots with the Caelestia shell design on top.
+    ContentSection {
         icon: "auto_awesome"
         title: Translation.tr("Dotfiles: Caelestia")
 
@@ -161,7 +166,7 @@ ContentPage {
                 // The logo is black; tint it to the text colour so it shows on the dark theme
                 layer.enabled: true
                 layer.effect: MultiEffect {
-                colorization: 1
+                    colorization: 1
                     colorizationColor: Appearance.colors.colOnLayer1
                     brightness: 1
                 }
@@ -180,6 +185,11 @@ ContentPage {
                         Qt.openUrlExternally(link)
                     }
                     PointingHandLinkHover {}
+                }
+                StyledText {
+                    text: Translation.tr("Shell design: bar, frame, drawers, launcher, dashboard (caelestia-dots/shell)")
+                    font.pixelSize: Appearance.font.pixelSize.small
+                    color: Appearance.colors.colSubtext
                 }
             }
         }
@@ -219,3 +229,4 @@ ContentPage {
             }
         }
     }
+}
