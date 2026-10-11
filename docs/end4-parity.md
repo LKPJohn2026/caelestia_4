@@ -194,3 +194,45 @@ Python venv (`~/.local/state/quickshell/.venv`, end-4 installer), not set up her
   the old strategy.
 - Tests: `node tools/test-gemini-interactions.js` (streams shaped per the API reference). Live run checked up to the
   API (request accepted by the endpoint, error rendering); no Gemini key is stored yet, so no real answer was tested.
+
+## Gap review: full pass before the uwsm move (2026-10-11)
+Method: (1) every `quickshell:<x>` in Hyprland keybinds vs GlobalShortcut/CustomShortcut handlers in what the Caelestia
+family loads; (2) every end-4 GlobalShortcut and IpcHandler target vs ours; (3) every `ipc call` in configs/scripts;
+(4) end-4 services nothing in the family references; (5) end-4 module features side by side (session, OSD,
+notifications, bar, background, screen corners); (6) external tools; (7) the live shell log.
+
+**Complete:** all 28 keybound shell shortcuts have handlers; all IPC calls used by configs/scripts
+(`cliphistService`, `panelFamily`, `dock`) are answered; every end-4 service is reachable except `SessionWarnings`
+(session screen only), `TrayService` (end-4 tray pinning) and `LauncherApps` (dead upstream). Tools all present except
+the ones below.
+
+**Broken**
+1. **end-4 Python venv missing** (`~/.local/state/quickshell/.venv`, created by end-4's installer, never set up here):
+   - `switchwall.sh` → `generate_colors_material.py` fails silently: `material_colors.scss` is empty, so
+     `generated/terminal/kitty-theme.conf` / `sequences.txt` keep raw `#$term0 #` placeholders: **terminal colours don't
+     follow the wallpaper** and junk sequences are written to open terminals. (Shell/app colours are fine: matugen.)
+   - screen translator: `token-from-key-venv.sh` (google-auth) can't get a token even with a key;
+   - region selector content regions, translator text colours (opencv/numpy).
+   - (Wallpaper-selector thumbnails are fine: ImageMagick fallback.)
+2. `easyeffects` isn't installed but end-4's `execs.lua` starts it every login (fails silently).
+
+**Missing in the Caelestia family**
+3. Session menu: Caelestia has logout / shutdown / hibernate / reboot; end-4 also has **lock, sleep, task manager,
+   reboot to firmware**, and warns when the package manager is running or a download is in progress.
+4. Holding Super: `workspaceNumber` sets `GlobalStates.superDown`, but only end-4's bar reads it (no numbers shown).
+5. OSD: no gamma indicator (end-4 shows it when brightness keys fall back to hyprsunset gamma).
+6. Assistant detach (`sidebarLeftToggleDetach` only toggles).
+7. Video wallpapers: `mpvpaper` not installed and Caelestia's background loads the path as an image (end-4 shows the
+   thumbnail).
+8. Aliases only for manual use: shortcuts `barOpen`/`barClose`, `osdVolumeTrigger`/`osdVolumeHide`; IPC targets `bar`,
+   `sidebarLeft`, `sidebarRight`, `session`, `mediaControls`, `osdVolume`.
+
+**Different by design (feature exists elsewhere):** bar media / resources / weather / unread count / utility buttons →
+dashboard tabs and the utilities drawer; floating media controls → dashboard media tab; screen corners + hot corners →
+Caelestia frame + edge hover; ii-only settings (bar style, screen corners, ii dock/overview, popup monitor, tray
+pinning) have no effect. Inline notification replies: neither shell.
+
+**Still end-4 styled:** overlay widgets (Super+G), wallpaper selector, Assistant contents, Todo/Timer tabs.
+
+**Log:** only noise (monitor hot-unplug "dangling screen"/"screen not set" from the G95NC DP drop, notifications
+restored from disk with missing fields).
