@@ -34,11 +34,6 @@ ContentPage {
                         displayName: Translation.tr("illogical-impulse"),
                         icon: "toast",
                         value: "ii"
-                    },
-                    {
-                        displayName: Translation.tr("Waffle"),
-                        icon: "window",
-                        value: "waffle"
                     }
                 ]
             }
@@ -314,18 +309,4 @@ ContentPage {
         }
     }
 
-    // ---------------------------------------------------------------- debug
-    ContentSection {
-        icon: "bug_report"
-        title: Translation.tr("Debug")
-
-        ConfigSwitch {
-            buttonIcon: "fact_check"
-            text: Translation.tr("Log adapter self-test on load")
-            checked: Config.options.caelestia.debugProbe
-            onCheckedChanged: {
-                Config.options.caelestia.debugProbe = checked;
-            }
-        }
-    }
 }
