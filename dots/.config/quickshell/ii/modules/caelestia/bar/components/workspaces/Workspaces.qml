@@ -9,9 +9,41 @@ import Caelestia.Components
 import Caelestia.Config
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
+import qs // caelestia4: keep
+import qs.modules.common as E4C // caelestia4: keep
 
 StyledClippingRect {
     id: root
+
+    // caelestia4: end-4's "hold Super to see workspace numbers": GlobalStates.superDown comes from the SUPER_L/R
+    // press/release binds (quickshell:workspaceNumber). Shown after end-4's showNumberDelay so a quick Super+key
+    // shortcut doesn't flash the bar; cancelled when Super is used for a shortcut (superReleaseMightTrigger).
+    property bool showNumbers: E4C.Config.options.bar.workspaces.alwaysShowNumbers || superHeld
+    property bool superHeld: false
+
+    Timer {
+        id: superHeldTimer
+
+        interval: E4C.Config.options.bar.workspaces.showNumberDelay
+        onTriggered: root.superHeld = true
+    }
+
+    Connections {
+        target: GlobalStates
+
+        function onSuperDownChanged(): void {
+            if (GlobalStates.superDown) {
+                superHeldTimer.restart();
+            } else {
+                superHeldTimer.stop();
+                root.superHeld = false;
+            }
+        }
+
+        function onSuperReleaseMightTriggerChanged(): void {
+            superHeldTimer.stop(); // Super was combined with another key: a shortcut, not a hold
+        }
+    }
 
     required property ShellScreen screen
     required property bool fullscreen
@@ -125,12 +157,13 @@ StyledClippingRect {
                 ws: Config.bar.workspaces.showUnoccupied ? root.groupOffset + index + 1 : modelData
                 monitor: root.monitor
 
-                displayType: Config.bar.workspaces.displayType
+                // caelestia4: plain numbers while Super is held (end-4 behaviour, see showNumbers)
+                displayType: root.showNumbers ? BarWorkspaceDisplay.Text : Config.bar.workspaces.displayType
                 showWindows: Config.bar.workspaces.showWindows
                 iconRules: GlobalConfig.bar.workspaces.workspaceIcons
-                activeLabel: Config.bar.workspaces.activeLabel
-                occupiedLabel: Config.bar.workspaces.occupiedLabel
-                label: Config.bar.workspaces.label
+                activeLabel: root.showNumbers ? "" : Config.bar.workspaces.activeLabel
+                occupiedLabel: root.showNumbers ? "" : Config.bar.workspaces.occupiedLabel
+                label: root.showNumbers ? "" : Config.bar.workspaces.label
             }
         }
 
