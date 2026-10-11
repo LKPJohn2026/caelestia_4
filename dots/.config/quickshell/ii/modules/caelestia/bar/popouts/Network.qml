@@ -64,7 +64,7 @@ ColumnLayout {
         RowLayout {
             id: networkItem
 
-            required property Nmcli.AccessPoint modelData
+            required property var modelData // caelestia4: end-4 WifiAccessPoint (same properties)
             readonly property bool isConnecting: root.connectingToSsid === modelData.ssid
             readonly property bool loading: networkItem.isConnecting
 

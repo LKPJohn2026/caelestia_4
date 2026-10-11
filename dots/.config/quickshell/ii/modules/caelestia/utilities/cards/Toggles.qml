@@ -44,7 +44,8 @@ StyledRect {
                 continue;
             ids.push(item.id);
         }
-        const extras = ["nightLight", "easyEffects", "darkMode", "powerProfile", "idleInhibitor", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
+        // caelestia4: no "idleInhibitor" here: keep awake is the Keep Awake card (one control, same Idle service)
+        const extras = ["nightLight", "easyEffects", "darkMode", "powerProfile", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
         for (const id of extras) {
             if (id === "easyEffects" && !E4.EasyEffects.available)
                 continue;
@@ -310,12 +311,6 @@ StyledRect {
                     delegate: ModelToggle {
                         toggleModel: E4QT.PowerProfilesToggle {}
                         tip: Tr.tr("Power profile: %1 · click to cycle").arg(toggleModel.statusText)
-                    }
-                }
-                DelegateChoice {
-                    roleValue: "idleInhibitor"
-                    delegate: ModelToggle {
-                        toggleModel: E4QT.IdleInhibitorToggle {}
                     }
                 }
                 DelegateChoice {
