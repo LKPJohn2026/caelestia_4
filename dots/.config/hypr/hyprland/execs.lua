@@ -29,7 +29,8 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("sleep 1 && dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP") -- Some fix idk
 
     -- Audio
-    hl.exec_cmd("easyeffects --hide-window --service-mode")
+    -- caelestia4: only if installed (optional; end-4 started it unconditionally and it failed silently)
+    hl.exec_cmd("command -v easyeffects >/dev/null && easyeffects --hide-window --service-mode")
 
     -- Clipboard: history
     --hl.exec_cmd("wl-paste --watch cliphist store")

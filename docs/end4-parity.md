@@ -207,14 +207,14 @@ notifications, bar, background, screen corners); (6) external tools; (7) the liv
 the ones below.
 
 **Broken**
-1. **end-4 Python venv missing** (`~/.local/state/quickshell/.venv`, created by end-4's installer, never set up here):
+1. ~~**end-4 Python venv missing**~~ **fixed 2026-10-11** (`~/.local/state/quickshell/.venv`, created by end-4's installer, never set up here):
    - `switchwall.sh` → `generate_colors_material.py` fails silently: `material_colors.scss` is empty, so
      `generated/terminal/kitty-theme.conf` / `sequences.txt` keep raw `#$term0 #` placeholders: **terminal colours don't
      follow the wallpaper** and junk sequences are written to open terminals. (Shell/app colours are fine: matugen.)
    - screen translator: `token-from-key-venv.sh` (google-auth) can't get a token even with a key;
    - region selector content regions, translator text colours (opencv/numpy).
    - (Wallpaper-selector thumbnails are fine: ImageMagick fallback.)
-2. `easyeffects` isn't installed but end-4's `execs.lua` starts it every login (fails silently).
+2. ~~`easyeffects` started every login though not installed~~ **fixed 2026-10-11** (only if installed).
 
 **Missing in the Caelestia family**
 3. Session menu: Caelestia has logout / shutdown / hibernate / reboot; end-4 also has **lock, sleep, task manager,
@@ -249,3 +249,15 @@ restored from disk with missing fields).
   recreated after a monitor drop.
 - Verified: logind `BlockInhibited` = "idle" exactly while keep awake is on; a test hypridle listening only to logind
   (3 s timeout) logged "Ignoring from onIdled(), inhibit locks: 1" with keep awake on and fired with it off.
+
+## Fix: end-4 Python venv, kitty config, EasyEffects (2026-10-11)
+- **venv** created as end-4's installer does: `uv venv -p 3.12` at `~/.local/state/quickshell/.venv` +
+  `sdata/uv/requirements.txt` (all 16 imported modules load). `tools/install-main.sh` now creates it if missing.
+  - Wallpaper colours → terminals work again: `material_colors.scss` is filled and `applycolor.sh` substitutes all
+    `$termN` placeholders (it runs in the background, so the file updates ~1 s after `switchwall.sh` returns).
+  - Translator sign-in script runs (a dummy key fails on the key itself, not on imports).
+- **kitty** was never using end-4's config: `copy_if_missing` did `cp -a src dst` into an existing empty
+  `~/.config/kitty`, nesting it as `~/.config/kitty/kitty/kitty.conf`. Moved up; kitty now loads it (JetBrains Mono,
+  fish, wallpaper theme include, Ctrl+C copy-or-interrupt, Ctrl+F search). `copy_if_missing` copies contents now.
+- **EasyEffects**: not installed; end-4's autostart now starts it only if present (`command -v easyeffects`).
+  (Under uwsm it isn't started at all, see docs/uwsm.md.)
