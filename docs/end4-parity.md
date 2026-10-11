@@ -261,3 +261,15 @@ restored from disk with missing fields).
   fish, wallpaper theme include, Ctrl+C copy-or-interrupt, Ctrl+F search). `copy_if_missing` copies contents now.
 - **EasyEffects**: not installed; end-4's autostart now starts it only if present (`command -v easyeffects`).
   (Under uwsm it isn't started at all, see docs/uwsm.md.)
+
+## Upstream syncs (2026-10-11)
+- **end-4**: merged `upstream/main` (18 commits; no conflicts). Relevant: OS-name parsing (`SystemInfo.qml`), suppress
+  app maximize requests, scroll-direction fix in binds, no blur behind `quickshell:background` (doesn't apply to
+  `caelestia-background`: Hyprland rule patterns match the whole namespace). Upstream also pins Quickshell `4f508be`,
+  the same as `caelestia4-quickshell`.
+- **Caelestia**: subtree `third_party/caelestia-shell` d999d487 (v2.5.0) → `21a75375` (main, +20: PipeWire
+  correctness, audio collector quantum, per-monitor tokens, Lyrics NOTIFY, qalc format, …); plugin rebuilt
+  (`tools/build-caelestia-plugin.sh`, revision updated). The "Config.* accessed without a screen set" warnings
+  (80+ per session) are gone. QML changes ported into our copies: `Workspace.qml` (bool onOtherMonitor),
+  `LyricList.qml` (workaround removed), `drawers/ContentWindow.qml` (toplevels count). `lock/` and `nexus` changes
+  don't apply (hyprlock; nexus not used).
