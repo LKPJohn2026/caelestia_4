@@ -9,7 +9,7 @@
 ### Current state (2026-10-09)
 | | |
 |---|---|
-| Hyprland | 0.56.2 (Lua config), standard `Hyprland` session (not uwsm, see §10) |
+| Hyprland | 0.56.2 (Lua config); `Hyprland (uwsm-managed)` session (see §10b, `docs/uwsm.md`), plain `Hyprland` still works |
 | Quickshell | own package `caelestia4-quickshell` **0.3.2** (`4f508be`), built against Qt **6.12**. Was `41651d7`; moved because 41651d7 doesn't compile on Qt 6.12 |
 | Caelestia | `third_party/caelestia-shell` v2.5.0; C++ plugin built into `~/.local/lib/qt6/qml` (rebuilt for Qt 6.12) |
 | end-4 | merged at `547836f1b0` (2026-09-28), not re-synced since |
@@ -299,7 +299,7 @@ Both upstreams are GPL-3.0. A private repo is fine. Any release must stay GPL-3.
 
 | Area | What is in place |
 |---|---|
-| Session | Stock `Hyprland` entry under plasmalogin, next to Plasma. **uwsm rejected** (not installed; would move env handling and break the KWallet fix). |
+| Session | `Hyprland (uwsm-managed)` under plasmalogin, next to Plasma (2026-10-11; env moved to uwsm env files with the KWallet fix kept, XDG autostart masked for Hyprland). The stock `Hyprland` entry still works. |
 | GPU / display | `AQ_DRM_DEVICES=/dev/dri/nvidia-dgpu` (udev symlink to the RTX 5090); VRR fullscreen-only; vertical workspace animation; games keep rendering in the background (`render_unfocused`, 60 fps). |
 | Keyring / logins | gnome-keyring removed; KWallet owns Secret Service; `pam_kwallet_init` in Hyprland; `XDG_CURRENT_DESKTOP=Hyprland:KDE` so Chromium/Electron use the same KWallet key as Plasma; Brave data re-keyed (`tools/brave-rekey.py`). Logins survive session switches. |
 | Input | fcitx5 + Bamboo in both sessions, Super+Space toggle; `ydotoold` (Hyprland only) for the on-screen keyboard. |
