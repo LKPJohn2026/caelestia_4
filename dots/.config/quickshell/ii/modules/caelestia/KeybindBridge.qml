@@ -13,6 +13,7 @@
 // end-4 modules the family loads as-is.
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Hyprland
 import qs // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep
@@ -215,5 +216,117 @@ Scope {
 
         target: ShellState.forActive()
         ignoreUnknownSignals: true
+    }
+
+    // ---------------------------------------------------------------- end-4 aliases (manual use / scripts)
+    // caelestia4: names end-4's ii panels register that nothing in our configs calls, mapped to Caelestia so
+    // existing habits and scripts (`qs -c ii ipc call sidebarRight toggle`, …) keep working.
+    GlobalShortcut {
+        name: "barOpen"
+        description: "Shows the bar"
+        onPressed: root.setDrawer("barHidden", false)
+    }
+
+    GlobalShortcut {
+        name: "barClose"
+        description: "Hides the bar"
+        onPressed: root.setDrawer("barHidden", true)
+    }
+
+    GlobalShortcut {
+        name: "osdVolumeTrigger"
+        description: "Shows the volume OSD"
+        onPressed: root.setDrawer("osd", true)
+    }
+
+    GlobalShortcut {
+        name: "osdVolumeHide"
+        description: "Hides the volume OSD"
+        onPressed: root.setDrawer("osd", false)
+    }
+
+    // bar: the state is barHidden, so open = not hidden
+    IpcHandler {
+        target: "bar"
+
+        function toggle(): void {
+            root.setDrawer("barHidden", "toggle");
+        }
+        function open(): void {
+            root.setDrawer("barHidden", false);
+        }
+        function close(): void {
+            root.setDrawer("barHidden", true);
+        }
+    }
+
+    IpcHandler {
+        target: "sidebarLeft"
+
+        function toggle(): void {
+            root.setDrawer("assistant", "toggle");
+        }
+        function open(): void {
+            root.setDrawer("assistant", true);
+        }
+        function close(): void {
+            root.setDrawer("assistant", false);
+        }
+    }
+
+    IpcHandler {
+        target: "sidebarRight"
+
+        function toggle(): void {
+            root.setDrawer("sidebar", "toggle");
+        }
+        function open(): void {
+            root.setDrawer("sidebar", true);
+        }
+        function close(): void {
+            root.setDrawer("sidebar", false);
+        }
+    }
+
+    IpcHandler {
+        target: "session"
+
+        function toggle(): void {
+            root.setDrawer("session", "toggle");
+        }
+        function open(): void {
+            root.setDrawer("session", true);
+        }
+        function close(): void {
+            root.setDrawer("session", false);
+        }
+    }
+
+    IpcHandler {
+        target: "mediaControls"
+
+        function toggle(): void {
+            root.setDrawer("dashboard", "toggle");
+        }
+        function open(): void {
+            root.setDrawer("dashboard", true);
+        }
+        function close(): void {
+            root.setDrawer("dashboard", false);
+        }
+    }
+
+    IpcHandler {
+        target: "osdVolume"
+
+        function trigger(): void {
+            root.setDrawer("osd", true);
+        }
+        function hide(): void {
+            root.setDrawer("osd", false);
+        }
+        function toggle(): void {
+            root.setDrawer("osd", "toggle");
+        }
     }
 }
