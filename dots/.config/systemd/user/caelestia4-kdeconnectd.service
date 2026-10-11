@@ -1,0 +1,15 @@
+# caelestia4: KDE Connect daemon (pairings shared with Plasma), Hyprland session only.
+[Unit]
+Description=KDE Connect daemon
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=dbus
+BusName=org.kde.kdeconnect
+ExecStart=/usr/bin/kdeconnectd
+Restart=on-failure
+Slice=background-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target

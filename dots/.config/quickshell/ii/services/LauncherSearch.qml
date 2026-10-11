@@ -248,11 +248,12 @@ Singleton {
                 iconType: LauncherSearchResult.IconType.System,
                 verb: Translation.tr("Open"),
                 execute: () => {
+                    // caelestia4: through AppLauncher (own unit under uwsm)
                     if (!entry.runInTerminal)
-                        entry.execute();
+                        AppLauncher.launch(entry);
                     else {
                         // Probably needs more proper escaping, but this will do for now
-                        Quickshell.execDetached(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(entry.command.join(' '))}'`]);
+                        AppLauncher.exec(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(entry.command.join(' '))}'`]);
                     }
                 },
                 comment: entry.comment,
@@ -266,9 +267,9 @@ Singleton {
                         iconType: LauncherSearchResult.IconType.System,
                         execute: () => {
                             if (!action.runInTerminal)
-                                action.execute();
+                                AppLauncher.launchAction(entry, action);
                             else {
-                                Quickshell.execDetached(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(action.command.join(' '))}'`]);
+                                AppLauncher.exec(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(action.command.join(' '))}'`]);
                             }
                         }
                     });

@@ -309,6 +309,9 @@ Both upstreams are GPL-3.0. A private repo is fine. Any release must stay GPL-3.
 | Lock | hyprlock + Caelestia-style theme (Google Sans Flex installed user-locally, full matugen palette). |
 | Plasma side (oxygen-plasma repo) | Shake Cursor off; `display-watchdog` boot service for the DP 2.1 black screen. |
 
+## 10b. uwsm session (2026-10-11)
+- [x] Ported to the uwsm-managed Hyprland session (`docs/uwsm.md`, `tools/uwsm-setup.sh`): env in uwsm env files, shell + helpers as systemd user units wanted by `wayland-session@hyprland.desktop.target`, apps launched as their own units, XDG autostart masked for Hyprland. Plain Hyprland session unchanged.
+
 ## 11. Next steps (prioritized, 2026-10-09)
 
 1. ~~Launcher actions~~ ✅ done 2026-10-09.

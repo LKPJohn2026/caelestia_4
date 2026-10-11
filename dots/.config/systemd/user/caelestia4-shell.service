@@ -1,0 +1,17 @@
+# caelestia4: the shell (Quickshell, config "ii") as a user service in the uwsm Hyprland session.
+# Restart: systemctl --user restart caelestia4-shell (Ctrl+Super+R). Logs: journalctl --user -u caelestia4-shell -f
+# Apps launched from the shell are handed to uwsm (own units), so restarting the shell doesn't close them.
+[Unit]
+Description=Caelestia 4 shell (Quickshell)
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/qs -c ii
+Restart=on-failure
+RestartSec=1
+Slice=session-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target
