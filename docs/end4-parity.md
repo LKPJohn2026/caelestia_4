@@ -236,3 +236,16 @@ pinning) have no effect. Inline notification replies: neither shell.
 
 **Log:** only noise (monitor hot-unplug "dangling screen"/"screen not set" from the G95NC DP drop, notifications
 restored from disk with missing fields).
+
+## Fix: keep awake didn't stop lock / screen-off / suspend (2026-10-11)
+- Symptom: with keep awake on, the PC still suspended after a while. The journal shows every suspend came from
+  `systemctl` in the user's session (hypridle's 15-min listener), i.e. hypridle never saw the inhibitor.
+- Cause: end-4's `Idle` service only used a Wayland idle inhibitor on a 1x1 layer surface with no screen set. Hyprland
+  counts it only while the surface is "alive and visible" (`recheckIdleInhibitorStatus`), and the surface is lost when
+  the G95NC drops off DP (`drm: Connector DP-2 disconnected`, "dangling screen" warnings).
+- Fix (`services/Idle.qml`, shared by both families): while inhibiting, also hold
+  `systemd-inhibit --what=idle --mode=block` (hypridle honours logind idle inhibitors; independent of surfaces). Only
+  `idle`, so a deliberate suspend still works. The inhibitor window now binds `screen: Quickshell.screens[0]` so it is
+  recreated after a monitor drop.
+- Verified: logind `BlockInhibited` = "idle" exactly while keep awake is on; a test hypridle listening only to logind
+  (3 s timeout) logged "Ignoring from onIdled(), inhibit locks: 1" with keep awake on and fired with it off.
