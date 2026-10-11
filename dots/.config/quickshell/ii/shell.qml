@@ -34,7 +34,7 @@ ShellRoot {
 
 
     // Panel families
-    property list<string> families: ["ii", "caelestia", "waffle"] // caelestia4: caelestia right after ii
+    property list<string> families: ["ii", "caelestia"] // caelestia4: ii kept as fallback; waffle removed (2026-10-11)
     function cyclePanelFamily() {
         const currentIndex = families.indexOf(Config.options.panelFamily)
         const nextIndex = (currentIndex + 1) % families.length
@@ -50,11 +50,6 @@ ShellRoot {
     PanelFamilyLoader {
         identifier: "ii"
         component: IllogicalImpulseFamily {}
-    }
-
-    PanelFamilyLoader {
-        identifier: "waffle"
-        component: WaffleFamily {}
     }
 
     PanelFamilyLoader {

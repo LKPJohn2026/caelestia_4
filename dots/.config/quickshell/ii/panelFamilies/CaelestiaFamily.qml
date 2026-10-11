@@ -47,10 +47,4 @@ Scope {
     PanelLoader { component: Lock {} }
     PanelLoader { component: Overlay {} }
     PanelLoader { component: WallpaperSelector {} }
-
-    // Phase 2 adapter self-test (Config.options.caelestia.debugProbe)
-    PanelLoader {
-        extraCondition: Config.options.caelestia.debugProbe
-        component: AdapterProbe {}
-    }
 }
