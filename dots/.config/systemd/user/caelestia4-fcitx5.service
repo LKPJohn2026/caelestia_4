@@ -1,0 +1,14 @@
+# caelestia4: fcitx5 input method (Bamboo) in the uwsm Hyprland session. Plasma starts it itself (KWin InputMethod).
+[Unit]
+Description=Fcitx5 input method
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/fcitx5 --replace
+Restart=on-failure
+Slice=session-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target

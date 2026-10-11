@@ -216,9 +216,9 @@ Scope {
 
         function launch(): void {
             if (entry)
-                entry.execute();
+                E4.AppLauncher.launch(entry); // caelestia4: own unit under uwsm
             else
-                Quickshell.execDetached(["sh", "-c", app.appId]);
+                E4.AppLauncher.exec(["sh", "-c", app.appId]);
         }
 
         Layout.alignment: Qt.AlignVCenter

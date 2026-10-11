@@ -1,0 +1,24 @@
+# caelestia4: environment for the uwsm-managed Hyprland session ("Hyprland (uwsm-managed)" at login).
+# Sourced by uwsm's preloader (POSIX sh) and exported to systemd + D-Bus, so apps started as units get it too.
+# Mirrors ~/.config/hypr/hyprland/env.lua, which only applies to the plain (non-uwsm) Hyprland session.
+# Machine-specific additions: ~/.config/uwsm/env-hyprland.d/*.sh (sourced after this file).
+
+# Marker read by the Hyprland config (UWSM), the shell (AppLauncher) and scripts
+export CAELESTIA4_UWSM=1
+
+# Wayland
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+
+# Applications (flatpak exports first)
+export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+
+# Themes
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME=kde
+export XDG_MENU_PREFIX=plasma-
+
+# end-4 Python virtual environment
+export ILLOGICAL_IMPULSE_VIRTUAL_ENV="$HOME/.local/state/quickshell/.venv"
+
+# User-local Caelestia QML plugin (caelestia4-quickshell)
+export QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml"

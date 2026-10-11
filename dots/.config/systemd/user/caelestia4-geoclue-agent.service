@@ -1,0 +1,15 @@
+# caelestia4: GeoClue demo agent (location for weather / night light), Hyprland session only.
+[Unit]
+Description=GeoClue agent
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionPathExists=/usr/lib/geoclue-2.0/demos/agent
+
+[Service]
+Type=exec
+ExecStart=/usr/lib/geoclue-2.0/demos/agent
+Restart=on-failure
+Slice=background-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target

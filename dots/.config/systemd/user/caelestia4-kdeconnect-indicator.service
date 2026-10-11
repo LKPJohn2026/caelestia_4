@@ -1,0 +1,15 @@
+# caelestia4: KDE Connect tray icon; after the shell so its tray (StatusNotifierWatcher) is there.
+[Unit]
+Description=KDE Connect indicator
+PartOf=graphical-session.target
+After=graphical-session.target caelestia4-shell.service caelestia4-kdeconnectd.service
+Wants=caelestia4-kdeconnectd.service
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/kdeconnect-indicator
+Restart=on-failure
+Slice=app-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target

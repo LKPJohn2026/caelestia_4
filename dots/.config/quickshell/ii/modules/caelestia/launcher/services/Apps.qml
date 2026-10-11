@@ -4,6 +4,7 @@ import Quickshell
 import Caelestia.Config
 import Caelestia.Models
 import qs.modules.caelestia.utils
+import qs.services as E4 // caelestia4: keep
 
 Searcher {
     id: root
@@ -11,13 +12,11 @@ Searcher {
     function launch(entry: DesktopEntry): void {
         appDb.incrementFrequency(entry.id);
 
+        // caelestia4: through AppLauncher, so apps get their own unit in the uwsm session
         if (entry.runInTerminal)
-            Quickshell.execDetached({
-                command: [...GlobalConfig.general.apps.terminal, `${Quickshell.shellDir}/modules/caelestia/assets/wrap_term_launch.sh` /* caelestia4: assets moved */, ...entry.command],
-                workingDirectory: entry.workingDirectory
-            });
+            E4.AppLauncher.exec([...GlobalConfig.general.apps.terminal, `${Quickshell.shellDir}/modules/caelestia/assets/wrap_term_launch.sh` /* caelestia4: assets moved */, ...entry.command], entry.workingDirectory);
         else
-            entry.execute();
+            E4.AppLauncher.launch(entry);
     }
 
     function search(search: string): var {
