@@ -83,7 +83,6 @@ Singleton {
             // caelestia4: behaviour settings for the Caelestia-design panel family.
             // Visual tokens (rounding, spacing, animation) live in Caelestia's ~/.config/caelestia/shell.json.
             property JsonObject caelestia: JsonObject {
-                property bool debugProbe: true // log an adapter self-test when the family loads (Phase 2)
                 property bool dashboardTodo: true // end-4 Todo as a dashboard tab
                 property bool dashboardTimer: true // end-4 Pomodoro/Stopwatch as a dashboard tab
                 // Utilities drawer: quick toggle order + enabled state, as [{ "id": "wifi", "enabled": true }, ...].
