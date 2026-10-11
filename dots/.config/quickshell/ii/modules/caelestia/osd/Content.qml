@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import qs.services as E4 // caelestia4: keep
 import QtQuick.Layouts
 import Caelestia
 import Caelestia.Config
@@ -103,6 +104,32 @@ Item {
                     icon: `brightness_${(Math.round(value * 6) + 1)}`
                     value: root.brightness
                     onMoved: root.monitor?.setBrightness(value)
+                }
+            }
+        }
+
+        // caelestia4: end-4's gamma indicator. Lowering brightness below 0 dims further with hyprsunset gamma (end-4
+        // Brightness service); shown only while gamma is below 100 %.
+        WrappedLoader {
+            shouldBeActive: Config.osd.enableBrightness && E4.Hyprsunset.gamma < 100
+
+            sourceComponent: CustomMouseArea {
+                function onWheel(event: WheelEvent) {
+                    if (event.angleDelta.y > 0)
+                        E4.Hyprsunset.setGamma(E4.Hyprsunset.gamma + 5);
+                    else if (event.angleDelta.y < 0)
+                        E4.Hyprsunset.setGamma(E4.Hyprsunset.gamma - 5);
+                }
+
+                implicitWidth: Tokens.sizes.osd.sliderWidth
+                implicitHeight: Tokens.sizes.osd.sliderHeight
+
+                FilledSlider {
+                    anchors.fill: parent
+
+                    icon: "wb_twilight"
+                    value: E4.Hyprsunset.gamma / 100
+                    onMoved: E4.Hyprsunset.setGamma(Math.round(value * 100))
                 }
             }
         }
