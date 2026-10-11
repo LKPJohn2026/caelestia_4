@@ -40,7 +40,9 @@ Singleton {
     // surface or screen. Only "idle": a deliberate suspend (Super+Shift+L, session menu) still works.
     Process {
         running: root.inhibit
-        command: ["systemd-inhibit", "--what=idle", "--mode=block", "--who=Caelestia shell", "--why=Keep awake is on", "sleep", "infinity"]
+        // Held by a loop that exits when the shell does (its grandparent: shell -> systemd-inhibit -> sh), so a killed or
+        // crashed shell can't leave an orphaned inhibitor behind (Quickshell doesn't kill children on exit).
+        command: ["systemd-inhibit", "--what=idle", "--mode=block", "--who=Caelestia shell", "--why=Keep awake is on", "sh", "-c", 'shell=$(ps -o ppid= -p "$PPID" | tr -d " "); while kill -0 "$shell" 2>/dev/null; do sleep 5; done']
     }
 
     IdleInhibitor {

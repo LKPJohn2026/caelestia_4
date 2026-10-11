@@ -273,3 +273,20 @@ restored from disk with missing fields).
   (80+ per session) are gone. QML changes ported into our copies: `Workspace.qml` (bool onOtherMonitor),
   `LyricList.qml` (workaround removed), `drawers/ContentWindow.qml` (toplevels count). `lock/` and `nexus` changes
   don't apply (hyprlock; nexus not used).
+
+## De-duplication (2026-10-11)
+- **Network**: one `nmcli monitor` instead of two. `modules/caelestia/adapters/Nmcli.qml` (upstream Caelestia, 1.8k
+  lines, own monitor + scans) replaced by a ~230-line adapter over end-4's `Network` service: Wi-Fi state/list/
+  enable/scan/disconnect delegate to end-4 (its `WifiAccessPoint` has the same properties as Caelestia's
+  `AccessPoint`); wired devices, connect-with-result/password check, saved profiles and forget are one-off nmcli calls
+  refreshed on end-4's monitor events. Verified headless: `enp9s0` connected → `activeEthernet`, Wi-Fi radio off →
+  no networks (matches `nmcli`).
+- **Keep awake**: the end-4 `idleInhibitor` quick toggle is gone from the utilities drawer; the Keep Awake card is the
+  one control (same Idle service).
+- **Orphaned keep-awake lock**: when the shell was killed (plain-session restart `killall qs`), `systemd-inhibit`
+  survived and kept idle blocked. The held command is now a loop that exits within 5 s of the shell's death
+  (tested with a stand-in parent). (General: Quickshell children such as `nmcli monitor` also outlive a killed
+  shell in the plain session; under uwsm the shell unit's cgroup is killed as a whole.)
+- Not duplicated (checked): fallback keybind pairs, recording/screenshot backends, notifications/DND/idle adapters,
+  weather (only Caelestia's runs), daemons. Upstream Caelestia's runtime Caps/Num Lock binds accumulate per shell
+  start (harmless, upstream).
