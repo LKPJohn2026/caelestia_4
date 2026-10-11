@@ -290,3 +290,26 @@ restored from disk with missing fields).
 - Not duplicated (checked): fallback keybind pairs, recording/screenshot backends, notifications/DND/idle adapters,
   weather (only Caelestia's runs), daemons. Upstream Caelestia's runtime Caps/Num Lock binds accumulate per shell
   start (harmless, upstream).
+
+## Gaps closed + cleanup before uwsm (2026-10-11)
+**Gaps closed**
+- Session menu: + lock, sleep, reboot to firmware, task manager (end-4 `Session` functions) and end-4's warnings
+  (package manager running / download in progress, refreshed when the menu opens). Logout/shutdown/hibernate/reboot
+  stay Caelestia's (logind; end-4's logout is `pkill Hyprland`, which uwsm warns against).
+- Bar: holding Super shows workspace numbers (`GlobalStates.superDown`, end-4 `showNumberDelay` 300 ms, cancelled when
+  Super is used in a shortcut; `alwaysShowNumbers` respected).
+- OSD: gamma slider (wb_twilight) while hyprsunset gamma < 100 % (brightness lowered past 0), shown on change.
+- Aliases: shortcuts `barOpen`/`barClose`/`osdVolumeTrigger`/`osdVolumeHide`; IPC targets `bar`, `sidebarLeft`,
+  `sidebarRight`, `session`, `mediaControls`, `osdVolume` → Caelestia drawers.
+- Not yet: Assistant detach, video wallpapers (no mpvpaper).
+
+**Cleanup**
+- Waffle family removed (145 files; ii family kept as Ctrl+Super+P fallback). `CalendarView` (only used by Waffle)
+  stays as unused upstream code. `tools/sync-end4.sh` merges end-4 and keeps removed paths removed (modify/delete
+  conflicts resolved, files added under removed dirs dropped); tested on a clone with a fake upstream.
+- Removed the Phase 2 adapter self-test (`AdapterProbe`, `caelestia.debugProbe`, settings Debug section) and 4
+  unused Caelestia components (VerticalFadeFlickable/ListView, WavyTopRect, AnimLoader).
+- Kept on purpose (sync-friendly): end-4 files we don't load (ii modules for the fallback family, other-distro
+  installers in sdata/, LauncherApps, legacy GeminiApiStrategy for user `gemini` models).
+- Local build leftovers (untracked, regenerable): `packaging/caelestia4-quickshell/{src,pkg}`, the 0.3.1 package,
+  `build/caelestia-plugin` (~4.4 GB).
