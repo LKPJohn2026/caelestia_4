@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import qs.services as E4 // caelestia4: keep
 import Quickshell
 import Caelestia.Config
 import qs.modules.caelestia.components
@@ -70,6 +71,15 @@ Item {
         }
 
         target: Audio
+    }
+
+    // caelestia4: end-4 gamma (brightness below 0)
+    Connections {
+        function onGammaChangeAttempt(): void {
+            root.show();
+        }
+
+        target: E4.Hyprsunset
     }
 
     Connections {
