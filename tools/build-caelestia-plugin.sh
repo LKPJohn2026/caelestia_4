@@ -9,9 +9,9 @@ SRC="$REPO_ROOT/third_party/caelestia-shell"
 BUILD="$REPO_ROOT/build/caelestia-plugin"
 PREFIX="${PREFIX:-$HOME/.local}"
 
-# Vendored tag v2.5.0 -> commit d999d487 (see docs/phase1.md)
+# Vendored: caelestia-dots/shell main 21a75375 (v2.5.0+20, 2026-10-11); originally v2.5.0 -> d999d487 (docs/phase1.md)
 VERSION="2.5.0"
-GIT_REVISION="d999d4878"
+GIT_REVISION="21a75375b"
 
 cmake -S "$SRC" -B "$BUILD" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
