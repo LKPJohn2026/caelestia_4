@@ -1,0 +1,15 @@
+# caelestia4: clipboard history watcher, one instance per type: caelestia4-cliphist@text, caelestia4-cliphist@image.
+# Stores each new selection with cliphist and tells the shell to refresh its clipboard list.
+[Unit]
+Description=Clipboard history (%i)
+PartOf=graphical-session.target
+After=graphical-session.target caelestia4-shell.service
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/wl-paste --type %i --watch /usr/bin/bash -c 'cliphist store && qs -c ii ipc call cliphistService update'
+Restart=on-failure
+Slice=background-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target

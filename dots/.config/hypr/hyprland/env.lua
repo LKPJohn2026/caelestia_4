@@ -1,5 +1,11 @@
 local home_dir = os.getenv("HOME")
 
+-- caelestia4: in the uwsm session these come from ~/.config/uwsm/env-hyprland instead (exported to systemd, so apps
+-- started as units get them too). Setting them here as well would prepend XDG_DATA_DIRS twice.
+if UWSM then
+    return
+end
+
 -- Wayland
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 

@@ -1,5 +1,17 @@
 -- put former exec-once commands inside the func and former exec commands outside
 hl.on("hyprland.start", function ()
+    -- caelestia4: uwsm session: the shell, clipboard history, idle daemon, audio effects and the geoclue agent are
+    -- systemd user units wanted by wayland-session@hyprland.desktop.target (tools/uwsm-setup.sh); uwsm also exports
+    -- the environment to systemd/D-Bus itself. Only one-shot setup is left here.
+    if UWSM then
+        hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
+        if not is_file_exists(HOME .. "/.config/caelestia4/shared-desktop") then
+            hl.exec_cmd(bg("gnome-keyring-daemon --start --components=secrets"))
+        end
+        hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
+        return
+    end
+
 
     -- Bar, wallpaper
     hl.exec_cmd("$HOME/.config/hypr/hyprland/scripts/start_geoclue_agent.sh")

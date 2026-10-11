@@ -254,7 +254,7 @@ local function restore()
         if e.cmd ~= "" and not running[e.class] then
             if MULTI_INSTANCE[e.class] or not launched[e.cmd] then
                 launched[e.cmd] = true
-                hl.exec_cmd(e.cmd, { workspace = e.workspace .. " silent" })
+                hl.exec_cmd(app(e.cmd), { workspace = e.workspace .. " silent" }) -- caelestia4: own unit under uwsm
             end
         end
     end
