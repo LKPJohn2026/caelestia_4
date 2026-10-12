@@ -378,3 +378,8 @@ Live test per provider (empty search, safe, page 1) before → after:
 - Dry runs at 7680×2160: Wallhaven 8192×4096, Konachan 10039×4134, yande.re "none that large".
 - end-4's **osu! seasonal** source is dropped from the picker: `osu.ppy.sh/api/v2/seasonal-backgrounds` now answers
   403 (Cloudflare) to every request. end-4's script file stays untouched.
+- **/mode** (2026-10-12): "Invalid API provider" came from (1) Enter sending the typed text and ignoring the highlighted
+  suggestion (`/mode` or `/mode wa` → empty/partial name), (2) the list showing display names ("yande.re") while
+  lookup used keys (`yandere`), (3) arguments split on single spaces (double space → empty). Now `Booru.resolveProvider`
+  matches key or display name ignoring case/punctuation, or a unique prefix; Enter on `/mode` takes the highlighted
+  provider; `/mode` alone shows the current provider and choices; args split on any whitespace.

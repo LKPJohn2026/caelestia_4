@@ -368,14 +368,41 @@ Singleton {
         return url;
     }
     
+    // caelestia4: forgiving provider lookup for /mode. Matches the key or the display name, ignoring case and
+    // punctuation ("yande.re" -> yandere, "Waifu.im", "t.alcy.cc"), or a unique prefix ("wall" -> wallhaven).
+    // Returns { key } or { matches: [...] } when ambiguous / nothing matched.
+    function resolveProvider(query) {
+        const norm = str => `${str ?? ""}`.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const q = norm(query);
+        if (q.length === 0)
+            return { matches: [] };
+        const exact = providerList.find(k => norm(k) === q || norm(providers[k].name) === q);
+        if (exact)
+            return { key: exact };
+        const prefix = providerList.filter(k => norm(k).startsWith(q) || norm(providers[k].name).startsWith(q));
+        return prefix.length === 1 ? { key: prefix[0] } : { matches: prefix };
+    }
+
+    function providerChoices() {
+        return providerList.map(k => `- ${k}${providers[k].name.toLowerCase() !== k ? ` (${providers[k].name})` : ""}`).join("\n");
+    }
+
     function setProvider(provider) {
-        provider = provider.toLowerCase()
-        if (providerList.indexOf(provider) !== -1) {
+        const query = `${provider ?? ""}`.trim();
+        if (query.length === 0) { // caelestia4: "/mode" alone shows the current provider instead of an error
+            root.addSystemMessage(Translation.tr("Current provider: %1. Switch with /mode <name>:").arg(providers[currentProvider]?.name ?? currentProvider) + "\n" + root.providerChoices());
+            return;
+        }
+        const found = root.resolveProvider(query);
+        if (found.key) {
+            provider = found.key
             Persistent.states.booru.provider = provider
             root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name
                 + (provider == "zerochan" ? Translation.tr(". Notes for Zerochan:\n- You must enter a color\n- Set your zerochan username in `sidebar.booru.zerochan.username` config option. You [might be banned for not doing so](https://www.zerochan.net/api#:~:text=The%20request%20may%20still%20be%20completed%20successfully%20without%20this%20custom%20header%2C%20but%20your%20project%20may%20be%20banned%20for%20being%20anonymous.)!") : ""))
+        } else if (found.matches.length > 1) {
+            root.addSystemMessage(Translation.tr("\"%1\" matches several providers: %2").arg(query).arg(found.matches.join(", ")))
         } else {
-            root.addSystemMessage(Translation.tr("Invalid API provider. Supported: \n- ") + providerList.join("\n- "))
+            root.addSystemMessage(Translation.tr("No provider called \"%1\". Choose one of:").arg(query) + "\n" + root.providerChoices())
         }
     }
 
