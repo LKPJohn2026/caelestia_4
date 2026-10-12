@@ -13,7 +13,6 @@ import Caelestia.Config
 import qs.modules.caelestia.components
 import qs as E4G // caelestia4: keep (GlobalStates)
 import qs.modules.common as E4C // caelestia4: keep
-import qs.modules.ii.sidebarLeft as E4Sidebar // caelestia4: keep
 
 Item {
     id: root
@@ -54,7 +53,7 @@ Item {
         active: root.shouldBeActive || root.visible
         focus: root.shouldBeActive
 
-        sourceComponent: E4Sidebar.SidebarLeftContent {
+        sourceComponent: SidebarLeftContent {
             scopeRoot: root
         }
 
