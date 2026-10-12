@@ -67,9 +67,11 @@ say "installed $CFG/quickshell/ii"
 # ---- Hyprland config (end-4 + caelestia4 patches); keep user files on re-runs ----
 backup "$CFG/hypr"
 mkdir -p "$CFG/hypr"
-rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'workspaces.lua' \
+rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'workspaces.lua' --exclude 'hyprland/shellOverrides/main.lua' \
       --exclude 'hyprland/colors.lua' --exclude 'hyprlock/colors.conf' "$DOTS/hypr/" "$CFG/hypr/"
 [[ -f "$CFG/hypr/hyprland/colors.lua" ]] || cp "$DOTS/hypr/hyprland/colors.lua" "$CFG/hypr/hyprland/colors.lua"
+# caelestia4: settings-app Hyprland options live here (written by the shell); never overwrite them
+[[ -f "$CFG/hypr/hyprland/shellOverrides/main.lua" ]] || { mkdir -p "$CFG/hypr/hyprland/shellOverrides"; cp "$DOTS/hypr/hyprland/shellOverrides/main.lua" "$CFG/hypr/hyprland/shellOverrides/main.lua"; }
 [[ -f "$CFG/hypr/hyprlock/colors.conf" ]] || cp "$DOTS/hypr/hyprlock/colors.conf" "$CFG/hypr/hyprlock/colors.conf"
 [[ -d "$CFG/hypr/custom" ]] || cp -a "$DOTS/hypr/custom" "$CFG/hypr/custom"
 ENV="$CFG/hypr/custom/env.lua"
