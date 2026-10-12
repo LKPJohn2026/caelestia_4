@@ -78,11 +78,6 @@ ApplicationWindow {
             component: "modules/settings/c4/AdvancedPage.qml"
         },
         {
-            name: Translation.tr("end-4 panels"),
-            icon: "history",
-            component: "modules/settings/c4/FallbackPage.qml"
-        },
-        {
             name: Translation.tr("About"),
             icon: "info",
             component: "modules/settings/About.qml"

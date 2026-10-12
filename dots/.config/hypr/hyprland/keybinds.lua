@@ -66,7 +66,6 @@ hl.bind("CTRL + SUPER + T", hl.dsp.exec_cmd(qsIsAlive .. " || " .. qsScripts .. 
 -- caelestia4: under uwsm the shell is a unit (caelestia4-shell.service), restart it through systemd
 hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd(UWSM and "systemctl --user restart caelestia4-shell.service" or "killall ydotool qs quickshell; qs -c $qsConfig &"),
     { description = "Shell: Restart widgets" })
-hl.bind("CTRL + SUPER + P", hl.dsp.global("quickshell:panelFamilyCycle"), { description = "Shell: Cycle panel family" })
 
 --##! Utilities
 --# Screenshot, Record, OCR, Color picker, Clipboard history

@@ -26,7 +26,7 @@ on the same user account. Plasma's settings are not touched.
    then `ls -l /dev/dri/nvidia-dgpu` should point at card1 (RTX 5090).
 3. **Packages** are already present from the e4test install: `hyprland`, end-4's `illogical-impulse-*`, `caelestia4-quickshell`, `qt6-m3shapes-git`, `aubio`, `libcava`.
 4. **Install (no sudo):** `tools/install-main.sh`. Backups go to `~/.local/state/caelestia4/backup-*`.
-5. Log out → login screen → **Hyprland** session. The shell starts in the caelestia family (Ctrl+Super+P cycles).
+5. Run `tools/uwsm-setup.sh` (see docs/uwsm.md), log out → login screen → **Hyprland (uwsm-managed)**. The shell starts as the `caelestia4-shell` user unit.
 
 ## Updating
 `git pull` (or merge upstream with `tools/sync-upstreams.sh`), then `tools/install-main.sh` again. Your `hypr/custom/`, `monitors.lua` and `workspaces.lua` are kept.
