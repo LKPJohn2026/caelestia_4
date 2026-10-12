@@ -13,7 +13,7 @@
 | Quickshell | own package `caelestia4-quickshell` **0.3.2** (`4f508be`), built against Qt **6.12**. Was `41651d7`; moved because 41651d7 doesn't compile on Qt 6.12 |
 | Caelestia | `third_party/caelestia-shell` v2.5.0; C++ plugin built into `~/.local/lib/qt6/qml` (rebuilt for Qt 6.12) |
 | end-4 | merged at `547836f1b0` (2026-09-28), not re-synced since |
-| Family | `caelestia` is the default `panelFamily`; 216 QML files in `modules/caelestia/`; `ii`/`waffle` are still one Ctrl+Super+P away |
+| Family | `caelestia` is the only panel family (Waffle removed 2026-10-11, end-4's `ii` panels 2026-10-12; their reused parts stay: lock, overlay, Assistant, wallpaper selector, services, settings app) |
 | Lock | hyprlock with a Caelestia-style theme (§5 Phase 8) |
 | Idle cost | `qs` ~1.0 GB RSS (Caelestia's reference: ~1.5 GB), CPU near idle |
 
@@ -41,7 +41,7 @@ The opposite direction would be Caelestia as the base, with end-4's ~25–30 ext
 | Settings for new features | New `caelestia` section in end-4's QML `Config.qml` | New C++ config sections in `Caelestia.Config` → **a modified plugin**, rebuilt and conflicting on every update |
 | KDE integration | Comes with end-4 (packages, env, portal) | Rebuilt from scratch. Caelestia uses Thunar, its own Qt theme engine, foot |
 | Stability | Pinned Quickshell, unmodified plugin | `quickshell-git` + other `-git` deps; plugin modified |
-| When the custom UI breaks | Ctrl+Super+P back to stock `ii` | Log out to another session |
+| When the custom UI breaks | uwsm restarts the shell unit; `git revert` / `git log` for the old panels | Log out to another session |
 | Compatibility layer | Adapters: Caelestia-shaped facades over end-4 services | The mirror image: a shim for end-4's `Config`, `Persistent`, `Directories`, `functions` and script paths |
 
 **Decision:** end-4 is the base. The features and KDE integration are the functional core and the part upstream changes most, so they should keep updating through merges. The visual layer is where this project customizes anyway, so that is the part maintained by hand. Revisit only if an exact Caelestia look becomes more important than keeping up with end-4.

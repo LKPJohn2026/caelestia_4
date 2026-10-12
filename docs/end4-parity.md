@@ -389,3 +389,22 @@ Live test per provider (empty search, safe, page 1) before → after:
   ranked by closeness to 32:9, within 2 % = same shape) → closest shape / any landscape. Status shows the tier.
   Dry runs at 7680×2160: Wallhaven exact 7680×2160 / 32:9 without size floor; Konachan exact / 32:9 3498×975;
   yande.re closest shape (no 32:9 there).
+
+## end-4 panels removed (2026-10-12)
+Final gap review before removal (live, uwsm session): all 29 keybound shell shortcuts and every IPC call from configs/
+scripts are handled by the Caelestia family; end-4's quick toggles are covered by the utilities drawer. Closed first:
+- **Assistant detach**: Super+Alt+A / Ctrl+D pops the Assistant into a normal window (`assistant/DetachedWindow.qml`),
+  Super+A shows/hides it while detached; again to reattach.
+- **Video wallpapers**: Caelestia's background shows end-4's first-frame thumbnail and, while `mpvpaper` runs, turns
+  transparent one layer above it (`Wallpapers.isVideo`/`videoPlaying`). Under uwsm mpvpaper is its own unit. Needs
+  `sudo pacman -S mpvpaper`.
+- **Desktop weather**: beside Caelestia's desktop clock (Caelestia Weather service, refreshed every 30 min). New
+  settings section Desktop > "Desktop clock & weather" (the clock had no setting before).
+
+Removed: the ii panel family (`IllogicalImpulseFamily`, Ctrl+Super+P, settings "end-4 panels" page and "Panel set"
+row) and 127 files of end-4 modules nothing else loads (bar, vertical bar, background, dock, media controls,
+notification popup, OSD, overview, polkit, screen corners, screen translator, session screen, right sidebar except
+todo/pomodoro/volumeMixer). Kept (the Caelestia family reuses them): lock, overlay, wallpaper selector, sidebarLeft
+(Assistant), todo/pomodoro, cheatsheet + OSK data, region selector, all services and the settings app. The lock
+screen's tray files moved from `modules/ii/bar` to `modules/ii/lock`. `tools/sync-end4.sh` keeps all of it removed.
+`tools/compile-check.sh` now uses the running compositor when sway isn't installed (compile only, nothing created).
