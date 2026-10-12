@@ -313,3 +313,18 @@ restored from disk with missing fields).
   installers in sdata/, LauncherApps, legacy GeminiApiStrategy for user `gemini` models).
 - Local build leftovers (untracked, regenerable): `packaging/caelestia4-quickshell/{src,pkg}`, the 0.3.1 package,
   `build/caelestia-plugin` (~4.4 GB).
+
+## RAM investigation: "38 GiB used" (2026-10-11)
+- Breakdown: apps (AnonPages) 13.4 GiB; **zram 16.8 GiB** holding 27.9 GiB of swapped pages at a poor 1.66× ratio;
+  shmem/slab/page tables ~5.4; drivers ~2. btop's "used" includes zram's compressed pages, which belong to no process.
+- Cause: `/tmp` (tmpfs = RAM) held **26 GiB in `/tmp/cursor-sandbox-cache`**. Cursor's agent sandbox points every
+  package manager cache (npm, pip, uv, Playwright Chromium, cargo, …) at `os.tmpdir()/cursor-sandbox-cache/<random>`,
+  a new random folder per Cursor start, never cleaned. Mostly incompressible archives → poor zram ratio.
+- Fix (user's choice: keep in RAM, auto-clean): `~/.config/user-tmpfiles.d/cursor-sandbox-cache.conf`
+  (`e /tmp/cursor-sandbox-cache - - - 1d`, copy in `dots-extra/user-tmpfiles.d/`) + user
+  `systemd-tmpfiles-clean.timer` enabled (daily). First run: /tmp 27 GiB → 430 MiB, zram RAM 16.8 → 1 GiB,
+  used 38 → 22 GiB.
+- uwsm wouldn't have prevented it (Cursor already runs in its own scope; the tmpfs pages were charged to it). The
+  real uwsm benefit found: `systemd-oomd` (active, swap limit 90 %) kills the unit with the most swap, and today
+  Hyprland + shell + Steam + games share `session-5.scope`, so an OOM caused by a game could take down the session.
+  uwsm gives each app its own unit (uwsm README: piling apps into the compositor's unit is "bad practice").
