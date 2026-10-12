@@ -2,13 +2,20 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Qt5Compat.GraphicalEffects
 import qs
 import qs.modules.common
+import qs.modules.common as E4C // caelestia4: end-4 Config (Caelestia.Config also has a Config)
 import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.modules.common.widgets.widgetCanvas
+import Caelestia.Config
+import Caelestia.I18n
+import qs.modules.caelestia.components
+import qs.modules.caelestia.components.controls
+import qs.modules.caelestia.adapters
 
+// caelestia4: end-4's overlay widget frame (drag, resize, pin, click-through: unchanged) drawn in Caelestia style:
+// a surface card with a title row of Caelestia icon buttons; while the overlay is closed only pinned content shows.
 /*
  * To make an overlay widget:
  * 1. Create a modules/overlay/<yourWidget>/<YourWidget>.qml, using this as the base class and declare your widget content as contentItem
@@ -32,11 +39,11 @@ AbstractOverlayWidget {
     readonly property string materialSymbol: modelData.materialSymbol ?? "widgets"
     property string title: identifier.replace(/([A-Z])/g, " $1").replace(/^./, function(str){ return str.toUpperCase(); })
     property var persistentStateEntry: Persistent.states.overlay[identifier]
-    property real radius: Appearance.rounding.windowRounding
+    property real radius: Tokens.rounding.large
     property real minimumWidth: contentItem.implicitWidth
     property real minimumHeight: contentItem.implicitHeight
     property real resizeMargin: 8
-    property real padding: 6
+    property real padding: Tokens.padding.small
     property real contentRadius: radius - padding
 
     // Resizing
@@ -84,7 +91,7 @@ AbstractOverlayWidget {
         maximumX: root.parent?.width - root.width
         maximumY: root.parent?.height - root.height
     }
-    opacity: (GlobalStates.overlayOpen || !clickthrough) ? 1.0 : Config.options.overlay.clickthroughOpacity
+    opacity: (GlobalStates.overlayOpen || !clickthrough) ? 1.0 : E4C.Config.options.overlay.clickthroughOpacity
 
     // Guarded states & registration funcs
     property bool open: Persistent.states.overlay.open
@@ -193,99 +200,101 @@ AbstractOverlayWidget {
     implicitWidth: contentColumn.implicitWidth + resizeMargin * 2
     implicitHeight: contentColumn.implicitHeight + resizeMargin * 2
 
-    Rectangle {
+    StyledRect {
         id: border
+
         anchors {
             fill: parent
             margins: root.resizeMargin
         }
-        color: ColorUtils.transparentize(Appearance.colors.colLayer1Base, (root.fancyBorders && GlobalStates.overlayOpen) ? 0 : 1)
+        color: Qt.alpha(Colours.palette.m3surfaceContainer, (root.fancyBorders && GlobalStates.overlayOpen) ? 1 : 0)
         radius: root.radius
-        border.color: ColorUtils.transparentize(Appearance.colors.colOutlineVariant, GlobalStates.overlayOpen ? 0 : 1)
+        border.color: Qt.alpha(Colours.palette.m3outlineVariant, (root.fancyBorders && GlobalStates.overlayOpen) ? 0.6 : 0)
         border.width: 1
 
-        layer.enabled: GlobalStates.overlayOpen
-        layer.effect: OpacityMask {
-            maskSource: Rectangle {
-                width: border.width
-                height: border.height
-                radius: root.radius
-            }
+        Behavior on color {
+            CAnim {}
         }
 
         ColumnLayout {
             id: contentColumn
+
             z: root.fancyBorders ? 0 : -1
             anchors.fill: parent
             spacing: 0
 
-            // Title bar
-            Rectangle {
+            // Title bar (only while the overlay is open)
+            Item {
                 id: titleBar
+
                 opacity: GlobalStates.overlayOpen ? 1 : 0
                 Layout.fillWidth: true
                 implicitWidth: titleBarRow.implicitWidth + root.padding * 2
                 implicitHeight: titleBarRow.implicitHeight + root.padding * 2
-                color: root.fancyBorders ? "transparent" : Appearance.colors.colLayer1Base
-                // border.color: Appearance.colors.colOutlineVariant
-                // border.width: 1
-                
+
+                Behavior on opacity {
+                    Anim {
+                        type: Anim.DefaultEffects
+                    }
+                }
+
+                // A plate behind the title when the widget itself is see-through (crosshair)
+                StyledRect {
+                    visible: !root.fancyBorders
+                    anchors.fill: parent
+                    radius: root.radius
+                    color: Colours.palette.m3surfaceContainer
+                }
+
                 RowLayout {
                     id: titleBarRow
+
                     anchors {
                         fill: parent
                         margins: root.padding
                     }
-                    spacing: 2
+                    spacing: Tokens.spacing.extraSmall
 
-                    MaterialSymbol {
+                    MaterialIcon {
                         text: root.materialSymbol
-                        Layout.leftMargin: 6
-                        iconSize: 20
+                        color: Colours.palette.m3primary
+                        Layout.leftMargin: Tokens.padding.small
+                        Layout.rightMargin: Tokens.spacing.extraSmall
                         Layout.alignment: Qt.AlignVCenter
-                        Layout.rightMargin: 4
                     }
-                    
+
                     StyledText {
                         Layout.fillWidth: true
                         text: root.title
                         elide: Text.ElideRight
+                        font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
+                        color: Colours.palette.m3onSurface
                     }
 
                     TitlebarButton {
                         visible: root.showCenterButton
-                        materialSymbol: "recenter"
+                        icon: "recenter"
                         onClicked: root.center()
-                        StyledToolTip {
-                            text: "Center"
-                        }
                     }
 
                     TitlebarButton {
-                        visible: (root.pinned && root.showClickabilityButton)
-                        materialSymbol: "mouse"
-                        toggled: !root.clickthrough
+                        visible: root.pinned && root.showClickabilityButton
+                        icon: "mouse"
+                        isToggle: true
+                        checked: !root.clickthrough
                         onClicked: root.toggleClickthrough()
-                        StyledToolTip {
-                            text: "Clickable when pinned"
-                        }
                     }
 
                     TitlebarButton {
-                        materialSymbol: "keep"
-                        toggled: root.pinned
+                        icon: "keep"
+                        isToggle: true
+                        checked: root.pinned
                         onClicked: root.togglePinned()
-                        StyledToolTip {
-                            text: "Pin"
-                        }
                     }
 
                     TitlebarButton {
-                        materialSymbol: "close"
+                        icon: "close"
                         onClicked: root.close()
-                        StyledToolTip {
-                            text: "Close"
-                        }
                     }
                 }
             }
@@ -293,10 +302,11 @@ AbstractOverlayWidget {
             // Content
             Item {
                 id: contentContainer
+
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.margins: root.fancyBorders ? root.padding : 0
-                Layout.topMargin: -border.border.width // Border of a rectangle is drawn inside its bounds, so we do this to make the gap not too big
+                Layout.topMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 implicitWidth: Math.max(root.persistentStateEntry.width, root.minimumWidth)
                 implicitHeight: Math.max(root.persistentStateEntry.height, root.minimumHeight)
@@ -305,32 +315,10 @@ AbstractOverlayWidget {
         }
     }
 
-
-    component TitlebarButton: RippleButton {
-        id: titlebarButton
-        required property string materialSymbol
-        buttonRadius: height / 2
-        implicitHeight: contentItem.implicitHeight
-        implicitWidth: implicitHeight
-        padding: 0
-
-        colBackgroundToggled: Appearance.colors.colSecondaryContainer
-        colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
-        colRippleToggled: Appearance.colors.colSecondaryContainerActive
-
-        contentItem: Item {
-            anchors.centerIn: parent
-            implicitWidth: 30
-            implicitHeight: 30
-
-            MaterialSymbol {
-                id: iconWidget
-                anchors.centerIn: parent
-                iconSize: 20
-                text: titlebarButton.materialSymbol
-                fill: titlebarButton.toggled
-                color: titlebarButton.toggled ? Appearance.colors.colOnSecondaryContainer : Appearance.colors.colOnSurface
-            }
-        }
+    component TitlebarButton: IconButton {
+        type: IconButton.Text
+        isRound: true
+        padding: Tokens.padding.extraSmall
+        font: Tokens.font.icon.builders.small.build()
     }
 }
