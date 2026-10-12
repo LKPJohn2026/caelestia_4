@@ -62,6 +62,18 @@ done
 rmdir "$CFG/systemd/user/$TARGET.wants" 2>/dev/null || true
 systemctl --user daemon-reload
 
+# Private copy of hyprland.desktop for uwsm ("uwsm start … hyprland.desktop" looks in ~/.local/share first). The login
+# screen (Plasma Login Manager, its own user) lists every file in /usr/share/wayland-sessions and ignores NoDisplay/
+# Hidden, so hiding the plain "Hyprland" entry means removing the system copy; this one keeps uwsm working.
+mkdir -p "$HOME/.local/share/wayland-sessions"
+[[ -e "$HOME/.local/share/wayland-sessions/hyprland.desktop" ]] || install -m644 "$REPO/dots-extra/uwsm/hyprland.desktop" "$HOME/.local/share/wayland-sessions/hyprland.desktop"
+say "uwsm compositor entry: ~/.local/share/wayland-sessions/hyprland.desktop"
+if [[ -e /usr/share/wayland-sessions/hyprland.desktop ]]; then
+  say "to hide the plain \"Hyprland\" login entry (once):"
+  say "  sudo sed -i 's|^#NoExtract *=.*|NoExtract   = usr/share/wayland-sessions/hyprland.desktop|' /etc/pacman.conf"
+  say "  sudo rm /usr/share/wayland-sessions/hyprland.desktop"
+fi
+
 systemctl --user mask wayland-session-xdg-autostart@hyprland.desktop.target >/dev/null
 say "XDG autostart masked for Hyprland (Plasma unaffected)"
 
