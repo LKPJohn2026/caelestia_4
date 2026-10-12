@@ -36,6 +36,13 @@ Packaged units (hypridle, plasma-kwallet-pam, ydotool) can't take the condition 
 Chromium/Electron use KWallet in both sessions) would make every `OnlyShowIn=KDE` entry (plasmashell, powerdevil,
 kglobalacceld, polkit-kde-agent, xembedsniproxy…) match.
 
+## Login screen
+Only **Hyprland (uwsm-managed)** is shown. Plasma Login Manager lists every file in `/usr/share/wayland-sessions` and
+ignores `NoDisplay`/`Hidden`, so the plain entry is removed (`NoExtract` in `/etc/pacman.conf` keeps upgrades from
+restoring it). uwsm still needs a `hyprland.desktop` to start the compositor; it reads the private copy in
+`~/.local/share/wayland-sessions/` (repo: `dots-extra/uwsm/`), which the login manager can't see. The plain session
+still works from a TTY: `start-hyprland`.
+
 ## Handy commands
 ```
 systemctl --user list-dependencies graphical-session.target | grep caelestia4

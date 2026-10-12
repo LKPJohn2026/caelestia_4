@@ -27,8 +27,11 @@ Singleton {
 
     // Launch a desktop entry (Quickshell DesktopEntry: id, command, workingDirectory, execute()).
     function launch(entry: var): void {
-        // TODO(human): under uwsm, start the entry as its own unit; otherwise entry.execute()
-        entry.execute();
+        if (!root.uwsm) {
+            entry.execute();
+            return;
+        }
+        root.exec(entry.command, entry.workingDirectory);
     }
 
     // Launch one of an entry's actions (DesktopAction: id, command, execute()).
