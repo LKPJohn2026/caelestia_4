@@ -26,10 +26,53 @@ Searcher {
     readonly property string fallback: Quickshell.shellPath("modules/caelestia/assets/wallpaper.webp")
     readonly property string end4Current: E4C.Config.options.background.wallpaperPath
 
+    // caelestia4: video wallpapers (end-4's switchwall.sh plays them with mpvpaper on the background layer and saves a
+    // first-frame thumbnail). Show the thumbnail as the image (colours, previews, lock blur); while mpvpaper is running
+    // the background goes transparent and moves up a layer so the video shows through (videoPlaying).
+    readonly property bool isVideo: /\.(mp4|webm|mkv|avi|mov)$/i.test(end4Current)
+    readonly property string end4Thumbnail: E4C.Config.options.background.thumbnailPath ?? ""
+    property bool videoPlaying: false
+
     property bool showPreview: false
     readonly property string current: showPreview ? previewPath : actualCurrent
     property string previewPath
-    property string actualCurrent: end4Current || fallback
+    property string actualCurrent: (isVideo ? end4Thumbnail : end4Current) || fallback
+
+    // mpvpaper starts a moment after switchwall.sh / the login restore script: check now and twice more
+    onIsVideoChanged: videoCheck.recheck()
+    Component.onCompleted: videoCheck.recheck()
+
+    Timer {
+        id: videoCheck
+
+        property int tries
+
+        function recheck(): void {
+            tries = 0;
+            if (!root.isVideo) {
+                stop();
+                root.videoPlaying = false;
+                return;
+            }
+            restart();
+        }
+
+        interval: 1500
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            if (++tries >= 3)
+                stop();
+            mpvpaperCheck.running = true;
+        }
+    }
+
+    Process {
+        id: mpvpaperCheck
+
+        command: ["pgrep", "-x", "mpvpaper"]
+        onExited: code => root.videoPlaying = root.isVideo && code === 0
+    }
     property bool previewColourLock
 
     function getCategoryFor(w: FileSystemEntry): string {
