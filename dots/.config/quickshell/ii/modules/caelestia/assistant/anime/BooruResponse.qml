@@ -13,6 +13,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Qt5Compat.GraphicalEffects
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons (aliased: other control names clash with end-4 widgets)
 
 Rectangle {
     id: root
@@ -243,48 +244,16 @@ Rectangle {
             }
         }
 
-        RippleButton { // Next page button
+        CCtl.IconTextButton { // Next page button (caelestia4: Caelestia tonal button)
             id: button
-            property string buttonText
             visible: root.responseData.page != "" && root.responseData.page > 0
-
             Layout.alignment: Qt.AlignRight
-            implicitHeight: 30
-            leftPadding: 10
-            rightPadding: 5
-
+            type: CCtl.IconTextButton.Tonal
+            icon: "chevron_right"
+            text: Translation.tr("Next page")
             onClicked: {
                 tagInputField.text = `${responseData.tags.join(" ")} ${parseInt(root.responseData.page) + 1}`
                 tagInputField.accept()
-            }
-
-            buttonRadius: CC.Tokens.rounding.small
-            colBackground: Colours.palette.m3surfaceContainerHighest
-            colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.08))
-            colRipple: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.12))            
-
-            contentItem: Item {
-                anchors.fill: parent
-                implicitHeight: nextPageRow.implicitHeight
-                implicitWidth: nextPageRow.implicitWidth
-
-                RowLayout {
-                    id: nextPageRow
-                    anchors.centerIn: parent
-                    spacing: 0
-                    StyledText {
-                        Layout.alignment: Qt.AlignVCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: "Next page"
-                        color: Colours.palette.m3onSurface
-                    }
-                    MaterialSymbol {
-                        Layout.alignment: Qt.AlignVCenter
-                        iconSize: Appearance.font.pixelSize.larger
-                        color: Colours.palette.m3onSurface
-                        text: "chevron_right"
-                    }
-                }
             }
         }
     }
