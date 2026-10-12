@@ -106,58 +106,75 @@ Item {
                 }
             }
 
-            Repeater {
-                model: root.pages
+            // caelestia4: the page list scrolls (12 pages + header no longer fit a short window; About was cut off)
+            Flickable {
+                id: navFlick
 
-                StyledRect {
-                    id: navItem
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                clip: true
+                contentHeight: navCol.implicitHeight
+                boundsBehavior: Flickable.StopAtBounds
+                ScrollBar.vertical: ScrollBar {
+                    policy: navFlick.contentHeight > navFlick.height ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+                }
 
-                    required property var modelData
-                    required property int index
-                    readonly property bool active: root.currentPage === index
+                ColumnLayout {
+                    id: navCol
 
-                    Layout.fillWidth: true
-                    implicitHeight: navRow.implicitHeight + Tokens.padding.medium * 2
-                    radius: Tokens.rounding.full
-                    color: active ? Colours.palette.m3secondaryContainer : "transparent"
+                    width: navFlick.width
+                    spacing: Tokens.spacing.small
 
-                    StateLayer {
-                        radius: Tokens.rounding.full
-                        color: navItem.active ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
-                        onClicked: root.currentPage = navItem.index
-                    }
+                    Repeater {
+                        model: root.pages
 
-                    RowLayout {
-                        id: navRow
+                        StyledRect {
+                            id: navItem
 
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.leftMargin: Tokens.padding.large
-                        anchors.rightMargin: Tokens.padding.large
-                        spacing: Tokens.spacing.medium
+                            required property var modelData
+                            required property int index
+                            readonly property bool active: root.currentPage === index
 
-                        MaterialIcon {
-                            text: navItem.modelData.icon
-                            rotation: navItem.modelData.iconRotation || 0
-                            fill: navItem.active ? 1 : 0
-                            color: navItem.active ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
-                        }
-
-                        StyledText {
-                            visible: sidebar.expanded
                             Layout.fillWidth: true
-                            text: navItem.modelData.name
-                            font: Tokens.font.label.large
-                            color: navItem.active ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
-                            elide: Text.ElideRight
+                            implicitHeight: navRow.implicitHeight + Tokens.padding.medium * 2
+                            radius: Tokens.rounding.full
+                            color: active ? Colours.palette.m3secondaryContainer : "transparent"
+
+                            StateLayer {
+                                radius: Tokens.rounding.full
+                                color: navItem.active ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                                onClicked: root.currentPage = navItem.index
+                            }
+
+                            RowLayout {
+                                id: navRow
+
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.leftMargin: Tokens.padding.large
+                                anchors.rightMargin: Tokens.padding.large
+                                spacing: Tokens.spacing.medium
+
+                                MaterialIcon {
+                                    text: navItem.modelData.icon
+                                    rotation: navItem.modelData.iconRotation || 0
+                                    fill: navItem.active ? 1 : 0
+                                    color: navItem.active ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+                                }
+
+                                StyledText {
+                                    visible: sidebar.expanded
+                                    Layout.fillWidth: true
+                                    text: navItem.modelData.name
+                                    font: Tokens.font.label.large
+                                    color: navItem.active ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+                                    elide: Text.ElideRight
+                                }
+                            }
                         }
                     }
                 }
-            }
-
-            Item {
-                Layout.fillHeight: true
             }
         }
 
