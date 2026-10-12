@@ -5,6 +5,7 @@
 #  - env:   dots/.config/uwsm/env-hyprland -> ~/.config/uwsm/ (and dots-extra/uwsm/env-hyprland.d/* if missing)
 #  - units: dots/.config/systemd/user/caelestia4-* -> ~/.config/systemd/user/, enabled for
 #           wayland-session@hyprland.desktop.target (Hyprland session only; Plasma never starts them)
+#  - app-graphical.slice drop-in: systemd-oomd kills the single app scope under sustained memory pressure
 #  - packaged units wanted by that target too: hypridle, plasma-kwallet-pam (KWallet unlock), ydotool
 #  - XDG autostart masked for this compositor only: with XDG_CURRENT_DESKTOP=Hyprland:KDE it would start
 #    Plasma's OnlyShowIn=KDE entries (plasmashell, powerdevil, kglobalacceld, polkit-kde-agent, …)
@@ -34,10 +35,17 @@ for f in "$REPO"/dots/.config/systemd/user/caelestia4-*; do
   install -m644 "$f" "$CFG/systemd/user/$(basename "$f")"
   units+=("$(basename "$f")")
 done
+# slice drop-ins (systemd-oomd per-app kill)
+for d in "$REPO"/dots/.config/systemd/user/*.slice.d; do
+  mkdir -p "$CFG/systemd/user/$(basename "$d")"
+  install -m644 "$d"/*.conf "$CFG/systemd/user/$(basename "$d")/"
+  say "installed $(basename "$d") drop-in"
+done
 systemctl --user daemon-reload
 
 enable=(caelestia4-shell.service caelestia4-cliphist@text.service caelestia4-cliphist@image.service caelestia4-geoclue-agent.service)
 command -v fcitx5 >/dev/null && enable+=(caelestia4-fcitx5.service)
+command -v easyeffects >/dev/null && enable+=(caelestia4-easyeffects.service)
 command -v kdeconnectd >/dev/null && enable+=(caelestia4-kdeconnectd.service caelestia4-kdeconnect-indicator.service)
 systemctl --user enable "${enable[@]}"
 say "enabled for $TARGET: ${enable[*]}"
