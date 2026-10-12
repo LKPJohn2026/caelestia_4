@@ -3,44 +3,41 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// caelestia4: one place where the shell starts apps (Caelestia launcher, end-4 launcher search, docks).
-// In the uwsm session (CAELESTIA4_UWSM=1, from ~/.config/uwsm/env-hyprland) the shell itself is a systemd unit
-// (caelestia4-shell.service). Anything it starts directly would live in that unit's cgroup: listed under the shell,
-// and killed when the shell restarts (Ctrl+Super+R, a crash + Restart=on-failure). Handing launches to uwsm gives
-// each app its own unit in app-graphical.slice instead. Outside uwsm everything behaves as before.
+// caelestia4: one place where the shell starts apps (Caelestia launcher, end-4 launcher search, docks, run commands).
+// uwsm-only (the plain Hyprland session is no longer supported): every launch goes through uwsm-app, so each app gets
+// its own systemd unit in app-graphical.slice instead of living in the shell's unit (where a shell restart would kill
+// it). Terminal apps also go through uwsm: it reads Terminal=true from the desktop entry and starts the default
+// terminal from ~/.config/xdg-terminals.list (Settings > Apps > Terminal) - one terminal choice for everything.
 Singleton {
     id: root
 
-    readonly property bool uwsm: Quickshell.env("CAELESTIA4_UWSM") === "1"
+    // workingDirectory is optional and typed var on purpose: a missing argument to a `string` parameter arrives as
+    // the text "undefined", execDetached then can't enter that directory and silently starts nothing.
 
-    // A command that runs as its own unit under uwsm (unchanged otherwise). uwsm-app = uwsm's fast client.
-    function wrap(command: var): var {
-        return root.uwsm ? ["uwsm-app", "--", ...command] : command;
-    }
-
-    function exec(command: var, workingDirectory: string): void {
+    // Run a command as its own unit
+    function exec(command: var, workingDirectory: var): void {
         Quickshell.execDetached({
-            command: root.wrap(command),
+            command: ["uwsm-app", "--", ...command],
             workingDirectory: workingDirectory ?? ""
         });
     }
 
-    // Launch a desktop entry (Quickshell DesktopEntry: id, command, workingDirectory, execute()).
-    function launch(entry: var): void {
-        if (!root.uwsm) {
-            entry.execute();
-            return;
-        }
-        root.exec(entry.command, entry.workingDirectory);
+    // Run a command inside the default terminal (uwsm-app -T: terminal from xdg-terminals.list)
+    function execInTerminal(command: var, workingDirectory: var): void {
+        Quickshell.execDetached({
+            command: ["uwsm-app", "-T", "--", ...command],
+            workingDirectory: workingDirectory ?? ""
+        });
     }
 
-    // Launch one of an entry's actions (DesktopAction: id, command, execute()).
+    // Launch a desktop entry by its id: uwsm handles Terminal=true, field codes and Path= itself
+    // (Quickshell's DesktopEntry.execute() ignores Terminal=true and field codes)
+    function launch(entry: var): void {
+        root.exec([`${entry.id}.desktop`], entry.workingDirectory);
+    }
+
+    // Launch one of an entry's actions: uwsm resolves "<entry id>.desktop:<action id>"
     function launchAction(entry: var, action: var): void {
-        if (!root.uwsm) {
-            action.execute();
-            return;
-        }
-        // uwsm resolves "<entry id>.desktop:<action id>" like a desktop environment would
         root.exec([`${entry.id}.desktop:${action.id}`], entry.workingDirectory);
     }
 }

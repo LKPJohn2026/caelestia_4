@@ -62,11 +62,10 @@ StyledListView {
 
     // caelestia4: the run prefix ($) gets its own results instead of end-4's (which runs the command invisibly
     // and adds a calculator/web-search row for "$…"): a hint while only "$" is typed, else one row that runs
-    // the command in the launcher's terminal (Caelestia general.apps.terminal) with an interactive fish left
+    // the command in the default terminal (uwsm -T, ~/.config/xdg-terminals.list) with an interactive fish left
     // open afterwards, so the output stays visible.
     function shellResults(text: string): var {
         const command = text.slice(E4C.Config.options.search.prefix.shellCommand.length).trim();
-        const terminal = GlobalConfig.general.apps.terminal;
         const base = {
             iconType: E4M.LauncherSearchResult.IconType.Material,
             iconName: "terminal",
@@ -75,15 +74,15 @@ StyledListView {
         if (command.length === 0)
             return [Object.assign({}, base, {
                     name: Tr.tr("Type a command to run"),
-                    type: Tr.tr("Opens in %1, window stays open").arg(terminal[0] ?? "terminal"),
+                    type: Tr.tr("Opens in a terminal, window stays open"),
                     verb: "",
                     execute: () => {}
                 })];
         return [Object.assign({}, base, {
                 name: command,
-                type: Tr.tr("Run in %1").arg(terminal[0] ?? "terminal"),
+                type: Tr.tr("Run in a terminal"),
                 verb: Tr.tr("Run"),
-                execute: () => E4.AppLauncher.exec([...terminal, "fish", "-C", command])
+                execute: () => E4.AppLauncher.execInTerminal(["fish", "-C", command])
             })];
     }
 

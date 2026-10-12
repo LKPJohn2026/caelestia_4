@@ -12,11 +12,8 @@ Searcher {
     function launch(entry: DesktopEntry): void {
         appDb.incrementFrequency(entry.id);
 
-        // caelestia4: through AppLauncher, so apps get their own unit in the uwsm session
-        if (entry.runInTerminal)
-            E4.AppLauncher.exec([...GlobalConfig.general.apps.terminal, `${Quickshell.shellDir}/modules/caelestia/assets/wrap_term_launch.sh` /* caelestia4: assets moved */, ...entry.command], entry.workingDirectory);
-        else
-            E4.AppLauncher.launch(entry);
+        // caelestia4: through AppLauncher (uwsm: own unit; Terminal=true apps open in the default terminal)
+        E4.AppLauncher.launch(entry);
     }
 
     function search(search: string): var {
