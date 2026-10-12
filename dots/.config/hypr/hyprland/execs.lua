@@ -4,6 +4,8 @@ hl.on("hyprland.start", function ()
     -- systemd user units wanted by wayland-session@hyprland.desktop.target (tools/uwsm-setup.sh); uwsm also exports
     -- the environment to systemd/D-Bus itself. Only one-shot setup is left here.
     if UWSM then
+        -- packaged units: no Plasma-excluding condition possible (Plasma uses plasma-kwallet-pam too), so start here
+        hl.exec_cmd("systemctl --user start hypridle.service plasma-kwallet-pam.service ydotool.service")
         hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
         if not is_file_exists(HOME .. "/.config/caelestia4/shared-desktop") then
             hl.exec_cmd(bg("gnome-keyring-daemon --start --components=secrets"))
