@@ -34,6 +34,13 @@ StyledRect {
 
     readonly property int maxPerRow: 6
 
+    // caelestia4: right-click on Wi-Fi / Bluetooth / sound / mic opens that page of Caelestia's control panel (the
+    // bar popouts' "Open settings"), the counterpart of end-4's toggle dialogs
+    function openPanel(mode: string): void {
+        root.screenState.utilities = false;
+        root.popouts.detach(mode);
+    }
+
     // Every toggle this machine can show, in default order
     readonly property list<string> availableIds: {
         const ids = [];
@@ -45,7 +52,7 @@ StyledRect {
             ids.push(item.id);
         }
         // caelestia4: no "idleInhibitor" here: keep awake is the Keep Awake card (one control, same Idle service)
-        const extras = ["nightLight", "easyEffects", "darkMode", "powerProfile", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
+        const extras = ["audio", "nightLight", "easyEffects", "darkMode", "powerProfile", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
         for (const id of extras) {
             if (id === "easyEffects" && !E4.EasyEffects.available)
                 continue;
@@ -211,35 +218,53 @@ StyledRect {
                     roleValue: "wifi"
                     delegate: Toggle {
                         icon: "wifi"
-                        tip: Tr.tr("Wi-Fi")
+                        tip: Tr.tr("Wi-Fi · right-click for networks")
                         checked: Nmcli.wifiEnabled
                         onActivated: Nmcli.toggleWifi()
+                        onSecondary: root.openPanel("network") // caelestia4: end-4's Wi-Fi dialog
                     }
                 }
                 DelegateChoice {
                     roleValue: "bluetooth"
                     delegate: Toggle {
                         icon: "bluetooth"
-                        tip: Tr.tr("Bluetooth")
+                        tip: Tr.tr("Bluetooth · right-click for devices")
                         checked: Bluetooth.defaultAdapter?.enabled ?? false // qmllint disable unresolved-type
                         onActivated: {
                             const adapter = Bluetooth.defaultAdapter; // qmllint disable unresolved-type
                             if (adapter)
                                 adapter.enabled = !adapter.enabled;
                         }
+                        onSecondary: root.openPanel("bluetooth") // caelestia4: end-4's Bluetooth dialog
                     }
                 }
                 DelegateChoice {
                     roleValue: "mic"
                     delegate: Toggle {
                         icon: "mic"
-                        tip: Tr.tr("Microphone")
+                        tip: Tr.tr("Microphone · right-click for input devices")
                         checked: !Audio.sourceMuted
                         onActivated: {
                             const audio = Audio.source?.audio;
                             if (audio)
                                 audio.muted = !audio.muted;
                         }
+                        onSecondary: root.openPanel("audio") // caelestia4: end-4's volume dialog
+                    }
+                }
+                // caelestia4: speaker mute (end-4's "Audio" toggle); right-click: output devices + per-app mixer
+                DelegateChoice {
+                    roleValue: "audio"
+                    delegate: Toggle {
+                        icon: Audio.muted ? "volume_off" : "volume_up"
+                        tip: Tr.tr("Sound · right-click for devices and app volumes")
+                        checked: !Audio.muted
+                        onActivated: {
+                            const audio = Audio.sink?.audio;
+                            if (audio)
+                                audio.muted = !audio.muted;
+                        }
+                        onSecondary: root.openPanel("audio")
                     }
                 }
                 DelegateChoice {
