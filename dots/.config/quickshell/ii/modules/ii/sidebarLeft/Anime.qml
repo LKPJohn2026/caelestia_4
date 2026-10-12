@@ -47,7 +47,7 @@ Item {
             name: "mode",
             description: Translation.tr("Set the current API provider"),
             execute: (args) => {
-                Booru.setProvider(args[0]);
+                Booru.setProvider(args.join(" ")); // caelestia4: Booru resolves names, prefixes and empty input
             }
         },
         {
@@ -111,8 +111,10 @@ Item {
     function handleInput(inputText) {
         if (inputText.startsWith(root.commandPrefix)) {
             // Handle special commands
-            const command = inputText.split(" ")[0].substring(1);
-            const args = inputText.split(" ").slice(1);
+            // caelestia4: split on any whitespace (a double space used to make the first argument empty)
+            const words = inputText.trim().split(/\s+/);
+            const command = words[0].substring(1);
+            const args = words.slice(1);
             const commandObj = root.allCommands.find(cmd => cmd.name === `${command}`);
             if (commandObj) {
                 commandObj.execute(args);
@@ -451,7 +453,12 @@ Item {
                                 tagInputField.insert(tagInputField.cursorPosition, "\n")
                                 event.accepted = true
                             } else { // Accept text
-                                const inputText = tagInputField.text
+                                let inputText = tagInputField.text
+                                // caelestia4: Enter on "/mode" with the provider list open picks the highlighted provider
+                                if (inputText.trim() === `${root.commandPrefix}mode` && root.suggestionList.length > 0) {
+                                    const picked = root.suggestionList[Math.max(0, tagSuggestions.selectedIndex)]?.name ?? "";
+                                    inputText = picked.startsWith(root.commandPrefix) ? picked : `${root.commandPrefix}mode ${picked}`;
+                                }
                                 root.handleInput(inputText)
                                 tagInputField.clear()
                                 event.accepted = true
