@@ -28,3 +28,6 @@ packaging/caelestia4-quickshell/quickshell/
 sdata/dist-arch/*/src/
 sdata/dist-arch/*/pkg/
 sdata/dist-arch/*/*.pkg.tar.*
+
+# caelestia4: plugin translation catalogs, copied from tools/i18n by tools/build-caelestia-plugin.sh
+third_party/caelestia-shell/plugin/src/Caelestia/I18n/trs/
