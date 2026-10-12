@@ -60,7 +60,7 @@ ComboBox {
 
             Loader {
                 Layout.alignment: Qt.AlignVCenter
-                active: root.buttonIcon.length > 0 || (root.currentIndex >= 0 && typeof root.model[root.currentIndex] === 'object' && root.model[root.currentIndex]?.icon)
+                active: root.buttonIcon.length > 0 || !!(root.currentIndex >= 0 && typeof root.model[root.currentIndex] === 'object' && root.model[root.currentIndex]?.icon) // caelestia4: !! (was undefined -> bool warning)
                 visible: active
                 sourceComponent: MaterialSymbol {
                     text: {
