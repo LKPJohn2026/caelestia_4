@@ -11,7 +11,6 @@ import qs // caelestia4: keep
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
 import qs.modules.common as E4C // caelestia4: keep
-import qs.modules.ii.sidebarLeft as E4Sidebar // caelestia4: keep
 
 Scope {
     id: root
@@ -43,7 +42,7 @@ Scope {
                 anchors.margins: Tokens.padding.large
                 focus: true
 
-                sourceComponent: E4Sidebar.SidebarLeftContent {
+                sourceComponent: SidebarLeftContent {
                     scopeRoot: window
                 }
 

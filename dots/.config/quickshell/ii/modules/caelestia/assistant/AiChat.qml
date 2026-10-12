@@ -3,7 +3,7 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
-import qs.modules.ii.sidebarLeft.aiChat
+import qs.modules.caelestia.assistant.aiChat
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
