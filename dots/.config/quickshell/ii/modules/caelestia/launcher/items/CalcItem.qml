@@ -6,6 +6,7 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
+import qs.services as E4 // caelestia4: AppLauncher (apps get their own unit under uwsm)
 
 Item {
     id: root
@@ -79,7 +80,7 @@ Item {
                 id: stateLayer
 
                 onClicked: {
-                    Quickshell.execDetached([...GlobalConfig.general.apps.terminal, "fish", "-C", `exec qalc -i '${root.math}'`]);
+                    E4.AppLauncher.exec([...GlobalConfig.general.apps.terminal, "fish", "-C", `exec qalc -i '${root.math}'`]);
                     root.list.screenState.launcher = false;
                 }
 

@@ -1,0 +1,15 @@
+# caelestia4: EasyEffects (audio effects) in the uwsm Hyprland session; the plain session starts it from execs.lua.
+# Enabled by tools/uwsm-setup.sh only when easyeffects is installed.
+[Unit]
+Description=EasyEffects audio effects
+PartOf=graphical-session.target
+After=graphical-session.target pipewire.service
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/easyeffects --hide-window --service-mode
+Restart=on-failure
+Slice=background-graphical.slice
+
+[Install]
+WantedBy=wayland-session@hyprland.desktop.target
