@@ -351,3 +351,18 @@ restored from disk with missing fields).
 - Checks: `tools/check-settings-pages.sh` instantiates every page headlessly (all clean); the settings app launched
   silently on a spare workspace (no warnings); Hyprland rows read live values (gaps 4, blur on, vrr 2, …) and a
   save round-trips through the overrides file.
+
+## Anime tab: unreachable APIs fixed (2026-10-12)
+Live test per provider (empty search, safe, page 1) before → after:
+- **danbooru** 403 (Cloudflare "Just a moment" for the fake Chrome user agent) → honest app UA `caelestia4-booru/1.0` → OK.
+- **zerochan** 503/500: an empty `c=` gave an error page; and the API itself answers **HTTP 500 with valid JSON**
+  wrapped in a stray leading `{` and trailing page HTML → `c=` only with a search term, status 500 accepted,
+  `parseFirstJsonObject()` extracts the real object → OK (AVIF thumbnails load via kimg_avif).
+- **waifu.im** 400 ("Value cannot be null") from an empty `IncludedTags=` → only sent with tags → OK.
+- **t.alcy.cc** returned the HTML home page (API needs a category path) → default category `pc`; only image-URL
+  lines parsed (unknown categories answer "404 page not found") → OK.
+- **gelbooru** 401: the API is now key-only → `/gelboorukey <api_key> <user_id>` (keyring `apiKeys.gelbooru`); without
+  a key the tab explains where to get one instead of failing.
+- yande.re, konachan, wallhaven already worked. Errors now say what happened (unreachable / refused / rate-limited /
+  server problem) instead of the generic tip.
+- Verified through the service: all 8 return images (gelbooru: the key guidance).

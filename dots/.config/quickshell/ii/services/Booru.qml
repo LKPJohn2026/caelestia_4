@@ -22,14 +22,58 @@ Singleton {
     property var defaultUserAgent: Config.options?.networking?.userAgent || "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
     // caelestia4: Wallhaven API key from the keyring (KeyringStorage apiKeys.wallhaven; /wallhavenkey in the Anime tab)
     readonly property string wallhavenApiKey: KeyringStorage.keyringData?.apiKeys?.wallhaven ?? ""
+    // caelestia4: Gelbooru's API needs an API key + user ID (gelbooru.com > My Account > Options); /gelboorukey
+    readonly property var gelbooruCredentials: KeyringStorage.keyringData?.apiKeys?.gelbooru ?? null
+    function setGelbooruApiKey(apiKey, userId) {
+        KeyringStorage.setNestedField(["apiKeys", "gelbooru"], apiKey ? { "apiKey": apiKey.trim(), "userId": (userId ?? "").trim() } : null);
+    }
+    // caelestia4: honest app User-Agent. danbooru's Cloudflare challenges fake browser UAs (403 "Just a moment"),
+    // and zerochan asks API clients to identify themselves.
+    readonly property string appUserAgent: "caelestia4-booru/1.0 (Quickshell; +https://github.com/end-4/dots-hyprland)"
+
+    // caelestia4: zerochan's API currently answers HTTP 500 with a stray "{" before the JSON and page HTML after
+    // it. Return the first complete, parseable JSON object in the text.
+    function parseFirstJsonObject(text) {
+        for (let start = text.indexOf("{"); start !== -1; start = text.indexOf("{", start + 1)) {
+            let depth = 0, inString = false, escaped = false;
+            for (let i = start; i < text.length; i++) {
+                const c = text[i];
+                if (inString) {
+                    if (escaped) escaped = false;
+                    else if (c === "\\") escaped = true;
+                    else if (c === '"') inString = false;
+                    continue;
+                }
+                if (c === '"') inString = true;
+                else if (c === "{") depth++;
+                else if (c === "}" && --depth === 0) {
+                    try { return JSON.parse(text.substring(start, i + 1)); } catch (e) { break; }
+                }
+            }
+        }
+        throw new Error("no JSON object in response");
+    }
+
+    // caelestia4: say what went wrong instead of the generic tip
+    readonly property string gelbooruKeyMessage: Translation.tr("Gelbooru now needs an API key. Get it at gelbooru.com > My Account > Options (API Access Credentials), then type: /gelboorukey <api_key> <user_id>")
+    function errorMessageFor(status) {
+        const site = providers[currentProvider]?.name ?? currentProvider;
+        if (currentProvider === "gelbooru" && status === 401) return root.gelbooruKeyMessage;
+        if (status === 0) return Translation.tr("Can't reach %1. Check your connection or try again later.").arg(site);
+        if (status === 401 || status === 403) return Translation.tr("%1 refused the request (%2). It may need an API key or be blocking this app for now.").arg(site).arg(status);
+        if (status === 404) return Translation.tr("Nothing found on %1 for that search.").arg(site);
+        if (status === 429) return Translation.tr("%1 is rate-limiting requests. Wait a minute and try again.").arg(site);
+        if (status >= 500) return Translation.tr("%1 is having server problems (%2). Try again later or switch provider.").arg(site).arg(status);
+        return root.failMessage;
+    }
     function setWallhavenApiKey(key) {
         KeyringStorage.setNestedField(["apiKeys", "wallhaven"], key.trim());
     }
     onCurrentProviderChanged: {
-        if (currentProvider === "wallhaven" && !KeyringStorage.loaded) KeyringStorage.fetchKeyringData();
+        if (["wallhaven", "gelbooru"].includes(currentProvider) && !KeyringStorage.loaded) KeyringStorage.fetchKeyringData(); // caelestia4
     }
     Component.onCompleted: {
-        if (currentProvider === "wallhaven" && !KeyringStorage.loaded) KeyringStorage.fetchKeyringData();
+        if (["wallhaven", "gelbooru"].includes(currentProvider) && !KeyringStorage.loaded) KeyringStorage.fetchKeyringData(); // caelestia4
     }
 
     property var providerList: Object.keys(providers).filter(provider => provider !== "system" && providers[provider].api)
@@ -108,6 +152,8 @@ Singleton {
             "url": "https://www.zerochan.net",
             "api": "https://www.zerochan.net/?json",
             "description": Translation.tr("Clean stuff | Excellent quality, no NSFW"),
+            "lenientJson": true, // caelestia4: see parseFirstJsonObject
+            "acceptStatus": [500], // caelestia4: zerochan returns 500 together with valid data
             "mapFunc": (response) => {
                 response = response.items
                 return response.map(item => {
@@ -290,7 +336,8 @@ Singleton {
             ],
             "manualParseFunc": (responseText) => {
                 // Alcy just returns image links, each on a new line
-                const lines = responseText.trim().split('\n');
+                // caelestia4: unknown categories answer "404 page not found"; keep only image URLs
+                const lines = responseText.trim().split('\n').map(l => l.trim()).filter(l => /^https?:\/\/\S+\.(webp|jpe?g|png|gif|avif)$/i.test(l));
                 return lines.map(line => {
                     return {
                         "id": Qt.md5(line),
@@ -360,14 +407,15 @@ Singleton {
         var params = []
         // Tags & limit
         if (currentProvider === "zerochan") {
-            params.push("c=" + tagString) // zerochan doesn't have search in api, so we use color
+            if (tagString.trim().length > 0) // caelestia4: an empty "c=" makes zerochan answer with an error page
+                params.push("c=" + tagString) // zerochan doesn't have search in api, so we use color
             params.push("l=" + limit)
             params.push("s=" + "fav")
             params.push("t=" + 1)
             params.push("p=" + page)
         }
         else if (currentProvider === "waifu.im") {
-            var tagsArray = tagString.split(" ");
+            var tagsArray = tagString.split(" ").filter(t => t.length > 0); // caelestia4: empty IncludedTags= -> 400
             tagsArray.forEach(tag => {
                 params.push("IncludedTags=" + encodeURIComponent(tag.toLowerCase()));
             });
@@ -385,7 +433,7 @@ Singleton {
             params.push("page=" + page)
         }
         else if (currentProvider === "t.alcy.cc") {
-            url += tagString
+            url += tagString.trim() || "pc" // caelestia4: needs a category; "pc" = landscape anime wallpapers
             params.push("json")
             params.push("quantity=" + limit)
         }
@@ -394,6 +442,10 @@ Singleton {
             params.push("limit=" + limit)
             if (currentProvider == "gelbooru") {
                 params.push("pid=" + page)
+                if (root.gelbooruCredentials?.apiKey) { // caelestia4: required since Gelbooru's API went key-only
+                    params.push("api_key=" + encodeURIComponent(root.gelbooruCredentials.apiKey))
+                    params.push("user_id=" + encodeURIComponent(root.gelbooruCredentials.userId))
+                }
             }
             else {
                 params.push("page=" + page)
@@ -408,6 +460,11 @@ Singleton {
     }
 
     function makeRequest(tags, nsfw=false, limit=20, page=1) {
+        // caelestia4: Gelbooru answers 401 to every request without an API key; explain instead of failing
+        if (currentProvider === "gelbooru" && KeyringStorage.loaded && !root.gelbooruCredentials?.apiKey) {
+            root.addSystemMessage(root.gelbooruKeyMessage);
+            return;
+        }
         var url = constructRequestUrl(tags, nsfw, limit, page)
         console.log("[Booru] Making request to " + url)
 
@@ -422,7 +479,8 @@ Singleton {
         var xhr = new XMLHttpRequest()
         xhr.open("GET", url)
         xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            const acceptedStatus = xhr.status === 200 || (providers[currentProvider]?.acceptStatus ?? []).includes(xhr.status) // caelestia4
+            if (xhr.readyState === XMLHttpRequest.DONE && acceptedStatus) {
                 try {
                     // console.log("[Booru] Raw response: " + xhr.responseText)
                     const provider = providers[currentProvider]
@@ -430,7 +488,7 @@ Singleton {
                     if (provider.manualParseFunc) {
                         response = provider.manualParseFunc(xhr.responseText)
                     } else {
-                        response = JSON.parse(xhr.responseText)
+                        response = provider.lenientJson ? root.parseFirstJsonObject(xhr.responseText) : JSON.parse(xhr.responseText) // caelestia4
                         response = provider.mapFunc(response)
                     }
                     // console.log("[Booru] Mapped response: " + JSON.stringify(response))
@@ -447,7 +505,7 @@ Singleton {
             }
             else if (xhr.readyState === XMLHttpRequest.DONE) {
                 console.log("[Booru] Request failed with status: " + xhr.status)
-                newResponse.message = root.failMessage
+                newResponse.message = root.errorMessageFor(xhr.status) // caelestia4
                 root.runningRequests--;
                 root.responses = [...root.responses, newResponse]
             }
@@ -456,14 +514,17 @@ Singleton {
 
         try {
             // Required for danbooru and konachan
-            if (["danbooru", "konachan"].includes(currentProvider)) {
+            if (currentProvider === "danbooru") { // caelestia4: app UA (Cloudflare blocks fake browser UAs)
+                xhr.setRequestHeader("User-Agent", root.appUserAgent)
+            }
+            else if (currentProvider === "konachan") {
                 xhr.setRequestHeader("User-Agent", defaultUserAgent)
             }
             else if (currentProvider == "wallhaven" && (root.wallhavenApiKey ?? "").length > 0) { // caelestia4
                 xhr.setRequestHeader("X-API-Key", root.wallhavenApiKey)
             }
             else if (currentProvider == "zerochan") {
-                const userAgent = Config.options?.sidebar?.booru?.zerochan?.username ? `Desktop sidebar booru viewer - username: ${Config.options.sidebar.booru.zerochan.username}` : defaultUserAgent
+                const userAgent = Config.options?.sidebar?.booru?.zerochan?.username ? `Desktop sidebar booru viewer - username: ${Config.options.sidebar.booru.zerochan.username}` : root.appUserAgent // caelestia4: app UA
                 xhr.setRequestHeader("User-Agent", userAgent)
             }
             root.runningRequests++;
