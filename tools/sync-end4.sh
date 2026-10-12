@@ -26,17 +26,10 @@ REMOVED=(
   dots/.config/quickshell/ii/modules/ii/screenCorners
   dots/.config/quickshell/ii/modules/ii/screenTranslator
   dots/.config/quickshell/ii/modules/ii/sessionScreen
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/bluetoothDevices   # sidebarRight: todo, pomodoro, volumeMixer kept
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/calendar
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/nightLight
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/notifications
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/quickToggles
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/wifiNetworks
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/BottomWidgetGroup.qml
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/CenterWidgetGroup.qml
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/QuickSliders.qml
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/SidebarRightContent.qml
-  dots/.config/quickshell/ii/modules/ii/sidebarRight/SidebarRight.qml
+  dots/.config/quickshell/ii/modules/ii/sidebarRight      # Todo/Timer/mixer restyled in modules/caelestia (2026-10-12)
+  # restyled in Caelestia style (2026-10-12): end-4 versions dropped, Caelestia versions in modules/caelestia
+  dots/.config/quickshell/ii/modules/ii/wallpaperSelector  # -> modules/caelestia/wallpaperSelector
+  dots/.config/quickshell/ii/modules/ii/overlay            # -> modules/caelestia/overlay (moved, then restyled)
 )
 is_removed() { local p; for p in "${REMOVED[@]}"; do [[ "$1" == "$p" || "$1" == "$p"/* ]] && return 0; done; return 1; }
 GIT=(git -c user.name="John La" -c user.email=john.pla1998@gmail.com)
