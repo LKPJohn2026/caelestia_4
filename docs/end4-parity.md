@@ -366,3 +366,15 @@ Live test per provider (empty search, safe, page 1) before → after:
 - yande.re, konachan, wallhaven already worked. Errors now say what happened (unreachable / refused / rate-limited /
   server problem) instead of the generic tip.
 - Verified through the service: all 8 return images (gelbooru: the key guidance).
+
+## Random wallpaper: sources + "fill my screen" (2026-10-12)
+- Settings > Appearance > Wallpaper: **source** (Wallhaven general+anime; Konachan and yande.re when the Anime tab
+  policy is Shown), **"Only wallpapers that fill my screen"** (at least the largest monitor, 7680×2160 here) and a
+  **Get one** button with live status. Config: `caelestia.randomWallpaper.{source, matchScreen}`.
+- `scripts/caelestia4/random-wallpaper.sh <source> [min-w min-h]`: the server filters size (Wallhaven
+  `atleast=`+`ratios=landscape`, Moebooru `width:>= height:>=`); Moebooru picks the first landscape post of 50 random
+  ones; saved/applied like end-4 (alternating `random_wallpaper[-1].ext`, `switchwall.sh --image`); exit 2 + message
+  when nothing that large exists (yande.re rarely has 8K). `DRYRUN=1` stops before downloading.
+- Dry runs at 7680×2160: Wallhaven 8192×4096, Konachan 10039×4134, yande.re "none that large".
+- end-4's **osu! seasonal** source is dropped from the picker: `osu.ppy.sh/api/v2/seasonal-backgrounds` now answers
+  403 (Cloudflare) to every request. end-4's script file stays untouched.
