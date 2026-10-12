@@ -13,6 +13,15 @@ PREFIX="${PREFIX:-$HOME/.local}"
 VERSION="2.5.0"
 GIT_REVISION="21a75375b"
 
+# caelestia4: our translations (tools/i18n/caelestia-<lang>.po) go into the plugin's catalogs (trs/<lang>.po)
+TRS="$SRC/plugin/src/Caelestia/I18n/trs"
+mkdir -p "$TRS"
+for po in "$REPO_ROOT"/tools/i18n/caelestia-*.po; do
+  [[ -e "$po" ]] || continue
+  lang=$(basename "$po" .po); lang=${lang#caelestia-}
+  cp "$po" "$TRS/$lang.po"
+done
+
 cmake -S "$SRC" -B "$BUILD" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DENABLE_MODULES=plugin \

@@ -1,6 +1,5 @@
-set(po_files
-    # All .po files should go here
-)
+# caelestia4: every catalog in trs/ (copied from tools/i18n/caelestia-<lang>.po by tools/build-caelestia-plugin.sh)
+file(GLOB po_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/trs/*.po")
 
 set(trs_script "${CMAKE_SOURCE_DIR}/scripts/trs.fish")
 
