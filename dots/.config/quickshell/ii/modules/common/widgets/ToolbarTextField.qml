@@ -18,7 +18,7 @@ TextField {
     font {
         family: Appearance.font.family.main
         pixelSize: Appearance.font.pixelSize.small
-        hintingPreference: Font.PreferFullHinting
+        hintingPreference: Font.PreferNoHinting // caelestia4: full hinting broke glyph spacing at 1.5x scale
         variableAxes: Appearance.font.variableAxes.main
     }
     renderType: Text.NativeRendering
