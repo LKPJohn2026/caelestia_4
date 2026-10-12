@@ -19,8 +19,10 @@ Variants {
         screen: modelData
         name: "background"
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled ? WlrLayer.Background : WlrLayer.Bottom
-        color: contentItem.Config.background.wallpaperEnabled ? "black" : "transparent"
+        // caelestia4: while a video wallpaper plays (mpvpaper, background layer), sit above it and stay transparent
+        readonly property bool videoShowing: Wallpapers.videoPlaying && !Wallpapers.showPreview
+        WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled && !videoShowing ? WlrLayer.Background : WlrLayer.Bottom
+        color: contentItem.Config.background.wallpaperEnabled && !videoShowing ? "black" : "transparent"
         surfaceFormat.opaque: false
 
         anchors.top: true
@@ -45,7 +47,7 @@ Variants {
                 asynchronous: true
 
                 anchors.fill: parent
-                active: Config.background.wallpaperEnabled
+                active: Config.background.wallpaperEnabled && !win.videoShowing
 
                 sourceComponent: Wallpaper {}
             }
