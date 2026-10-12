@@ -7,6 +7,7 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
+import qs.modules.common as E4C // caelestia4: keep (desktopWeather setting)
 
 Item {
     id: root
@@ -23,6 +24,8 @@ Item {
     readonly property color safePrimary: useLightSet ? Colours.palette.m3primaryContainer : Colours.palette.m3primary
     readonly property color safeSecondary: useLightSet ? Colours.palette.m3secondaryContainer : Colours.palette.m3secondary
     readonly property color safeTertiary: useLightSet ? Colours.palette.m3tertiaryContainer : Colours.palette.m3tertiary
+    // caelestia4: weather beside the date (end-4's desktop weather widget, Caelestia style). Settings > Desktop.
+    readonly property bool showWeather: E4C.Config.options.caelestia.desktopWeather
 
     implicitWidth: layout.implicitWidth + (Tokens.padding.large * 4 * root.clockScale)
     implicitHeight: layout.implicitHeight + (Tokens.padding.extraLargeIncreased * root.clockScale)
@@ -147,7 +150,62 @@ Item {
                     color: root.safeSecondary
                 }
             }
+
+            // caelestia4: weather (Caelestia's Weather service; location / units in Settings > Apps > Weather)
+            StyledRect {
+                visible: root.showWeather
+                Layout.fillHeight: true
+                Layout.preferredWidth: 4 * root.clockScale
+                Layout.topMargin: Tokens.spacing.large * root.clockScale
+                Layout.bottomMargin: Tokens.spacing.large * root.clockScale
+                radius: Tokens.rounding.full
+                color: root.safePrimary
+                opacity: 0.8
+            }
+
+            RowLayout {
+                visible: root.showWeather
+                spacing: Tokens.spacing.medium * root.clockScale
+
+                MaterialIcon {
+                    text: Weather.icon
+                    color: root.safeTertiary
+                    fontStyle: Tokens.font.icon.builders.extraLarge.scale(1.6 * root.clockScale).build()
+                }
+
+                ColumnLayout {
+                    spacing: 0
+
+                    StyledText {
+                        text: Weather.temp
+                        font: Tokens.font.clock.size(Tokens.font.headline.medium.pointSize * root.clockScale).weight(Font.Bold).build()
+                        color: root.safePrimary
+                    }
+
+                    StyledText {
+                        text: Weather.description
+                        font: Tokens.font.clock.size(Tokens.font.body.large.pointSize * root.clockScale).letterSpacing(1).build()
+                        color: root.safeSecondary
+                    }
+
+                    StyledText {
+                        visible: !!Weather.city
+                        text: Weather.city
+                        font: Tokens.font.clock.size(Tokens.font.body.medium.pointSize * root.clockScale).build()
+                        color: root.safeSecondary
+                        opacity: 0.8
+                    }
+                }
+            }
         }
+    }
+
+    // caelestia4: the service only refreshes when something asks (dashboard open, shell start); keep it current here
+    Timer {
+        running: root.showWeather
+        interval: 30 * 60 * 1000
+        repeat: true
+        onTriggered: Weather.reload()
     }
 
     Behavior on clockScale {

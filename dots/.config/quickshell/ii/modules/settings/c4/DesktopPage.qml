@@ -7,7 +7,7 @@ import qs.modules.common.widgets
 import Caelestia.Config as CC
 import qs.modules.settings.c4 // caelestia4: explicit, so Quickshell's scanner registers every row type
 
-// caelestia4: Desktop — the Caelestia panels: bar, dock, dashboard, launcher, notifications, on-screen display,
+// caelestia4: Desktop — the Caelestia panels: desktop clock & weather, bar, dock, dashboard, launcher, notifications, on-screen display,
 // utilities drawer, workspace overview, overlay widgets. Caelestia options live in shell.json (CC.GlobalConfig),
 // the caelestia4 additions and end-4 services in config.json (Config.options).
 ContentPage {
@@ -24,6 +24,93 @@ ContentPage {
             privacy: [Translation.tr("Privacy (mic / screen in use)"), "privacy_tip"],
             updates: [Translation.tr("Updates"), "system_update_alt"]
         })
+
+    ContentSection {
+        icon: "schedule"
+        title: Translation.tr("Desktop clock & weather")
+
+        SwitchRow {
+            icon: "nest_clock_farsight_analog"
+            title: Translation.tr("Show the clock on the desktop")
+            checked: CC.GlobalConfig.background.desktopClock.enabled
+            onToggled: v => CC.GlobalConfig.background.desktopClock.enabled = v
+        }
+
+        SwitchRow {
+            enabled: CC.GlobalConfig.background.desktopClock.enabled
+            icon: "partly_cloudy_day"
+            title: Translation.tr("Show the weather beside it")
+            description: Translation.tr("Location and units: Apps > Weather")
+            checked: Config.options.caelestia.desktopWeather
+            onToggled: v => Config.options.caelestia.desktopWeather = v
+        }
+
+        ChoiceRow {
+            enabled: CC.GlobalConfig.background.desktopClock.enabled
+            icon: "picture_in_picture_alt"
+            title: Translation.tr("Position")
+            options: [
+                {
+                    label: Translation.tr("Top left"),
+                    value: "top-left"
+                },
+                {
+                    label: Translation.tr("Top centre"),
+                    value: "top-center"
+                },
+                {
+                    label: Translation.tr("Top right"),
+                    value: "top-right"
+                },
+                {
+                    label: Translation.tr("Middle left"),
+                    value: "middle-left"
+                },
+                {
+                    label: Translation.tr("Centre"),
+                    value: "middle-center"
+                },
+                {
+                    label: Translation.tr("Middle right"),
+                    value: "middle-right"
+                },
+                {
+                    label: Translation.tr("Bottom left"),
+                    value: "bottom-left"
+                },
+                {
+                    label: Translation.tr("Bottom centre"),
+                    value: "bottom-center"
+                },
+                {
+                    label: Translation.tr("Bottom right"),
+                    value: "bottom-right"
+                }
+            ]
+            value: CC.GlobalConfig.background.desktopClock.position
+            onSelected: v => CC.GlobalConfig.background.desktopClock.position = v
+        }
+
+        SliderRow {
+            enabled: CC.GlobalConfig.background.desktopClock.enabled
+            icon: "format_size"
+            title: Translation.tr("Size")
+            from: 0.5
+            to: 2
+            format: v => `${Math.round(v * 100)} %`
+            value: CC.GlobalConfig.background.desktopClock.scale
+            onMoved: v => CC.GlobalConfig.background.desktopClock.scale = v
+        }
+
+        SwitchRow {
+            enabled: CC.GlobalConfig.background.desktopClock.enabled
+            icon: "rectangle"
+            title: Translation.tr("Background behind it")
+            description: Translation.tr("A blurred plate, for busy wallpapers")
+            checked: CC.GlobalConfig.background.desktopClock.background.enabled
+            onToggled: v => CC.GlobalConfig.background.desktopClock.background.enabled = v
+        }
+    }
 
     ContentSection {
         icon: "toast"
