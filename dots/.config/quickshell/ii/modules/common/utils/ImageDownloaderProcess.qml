@@ -11,6 +11,7 @@ Process {
     required property string filePath;
     required property string sourceUrl;
     property string downloadUserAgent: Config.options?.networking.userAgent ?? ""
+    property string referer: "" // caelestia4: for hotlink-protected hosts (Gelbooru's CDN redirects to HTML without one)
     
     function processFilePath() {
         return StringUtils.shellSingleQuoteEscape(FileUtils.trimFileProtocol(filePath));
@@ -27,9 +28,14 @@ Process {
         return ` -H 'User-Agent: ${StringUtils.shellSingleQuoteEscape(downloadUserAgent)}'`;
     }
 
+    function curlRefererArg() {
+        return referer ? ` -e '${StringUtils.shellSingleQuoteEscape(referer)}'` : "";
+    }
+
     running: true
+    // caelestia4: download to .part and keep it only if it is an image, so a blocked request (HTML page) is never cached
     command: ["bash", "-c", 
-        `mkdir -p $(dirname '${processFilePath()}'); [ -f '${processFilePath()}' ] || curl -sSL '${processSourceUrl()}'${curlUserAgentArg()} -o '${processFilePath()}' && file '${processFilePath()}'`
+        `mkdir -p $(dirname '${processFilePath()}'); [ -f '${processFilePath()}' ] || { curl -fsSL '${processSourceUrl()}'${curlUserAgentArg()}${curlRefererArg()} -o '${processFilePath()}.part' && file -b --mime-type '${processFilePath()}.part' | grep -q '^image/' && mv '${processFilePath()}.part' '${processFilePath()}'; } && file '${processFilePath()}'`
     ]
     stdout: StdioCollector {
         id: imageSizeOutputCollector
