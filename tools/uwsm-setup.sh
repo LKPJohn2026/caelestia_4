@@ -3,10 +3,14 @@
 # Idempotent; run again after pulling. Needs: sudo pacman -S --needed uwsm  (provides uwsm + uwsm-app).
 #
 #  - env:   dots/.config/uwsm/env-hyprland -> ~/.config/uwsm/ (and dots-extra/uwsm/env-hyprland.d/* if missing)
-#  - units: dots/.config/systemd/user/caelestia4-* -> ~/.config/systemd/user/, enabled for
-#           wayland-session@hyprland.desktop.target (Hyprland session only; Plasma never starts them)
+#  - units: dots/.config/systemd/user/caelestia4-* -> ~/.config/systemd/user/, WantedBy=graphical-session.target
+#           with ConditionEnvironment=CAELESTIA4_UWSM=1 (set only by the uwsm Hyprland env, so Plasma skips them).
+#           Not wanted by wayland-session@hyprland.desktop.target: a target is ordered after what it wants, uwsm
+#           orders graphical-session.target after that target, and the units are After=graphical-session.target,
+#           so systemd found an ordering cycle and dropped every start job (shell, hypridle, …) at login.
 #  - app-graphical.slice drop-in: systemd-oomd kills the single app scope under sustained memory pressure
-#  - packaged units wanted by that target too: hypridle, plasma-kwallet-pam (KWallet unlock), ydotool
+#  - packaged units (hypridle, plasma-kwallet-pam, ydotool) are started by hypr/hyprland/execs.lua under uwsm; they
+#    can't take the condition (Plasma uses plasma-kwallet-pam too)
 #  - XDG autostart masked for this compositor only: with XDG_CURRENT_DESKTOP=Hyprland:KDE it would start
 #    Plasma's OnlyShowIn=KDE entries (plasmashell, powerdevil, kglobalacceld, polkit-kde-agent, …)
 # The plain "Hyprland" session keeps working as before (the config checks CAELESTIA4_UWSM).
@@ -47,17 +51,19 @@ enable=(caelestia4-shell.service caelestia4-cliphist@text.service caelestia4-cli
 command -v fcitx5 >/dev/null && enable+=(caelestia4-fcitx5.service)
 command -v easyeffects >/dev/null && enable+=(caelestia4-easyeffects.service)
 command -v kdeconnectd >/dev/null && enable+=(caelestia4-kdeconnectd.service caelestia4-kdeconnect-indicator.service)
-systemctl --user enable "${enable[@]}"
-say "enabled for $TARGET: ${enable[*]}"
+# reenable: drops links from older setups (they were wanted by $TARGET, which made an ordering cycle)
+systemctl --user reenable "${enable[@]}" 2>/dev/null
+say "enabled for graphical-session.target (uwsm Hyprland only): ${enable[*]}"
 
-packaged=()
+# older setups also added packaged units to $TARGET; remove those links (same cycle)
 for u in hypridle.service plasma-kwallet-pam.service ydotool.service; do
-  systemctl --user cat "$u" >/dev/null 2>&1 && packaged+=("$u")
+  rm -f "$CFG/systemd/user/$TARGET.wants/$u"
 done
-((${#packaged[@]})) && systemctl --user add-wants "$TARGET" "${packaged[@]}" && say "wanted by $TARGET: ${packaged[*]}"
+rmdir "$CFG/systemd/user/$TARGET.wants" 2>/dev/null || true
+systemctl --user daemon-reload
 
 systemctl --user mask wayland-session-xdg-autostart@hyprland.desktop.target >/dev/null
 say "XDG autostart masked for Hyprland (Plasma unaffected)"
 
 say "done. Log out and pick \"Hyprland (uwsm-managed)\" at the login screen."
-say "check: systemctl --user list-dependencies $TARGET"
+say "check: systemctl --user list-dependencies graphical-session.target | grep caelestia4"

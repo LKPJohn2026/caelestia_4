@@ -4,6 +4,7 @@
 [Unit]
 Description=Caelestia 4 shell (Quickshell)
 PartOf=graphical-session.target
+ConditionEnvironment=CAELESTIA4_UWSM=1
 After=graphical-session.target
 
 [Service]
@@ -14,4 +15,4 @@ RestartSec=1
 Slice=session-graphical.slice
 
 [Install]
-WantedBy=wayland-session@hyprland.desktop.target
+WantedBy=graphical-session.target
