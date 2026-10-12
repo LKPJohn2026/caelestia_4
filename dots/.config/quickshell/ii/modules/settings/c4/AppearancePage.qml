@@ -1,9 +1,12 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
+import Quickshell.Widgets
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.common.functions
 import Caelestia.Config as CC
 import qs.modules.settings.c4 // caelestia4: explicit, so Quickshell's scanner registers every row type
 
@@ -17,41 +20,159 @@ ContentPage {
         Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch ${extraArgs ?? ""}`]);
     }
 
+    // ---------------------------------------------------------------- wallpaper
+    readonly property string wallpaperPath: {
+        const p = Config.options.background.wallpaperPath ?? "";
+        const isVideo = /\.(mp4|webm|mkv|avi|mov)$/i.test(p);
+        return isVideo ? (Config.options.background.thumbnailPath || p) : p;
+    }
+    readonly property string wallpaperFile: wallpaperPath.split("/").pop()
+    readonly property string wallpaperFolder: wallpaperPath.substring(0, wallpaperPath.lastIndexOf("/"))
+    readonly property string wallpaperSource: {
+        if (wallpaperFile.startsWith("random_wallpaper"))
+            return Translation.tr("Downloaded by Random from the internet");
+        if (wallpaperFolder.includes("/Wallhaven"))
+            return Translation.tr("Saved from Wallhaven");
+        return Translation.tr("From your files");
+    }
+
+    // end-4's online random wallpapers (scripts/colors/random): download to Pictures/Wallpapers, then apply
+    Process {
+        id: randomWallProc
+
+        property string source
+        property string status
+
+        command: ["bash", "-c", FileUtils.trimFileProtocol(`${Directories.scriptPath}/colors/random/random_${source}_wall.sh`)]
+        stdout: SplitParser {
+            onRead: data => randomWallProc.status = data.trim()
+        }
+    }
+
+    // Image size from the file header (magick identify; doesn't decode the whole image)
+    property string wallpaperSize
+    // The command is set here, not bound: a binding may not have updated yet when the path-change handler runs
+    function probeSize(): void {
+        wallpaperSize = "";
+        if (!wallpaperPath)
+            return;
+        sizeProc.command = ["magick", "identify", "-ping", "-format", "%w × %h", `${wallpaperPath}[0]`];
+        sizeProc.running = true;
+    }
+    onWallpaperPathChanged: probeSize()
+    Component.onCompleted: probeSize()
+
+    Process {
+        id: sizeProc
+
+        stdout: StdioCollector {
+            onStreamFinished: wallpaperSize = text.trim()
+        }
+    }
+
+    function fetchRandom(source): void {
+        randomWallProc.source = source;
+        randomWallProc.status = "";
+        randomWallProc.running = true;
+    }
+
     ContentSection {
         icon: "wallpaper"
         title: Translation.tr("Wallpaper")
 
+        // Current wallpaper and where it comes from
+        ClippingRectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: Math.round(width * 9 / 32)
+            Layout.maximumHeight: 300
+            radius: Appearance.rounding.normal
+            color: Appearance.m3colors.m3surfaceContainerHigh
+
+            Image {
+                anchors.fill: parent
+                source: wallpaperPath ? `file://${wallpaperPath}` : ""
+                fillMode: Image.PreserveAspectCrop
+                sourceSize.width: 1280
+                asynchronous: true
+                cache: false
+            }
+        }
+
+        SettingRow {
+            icon: "image"
+            title: wallpaperFile || Translation.tr("No wallpaper set")
+            description: [wallpaperSource, wallpaperSize, wallpaperFolder.replace(Directories.home.replace("file://", ""), "~")].filter(s => s).join("  ·  ")
+
+            RippleButtonWithIcon {
+                enabled: wallpaperFolder !== ""
+                materialIcon: "folder_open"
+                mainText: Translation.tr("Show in folder")
+                onClicked: Quickshell.execDetached(["xdg-open", wallpaperFolder])
+            }
+        }
+
         ButtonRow {
             icon: "photo_library"
-            title: Translation.tr("Choose wallpaper")
-            description: Translation.tr("Browse your wallpaper folder")
+            title: Translation.tr("Choose from your wallpapers")
+            description: Translation.tr("Browse the wallpaper folder · Ctrl+Super+T")
             buttonIcon: "open_in_new"
-            buttonText: Translation.tr("Open")
+            buttonText: Translation.tr("Browse")
             onClicked: Quickshell.execDetached(["qs", "-c", "ii", "ipc", "call", "wallpaperSelector", "toggle"])
         }
 
         ButtonRow {
-            icon: "image"
+            icon: "add_photo_alternate"
             title: Translation.tr("Use an image file")
             description: Translation.tr("Pick any image on your computer")
             buttonIcon: "folder_open"
-            buttonText: Translation.tr("Pick file")
+            buttonText: Translation.tr("Choose file")
             onClicked: Quickshell.execDetached([Directories.wallpaperSwitchScriptPath])
         }
 
         ButtonRow {
             icon: "shuffle"
-            title: Translation.tr("Random wallpaper")
-            description: Translation.tr("From the folder of the current wallpaper")
+            title: Translation.tr("Shuffle")
+            description: Translation.tr("A random wallpaper from the current folder")
             buttonIcon: "casino"
             buttonText: Translation.tr("Shuffle")
             onClicked: Wallpapers.randomFromCurrentFolder()
         }
 
+        SettingRow {
+            visible: Config.options.policies.weeb === 1
+            icon: "cloud_download"
+            title: Translation.tr("Random from the internet")
+            description: randomWallProc.running ? Translation.tr("Downloading… %1").arg(randomWallProc.status) : Translation.tr("Saved to %1").arg(`${Directories.pictures.replace(Directories.home, "~").replace("file://", "")}/Wallpapers`)
+
+            RowLayout {
+                spacing: 8
+
+                RippleButtonWithIcon {
+                    enabled: !randomWallProc.running
+                    materialIcon: "ifl"
+                    mainText: Translation.tr("Konachan")
+                    onClicked: fetchRandom("konachan")
+                    StyledToolTip {
+                        text: Translation.tr("Safe-for-work anime artwork from konachan.net")
+                    }
+                }
+
+                RippleButtonWithIcon {
+                    enabled: !randomWallProc.running
+                    materialIcon: "ifl"
+                    mainText: Translation.tr("osu! seasonal")
+                    onClicked: fetchRandom("osu")
+                    StyledToolTip {
+                        text: Translation.tr("A seasonal background from osu!")
+                    }
+                }
+            }
+        }
+
         SwitchRow {
             icon: "folder_managed"
             title: Translation.tr("Use the system file picker")
-            description: Translation.tr("Choose wallpaper opens your desktop's file dialog instead of the built-in browser")
+            description: Translation.tr("Browse opens your desktop's file dialog instead of the built-in browser")
             checked: Config.options.wallpaperSelector.useSystemFileDialog
             onToggled: v => Config.options.wallpaperSelector.useSystemFileDialog = v
         }
