@@ -202,6 +202,31 @@ StyledClippingRect {
             }
         }
 
+        // caelestia4: the active workspace's app icons in their own colours. The active indicator recolours everything
+        // under it (Colouriser), which turned real app icons into silhouettes; this live copy sits on top of it.
+        ShaderEffectSource {
+            id: activeIcons
+
+            readonly property Workspace ws: {
+                workspaces.itemsDirty;
+                return workspaces.itemAtIndex(root.activeWsIdx) as Workspace;
+            }
+            readonly property Item icons: ws?.windowIcons ?? null
+            readonly property point pos: {
+                // dependencies: list scroll and the workspace / column positions (mapToItem alone isn't reactive)
+                void [workspaces.contentY, workspaces.y, ws?.y, icons?.y, icons?.parent?.y, icons?.height];
+                return icons ? icons.mapToItem(activeIcons.parent, 0, 0) : Qt.point(0, 0);
+            }
+
+            visible: Config.bar.workspaces.activeIndicator && !!icons && icons.visible && icons.height > 0
+            sourceItem: visible ? icons : null
+            live: true
+            x: pos.x
+            y: pos.y
+            width: icons?.width ?? 0
+            height: icons?.height ?? 0
+        }
+
         MouseArea {
             anchors.fill: workspaces
             onClicked: event => {

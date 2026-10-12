@@ -18,6 +18,7 @@ import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.components.effects
 import qs.modules.caelestia.adapters
+import qs.modules.caelestia.utils // caelestia4: Icons.appIconSource
 
 // caelestia4: a Caelestia-style dock with end-4's dock features (modules/ii/dock), built on end-4's
 // TaskbarApps service (pinned apps = Config.options.dock.pinnedApps, shared with the ii family).
@@ -281,8 +282,10 @@ Scope {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: -Tokens.padding.extraSmall / 2
                 implicitSize: root.cfg.iconSize
-                asynchronous: true
-                source: Quickshell.iconPath(E4.AppSearch.guessIcon(app.appId), "image-missing")
+                // caelestia4: synchronous. An async reload that finishes while the dock is hidden left a blank square
+                // (icons whose source changed after start: entries loading, apps installed). Theme icons load fast.
+                asynchronous: false
+                source: Icons.appIconSource(app.appId) // caelestia4: shared with the bar (never blank)
             }
 
             // Open-window dots (max 3), primary when the app is focused

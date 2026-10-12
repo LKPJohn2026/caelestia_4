@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Widgets
 import Quickshell.Hyprland
 import M3Shapes
 import Caelestia.Components
@@ -34,6 +35,7 @@ Item {
     readonly property list<int> focusedShapeList: [MaterialShape.Slanted, MaterialShape.Oval, MaterialShape.Pill, MaterialShape.Triangle, MaterialShape.Arrow, MaterialShape.Diamond, MaterialShape.Pentagon, MaterialShape.Gem, MaterialShape.VerySunny, MaterialShape.Sunny, MaterialShape.Cookie4Sided, MaterialShape.Cookie6Sided, MaterialShape.Cookie7Sided, MaterialShape.Cookie9Sided, MaterialShape.Cookie12Sided, MaterialShape.Clover4Leaf, MaterialShape.SoftBurst, MaterialShape.Ghostish]
 
     property color offMonitorColour: Colours.palette.m3outlineVariant
+    readonly property alias windowIcons: windows // caelestia4: drawn uncoloured above the active indicator (Workspaces.qml)
     readonly property bool onOtherMonitor: {
         if (Config.bar.workspaces.perMonitor)
             return false;
@@ -220,18 +222,31 @@ Item {
                     }
                 }
 
-                delegate: MaterialIcon {
+                // caelestia4: the app's real icon (same resolver as the dock: Icons.appIconSource), in the box the
+                // Material glyph used to take so the column spacing is unchanged; dimmed on other monitors
+                delegate: Item {
                     id: win
 
                     required property var modelData
                     required property int index // Needed, LazyListView will fail to set it if it doesn't exist
 
-                    grade: 0
-                    horizontalAlignment: Text.AlignHCenter
-                    text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
-                    color: root.onOtherMonitor ? root.offMonitorColour : Colours.palette.m3onSurfaceVariant
+                    implicitWidth: sizer.implicitWidth
+                    implicitHeight: sizer.implicitHeight
+                    opacity: LazyListView.adding || LazyListView.removing ? 0 : root.onOtherMonitor ? 0.5 : 1
 
-                    opacity: LazyListView.adding || LazyListView.removing ? 0 : 1
+                    MaterialIcon {
+                        id: sizer
+
+                        visible: false
+                        text: "terminal"
+                    }
+
+                    IconImage {
+                        anchors.centerIn: parent
+                        implicitSize: Math.round(sizer.implicitHeight * 0.8)
+                        asynchronous: false // see the dock: async reloads could end blank
+                        source: Icons.appIconSource(win.modelData.lastIpcObject.class)
+                    }
 
                     Behavior on opacity {
                         Anim {
