@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs
 import qs.services
 import qs.modules.common
@@ -10,6 +12,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import Qt5Compat.GraphicalEffects
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 Rectangle {
     id: root
@@ -49,8 +52,8 @@ Rectangle {
         }
     }
 
-    radius: Appearance.rounding.normal
-    color: Appearance.colors.colLayer1
+    radius: CC.Tokens.rounding.medium
+    color: Colours.tPalette.m3surfaceContainer
 
     ColumnLayout {
         id: columnLayout
@@ -64,8 +67,8 @@ Rectangle {
         RowLayout { // Header
             Rectangle { // Provider name
                 id: providerNameWrapper
-                color: Appearance.colors.colSecondaryContainer
-                radius: Appearance.rounding.small
+                color: Colours.palette.m3secondaryContainer
+                radius: CC.Tokens.rounding.small
                 implicitWidth: providerName.implicitWidth + 10 * 2
                 implicitHeight: Math.max(providerName.implicitHeight + 5 * 2, 30)
                 Layout.alignment: Qt.AlignVCenter
@@ -74,7 +77,7 @@ Rectangle {
                     id: providerName
                     anchors.centerIn: parent
                     font.pixelSize: Appearance.font.pixelSize.large
-                    color: Appearance.m3colors.m3onSecondaryContainer
+                    color: Colours.palette.m3onSecondaryContainer
                     text: Booru.providers[root.responseData.provider].name
                 }
             }
@@ -89,7 +92,7 @@ Rectangle {
                     id: pageNumber
                     anchors.centerIn: parent
                     font.pixelSize: Appearance.font.pixelSize.smaller
-                    color: Appearance.colors.colOnLayer2
+                    color: Colours.palette.m3onSurface
                     // text: `Page ${root.responseData.page}`
                     text: Translation.tr("Page %1").arg(root.responseData.page)
                 }
@@ -110,7 +113,7 @@ Rectangle {
                 maskSource: Rectangle {
                     width: tagsFlickable.width
                     height: tagsFlickable.height
-                    radius: Appearance.rounding.small
+                    radius: CC.Tokens.rounding.small
                 }
             }
 
@@ -144,7 +147,7 @@ Rectangle {
             Layout.fillWidth: true
             visible: root.responseData.message.length > 0
             font.pixelSize: Appearance.font.pixelSize.small
-            color: Appearance.colors.colOnLayer1
+            color: Colours.palette.m3onSurface
             text: root.responseData.message
             wrapMode: Text.WordWrap
             Layout.margins: responsePadding
@@ -228,7 +231,7 @@ Rectangle {
                         required property var modelData
                         imageData: modelData
                         rowHeight: imageRow.rowHeight
-                        imageRadius: imageRow.modelData.images.length == 1 ? 50 : Appearance.rounding.normal
+                        imageRadius: imageRow.modelData.images.length == 1 ? 50 : CC.Tokens.rounding.medium
                         // Download manually to reduce redundant requests or make sure downloading works
                         manualDownload: ["danbooru", "waifu.im", "t.alcy.cc", "konachan", "gelbooru"].includes(root.responseData.provider)
                         referer: Booru.providers[root.responseData.provider]?.imageReferer ?? ""
@@ -255,10 +258,10 @@ Rectangle {
                 tagInputField.accept()
             }
 
-            buttonRadius: Appearance.rounding.small
-            colBackground: Appearance.colors.colSurfaceContainerHighest
-            colBackgroundHover: Appearance.colors.colSurfaceContainerHighestHover
-            colRipple: Appearance.colors.colSurfaceContainerHighestActive            
+            buttonRadius: CC.Tokens.rounding.small
+            colBackground: Colours.palette.m3surfaceContainerHighest
+            colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.08))
+            colRipple: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.12))            
 
             contentItem: Item {
                 anchors.fill: parent
@@ -273,12 +276,12 @@ Rectangle {
                         Layout.alignment: Qt.AlignVCenter
                         verticalAlignment: Text.AlignVCenter
                         text: "Next page"
-                        color: Appearance.m3colors.m3onSurface
+                        color: Colours.palette.m3onSurface
                     }
                     MaterialSymbol {
                         Layout.alignment: Qt.AlignVCenter
                         iconSize: Appearance.font.pixelSize.larger
-                        color: Appearance.m3colors.m3onSurface
+                        color: Colours.palette.m3onSurface
                         text: "chevron_right"
                     }
                 }

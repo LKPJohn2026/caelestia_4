@@ -1,5 +1,7 @@
 pragma ComponentBehavior: Bound
 
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -7,6 +9,7 @@ import qs.modules.common.functions
 import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 Item {
     id: root
@@ -19,7 +22,7 @@ Item {
     property bool done: true
     property bool completed: false
 
-    property real thinkBlockBackgroundRounding: Appearance.rounding.small
+    property real thinkBlockBackgroundRounding: CC.Tokens.rounding.small
     property real thinkBlockHeaderPaddingVertical: 3
     property real thinkBlockHeaderPaddingHorizontal: 10
     property real thinkBlockComponentSpacing: 2
@@ -56,7 +59,7 @@ Item {
 
         Rectangle { // Header background
             id: header
-            color: Appearance.colors.colSurfaceContainerHighest
+            color: Colours.palette.m3surfaceContainerHighest
             Layout.fillWidth: true
             implicitHeight: thinkBlockTitleBarRowLayout.implicitHeight + thinkBlockHeaderPaddingVertical * 2
 
@@ -99,10 +102,10 @@ Item {
                     visible: root.completed
                     implicitWidth: 22
                     implicitHeight: 22
-                    colBackground: headerMouseArea.containsMouse ? Appearance.colors.colLayer2Hover
-                        : ColorUtils.transparentize(Appearance.colors.colLayer2, 1)
-                    colBackgroundHover: Appearance.colors.colLayer2Hover
-                    colRipple: Appearance.colors.colLayer2Active
+                    colBackground: headerMouseArea.containsMouse ? Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.08))
+                        : ColorUtils.transparentize(Colours.tPalette.m3surfaceContainerHigh, 1)
+                    colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.08))
+                    colRipple: Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.12))
 
                     onClicked: { root.collapsed = !root.collapsed }
                     
@@ -112,7 +115,7 @@ Item {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         iconSize: Appearance.font.pixelSize.normal
-                        color: Appearance.colors.colOnLayer2
+                        color: Colours.palette.m3onSurface
                         rotation: root.collapsed ? 0 : 180
                         Behavior on rotation {
                             NumberAnimation {
@@ -150,7 +153,7 @@ Item {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 implicitHeight: messageTextBlock.implicitHeight
-                color: Appearance.colors.colLayer2
+                color: Colours.tPalette.m3surfaceContainerHigh
 
                 // Load data for the message at the correct scope
                 property bool editing: root.editing

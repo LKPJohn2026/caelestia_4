@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -7,6 +9,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 /**
  * Translator widget with the `trans` commandline tool.
@@ -132,14 +135,14 @@ Item {
                     GroupButton {
                         id: copyButton
                         baseWidth: height
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: CC.Tokens.rounding.small
                         enabled: outputCanvas.displayedText.trim().length > 0
                         contentItem: MaterialSymbol {
                             anchors.centerIn: parent
                             horizontalAlignment: Text.AlignHCenter
                             iconSize: Appearance.font.pixelSize.larger
                             text: "content_copy"
-                            color: copyButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                            color: copyButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
                         }
                         onClicked: {
                             Quickshell.clipboardText = outputCanvas.displayedText
@@ -148,14 +151,14 @@ Item {
                     GroupButton {
                         id: searchButton
                         baseWidth: height
-                        buttonRadius: Appearance.rounding.small
+                        buttonRadius: CC.Tokens.rounding.small
                         enabled: outputCanvas.displayedText.trim().length > 0
                         contentItem: MaterialSymbol {
                             anchors.centerIn: parent
                             horizontalAlignment: Text.AlignHCenter
                             iconSize: Appearance.font.pixelSize.larger
                             text: "travel_explore"
-                            color: searchButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                            color: searchButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
                         }
                         onClicked: {
                             let url = Config.options.search.engineBaseUrl + outputCanvas.displayedText;
@@ -188,13 +191,13 @@ Item {
             GroupButton {
                 id: pasteButton
                 baseWidth: height
-                buttonRadius: Appearance.rounding.small
+                buttonRadius: CC.Tokens.rounding.small
                 contentItem: MaterialSymbol {
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
                     iconSize: Appearance.font.pixelSize.larger
                     text: "content_paste"
-                    color: deleteButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                    color: deleteButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
                 }
                 onClicked: {
                     root.inputField.text = Quickshell.clipboardText
@@ -203,14 +206,14 @@ Item {
             GroupButton {
                 id: deleteButton
                 baseWidth: height
-                buttonRadius: Appearance.rounding.small
+                buttonRadius: CC.Tokens.rounding.small
                 enabled: inputCanvas.inputTextArea.text.length > 0
                 contentItem: MaterialSymbol {
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
                     iconSize: Appearance.font.pixelSize.larger
                     text: "close"
-                    color: deleteButton.enabled ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                    color: deleteButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
                 }
                 onClicked: {
                     root.inputField.text = ""

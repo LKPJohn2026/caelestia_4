@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -5,6 +7,7 @@ import qs.modules.common.functions
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 Rectangle {
     id: root
@@ -17,8 +20,8 @@ Rectangle {
     default property alias actionButtons: actions.data
     Layout.fillWidth: true
     implicitHeight: Math.max(150, inputColumn.implicitHeight)
-    color: Appearance.colors.colLayer2
-    radius: Appearance.rounding.normal
+    color: Colours.tPalette.m3surfaceContainerHigh
+    radius: CC.Tokens.rounding.medium
 
     signal inputTextChanged(); // Signal emitted when text changes
 
@@ -38,7 +41,7 @@ Rectangle {
                 wrapMode: TextEdit.Wrap
                 textFormat: TextEdit.PlainText
                 font.pixelSize: Appearance.font.pixelSize.small
-                color: Appearance.colors.colOnLayer1
+                color: Colours.palette.m3onSurface
                 padding: 15
                 background: null
                 onTextChanged: root.inputTextChanged()
@@ -55,7 +58,7 @@ Rectangle {
                 padding: 15
                 wrapMode: Text.Wrap
                 font.pixelSize: Appearance.font.pixelSize.small
-                color: root.text.length > 0 ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+                color: root.text.length > 0 ? Colours.palette.m3onSurface : Colours.palette.m3outline
                 text: root.text.length > 0 ? root.text : root.placeholderText
             }
         }
@@ -73,7 +76,7 @@ Rectangle {
                 Layout.leftMargin: 10
                 sourceComponent: Text {
                     text: Translation.tr("%1 characters").arg(inputLoader.item.text.length)
-                    color: Appearance.colors.colOnLayer1
+                    color: Colours.palette.m3onSurface
                     font.pixelSize: Appearance.font.pixelSize.smaller
                 }
             }

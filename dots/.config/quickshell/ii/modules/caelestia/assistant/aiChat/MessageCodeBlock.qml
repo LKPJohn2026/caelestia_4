@@ -1,5 +1,7 @@
 pragma ComponentBehavior: Bound
 
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -9,6 +11,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import org.kde.syntaxhighlighting
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 ColumnLayout {
     id: root
@@ -22,7 +25,7 @@ ColumnLayout {
     property bool isCommandRequest: segmentLang === "command"
     property var displayLang: (isCommandRequest ? "bash" : segmentLang)
 
-    property real codeBlockBackgroundRounding: Appearance.rounding.small
+    property real codeBlockBackgroundRounding: CC.Tokens.rounding.small
     property real codeBlockHeaderPadding: 3
     property real codeBlockComponentSpacing: 2
 
@@ -32,9 +35,9 @@ ColumnLayout {
         Layout.fillWidth: true
         topLeftRadius: codeBlockBackgroundRounding
         topRightRadius: codeBlockBackgroundRounding
-        bottomLeftRadius: Appearance.rounding.unsharpen
-        bottomRightRadius: Appearance.rounding.unsharpen
-        color: Appearance.colors.colSurfaceContainerHighest
+        bottomLeftRadius: CC.Tokens.rounding.extraSmall
+        bottomRightRadius: CC.Tokens.rounding.extraSmall
+        color: Colours.palette.m3surfaceContainerHighest
         implicitHeight: codeBlockTitleBarRowLayout.implicitHeight + codeBlockHeaderPadding * 2
 
         RowLayout { // Language and buttons
@@ -55,7 +58,7 @@ ColumnLayout {
                 Layout.leftMargin: 10
                 font.pixelSize: Appearance.font.pixelSize.small
                 font.weight: Font.DemiBold
-                color: Appearance.colors.colOnLayer2
+                color: Colours.palette.m3onSurface
                 text: root.displayLang ? Repository.definitionForName(root.displayLang).name : "plain"
             }
 
@@ -126,11 +129,11 @@ ColumnLayout {
             implicitHeight: lineNumberColumnLayout.implicitHeight
             Layout.fillHeight: true
             Layout.fillWidth: false
-            topLeftRadius: Appearance.rounding.unsharpen
+            topLeftRadius: CC.Tokens.rounding.extraSmall
             bottomLeftRadius: codeBlockBackgroundRounding
-            topRightRadius: Appearance.rounding.unsharpen
-            bottomRightRadius: Appearance.rounding.unsharpen
-            color: Appearance.colors.colLayer2
+            topRightRadius: CC.Tokens.rounding.extraSmall
+            bottomRightRadius: CC.Tokens.rounding.extraSmall
+            color: Colours.tPalette.m3surfaceContainerHigh
 
             ColumnLayout {
                 id: lineNumberColumnLayout
@@ -151,7 +154,7 @@ ColumnLayout {
                         Layout.alignment: Qt.AlignRight
                         font.family: Appearance.font.family.monospace
                         font.pixelSize: Appearance.font.pixelSize.small
-                        color: Appearance.colors.colSubtext
+                        color: Colours.palette.m3outline
                         horizontalAlignment: Text.AlignRight
                         text: index + 1
                     }
@@ -161,11 +164,11 @@ ColumnLayout {
 
         Rectangle { // Code background
             Layout.fillWidth: true
-            topLeftRadius: Appearance.rounding.unsharpen
-            bottomLeftRadius: Appearance.rounding.unsharpen
-            topRightRadius: Appearance.rounding.unsharpen
+            topLeftRadius: CC.Tokens.rounding.extraSmall
+            bottomLeftRadius: CC.Tokens.rounding.extraSmall
+            topRightRadius: CC.Tokens.rounding.extraSmall
             bottomRightRadius: codeBlockBackgroundRounding
-            color: Appearance.colors.colLayer2
+            color: Colours.tPalette.m3surfaceContainerHigh
             implicitHeight: codeColumnLayout.implicitHeight
 
             ColumnLayout {
@@ -202,8 +205,8 @@ ColumnLayout {
                         
                         contentItem: Rectangle {
                             implicitHeight: 6
-                            radius: Appearance.rounding.small
-                            color: Appearance.colors.colLayer2Active
+                            radius: CC.Tokens.rounding.small
+                            color: Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.12))
                         }
                     }
 
@@ -216,10 +219,10 @@ ColumnLayout {
                         font.family: Appearance.font.family.monospace
                         font.hintingPreference: Font.PreferNoHinting // Prevent weird bold text
                         font.pixelSize: Appearance.font.pixelSize.small
-                        selectedTextColor: Appearance.m3colors.m3onSecondaryContainer
-                        selectionColor: Appearance.colors.colSecondaryContainer
+                        selectedTextColor: Colours.palette.m3onSecondaryContainer
+                        selectionColor: Colours.palette.m3secondaryContainer
                         // wrapMode: TextEdit.Wrap
-                        color: messageData.thinking ? Appearance.colors.colSubtext : Appearance.colors.colOnLayer1
+                        color: messageData.thinking ? Colours.palette.m3outline : Colours.palette.m3onSurface
 
                         text: segmentContent
                         onTextChanged: {
@@ -261,7 +264,7 @@ ColumnLayout {
                                 contentItem: StyledText {
                                     text: Translation.tr("Reject")
                                     font.pixelSize: Appearance.font.pixelSize.small
-                                    color: Appearance.colors.colOnLayer2
+                                    color: Colours.palette.m3onSurface
                                 }
                                 onClicked: Ai.rejectCommand(root.messageData)
                             }
@@ -270,7 +273,7 @@ ColumnLayout {
                                 contentItem: StyledText {
                                     text: Translation.tr("Approve")
                                     font.pixelSize: Appearance.font.pixelSize.small
-                                    color: Appearance.colors.colOnPrimary
+                                    color: Colours.palette.m3onPrimary
                                 }
                                 onClicked: Ai.approveCommand(root.messageData)
                             }

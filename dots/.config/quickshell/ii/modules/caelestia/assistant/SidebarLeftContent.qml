@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -6,11 +8,13 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Qt.labs.synchronizer
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls
 
 Item {
     id: root
     required property var scopeRoot
-    property int sidebarPadding: 10
+    property int sidebarPadding: CC.Tokens.padding.small
     anchors.fill: parent
     property bool aiChatEnabled: Config.options.policies.ai !== 0
     property bool translatorEnabled: Config.options.sidebar.translator.enable
@@ -47,31 +51,44 @@ Item {
         }
         spacing: sidebarPadding
 
-        Toolbar {
-            visible: tabButtonList.length > 0
-            Layout.alignment: Qt.AlignHCenter
-            enableShadow: false
-            ToolbarTabBar {
-                id: tabBar
-                Layout.alignment: Qt.AlignHCenter
-                tabButtonList: root.tabButtonList
-                currentIndex: swipeView.currentIndex
+        // caelestia4: Caelestia tonal tabs (was end-4's floating ToolbarTabBar)
+        RowLayout {
+            id: tabBar
+
+            visible: root.tabButtonList.length > 1
+            Layout.fillWidth: true
+            spacing: CC.Tokens.spacing.small
+
+            Repeater {
+                model: root.tabButtonList
+
+                IconTextButton {
+                    required property var modelData
+                    required property int index
+
+                    Layout.fillWidth: true
+                    type: IconTextButton.Tonal
+                    isToggle: true
+                    checked: swipeView.currentIndex === index
+                    icon: modelData.icon
+                    text: modelData.name
+                    onClicked: swipeView.setCurrentIndex(index)
+                }
             }
         }
 
-        Rectangle {
+        StyledRect {
             Layout.fillWidth: true
             Layout.fillHeight: true
             implicitWidth: swipeView.implicitWidth
             implicitHeight: swipeView.implicitHeight
-            radius: Appearance.rounding.normal
-            color: Appearance.colors.colLayer1
+            radius: CC.Tokens.rounding.large
+            color: Colours.tPalette.m3surfaceContainer
 
             SwipeView { // Content pages
                 id: swipeView
                 anchors.fill: parent
                 spacing: 10
-                currentIndex: tabBar.currentIndex
 
                 clip: true
                 layer.enabled: true
@@ -79,7 +96,7 @@ Item {
                     maskSource: Rectangle {
                         width: swipeView.width
                         height: swipeView.height
-                        radius: Appearance.rounding.small
+                        radius: CC.Tokens.rounding.large
                     }
                 }
 
@@ -110,7 +127,7 @@ Item {
                 StyledText {
                     anchors.centerIn: parent
                     text: root.animeCloset ? Translation.tr("Nothing") : Translation.tr("Enjoy your empty sidebar...")
-                    color: Appearance.colors.colSubtext
+                    color: Colours.palette.m3outline
                 }
             }
         }

@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs
 import qs.services
 import qs.modules.common
@@ -9,6 +11,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls
 
 Item {
     id: root
@@ -183,7 +187,7 @@ Item {
                 maskSource: Rectangle {
                     width: swipeView.width
                     height: swipeView.height
-                    radius: Appearance.rounding.small
+                    radius: CC.Tokens.rounding.small
                 }
             }
 
@@ -234,14 +238,13 @@ Item {
                 }
             }
 
-            PagePlaceholder {
+            EmptyState { // caelestia4
                 id: placeholderItem
                 z: 2
                 shown: root.responses.length === 0
                 icon: "bookmark_heart"
                 title: Translation.tr("Anime boorus")
-                description: ""
-                shape: MaterialShape.Shape.Bun
+                description: Translation.tr("Type tags and press Enter · /mode to switch site")
             }
 
             ScrollToBottomButton {
@@ -275,7 +278,7 @@ Item {
             showArrows: root.suggestionList.length > 1
         }
 
-        FlowButtonGroup { // Tag suggestions
+        Flow { // caelestia4: plain Flow of Caelestia chips // Tag suggestions
             id: tagSuggestions
             visible: root.suggestionList.length > 0 && tagInputField.text.length > 0
             property int selectedIndex: 0
@@ -290,7 +293,7 @@ Item {
                 }
                 delegate: ApiCommandButton {
                     id: tagButton
-                    colBackground: tagSuggestions.selectedIndex === index ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer
+                    colBackground: tagSuggestions.selectedIndex === index ? Qt.tint(Colours.palette.m3secondaryContainer, Qt.alpha(Colours.palette.m3onSurface, 0.08)) : Colours.palette.m3secondaryContainer
                     bounce: false
                     contentItem: RowLayout {
                         anchors.centerIn: parent
@@ -298,7 +301,7 @@ Item {
                         StyledText {
                             Layout.fillWidth: false
                             font.pixelSize: Appearance.font.pixelSize.small
-                            color: Appearance.colors.colOnSecondaryContainer
+                            color: Colours.palette.m3onSecondaryContainer
                             horizontalAlignment: Text.AlignRight
                             text: modelData.displayName ?? modelData.name
                         }
@@ -306,7 +309,7 @@ Item {
                             Layout.fillWidth: false
                             visible: modelData.count !== undefined
                             font.pixelSize: Appearance.font.pixelSize.smaller
-                            color: Appearance.colors.colOnSecondaryContainer
+                            color: Colours.palette.m3onSecondaryContainer
                             horizontalAlignment: Text.AlignLeft
                             text: modelData.count ?? ""
                         }
@@ -348,8 +351,8 @@ Item {
             id: tagInputContainer
             property real columnSpacing: 5
             Layout.fillWidth: true
-            radius: Appearance.rounding.normal - root.padding
-            color: Appearance.colors.colLayer2
+            radius: CC.Tokens.rounding.large // caelestia4
+            color: Colours.tPalette.m3surfaceContainerHigh
             implicitWidth: tagInputField.implicitWidth
             implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin 
                 + commandButtonsRow.implicitHeight + commandButtonsRow.anchors.bottomMargin + columnSpacing, 45)
@@ -372,7 +375,7 @@ Item {
                     wrapMode: TextArea.Wrap
                     Layout.fillWidth: true
                     padding: 10
-                    color: activeFocus ? Appearance.m3colors.m3onSurface : Appearance.m3colors.m3onSurfaceVariant
+                    color: activeFocus ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
                     renderType: Text.NativeRendering
                     placeholderText: Translation.tr('Enter tags, or "%1" for commands').arg(root.commandPrefix)
 
@@ -467,32 +470,18 @@ Item {
                     }
                 }
 
-                RippleButton { // Send button
+                IconButton { // Send button (caelestia4: Caelestia filled round button)
                     id: sendButton
                     Layout.alignment: Qt.AlignTop
-                    Layout.rightMargin: 5
-                    implicitWidth: 40
-                    implicitHeight: 40
-                    buttonRadius: Appearance.rounding.small
-                    enabled: tagInputField.text.length > 0
-                    toggled: enabled
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: sendButton.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-                        onClicked: {
-                            const inputText = tagInputField.text
-                            root.handleInput(inputText)
-                            tagInputField.clear()
-                        }
-                    }
-
-                    contentItem: MaterialSymbol {
-                        anchors.centerIn: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        iconSize: 22
-                        color: sendButton.enabled ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer2Disabled
-                        text: "arrow_upward"
+                    Layout.rightMargin: CC.Tokens.padding.small
+                    Layout.topMargin: CC.Tokens.padding.extraSmall
+                    isRound: true
+                    icon: "arrow_upward"
+                    disabled: tagInputField.text.length === 0
+                    onClicked: {
+                        const inputText = tagInputField.text
+                        root.handleInput(inputText)
+                        tagInputField.clear()
                     }
                 }
             }
@@ -519,6 +508,8 @@ Item {
                 ]
 
                 ApiInputBoxIndicator { // Tool indicator
+                    Layout.fillWidth: true // caelestia4: shrink + elide when the row is full
+                    Layout.maximumWidth: implicitWidth
                     icon: "api"
                     text: Booru.providers[Booru.currentProvider].name
                     tooltipText: Translation.tr("Current API endpoint: %1\nSet it with %2mode PROVIDER")
@@ -528,7 +519,7 @@ Item {
 
                 StyledText {
                     font.pixelSize: Appearance.font.pixelSize.large
-                    color: Appearance.colors.colOnLayer1
+                    color: Colours.palette.m3onSurface
                     text: "•"
                 }
 
@@ -553,7 +544,7 @@ Item {
                             Layout.leftMargin: 10
                             Layout.alignment: Qt.AlignVCenter
                             font.pixelSize: Appearance.font.pixelSize.smaller
-                            color: nsfwSwitch.enabled ? Appearance.colors.colOnLayer1 : Appearance.m3colors.m3outline
+                            color: nsfwSwitch.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
                             text: Translation.tr("Allow NSFW")
                         }
                         StyledSwitch {
@@ -573,15 +564,14 @@ Item {
 
                 Item { Layout.fillWidth: true }
 
-                ButtonGroup {
-                    padding: 0
+                RowLayout { // caelestia4: Caelestia chips
+                    spacing: CC.Tokens.spacing.extraSmall
                     Repeater { // Command buttons
                         id: commandRepeater
                         model: commandButtonsRow.commandsShown
                         delegate: ApiCommandButton {
                             property string commandRepresentation: `${root.commandPrefix}${modelData.name}`
                             buttonText: commandRepresentation
-                            colBackground: Appearance.colors.colLayer2
 
                             downAction: () => {
                                 if (modelData.sendDirectly) {

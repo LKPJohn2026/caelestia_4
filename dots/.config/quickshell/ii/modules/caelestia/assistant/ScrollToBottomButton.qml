@@ -1,57 +1,35 @@
-import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
+// caelestia4: "scroll to bottom" for the Assistant lists, a Caelestia tonal button that appears when scrolled up
 import QtQuick
-import QtQuick.Layouts
+import Caelestia.Config
+import qs.services as E4 // caelestia4: keep (Translation)
+import qs.modules.caelestia.components
+import qs.modules.caelestia.components.controls
 
-RippleButton {
+IconTextButton {
     id: root
+
     required property ListView target
 
     anchors {
         bottom: parent.bottom
         horizontalCenter: parent.horizontalCenter
-        bottomMargin: 10
+        bottomMargin: Tokens.padding.medium
     }
-
     opacity: !target.atYEnd ? 1 : 0
     scale: !target.atYEnd ? 1 : 0.7
     visible: opacity > 0
+    type: IconTextButton.Tonal
+    icon: "arrow_downward"
+    text: E4.Translation.tr("Scroll to bottom")
+    onClicked: target.positionViewAtEnd()
+
     Behavior on opacity {
-        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+        Anim {
+            type: Anim.DefaultEffects
+        }
     }
+
     Behavior on scale {
-        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
-    }
-
-    implicitWidth: contentItem.implicitWidth + 8 * 2
-    implicitHeight: contentItem.implicitHeight + 4 * 2
-
-    colBackground: Appearance.colors.colSecondary
-    colBackgroundHover: Appearance.colors.colSecondaryHover
-    colRipple: Appearance.colors.colSecondaryActive
-    buttonRadius: Appearance.rounding.verysmall
-
-    downAction: () => {
-        target.positionViewAtEnd()
-    }
-
-    contentItem: Row {
-        id: contentItem
-        spacing: 4
-        MaterialSymbol {
-            anchors.verticalCenter: parent.verticalCenter
-            text: "arrow_downward"
-            font.pixelSize: Appearance.font.pixelSize.larger
-            color: Appearance.colors.colOnSecondary
-            verticalAlignment: Text.AlignVCenter
-        }
-        StyledText {
-            anchors.verticalCenter: parent.verticalCenter
-            text: Translation.tr("Scroll to Bottom")
-            font.pixelSize: Appearance.font.pixelSize.smallie
-            color: Appearance.colors.colOnSecondary
-            verticalAlignment: Text.AlignVCenter
-        }
+        Anim {}
     }
 }

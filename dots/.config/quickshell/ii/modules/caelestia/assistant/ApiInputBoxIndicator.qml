@@ -1,48 +1,61 @@
-import qs.modules.common
-import qs.modules.common.widgets
-import qs.services
+// caelestia4: model / tool indicator chip under the Assistant input (Caelestia style). Hover shows the hint.
 import QtQuick
 import QtQuick.Layouts
+import Caelestia.Config
+import qs.modules.common.widgets as E4W // caelestia4: keep (StyledToolTip)
+import qs.modules.caelestia.components
+import qs.modules.caelestia.adapters
 
-Item { // Model indicator
+StyledRect {
     id: root
+
     property string icon: "api"
     property string text: ""
     property string tooltipText: ""
-    implicitHeight: rowLayout.implicitHeight + 4 * 2
-    implicitWidth: rowLayout.implicitWidth + 4 * 2
 
+    implicitHeight: row.implicitHeight + Tokens.padding.extraSmall * 2
+    implicitWidth: row.implicitWidth + Tokens.padding.medium * 2
+    radius: Tokens.rounding.full
+    color: Colours.tPalette.m3surfaceContainerHighest
+
+    // Shrinks (eliding the text) when the row is short of space: give it Layout.fillWidth + maximumWidth: implicitWidth
     RowLayout {
-        id: rowLayout
-        anchors.centerIn: parent
+        id: row
 
-        MaterialSymbol {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: Tokens.padding.medium
+        anchors.rightMargin: Tokens.padding.medium
+        spacing: Tokens.spacing.extraSmall
+
+        MaterialIcon {
             text: root.icon
-            iconSize: Appearance.font.pixelSize.normal
+            color: Colours.palette.m3primary
+            fontStyle: Tokens.font.icon.small
         }
+
         StyledText {
-            id: providerName
-            font.pixelSize: Appearance.font.pixelSize.smaller
-            color: Appearance.m3colors.m3onSurface
-            elide: Text.ElideRight
+            Layout.fillWidth: true
             text: root.text
-            animateChange: true
+            font: Tokens.font.label.medium
+            color: Colours.palette.m3onSurface
+            elide: Text.ElideRight
+            animate: true
         }
     }
 
-    Loader {
-        active: root.tooltipText?.length > 0
-        anchors.fill: parent
-        sourceComponent: MouseArea {
-            id: mouseArea
-            hoverEnabled: true
+    MouseArea {
+        id: mouseArea
 
-            StyledToolTip {
-                id: toolTip
-                extraVisibleCondition: false
-                alternativeVisibleCondition: mouseArea.containsMouse // Show tooltip when hovered
-                text: root.tooltipText
-            }
+        anchors.fill: parent
+        hoverEnabled: true
+        visible: root.tooltipText.length > 0
+
+        E4W.StyledToolTip {
+            extraVisibleCondition: false
+            alternativeVisibleCondition: mouseArea.containsMouse
+            text: root.tooltipText
         }
     }
 }
