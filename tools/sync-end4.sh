@@ -30,6 +30,7 @@ REMOVED=(
   # restyled in Caelestia style (2026-10-12): end-4 versions dropped, Caelestia versions in modules/caelestia
   dots/.config/quickshell/ii/modules/ii/wallpaperSelector  # -> modules/caelestia/wallpaperSelector
   dots/.config/quickshell/ii/modules/ii/overlay            # -> modules/caelestia/overlay (moved, then restyled)
+  dots/.config/quickshell/ii/modules/ii/sidebarLeft        # -> modules/caelestia/assistant (moved, then restyled)
 )
 is_removed() { local p; for p in "${REMOVED[@]}"; do [[ "$1" == "$p" || "$1" == "$p"/* ]] && return 0; done; return 1; }
 GIT=(git -c user.name="John La" -c user.email=john.pla1998@gmail.com)
