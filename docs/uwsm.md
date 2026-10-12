@@ -36,6 +36,13 @@ Packaged units (hypridle, plasma-kwallet-pam, ydotool) can't take the condition 
 Chromium/Electron use KWallet in both sessions) would make every `OnlyShowIn=KDE` entry (plasmashell, powerdevil,
 kglobalacceld, polkit-kde-agent, xembedsniproxy…) match.
 
+## System tray
+kded6 (KDE daemon, `plasma-kded6.service`) is started before the shell (`Wants=`/`After=` in `caelestia4-shell`) and
+owns `org.kde.StatusNotifierWatcher`; the shell is only the tray host. Registrations live in kded6, so they survive
+shell restarts (Electron apps such as Claude never re-register). Before, kded6 was D-Bus-activated later by a KDE app,
+took the watcher over mid-session and the tray lost whatever had registered with the shell (KDE Connect, Fcitx).
+(KF6's kded6 still reads `kded5rc`.)
+
 ## Login screen
 Only **Hyprland (uwsm-managed)** is shown. Plasma Login Manager lists every file in `/usr/share/wayland-sessions` and
 ignores `NoDisplay`/`Hidden`, so the plain entry is removed (`NoExtract` in `/etc/pacman.conf` keeps upgrades from
