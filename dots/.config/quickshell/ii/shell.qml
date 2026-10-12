@@ -23,6 +23,11 @@ ShellRoot {
     ReloadPopup {}
 
     Component.onCompleted: {
+        // caelestia4: no hot reload when the config files change. After a reload, icons looked up through the icon
+        // theme (tray items, launcher and dock app icons) render blank until a full restart (Qt icon engine state
+        // doesn't survive Quickshell's in-process reload). Installs restart the unit instead (tools/install-main.sh,
+        // Ctrl+Super+R: systemctl --user restart caelestia4-shell).
+        Quickshell.watchFiles = false
         MaterialThemeLoader.reapplyTheme()
         Hyprsunset.load()
         FirstRunExperience.load()
