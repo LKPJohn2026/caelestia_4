@@ -171,37 +171,62 @@ Scope {
     }
 
     // ---- Assistant drawer (end-4 left sidebar content) ----
+    // caelestia4: while detached (assistant/DetachedWindow.qml) these show / hide the window instead of the drawer
+    function assistant(value: var): void {
+        if (GlobalStates.assistantDetached)
+            GlobalStates.sidebarLeftOpen = value === "toggle" ? !GlobalStates.sidebarLeftOpen : value;
+        else
+            root.setDrawer("assistant", value);
+    }
+
     GlobalShortcut {
         name: "sidebarLeftToggle"
         description: "Toggles left sidebar on press"
-        onPressed: root.setDrawer("assistant", "toggle")
+        onPressed: root.assistant("toggle")
     }
 
     GlobalShortcut {
         name: "sidebarLeftOpen"
         description: "Opens left sidebar on press"
-        onPressed: root.setDrawer("assistant", true)
+        onPressed: root.assistant(true)
     }
 
     GlobalShortcut {
         name: "sidebarLeftClose"
         description: "Closes left sidebar on press"
-        onPressed: root.setDrawer("assistant", false)
+        onPressed: root.assistant(false)
     }
 
     GlobalShortcut {
         name: "sidebarLeftToggleDetach"
-        description: "Toggles left sidebar (detach is not supported in the caelestia family)"
-        onPressed: root.setDrawer("assistant", "toggle")
+        description: "Detach the Assistant into a window / attach it back to its drawer"
+        onPressed: GlobalStates.assistantDetached = !GlobalStates.assistantDetached
     }
 
     // end-4's AI chat closes "the sidebar" by setting GlobalStates.sidebarLeftOpen = false (e.g. after opening
-    // a link). Keep that flag in sync with the Assistant drawer on the focused screen.
+    // a link). Keep that flag in sync with the Assistant drawer on the focused screen. While detached the flag
+    // belongs to the window, so the drawer is left alone.
     Connections {
         function onSidebarLeftOpenChanged(): void {
+            if (GlobalStates.assistantDetached)
+                return;
             const s = ShellState.forActive();
             if (s && s.assistant !== GlobalStates.sidebarLeftOpen)
                 s.assistant = GlobalStates.sidebarLeftOpen;
+        }
+
+        // Detach: close the drawer and show the window. Attach: close the window, open the drawer here.
+        function onAssistantDetachedChanged(): void {
+            const s = ShellState.forActive();
+            if (GlobalStates.assistantDetached) {
+                if (s)
+                    s.assistant = false;
+                GlobalStates.sidebarLeftOpen = true;
+            } else {
+                GlobalStates.sidebarLeftOpen = true;
+                if (s)
+                    s.assistant = true;
+            }
         }
 
         target: GlobalStates
@@ -209,6 +234,8 @@ Scope {
 
     Connections {
         function onAssistantChanged(): void {
+            if (GlobalStates.assistantDetached)
+                return;
             const s = ShellState.forActive();
             if (s && GlobalStates.sidebarLeftOpen !== s.assistant)
                 GlobalStates.sidebarLeftOpen = s.assistant;
