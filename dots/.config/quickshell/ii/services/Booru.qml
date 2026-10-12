@@ -215,6 +215,7 @@ Singleton {
             "url": "https://gelbooru.com",
             "api": "https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1",
             "description": Translation.tr("The hentai one | Great quantity, a lot of NSFW, quality varies wildly"),
+            "imageReferer": "https://gelbooru.com/", // caelestia4: its CDN redirects hotlinks (no Referer) to an HTML page
             "mapFunc": (response) => {
                 response = response.post
                 return response.map(item => {
