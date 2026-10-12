@@ -90,6 +90,12 @@ Singleton {
                 property list<var> quickToggles: []
                 property bool utilitiesSystem: true // uptime + reload / end-4 settings / session buttons
                 property bool utilitiesSliders: true // brightness / volume / mic sliders
+                property JsonObject idle: JsonObject { // hypridle timers, written by scripts/caelestia4/hypridle-timeouts.sh (0 = never)
+                    property int lockMinutes: 5
+                    property int screenOffMinutes: 10
+                    property int suspendMinutes: 15
+                    property bool lockBeforeSleep: true
+                }
                 property JsonObject overview: JsonObject { // Caelestia-style overview (modules/caelestia/overview)
                     property bool altTabSkipEmpty: true // Alt+Tab cycles only through workspaces with windows (+ the current one)
                 }

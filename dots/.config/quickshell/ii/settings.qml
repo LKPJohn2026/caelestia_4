@@ -16,6 +16,7 @@ import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions as CF
 import qs.modules.caelestia.settings as CSettings // caelestia4: Caelestia-style frame
+import qs.modules.settings.c4 // caelestia4: registers the c4 pages/rows module with Quickshell's scanner (pages load by path)
 
 ApplicationWindow {
     id: root
@@ -23,47 +24,63 @@ ApplicationWindow {
     property string firstRunFileContent: "This file is just here to confirm you've been greeted :>"
     property real contentPadding: 8
     property bool showNextTime: false
+    // caelestia4: standard settings pages (modules/settings/c4, one setting per row). end-4's original page files
+    // (QuickConfig, GeneralConfig, BarConfig, …) stay in the repo unlisted so upstream syncs merge cleanly.
     property var pages: [
         {
-            name: Translation.tr("Quick"),
-            icon: "instant_mix",
-            component: "modules/settings/QuickConfig.qml"
-        },
-        { // caelestia4: options added by caelestia_4 (dock, drawer, games, display, panel family)
-            name: Translation.tr("Caelestia"),
-            icon: "auto_awesome",
-            component: "modules/settings/CaelestiaConfig.qml"
+            name: Translation.tr("Appearance"),
+            icon: "palette",
+            component: "modules/settings/c4/AppearancePage.qml"
         },
         {
-            name: Translation.tr("General"),
-            icon: "browse",
-            component: "modules/settings/GeneralConfig.qml"
+            name: Translation.tr("Desktop"),
+            icon: "dock_to_bottom",
+            component: "modules/settings/c4/DesktopPage.qml"
         },
         {
-            name: Translation.tr("Bar"),
-            icon: "toast",
-            iconRotation: 180,
-            component: "modules/settings/BarConfig.qml"
+            name: Translation.tr("Windows"),
+            icon: "select_window",
+            component: "modules/settings/c4/WindowsPage.qml"
         },
         {
-            name: Translation.tr("Background"),
-            icon: "texture",
-            component: "modules/settings/BackgroundConfig.qml"
+            name: Translation.tr("Input"),
+            icon: "keyboard",
+            component: "modules/settings/c4/InputPage.qml"
         },
         {
-            name: Translation.tr("Interface"),
-            icon: "bottom_app_bar",
-            component: "modules/settings/InterfaceConfig.qml"
+            name: Translation.tr("Display"),
+            icon: "monitor",
+            component: "modules/settings/c4/DisplayPage.qml"
         },
         {
-            name: Translation.tr("Services"),
-            icon: "settings",
-            component: "modules/settings/ServicesConfig.qml"
+            name: Translation.tr("Sound"),
+            icon: "volume_up",
+            component: "modules/settings/c4/SoundPage.qml"
+        },
+        {
+            name: Translation.tr("Power & idle"),
+            icon: "battery_charging_full",
+            component: "modules/settings/c4/PowerPage.qml"
+        },
+        {
+            name: Translation.tr("Apps & services"),
+            icon: "apps",
+            component: "modules/settings/c4/AppsPage.qml"
+        },
+        {
+            name: Translation.tr("Games"),
+            icon: "sports_esports",
+            component: "modules/settings/c4/GamesPage.qml"
         },
         {
             name: Translation.tr("Advanced"),
             icon: "construction",
-            component: "modules/settings/AdvancedConfig.qml"
+            component: "modules/settings/c4/AdvancedPage.qml"
+        },
+        {
+            name: Translation.tr("end-4 panels"),
+            icon: "history",
+            component: "modules/settings/c4/FallbackPage.qml"
         },
         {
             name: Translation.tr("About"),

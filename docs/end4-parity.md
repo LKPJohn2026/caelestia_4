@@ -328,3 +328,26 @@ restored from disk with missing fields).
   real uwsm benefit found: `systemd-oomd` (active, swap limit 90 %) kills the unit with the most swap, and today
   Hyprland + shell + Steam + games share `session-5.scope`, so an OOM caused by a game could take down the session.
   uwsm gives each app its own unit (uwsm README: piling apps into the compositor's unit is "bad practice").
+
+## Settings app rebuilt (2026-10-11)
+- Standard structure, one setting per row (icon, title, one-line description, control on the right; whole row
+  toggles switches): **Appearance, Desktop, Windows, Input, Display, Sound, Power & idle, Apps & services, Games,
+  Advanced, end-4 panels (fallback), About**. Pages + rows in `modules/settings/c4/` (imported as a module in
+  `settings.qml`, otherwise Quickshell's scanner finds the row types piecemeal). end-4's original page files stay in
+  the repo unlisted (sync-friendly); our old `CaelestiaConfig.qml` page is gone (contents moved).
+- Sources written: end-4 `config.json` (`Config.options`), Caelestia `shell.json` (`Caelestia.Config as CC`,
+  `CC.GlobalConfig.x = v`, only changed keys saved), Hyprland options (`Hyp*Row`: live `hyprctl getoption`, saved
+  by end-4's configurator to `hypr/hyprland/shellOverrides/main.lua`, which loads last), hypridle timers
+  (`scripts/caelestia4/hypridle-timeouts.sh` → `~/.config/hypr/hypridle-timeouts.conf`, sourced by
+  `hypridle.conf`; restarts hypridle as unit or Hyprland child), monitors (`hl.monitor` live + 15 s keep/revert,
+  `scripts/caelestia4/monitors-save.sh` → `monitors.lua`, previous kept as `.bak`).
+- New: ~60 Caelestia options (bar, status icons, dashboard, launcher, notifications, OSD, toasts, transparency,
+  scales, frame, fonts), ~27 Hyprland options (gaps, borders, rounding, opacity, blur, shadows, animations, layout,
+  keyboard layouts/options/repeat, pointer speed/accel, natural scroll, follow mouse, VRR, background fps),
+  idle timers, display mode/scale/rotation.
+- Fixes found on the way: end-4's Hyprland option saving never worked here before the venv (VRR / background fps
+  settings didn't persist); the installer would have overwritten `shellOverrides/main.lua` (now excluded);
+  `StyledComboBox` icon `active` was `undefined` (bool warning); `CalendarView` removed with Waffle.
+- Checks: `tools/check-settings-pages.sh` instantiates every page headlessly (all clean); the settings app launched
+  silently on a spare workspace (no warnings); Hyprland rows read live values (gaps 4, blur on, vrr 2, …) and a
+  save round-trips through the overrides file.
