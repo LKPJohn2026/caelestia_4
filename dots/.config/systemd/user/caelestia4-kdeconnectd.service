@@ -2,6 +2,7 @@
 [Unit]
 Description=KDE Connect daemon
 PartOf=graphical-session.target
+ConditionEnvironment=CAELESTIA4_UWSM=1
 After=graphical-session.target
 
 [Service]
@@ -12,4 +13,4 @@ Restart=on-failure
 Slice=background-graphical.slice
 
 [Install]
-WantedBy=wayland-session@hyprland.desktop.target
+WantedBy=graphical-session.target

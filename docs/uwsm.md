@@ -26,15 +26,20 @@ Then log out and pick **Hyprland (uwsm-managed)**.
 | XDG autostart | not run | **masked** for Hyprland (`wayland-session-xdg-autostart@hyprland.desktop.target`) |
 | Logout | logind Terminate | same (Caelestia session menu uses logind; uwsm-compatible). Don't use Hyprland's `exit`. |
 
-All caelestia4 units are `WantedBy=wayland-session@hyprland.desktop.target`, uwsm's per-compositor target, not
-`graphical-session.target`: Plasma also activates graphical-session.target, so anything wanted by it would start in
-Plasma too. Same reason XDG autostart is masked: `XDG_CURRENT_DESKTOP=Hyprland:KDE` (needed so Chromium/Electron use
-KWallet in both sessions) would make every `OnlyShowIn=KDE` entry (plasmashell, powerdevil, kglobalacceld,
-polkit-kde-agent, xembedsniproxy…) match.
+All caelestia4 units are `WantedBy=graphical-session.target` with `ConditionEnvironment=CAELESTIA4_UWSM=1`: Plasma also
+activates graphical-session.target, but never has that variable, so they're skipped there. They must **not** be wanted
+by uwsm's `wayland-session@hyprland.desktop.target` (the first version did this): a target is implicitly ordered after
+what it wants, uwsm orders graphical-session.target after that target, and the units are `After=graphical-session.target`,
+so systemd found an ordering cycle at login and deleted the start jobs (no shell, hypridle, fcitx5, clipboard…).
+Packaged units (hypridle, plasma-kwallet-pam, ydotool) can't take the condition (Plasma uses plasma-kwallet-pam), so
+`execs.lua` starts them under uwsm. XDG autostart is masked because `XDG_CURRENT_DESKTOP=Hyprland:KDE` (needed so
+Chromium/Electron use KWallet in both sessions) would make every `OnlyShowIn=KDE` entry (plasmashell, powerdevil,
+kglobalacceld, polkit-kde-agent, xembedsniproxy…) match.
 
 ## Handy commands
 ```
-systemctl --user list-dependencies wayland-session@hyprland.desktop.target
+systemctl --user list-dependencies graphical-session.target | grep caelestia4
+journalctl --user -b | grep -i "ordering cycle"   # must be empty
 systemctl --user status caelestia4-shell        # or restart / stop
 journalctl --user -u caelestia4-shell -f
 systemctl --user list-units 'app-*' --type=scope # apps, one unit each
