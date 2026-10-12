@@ -48,8 +48,8 @@ StyledRect {
             icon: "restart_alt"
             tip: Tr.tr("Reload Hyprland & Quickshell")
             onClicked: {
-                Quickshell.execDetached(["hyprctl", "reload"]);
-                Quickshell.reload(true);
+                // caelestia4: restart the shell unit, not Quickshell.reload(): in-process reloads leave theme icons blank
+                Quickshell.execDetached(["sh", "-c", "hyprctl reload; systemctl --user restart caelestia4-shell.service"]);
             }
         }
 
