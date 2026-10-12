@@ -10,8 +10,6 @@ import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.filedialog
 import qs.modules.common as E4C // caelestia4: keep
-import qs.modules.ii.sidebarRight.todo as E4Todo // caelestia4: keep
-import qs.modules.ii.sidebarRight.pomodoro as E4Timer // caelestia4: keep
 
 Item {
     id: root
@@ -157,6 +155,7 @@ Item {
                         required property var modelData
 
                         Layout.alignment: Qt.AlignTop
+                        focus: index === view.currentIndex // caelestia4: Todo / Timer keys (N, Space, R, L, PgUp/PgDn)
 
                         sourceComponent: modelData.component
 
@@ -204,25 +203,17 @@ Item {
                 WeatherTab {}
             }
 
-            // caelestia4: end-4 widgets in Caelestia-sized panes
+            // caelestia4: Todo / Timer tabs (end-4's Todo and TimerService, Caelestia UI)
             Component {
                 id: todoComponent
 
-                E4Pane {
-                    E4Todo.TodoWidget {
-                        anchors.fill: parent
-                    }
-                }
+                TodoTab {}
             }
 
             Component {
                 id: timerComponent
 
-                E4Pane {
-                    E4Timer.PomodoroWidget {
-                        anchors.fill: parent
-                    }
-                }
+                TimerTab {}
             }
 
             Behavior on contentX {
