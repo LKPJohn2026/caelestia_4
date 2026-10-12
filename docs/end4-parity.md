@@ -383,7 +383,9 @@ Live test per provider (empty search, safe, page 1) before → after:
   lookup used keys (`yandere`), (3) arguments split on single spaces (double space → empty). Now `Booru.resolveProvider`
   matches key or display name ignoring case/punctuation, or a unique prefix; Enter on `/mode` takes the highlighted
   provider; `/mode` alone shows the current provider and choices; args split on any whitespace.
-- **Exact size first** (2026-10-12): with "fill my screen" on, the search tries 1) exactly the monitor's resolution
-  (Wallhaven `resolutions=`, Moebooru `width:W height:H`), 2) the same aspect ratio and at least as large (Wallhaven
-  `ratios=32x9&atleast=`; Moebooru: within 2 % in a batch of 100 large posts), 3) any landscape at least as large.
-  The status says which tier matched. At 7680×2160: Wallhaven has ~55 exact images, Konachan 1, yande.re none.
+- **Screen shape first** (2026-10-12): new switch "Prefer my screen's shape (32:9)" (`caelestia.randomWallpaper.
+  preferScreenRatio`, default on), independent of "fill my screen". Order: exact monitor resolution (when filling the
+  screen) → same aspect ratio (Wallhaven `ratios=32x9`, with `atleast=` when filling; Moebooru: 100 random posts
+  ranked by closeness to 32:9, within 2 % = same shape) → closest shape / any landscape. Status shows the tier.
+  Dry runs at 7680×2160: Wallhaven exact 7680×2160 / 32:9 without size floor; Konachan exact / 32:9 3498×975;
+  yande.re closest shape (no 32:9 there).

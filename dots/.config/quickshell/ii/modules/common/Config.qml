@@ -93,6 +93,7 @@ Singleton {
                 property JsonObject randomWallpaper: JsonObject { // settings > Appearance > Wallpaper (scripts/caelestia4/random-wallpaper.sh)
                     property string source: "wallhaven" // wallhaven | konachan | yandere
                     property bool matchScreen: true // only images at least as large as the biggest monitor
+                    property bool preferScreenRatio: true // same shape (aspect ratio) as the biggest monitor first, then the closest
                 }
                 property JsonObject idle: JsonObject { // hypridle timers, written by scripts/caelestia4/hypridle-timeouts.sh (0 = never)
                     property int lockMinutes: 5
