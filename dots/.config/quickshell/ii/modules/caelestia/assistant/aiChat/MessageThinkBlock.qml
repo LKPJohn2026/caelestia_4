@@ -10,6 +10,7 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons (aliased: other control names clash with end-4 widgets)
 
 Item {
     id: root
@@ -97,35 +98,16 @@ Item {
                     text: root.completed ? Translation.tr("Thought") : (Translation.tr("Thinking") + ".".repeat(Math.random() * 4))
                 }
                 Item { Layout.fillWidth: true }
-                RippleButton { // Expand button
+                CCtl.IconButton { // Expand button (caelestia4: Caelestia icon button)
                     id: expandButton
                     visible: root.completed
-                    implicitWidth: 22
-                    implicitHeight: 22
-                    colBackground: headerMouseArea.containsMouse ? Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.08))
-                        : ColorUtils.transparentize(Colours.tPalette.m3surfaceContainerHigh, 1)
-                    colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.08))
-                    colRipple: Qt.tint(Colours.palette.m3surfaceContainerHigh, Qt.alpha(Colours.palette.m3onSurface, 0.12))
-
-                    onClicked: { root.collapsed = !root.collapsed }
-                    
-                    contentItem: MaterialSymbol {
-                        anchors.centerIn: parent
-                        text: "keyboard_arrow_down"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        iconSize: Appearance.font.pixelSize.normal
-                        color: Colours.palette.m3onSurface
-                        rotation: root.collapsed ? 0 : 180
-                        Behavior on rotation {
-                            NumberAnimation {
-                                duration: Appearance.animation.elementMoveFast.duration
-                                easing.type: Appearance.animation.elementMoveFast.type
-                                easing.bezierCurve: Appearance.animation.elementMoveFast.bezierCurve
-                            }
-                        }
-                    }
-
+                    type: CCtl.IconButton.Text
+                    isRound: true
+                    padding: CC.Tokens.padding.extraSmall / 2
+                    font: CC.Tokens.font.icon.builders.small.build()
+                    icon: "keyboard_arrow_down"
+                    label.rotation: root.collapsed ? 0 : 180
+                    onClicked: root.collapsed = !root.collapsed
                 }
                 
             }
