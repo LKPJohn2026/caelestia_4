@@ -90,6 +90,7 @@ Singleton {
                 property list<var> quickToggles: []
                 property bool utilitiesSystem: true // uptime + reload / end-4 settings / session buttons
                 property bool utilitiesSliders: true // brightness / volume / mic sliders
+                property bool desktopWeather: true // weather beside Caelestia's desktop clock (modules/caelestia/background/DesktopClock.qml)
                 property JsonObject randomWallpaper: JsonObject { // settings > Appearance > Wallpaper (scripts/caelestia4/random-wallpaper.sh)
                     property string source: "wallhaven" // wallhaven | konachan | yandere
                     property bool matchScreen: true // only images at least as large as the biggest monitor
