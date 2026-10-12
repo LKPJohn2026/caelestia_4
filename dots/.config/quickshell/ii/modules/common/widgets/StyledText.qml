@@ -7,13 +7,13 @@ Text {
     property real animationDistanceX: 0
     property real animationDistanceY: 6
 
-    renderType: Text.NativeRendering
+    renderType: Text.QtRendering // caelestia4: native rendering rounds each glyph to whole device pixels; at 1.5x that opened gaps ("f older", "ser vices")
     verticalAlignment: Text.AlignVCenter
     property bool shouldUseNumberFont: /^\d+$/.test(root.text)
     property var defaultFont: shouldUseNumberFont ? Appearance.font.family.numbers : Appearance.font.family.main
     
     font {
-        hintingPreference: Font.PreferDefaultHinting
+        hintingPreference: Font.PreferNoHinting // caelestia4: hinting snaps glyphs to pixels; at fractional scaling (1.5x) it opened gaps like "f older"
         family: defaultFont
         pixelSize: Appearance?.font.pixelSize.small ?? 15
         variableAxes: shouldUseNumberFont ? ({}) : Appearance.font.variableAxes.main
