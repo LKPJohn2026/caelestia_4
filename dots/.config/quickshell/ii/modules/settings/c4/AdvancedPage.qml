@@ -17,29 +17,6 @@ ContentPage {
     }
 
     ContentSection {
-        icon: "dashboard_customize"
-        title: Translation.tr("Panels")
-
-        ChoiceRow {
-            icon: "swap_horiz"
-            title: Translation.tr("Panel set")
-            description: Translation.tr("end-4's own panels are a fallback if something in the Caelestia panels breaks (Ctrl+Super+P switches)")
-            options: [
-                {
-                    label: Translation.tr("Caelestia"),
-                    value: "caelestia"
-                },
-                {
-                    label: Translation.tr("end-4 (fallback)"),
-                    value: "ii"
-                }
-            ]
-            value: Config.options.panelFamily
-            onSelected: v => Config.options.panelFamily = v
-        }
-    }
-
-    ContentSection {
         icon: "terminal"
         title: Translation.tr("Terminal colours")
 

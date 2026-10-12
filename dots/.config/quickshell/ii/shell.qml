@@ -33,45 +33,11 @@ ShellRoot {
     }
 
 
-    // Panel families
-    property list<string> families: ["ii", "caelestia"] // caelestia4: ii kept as fallback; waffle removed (2026-10-11)
-    function cyclePanelFamily() {
-        const currentIndex = families.indexOf(Config.options.panelFamily)
-        const nextIndex = (currentIndex + 1) % families.length
-        Config.options.panelFamily = families[nextIndex]
-    }
-
-    component PanelFamilyLoader: LazyLoader {
-        required property string identifier
-        property bool extraCondition: true
-        active: Config.ready && Config.options.panelFamily === identifier && extraCondition
-    }
-    
-    PanelFamilyLoader {
-        identifier: "ii"
-        component: IllogicalImpulseFamily {}
-    }
-
-    PanelFamilyLoader {
-        identifier: "caelestia"
+    // caelestia4: one panel set. end-4's ii family (the Ctrl+Super+P fallback) was removed 2026-10-12, Waffle 2026-10-11;
+    // under uwsm systemd restarts the shell if it crashes.
+    LazyLoader {
+        active: Config.ready
         component: CaelestiaFamily {}
-    }
-
-
-    // Shortcuts
-    IpcHandler {
-        target: "panelFamily"
-
-        function cycle(): void {
-            root.cyclePanelFamily()
-        }
-    }
-
-    GlobalShortcut {
-        name: "panelFamilyCycle"
-        description: "Cycles panel family"
-
-        onPressed: root.cyclePanelFamily()
     }
 }
 

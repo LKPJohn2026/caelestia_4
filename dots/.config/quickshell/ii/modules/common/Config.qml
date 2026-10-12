@@ -78,7 +78,7 @@ Singleton {
         JsonAdapter {
             id: configOptionsJsonAdapter
 
-            property string panelFamily: "ii" // "ii", "waffle", "caelestia"
+            property string panelFamily: "caelestia" // caelestia4: unused, only the Caelestia panels exist (kept so old config files load)
 
             // caelestia4: behaviour settings for the Caelestia-design panel family.
             // Visual tokens (rounding, spacing, animation) live in Caelestia's ~/.config/caelestia/shell.json.
