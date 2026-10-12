@@ -24,7 +24,7 @@ import qs.modules.caelestia.screenTranslator as CTranslator
 import qs.modules.caelestia.assistant as CAssistant
 import qs.modules.ii.lock
 import qs.modules.ii.overlay
-import qs.modules.ii.wallpaperSelector
+import qs.modules.caelestia.wallpaperSelector as CWallpaper
 
 Scope {
     // Caelestia core
@@ -48,5 +48,5 @@ Scope {
     // end-4 modules, as-is
     PanelLoader { component: Lock {} }
     PanelLoader { component: Overlay {} }
-    PanelLoader { component: WallpaperSelector {} }
+    PanelLoader { component: CWallpaper.WallpaperSelector {} } // Ctrl+Super+T (end-4 Wallpapers service, Caelestia style)
 }
