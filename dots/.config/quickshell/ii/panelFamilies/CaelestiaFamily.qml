@@ -23,7 +23,7 @@ import qs.modules.caelestia.regionSelector as CRegion
 import qs.modules.caelestia.screenTranslator as CTranslator
 import qs.modules.caelestia.assistant as CAssistant
 import qs.modules.ii.lock
-import qs.modules.ii.overlay
+import qs.modules.caelestia.overlay
 import qs.modules.caelestia.wallpaperSelector as CWallpaper
 
 Scope {

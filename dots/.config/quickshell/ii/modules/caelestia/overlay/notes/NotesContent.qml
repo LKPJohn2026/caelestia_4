@@ -7,7 +7,11 @@ import qs
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.ii.overlay
+import qs.modules.caelestia.overlay
+import Caelestia.Config
+import qs.modules.caelestia.components
+import qs.modules.caelestia.components.controls
+import qs.modules.caelestia.adapters
 
 OverlayBackground {
     id: root
@@ -152,8 +156,15 @@ OverlayBackground {
             ScrollBar.vertical.policy: ScrollBar.AsNeeded
             onWidthChanged: root.scheduleCopylistUpdate(true)
 
-            StyledTextArea { // This has to be a direct child of ScrollView for proper scrolling
+            TextArea { // This has to be a direct child of ScrollView for proper scrolling
                 id: textInput
+
+                // caelestia4: Caelestia type and colours
+                font: Tokens.font.body.medium
+                color: Colours.palette.m3onSurface
+                placeholderTextColor: Colours.palette.m3outline
+                selectionColor: Colours.palette.m3primary
+                selectedTextColor: Colours.palette.m3onPrimary
                 anchors {
                     left: parent.left
                     right: parent.right
@@ -164,7 +175,7 @@ OverlayBackground {
                 persistentSelection: true
                 textFormat: TextEdit.PlainText
                 background: null
-                padding: 24
+                padding: Tokens.padding.extraLarge
 
                 onTextChanged: {
                     if (textInput.activeFocus) {
@@ -189,45 +200,33 @@ OverlayBackground {
                     model: ScriptModel {
                         values: root.copyListEntries
                     }
-                    delegate: RippleButton {
+                    delegate: IconButton {
                         id: copyButton
+
                         required property var modelData
-                        readonly property real lineHeight: Math.min(Math.max(modelData.height, Appearance.font.pixelSize.normal + 6), root.maxCopyButtonSize)
-                        readonly property real iconSizeLocal: Appearance.font.pixelSize.normal
-                        readonly property real hitPadding: 6
                         property bool justCopied: false
 
-                        implicitHeight: lineHeight
-                        implicitWidth: lineHeight
-                        buttonRadius: height / 2
+                        // caelestia4: Caelestia icon button beside each "- " line
+                        type: IconButton.Text
+                        isRound: true
+                        padding: Tokens.padding.extraSmall / 2
+                        font: Tokens.font.icon.builders.small.build()
+                        icon: justCopied ? "check" : "content_copy"
                         y: modelData.y
                         anchors.right: parent.right
-                        anchors.rightMargin: 10
+                        anchors.rightMargin: Tokens.padding.medium
                         z: 5
 
                         Timer {
                             id: resetState
                             interval: 700
-                            onTriggered: {
-                                copyButton.justCopied = false;
-                            }
+                            onTriggered: copyButton.justCopied = false
                         }
 
                         onClicked: {
                             Quickshell.clipboardText = copyButton.modelData.content;
                             justCopied = true;
                             resetState.start();
-                        }
-
-                        contentItem: Item {
-                            anchors.centerIn: parent
-                            MaterialSymbol {
-                                id: iconItem
-                                anchors.centerIn: parent
-                                text: copyButton.justCopied ? "check" : "content_copy"
-                                iconSize: copyButton.iconSizeLocal
-                                color: Appearance.colors.colOnLayer1
-                            }
                         }
                     }
                 }
@@ -237,10 +236,11 @@ OverlayBackground {
         StyledText {
             id: statusLabel
             Layout.fillWidth: true
-            Layout.margins: 16
+            Layout.margins: Tokens.padding.large
             horizontalAlignment: Text.AlignRight
-            text: saveDebounce.running ? Translation.tr("Saving...") : Translation.tr("Saved    ")
-            color: Appearance.colors.colSubtext
+            text: saveDebounce.running ? Translation.tr("Saving…") : Translation.tr("Saved")
+            font: Tokens.font.label.medium
+            color: Colours.palette.m3outline
         }
     }
 
