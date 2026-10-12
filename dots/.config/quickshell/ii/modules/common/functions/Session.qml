@@ -13,7 +13,7 @@ Singleton {
     }
 
     function changePassword() {
-        Quickshell.execDetached(["bash", "-c", `${Config.options.apps.changePassword}`]);
+        AppLauncher.exec(["bash", "-c", `${Config.options.apps.changePassword}`]);
     }
 
     function lock() {
@@ -30,7 +30,7 @@ Singleton {
     }
 
     function launchTaskManager() {
-        Quickshell.execDetached(["bash", "-c", `${Config.options.apps.taskManager}`]);
+        AppLauncher.exec(["bash", "-c", `${Config.options.apps.taskManager}`]);
     }
 
     function hibernate() {

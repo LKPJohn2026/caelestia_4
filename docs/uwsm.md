@@ -17,6 +17,9 @@ Then log out and pick **Hyprland (uwsm-managed)**.
 | Environment | `hypr/hyprland/env.lua`, `hypr/custom/env.lua` (`hl.env`) | `~/.config/uwsm/env-hyprland` (repo: `dots/.config/uwsm/`) + `env-hyprland.d/caelestia4-local.sh` (repo: `dots-extra/uwsm/`), exported to systemd/D-Bus |
 | Shell | child of Hyprland | `caelestia4-shell.service` (Restart=on-failure, journald, session-graphical.slice); Ctrl+Super+R restarts the unit |
 | Clipboard history, GeoClue agent | exec in `execs.lua` | `caelestia4-cliphist@{text,image}`, `caelestia4-geoclue-agent` |
+| EasyEffects | exec in `execs.lua` (if installed) | `caelestia4-easyeffects` (if installed), background-graphical.slice |
+| Memory pressure | systemd-oomd watches the whole user slice (swap) | also `app-graphical.slice` (drop-in, 60 % pressure for 30 s): kills the one app scope causing it; the shell is in session-graphical.slice and is spared |
+| Settings app, task manager, mixer, Bluetooth/network apps, recordings, `$` run commands | children of the shell | own unit each via `AppLauncher.exec` (survive a shell restart) |
 | fcitx5, KDE Connect (+ indicator) | `custom/execs.lua` | `caelestia4-fcitx5`, `caelestia4-kdeconnectd`, `caelestia4-kdeconnect-indicator` |
 | KWallet unlock, hypridle, ydotoold | exec | packaged `plasma-kwallet-pam`, `hypridle`, `ydotool` units, wanted by the target |
 | Apps (keybinds via `launch_first_available.sh`, launcher, dock, session restore) | children of Hyprland / the shell | own unit each (`uwsm-app --`), app-graphical.slice |
@@ -36,4 +39,5 @@ systemctl --user status caelestia4-shell        # or restart / stop
 journalctl --user -u caelestia4-shell -f
 systemctl --user list-units 'app-*' --type=scope # apps, one unit each
 uwsm check is-active && echo "in uwsm"
+oomctl                                           # app-graphical.slice should be listed under memory pressure
 ```

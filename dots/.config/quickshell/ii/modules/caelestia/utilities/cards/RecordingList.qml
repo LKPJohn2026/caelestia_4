@@ -12,6 +12,7 @@ import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
+import qs.services as E4 // caelestia4: AppLauncher (apps get their own unit under uwsm)
 
 ColumnLayout {
     id: root
@@ -105,7 +106,7 @@ ColumnLayout {
                 onClicked: {
                     root.screenState.utilities = false;
                     root.screenState.sidebar = false;
-                    Quickshell.execDetached([...GlobalConfig.general.apps.playback, recording.modelData.path]);
+                    E4.AppLauncher.exec([...GlobalConfig.general.apps.playback, recording.modelData.path]);
                 }
             }
 
@@ -115,7 +116,7 @@ ColumnLayout {
                 onClicked: {
                     root.screenState.utilities = false;
                     root.screenState.sidebar = false;
-                    Quickshell.execDetached([...GlobalConfig.general.apps.explorer, recording.modelData.path]);
+                    E4.AppLauncher.exec([...GlobalConfig.general.apps.explorer, recording.modelData.path]);
                 }
             }
 

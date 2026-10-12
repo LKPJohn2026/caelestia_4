@@ -58,7 +58,7 @@ StyledRect {
             tip: Tr.tr("end-4 settings")
             onClicked: {
                 root.screenState.utilities = false;
-                Quickshell.execDetached(["qs", "-p", Quickshell.shellPath("settings.qml")]);
+                E4.AppLauncher.exec(["qs", "-p", Quickshell.shellPath("settings.qml")]);
             }
         }
 

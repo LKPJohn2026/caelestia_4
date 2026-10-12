@@ -4,9 +4,10 @@ pragma Singleton
 // Every "open settings" in the Caelestia UI opens end-4's settings app instead.
 import QtQuick
 import Quickshell
+import qs.services as E4 // caelestia4: AppLauncher (apps get their own unit under uwsm)
 
 Singleton {
     function create(parent = null, props = null): void {
-        Quickshell.execDetached(["qs", "-p", Quickshell.shellPath("settings.qml")]);
+        E4.AppLauncher.exec(["qs", "-p", Quickshell.shellPath("settings.qml")]);
     }
 }

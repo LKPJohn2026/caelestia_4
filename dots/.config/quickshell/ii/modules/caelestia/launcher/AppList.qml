@@ -83,7 +83,7 @@ StyledListView {
                 name: command,
                 type: Tr.tr("Run in %1").arg(terminal[0] ?? "terminal"),
                 verb: Tr.tr("Run"),
-                execute: () => Quickshell.execDetached([...terminal, "fish", "-C", command])
+                execute: () => E4.AppLauncher.exec([...terminal, "fish", "-C", command])
             })];
     }
 
