@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Notifications
 import Caelestia.Config
+import qs.services as E4 // caelestia4: keep (AppSearch, shared with the dock)
 
 Singleton {
     id: root
@@ -145,6 +146,32 @@ Singleton {
         if (fallback !== "undefined")
             return Quickshell.iconPath(icon, fallback);
         return Quickshell.iconPath(icon);
+    }
+
+    // caelestia4: THE app icon for a window class / app id, shared by the bar's workspace icons and the dock so they
+    // always match. Order: a desktop entry matching the id / StartupWMClass (any case), end-4's guess (desktop entry id, substitutions, theme names, fuzzy), then the desktop
+    // entry's own Icon=, then a generic icon that exists in the theme (never a blank square: "image-missing" isn't
+    // in Breeze). Reading the desktop-entry list makes bindings that call this re-run once the entries have loaded
+    // (early lookups returned the generic icon and never updated).
+    function appIconSource(appId: string): string {
+        const entries = DesktopEntries.applications.values; // also the binding dependency (re-run once loaded)
+        // The desktop entry whose id or StartupWMClass matches, ignoring case: the dock lowercases app ids
+        // ("com.anthropic.claude") while ids are case-sensitive ("com.anthropic.Claude.desktop").
+        const lower = (appId ?? "").toLowerCase();
+        const exact = lower ? entries.find(e => e.id.toLowerCase() === lower || (e.startupClass ?? "").toLowerCase() === lower) : null;
+        if (exact?.icon)
+            return exact.icon.startsWith("/") ? `file://${exact.icon}` : Quickshell.iconPath(exact.icon, "application-x-executable");
+        const guess = appId ? E4.AppSearch.guessIcon(appId) : "";
+        if (guess.startsWith("/"))
+            return `file://${guess}`;
+        if (guess && guess !== "application-x-executable" && Quickshell.iconPath(guess, true) !== "")
+            return Quickshell.iconPath(guess);
+        const entryIcon = DesktopEntries.heuristicLookup(appId)?.icon ?? "";
+        if (entryIcon.startsWith("/"))
+            return `file://${entryIcon}`;
+        if (entryIcon && Quickshell.iconPath(entryIcon, true) !== "")
+            return Quickshell.iconPath(entryIcon);
+        return Quickshell.iconPath("application-x-executable");
     }
 
     function getAppCategoryIcon(name: string, fallback: string): string {
