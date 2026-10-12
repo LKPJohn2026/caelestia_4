@@ -60,6 +60,7 @@ ContentPage {
     // Random wallpaper from the internet (scripts/caelestia4/random-wallpaper.sh): source + "at least my screen size"
     readonly property var rw: Config.options.caelestia.randomWallpaper
     readonly property var biggestScreen: (HyprlandData.monitors ?? []).reduce((best, m) => (m.width * m.height > best.w * best.h ? { w: m.width, h: m.height } : best), { w: 0, h: 0 })
+    // e.g. 7680 × 2160 -> "32:9"
     readonly property string screenRatio: {
         const gcd = (a, b) => b ? gcd(b, a % b) : a;
         const w = biggestScreen?.w ?? 0, h = biggestScreen?.h ?? 0;
@@ -96,8 +97,10 @@ ContentPage {
 
     function fetchRandom(): void {
         const source = randomSources.some(o => o.value === rw.source) ? rw.source : "wallhaven";
-        const size = rw.matchScreen && (biggestScreen?.w ?? 0) > 0 ? [String(biggestScreen.w), String(biggestScreen.h)] : [];
-        randomWallProc.command = [Quickshell.shellPath("scripts/caelestia4/random-wallpaper.sh"), source, ...size];
+        const known = (biggestScreen?.w ?? 0) > 0;
+        const size = rw.matchScreen && known ? [String(biggestScreen.w), String(biggestScreen.h)] : ["0", "0"];
+        const shape = rw.preferScreenRatio && known ? [String(biggestScreen.w), String(biggestScreen.h)] : [];
+        randomWallProc.command = [Quickshell.shellPath("scripts/caelestia4/random-wallpaper.sh"), source, ...size, ...shape];
         randomWallProc.status = "";
         randomWallProc.failed = false;
         randomWallProc.running = true;
@@ -177,9 +180,17 @@ ContentPage {
         SwitchRow {
             icon: "fit_screen"
             title: Translation.tr("Only wallpapers that fill my screen")
-            description: (biggestScreen?.w ?? 0) > 0 ? Translation.tr("Exactly %1 × %2 first (your largest monitor), then the same %3 shape, then anything larger").arg(biggestScreen.w).arg(biggestScreen.h).arg(screenRatio) : Translation.tr("Your monitor's exact resolution first, then larger")
+            description: (biggestScreen?.w ?? 0) > 0 ? Translation.tr("At least %1 × %2, your largest monitor").arg(biggestScreen.w).arg(biggestScreen.h) : Translation.tr("At least your monitor's resolution")
             checked: rw.matchScreen
             onToggled: v => rw.matchScreen = v
+        }
+
+        SwitchRow {
+            icon: "aspect_ratio"
+            title: screenRatio ? Translation.tr("Prefer my screen's shape (%1)").arg(screenRatio) : Translation.tr("Prefer my screen's shape")
+            description: Translation.tr("Wallpapers with the same aspect ratio as your largest monitor come first, then the closest shape, so less gets cropped")
+            checked: rw.preferScreenRatio
+            onToggled: v => rw.preferScreenRatio = v
         }
 
         ButtonRow {
