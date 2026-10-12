@@ -11,6 +11,7 @@ cd "$(dirname "$0")/.."
 REMOVED=(
   dots/.config/quickshell/ii/modules/waffle            # Waffle panel family (removed 2026-10-11)
   dots/.config/quickshell/ii/panelFamilies/WaffleFamily.qml
+  dots/.config/quickshell/ii/modules/common/widgets/CalendarView.qml  # only used by Waffle
 )
 is_removed() { local p; for p in "${REMOVED[@]}"; do [[ "$1" == "$p" || "$1" == "$p"/* ]] && return 0; done; return 1; }
 GIT=(git -c user.name="John La" -c user.email=john.pla1998@gmail.com)
