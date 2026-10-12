@@ -8,12 +8,14 @@ for cmd in "$@"; do
         eval "${cmd%% && *}" >/dev/null 2>&1 || continue
         cmd="${cmd#* && }"
     fi
-    eval "command -v ${cmd%% *}" >/dev/null 2>&1 || continue
-    # caelestia4: in the uwsm session each app gets its own systemd unit (named after the app, not this script)
-    if [[ "$CAELESTIA4_UWSM" == 1 ]]; then
-        eval "uwsm-app -- $cmd" &
-    else
-        eval "$cmd" &
+    # caelestia4: '@term <command>' runs <command> in the default terminal (uwsm -T, ~/.config/xdg-terminals.list)
+    term=""
+    if [[ "$cmd" == "@term "* ]]; then
+        cmd="${cmd#@term }"
+        term="-T"
     fi
+    eval "command -v ${cmd%% *}" >/dev/null 2>&1 || continue
+    # caelestia4: each app gets its own systemd unit (named after the app, not this script)
+    eval "uwsm-app $term -- $cmd" &
     exit
 done

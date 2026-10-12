@@ -248,13 +248,8 @@ Singleton {
                 iconType: LauncherSearchResult.IconType.System,
                 verb: Translation.tr("Open"),
                 execute: () => {
-                    // caelestia4: through AppLauncher (own unit under uwsm)
-                    if (!entry.runInTerminal)
-                        AppLauncher.launch(entry);
-                    else {
-                        // Probably needs more proper escaping, but this will do for now
-                        AppLauncher.exec(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(entry.command.join(' '))}'`]);
-                    }
+                    // caelestia4: through AppLauncher (uwsm: own unit; Terminal=true apps open in the default terminal)
+                    AppLauncher.launch(entry);
                 },
                 comment: entry.comment,
                 runInTerminal: entry.runInTerminal,
@@ -266,11 +261,7 @@ Singleton {
                         iconName: action.icon,
                         iconType: LauncherSearchResult.IconType.System,
                         execute: () => {
-                            if (!action.runInTerminal)
-                                AppLauncher.launchAction(entry, action);
-                            else {
-                                AppLauncher.exec(["bash", '-c', `${Config.options.apps.terminal} -e '${StringUtils.shellSingleQuoteEscape(action.command.join(' '))}'`]);
-                            }
+                            AppLauncher.launchAction(entry, action); // caelestia4: uwsm handles Terminal=true
                         }
                     });
                 })
@@ -289,7 +280,11 @@ Singleton {
                 if (cleanedCommand.startsWith(Config.options.search.prefix.shellCommand)) {
                     cleanedCommand = cleanedCommand.slice(Config.options.search.prefix.shellCommand.length);
                 }
-                Quickshell.execDetached(["bash", "-c", root.query.startsWith('sudo') ? `${Config.options.apps.terminal} fish -C '${cleanedCommand}'` : cleanedCommand]);
+                // caelestia4: sudo commands in the default terminal (uwsm -T), others as their own unit
+                if (root.query.startsWith('sudo'))
+                    AppLauncher.execInTerminal(["fish", "-C", cleanedCommand]);
+                else
+                    AppLauncher.exec(["bash", "-c", cleanedCommand]);
             }
         });
         const webSearchResultObject = resultComp.createObject(null, {

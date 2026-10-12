@@ -22,10 +22,5 @@ out="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hypridle-timeouts.conf"
 } > "$out.tmp"
 mv "$out.tmp" "$out"
 
-# Restart hypridle the way this session runs it: user unit (uwsm session) or a child of Hyprland (plain session)
-if systemctl --user -q is-active hypridle.service 2>/dev/null; then
-  systemctl --user restart hypridle.service
-else
-  pkill -x hypridle || true
-  hyprctl dispatch 'hl.dsp.exec_cmd("hypridle")' >/dev/null
-fi
+# hypridle is a user unit (uwsm session; started by execs.lua)
+systemctl --user restart hypridle.service

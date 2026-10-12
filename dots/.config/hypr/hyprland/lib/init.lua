@@ -26,24 +26,17 @@ function workspace_in_group(i)
     return newVal
 end
 
--- caelestia4: running in the uwsm-managed session ("Hyprland (uwsm-managed)" at login)? The marker comes from
--- ~/.config/uwsm/env-hyprland. Under uwsm, env lives in uwsm's env files, long-running things are systemd user
--- units (wanted by wayland-session@hyprland.desktop.target) and apps are started as their own units.
+-- caelestia4: this setup runs only as the uwsm-managed session ("Hyprland (uwsm-managed)" at login): env lives in
+-- uwsm's env files, long-running things are systemd user units, apps are their own units. UWSM (marker from
+-- ~/.config/uwsm/env-hyprland) is only used to warn when Hyprland was started some other way (execs.lua).
 UWSM = os.getenv("CAELESTIA4_UWSM") == "1"
 
--- Command for launching an app: its own systemd scope under uwsm (app-graphical.slice), unchanged otherwise.
--- uwsm-app is uwsm's fast client (on-demand daemon), a drop-in for `uwsm app`.
+-- Command for launching an app: its own systemd scope (app-graphical.slice). uwsm-app is uwsm's fast client.
 function app(cmd)
-    if UWSM then
-        return "uwsm-app -- " .. cmd
-    end
-    return cmd
+    return "uwsm-app -- " .. cmd
 end
 
 -- Same for background helpers (background-graphical.slice: low priority, non-interactive).
 function bg(cmd)
-    if UWSM then
-        return "uwsm-app -s b -- " .. cmd
-    end
-    return cmd
+    return "uwsm-app -s b -- " .. cmd
 end
