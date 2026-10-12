@@ -408,3 +408,21 @@ todo/pomodoro/volumeMixer). Kept (the Caelestia family reuses them): lock, overl
 (Assistant), todo/pomodoro, cheatsheet + OSK data, region selector, all services and the settings app. The lock
 screen's tray files moved from `modules/ii/bar` to `modules/ii/lock`. `tools/sync-end4.sh` keeps all of it removed.
 `tools/compile-check.sh` now uses the running compositor when sway isn't installed (compile only, nothing created).
+
+## Remaining end-4 parts restyled to Caelestia (2026-10-12)
+Logic stays end-4's (services, Persistent state, IPC, shortcuts, keys); the UI is Caelestia components and tokens.
+- **Dashboard Todo / Timer** (`dashboard/TodoTab.qml`, `TimerTab.qml`): inline "Add a task" field, To do / Done chips;
+  pomodoro ring (CircularProgress, wavy while running), stopwatch with a laps panel. Keys as before.
+- **Wallpaper selector** (`wallpaperSelector/WallpaperSelector.qml`, Ctrl+Super+T): places sidebar, path bar (click or
+  Ctrl+L to type), Caelestia cached thumbnails instead of end-4's thumbnail script, search / Random / Dark-Light /
+  system picker. Videos listed (end-4 `Wallpapers.extensions` + mp4/webm/mkv/avi/mov).
+- **Overlay widgets** (Super+G, moved to `modules/caelestia/overlay`): Caelestia frame and title buttons, pill taskbar
+  (right-click a widget button recentres it), recorder / resources / FPS limiter / notes in Caelestia controls, mixer
+  rebuilt on Caelestia's Audio adapter with the shared `components/widgets/StreamIcon.qml` (also used by the bar popout).
+- **Assistant** (moved to `modules/caelestia/assistant`): tonal tabs, EmptyState, composer with a round send button,
+  chips for model/tool/commands/tags, key caps; end-4 colour/rounding tokens mapped to Colours/Tokens throughout.
+  Deeper buttons (think-block expand, sources, attachments, next page, language picker, image actions) are still
+  end-4 RippleButtons, now in Caelestia colours.
+- Gotchas found: Caelestia.Config's attached `Config` shadows end-4's `Config` regardless of import order (alias it,
+  `CC.Tokens`); later imports win for same-named QML types (StyledText); an inline component named `Key` compiled in
+  the compile check but failed at runtime ("Key is not a type") - always read the live log after deploying.
