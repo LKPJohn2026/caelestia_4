@@ -12,6 +12,7 @@ Singleton {
     property bool barOpen: true
     property bool crosshairOpen: false
     property bool sidebarLeftOpen: false
+    property bool assistantDetached: false // caelestia4: Assistant popped out of its drawer into a window (Ctrl+D, Super+Alt+A)
     property bool sidebarRightOpen: false
     property bool mediaControlsOpen: false
     property bool osdBrightnessOpen: false

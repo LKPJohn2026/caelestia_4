@@ -3,13 +3,15 @@
 // The drawer surface/shape comes from ContentWindow's blob (PanelBg "assistantBg"); the content keeps
 // end-4's widgets, which already use the same Material You palette (end-4 Appearance = Colours adapter source).
 // Opened by end-4's keys (Super+A/B/O via KeybindBridge). Esc or clicking outside closes it.
-// Ctrl+O toggles the wide width (end-4's sidebarWidthExtended).
+// Ctrl+O toggles the wide width (end-4's sidebarWidthExtended). Ctrl+D (or Super+Alt+A) detaches it into a window
+// (DetachedWindow.qml).
 pragma ComponentBehavior: Bound
 
 import QtQuick
 import Caelestia
 import Caelestia.Config
 import qs.modules.caelestia.components
+import qs as E4G // caelestia4: keep (GlobalStates)
 import qs.modules.common as E4C // caelestia4: keep
 import qs.modules.ii.sidebarLeft as E4Sidebar // caelestia4: keep
 
@@ -60,6 +62,9 @@ Item {
         Keys.onPressed: event => {
             if (event.modifiers === Qt.ControlModifier && event.key === Qt.Key_O) {
                 root.extended = !root.extended;
+                event.accepted = true;
+            } else if (event.modifiers === Qt.ControlModifier && event.key === Qt.Key_D) {
+                E4G.GlobalStates.assistantDetached = true;
                 event.accepted = true;
             }
         }

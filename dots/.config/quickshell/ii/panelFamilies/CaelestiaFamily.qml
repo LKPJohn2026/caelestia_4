@@ -21,6 +21,7 @@ import qs.modules.caelestia.overview as COverview
 import qs.modules.caelestia.polkit as CPolkit
 import qs.modules.caelestia.regionSelector as CRegion
 import qs.modules.caelestia.screenTranslator as CTranslator
+import qs.modules.caelestia.assistant as CAssistant
 import qs.modules.ii.lock
 import qs.modules.ii.overlay
 import qs.modules.ii.wallpaperSelector
@@ -42,6 +43,7 @@ Scope {
     PanelLoader { component: CTranslator.ScreenTranslator {} } // screen translator (end-4 Google Cloud logic, Caelestia style)
     PanelLoader { component: CPolkit.Polkit {} } // polkit auth dialog (end-4 PolkitService, Caelestia style)
     PanelLoader { component: CCheatsheet.Cheatsheet {} } // keybinds + periodic table (end-4 data, Caelestia style)
+    PanelLoader { component: CAssistant.DetachedWindow {} } // Assistant popped out into a window (Super+Alt+A / Ctrl+D)
 
     // end-4 modules, as-is
     PanelLoader { component: Lock {} }
