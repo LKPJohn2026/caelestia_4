@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs
 import qs.services
 import qs.modules.common
@@ -6,6 +8,7 @@ import qs.modules.common.functions
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Hyprland
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 RippleButton {
     id: root
@@ -14,10 +17,10 @@ RippleButton {
     implicitHeight: 30
     leftPadding: 6
     rightPadding: 10
-    buttonRadius: Appearance.rounding.verysmall
-    colBackground: Appearance.colors.colSurfaceContainerHighest
-    colBackgroundHover: Appearance.colors.colSurfaceContainerHighestHover
-    colRipple: Appearance.colors.colSurfaceContainerHighestActive
+    buttonRadius: CC.Tokens.rounding.extraSmall
+    colBackground: Colours.palette.m3surfaceContainerHighest
+    colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.08))
+    colRipple: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.12))
 
     PointingHandInteraction {}
     onClicked: {
@@ -40,13 +43,13 @@ RippleButton {
             MaterialSymbol {
                 text: "search"
                 iconSize: 20
-                color: Appearance.m3colors.m3onSurface
+                color: Colours.palette.m3onSurface
             }
             StyledText {
                 id: text
                 horizontalAlignment: Text.AlignHCenter
                 text: root.query
-                color: Appearance.m3colors.m3onSurface
+                color: Colours.palette.m3onSurface
             }
         }
     }

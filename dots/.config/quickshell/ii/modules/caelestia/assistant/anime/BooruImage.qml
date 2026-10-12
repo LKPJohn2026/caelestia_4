@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.functions
@@ -11,6 +13,7 @@ import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 Button {
     id: root
@@ -24,7 +27,7 @@ Button {
     property string fileName: decodeURIComponent((imageData.file_url).substring((imageData.file_url).lastIndexOf('/') + 1))
     property string filePath: `${root.previewDownloadPath}/${root.fileName}`
     property int maxTagStringLineLength: 50
-    property real imageRadius: Appearance.rounding.small
+    property real imageRadius: CC.Tokens.rounding.small
 
     property bool showActions: false
     ImageDownloaderProcess {
@@ -56,7 +59,7 @@ Button {
         implicitWidth: root.rowHeight * modelData.aspect_ratio
         implicitHeight: root.rowHeight
         radius: imageRadius
-        color: Appearance.colors.colLayer2
+        color: Colours.tPalette.m3surfaceContainerHigh
     }
 
     contentItem: Item {
@@ -89,15 +92,15 @@ Button {
             implicitHeight: buttonSize
             implicitWidth: buttonSize
 
-            buttonRadius: Appearance.rounding.full
-            colBackground: ColorUtils.transparentize(Appearance.m3colors.m3surface, 0.3)
-            colBackgroundHover: ColorUtils.transparentize(ColorUtils.mix(Appearance.m3colors.m3surface, Appearance.m3colors.m3onSurface, 0.8), 0.2)
-            colRipple: ColorUtils.transparentize(ColorUtils.mix(Appearance.m3colors.m3surface, Appearance.m3colors.m3onSurface, 0.6), 0.1)
+            buttonRadius: CC.Tokens.rounding.full
+            colBackground: ColorUtils.transparentize(Colours.palette.m3surface, 0.3)
+            colBackgroundHover: ColorUtils.transparentize(ColorUtils.mix(Colours.palette.m3surface, Colours.palette.m3onSurface, 0.8), 0.2)
+            colRipple: ColorUtils.transparentize(ColorUtils.mix(Colours.palette.m3surface, Colours.palette.m3onSurface, 0.6), 0.1)
 
             contentItem: MaterialSymbol {
                 horizontalAlignment: Text.AlignHCenter
                 iconSize: Appearance.font.pixelSize.large
-                color: Appearance.m3colors.m3onSurface
+                color: Colours.palette.m3onSurface
                 text: "more_vert"
             }
 
@@ -125,8 +128,8 @@ Button {
                     anchors.centerIn: parent
                     opacity: root.showActions ? 1 : 0
                     visible: opacity > 0
-                    radius: Appearance.rounding.small
-                    color: Appearance.m3colors.m3surfaceContainer
+                    radius: CC.Tokens.rounding.small
+                    color: Colours.palette.m3surfaceContainer
                     implicitHeight: contextMenuColumnLayout.implicitHeight + radius * 2
                     implicitWidth: contextMenuColumnLayout.implicitWidth
 

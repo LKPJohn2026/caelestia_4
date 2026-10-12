@@ -1,26 +1,46 @@
-import qs.modules.common
-import qs.modules.common.widgets
+// caelestia4: a command / tag / suggestion chip in Caelestia style (was end-4's GroupButton). Same interface as before:
+// buttonText (or a custom contentItem), colBackground, downAction (run on click), hovered, clicked.
 import QtQuick
+import Caelestia.Config
+import qs.modules.caelestia.components
+import qs.modules.caelestia.adapters
 
-GroupButton {
-    id: button
+StyledRect {
+    id: root
+
     property string buttonText
+    property color colBackground: Colours.tPalette.m3surfaceContainerHighest
+    property bool bounce: true // kept for compatibility (end-4 press animation); unused
+    property var downAction
+    property Item contentItem: StyledText {
+        text: root.buttonText
+        font: Tokens.font.body.small
+        color: Colours.palette.m3onSurface
+    }
+    readonly property alias hovered: stateLayer.containsMouse
 
-    horizontalPadding: 8
-    verticalPadding: 6
+    signal clicked
 
-    baseWidth: contentItem.implicitWidth + horizontalPadding * 2
-    clickedWidth: baseWidth + 14
-    baseHeight: contentItem.implicitHeight + verticalPadding * 2
-    buttonRadius: down ? Appearance.rounding.verysmall : Appearance.rounding.small
+    implicitWidth: (contentItem?.implicitWidth ?? 0) + Tokens.padding.medium * 2
+    implicitHeight: (contentItem?.implicitHeight ?? 0) + Tokens.padding.small * 2
+    radius: Tokens.rounding.full
+    color: colBackground
 
-    colBackground: Appearance.colors.colLayer2
-    colBackgroundHover: Appearance.colors.colLayer2Hover
-    colBackgroundActive: Appearance.colors.colLayer2Active
+    onContentItemChanged: {
+        if (contentItem) {
+            contentItem.parent = root;
+            contentItem.anchors.centerIn = root;
+        }
+    }
+    Component.onCompleted: contentItemChanged()
 
-    contentItem: StyledText {
-        horizontalAlignment: Text.AlignHCenter
-        text: buttonText
-        color: Appearance.m3colors.m3onSurface
+    StateLayer {
+        id: stateLayer
+
+        radius: root.radius
+        onClicked: {
+            root.downAction?.();
+            root.clicked();
+        }
     }
 }

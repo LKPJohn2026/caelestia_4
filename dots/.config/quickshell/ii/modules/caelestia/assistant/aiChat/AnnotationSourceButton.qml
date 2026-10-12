@@ -1,9 +1,12 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import QtQuick
 import QtQuick.Layouts
 
 import qs
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 RippleButton {
     id: root
@@ -14,10 +17,10 @@ RippleButton {
     implicitHeight: 30
     leftPadding: (implicitHeight - faviconSize) / 2
     rightPadding: 10
-    buttonRadius: Appearance.rounding.full
-    colBackground: Appearance.colors.colSurfaceContainerHighest
-    colBackgroundHover: Appearance.colors.colSurfaceContainerHighestHover
-    colRipple: Appearance.colors.colSurfaceContainerHighestActive
+    buttonRadius: CC.Tokens.rounding.full
+    colBackground: Colours.palette.m3surfaceContainerHighest
+    colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.08))
+    colRipple: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.12))
 
     PointingHandInteraction {}
     onClicked: {
@@ -44,7 +47,7 @@ RippleButton {
                 id: text
                 horizontalAlignment: Text.AlignHCenter
                 text: displayText
-                color: Appearance.m3colors.m3onSurface
+                color: Colours.palette.m3onSurface
             }
         }
     }

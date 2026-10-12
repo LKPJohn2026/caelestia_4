@@ -1,61 +1,61 @@
-import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
+// caelestia4: description of the highlighted command / tag suggestion, with key hints (Caelestia style)
 import QtQuick
 import QtQuick.Layouts
+import Caelestia.Config
+import qs.services as E4 // caelestia4: keep (Translation)
+import qs.modules.caelestia.components
+import qs.modules.caelestia.adapters
 
-Item { // Tag suggestion description
+StyledRect {
     id: root
-    property alias text: tagDescriptionText.text
+
+    property alias text: descriptionText.text
     property bool showArrows: true
     property bool showTab: true
 
-    visible: tagDescriptionText.text.length > 0
+    visible: descriptionText.text.length > 0
     Layout.fillWidth: true
-    implicitHeight: tagDescriptionBackground.implicitHeight
+    implicitHeight: row.implicitHeight + Tokens.padding.small * 2
+    radius: Tokens.rounding.medium
+    color: Colours.tPalette.m3surfaceContainerHigh
 
-    Rectangle {
-        id: tagDescriptionBackground
-        color: Appearance.colors.colLayer2
+    RowLayout {
+        id: row
+
         anchors.fill: parent
-        radius: Appearance.rounding.verysmall
-        implicitHeight: descriptionRow.implicitHeight + 5 * 2
+        anchors.leftMargin: Tokens.padding.medium
+        anchors.rightMargin: Tokens.padding.medium
+        spacing: Tokens.spacing.extraSmall
 
-        RowLayout {
-            id: descriptionRow
-            spacing: 4
-            anchors {
-                fill: parent
-                leftMargin: 10
-                rightMargin: 10
-            }
+        StyledText {
+            id: descriptionText
 
-            StyledText {
-                id: tagDescriptionText
-                Layout.fillWidth: true
-                font.pixelSize: Appearance.font.pixelSize.smaller
-                color: Appearance.colors.colOnLayer2
-                wrapMode: Text.Wrap
-            }
-            KeyboardKey {
-                visible: root.showArrows
-                key: "↑"
-            }
-            KeyboardKey {
-                visible: root.showArrows
-                key: "↓"
-            }
-            StyledText {
-                visible: root.showArrows && root.showTab
-                text: Translation.tr("or")
-                font.pixelSize: Appearance.font.pixelSize.smaller
-            }
-            KeyboardKey {
-                id: tagDescriptionKey
-                visible: root.showTab
-                key: "Tab"
-                Layout.alignment: Qt.AlignVCenter
-            }
+            Layout.fillWidth: true
+            font: Tokens.font.body.small
+            color: Colours.palette.m3onSurface
+            wrapMode: Text.Wrap
+        }
+
+        KeyCap {
+            visible: root.showArrows
+            text: "↑"
+        }
+
+        KeyCap {
+            visible: root.showArrows
+            text: "↓"
+        }
+
+        StyledText {
+            visible: root.showArrows && root.showTab
+            text: E4.Translation.tr("or")
+            font: Tokens.font.label.small
+            color: Colours.palette.m3outline
+        }
+
+        KeyCap {
+            visible: root.showTab
+            text: "Tab"
         }
     }
 }

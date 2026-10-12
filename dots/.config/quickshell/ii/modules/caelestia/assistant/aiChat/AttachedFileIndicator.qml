@@ -1,5 +1,7 @@
 pragma ComponentBehavior: Bound
 
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
@@ -7,6 +9,7 @@ import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 Rectangle {
     id: root
@@ -56,8 +59,8 @@ Rectangle {
     // Styles/widgets
     property real horizontalPadding: 10
     property real verticalPadding: 10
-    radius: Appearance.rounding.small - anchors.margins
-    color: Appearance.colors.colLayer2
+    radius: CC.Tokens.rounding.small - anchors.margins
+    color: Colours.tPalette.m3surfaceContainerHigh
     implicitHeight: visible ? (contentItem.implicitHeight + verticalPadding * 2) : 0
 
     ColumnLayout {
@@ -101,8 +104,8 @@ Rectangle {
             RippleButton {
                 visible: root.canRemove
                 Layout.alignment: Qt.AlignTop
-                buttonRadius: Appearance.rounding.full
-                colBackground: Appearance.colors.colLayer2
+                buttonRadius: CC.Tokens.rounding.full
+                colBackground: Colours.tPalette.m3surfaceContainerHigh
                 implicitHeight: 28
                 implicitWidth: 28
                 contentItem: MaterialSymbol {
@@ -110,7 +113,7 @@ Rectangle {
                     text: "close"
                     horizontalAlignment: Text.AlignHCenter
                     iconSize: Appearance.font.pixelSize.larger
-                    color: Appearance.colors.colOnSurfaceVariant
+                    color: Colours.palette.m3onSurfaceVariant
                 }
 
                 onClicked: root.remove()
@@ -140,7 +143,7 @@ Rectangle {
                         maskSource: Rectangle {
                             width: imagePreview.width
                             height: imagePreview.height
-                            radius: Appearance.rounding.normal
+                            radius: CC.Tokens.rounding.medium
                         }
                     }
 
@@ -148,8 +151,8 @@ Rectangle {
                         anchors.fill: parent
                         color: "transparent"
                         border.width: 1
-                        border.color: Appearance.colors.colOutlineVariant
-                        radius: Appearance.rounding.normal
+                        border.color: Colours.palette.m3outlineVariant
+                        radius: CC.Tokens.rounding.medium
                     }
                 }
             }

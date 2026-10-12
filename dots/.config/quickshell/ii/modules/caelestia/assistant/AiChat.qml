@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs
 import qs.services
 import qs.modules.common
@@ -10,6 +12,8 @@ import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls
 
 Item {
     id: root
@@ -249,13 +253,13 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
             MaterialSymbol {
                 text: statusItem.icon
                 iconSize: Appearance.font.pixelSize.huge
-                color: Appearance.colors.colSubtext
+                color: Colours.palette.m3outline
             }
             StyledText {
                 font.pixelSize: Appearance.font.pixelSize.small
                 text: statusItem.statusText
-                color: Appearance.colors.colSubtext
-                animateChange: true
+                color: Colours.palette.m3outline
+                animate: true
             }
         }
 
@@ -270,7 +274,7 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
         implicitWidth: 4
         implicitHeight: 4
         radius: implicitWidth / 2
-        color: Appearance.colors.colOutlineVariant
+        color: Colours.palette.m3outlineVariant
     }
 
     ColumnLayout {
@@ -290,7 +294,7 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                 maskSource: Rectangle {
                     width: swipeView.width
                     height: swipeView.height
-                    radius: Appearance.rounding.small
+                    radius: CC.Tokens.rounding.small
                 }
             }
 
@@ -311,10 +315,10 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                     top: parent.top
                     topMargin: 4
                 }
-                implicitWidth: statusRowLayout.implicitWidth + 10 * 2
-                implicitHeight: Math.max(statusRowLayout.implicitHeight, 38)
-                radius: Appearance.rounding.normal - root.padding
-                color: messageListView.atYBeginning ? Appearance.colors.colLayer2 : Appearance.colors.colLayer2Base
+                implicitWidth: statusRowLayout.implicitWidth + CC.Tokens.padding.large * 2
+                implicitHeight: Math.max(statusRowLayout.implicitHeight + CC.Tokens.padding.small * 2, 34)
+                radius: CC.Tokens.rounding.full // caelestia4
+                color: messageListView.atYBeginning ? Colours.tPalette.m3surfaceContainerHigh : Colours.palette.m3surfaceContainerHigh
                 Behavior on color {
                     animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
                 }
@@ -393,13 +397,12 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                 }
             }
 
-            PagePlaceholder {
+            EmptyState { // caelestia4
                 z: 2
                 shown: Ai.messageIDs.length === 0
                 icon: "neurology"
                 title: Translation.tr("Large language models")
-                description: Translation.tr("Type /key to get started with online models\nCtrl+O to expand sidebar\nCtrl+P to pin sidebar\nCtrl+D to detach sidebar")
-                shape: MaterialShape.Shape.PixelCircle
+                description: Translation.tr("Type /key to get started with online models\nCtrl+O to expand · Ctrl+D to detach")
             }
 
             ScrollToBottomButton {
@@ -413,7 +416,7 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
             showArrows: root.suggestionList.length > 1
         }
 
-        FlowButtonGroup { // Suggestions
+        Flow { // Suggestions (caelestia4: plain Flow of Caelestia chips)
             id: suggestions
             visible: root.suggestionList.length > 0 && messageInputField.text.length > 0
             property int selectedIndex: 0
@@ -428,11 +431,11 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                 }
                 delegate: ApiCommandButton {
                     id: commandButton
-                    colBackground: suggestions.selectedIndex === index ? Appearance.colors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainer
+                    colBackground: suggestions.selectedIndex === index ? Qt.tint(Colours.palette.m3secondaryContainer, Qt.alpha(Colours.palette.m3onSurface, 0.08)) : Colours.palette.m3secondaryContainer
                     bounce: false
                     contentItem: StyledText {
                         font.pixelSize: Appearance.font.pixelSize.small
-                        color: Appearance.m3colors.m3onSurface
+                        color: Colours.palette.m3onSurface
                         horizontalAlignment: Text.AlignHCenter
                         text: modelData.displayName ?? modelData.name
                     }
@@ -473,8 +476,8 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
             id: inputWrapper
             property real spacing: 5
             Layout.fillWidth: true
-            radius: Appearance.rounding.normal - root.padding
-            color: Appearance.colors.colLayer2
+            radius: CC.Tokens.rounding.large // caelestia4
+            color: Colours.tPalette.m3surfaceContainerHigh
             implicitHeight: Math.max(inputFieldRowLayout.implicitHeight + inputFieldRowLayout.anchors.topMargin + commandButtonsRow.implicitHeight + commandButtonsRow.anchors.bottomMargin + spacing, 45) + (attachedFileIndicator.implicitHeight + spacing + attachedFileIndicator.anchors.topMargin)
             clip: true
 
@@ -516,7 +519,7 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                         anchors.fill: parent
                         wrapMode: TextArea.Wrap
                         padding: 10
-                        color: activeFocus ? Appearance.m3colors.m3onSurface : Appearance.m3colors.m3onSurfaceVariant
+                        color: activeFocus ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
                         placeholderText: Translation.tr('Message the model... "%1" for commands').arg(root.commandPrefix)
 
                         background: null
@@ -694,32 +697,18 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                         }
                     }
                 }
-                RippleButton { // Send button
+                IconButton { // Send button (caelestia4: Caelestia filled round button)
                     id: sendButton
                     Layout.alignment: Qt.AlignBottom
-                    Layout.rightMargin: 5
-                    implicitWidth: 40
-                    implicitHeight: 40
-                    buttonRadius: Appearance.rounding.small
-                    enabled: messageInputField.text.length > 0
-                    toggled: enabled
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: sendButton.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-                        onClicked: {
-                            const inputText = messageInputField.text;
-                            root.handleInput(inputText);
-                            messageInputField.clear();
-                        }
-                    }
-
-                    contentItem: MaterialSymbol {
-                        anchors.centerIn: parent
-                        horizontalAlignment: Text.AlignHCenter
-                        iconSize: 22
-                        color: sendButton.enabled ? Appearance.m3colors.m3onPrimary : Appearance.colors.colOnLayer2Disabled
-                        text: "arrow_upward"
+                    Layout.rightMargin: CC.Tokens.padding.small
+                    Layout.bottomMargin: CC.Tokens.padding.extraSmall
+                    isRound: true
+                    icon: "arrow_upward"
+                    disabled: messageInputField.text.length === 0
+                    onClicked: {
+                        const inputText = messageInputField.text;
+                        root.handleInput(inputText);
+                        messageInputField.clear();
                     }
                 }
             }
@@ -748,6 +737,8 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
 
                 ApiInputBoxIndicator {
                     // Model indicator
+                    Layout.fillWidth: true // caelestia4: shrink + elide when the row is full
+                    Layout.maximumWidth: implicitWidth
                     icon: "api"
                     text: Ai.getModel().name
                     tooltipText: Translation.tr("Current model: %1\nSet it with %2model MODEL").arg(Ai.getModel().name).arg(root.commandPrefix)
@@ -764,9 +755,9 @@ Inline w/ backslash and round brackets \\(e^{i\\pi} + 1 = 0\\)
                     Layout.fillWidth: true
                 }
 
-                ButtonGroup {
-                    // Command buttons
-                    padding: 0
+                RowLayout {
+                    // Command buttons (caelestia4: Caelestia chips)
+                    spacing: CC.Tokens.spacing.extraSmall
 
                     Repeater {
                         // Command buttons
