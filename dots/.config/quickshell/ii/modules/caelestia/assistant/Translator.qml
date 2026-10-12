@@ -10,6 +10,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.assistant.aiChat // caelestia4: AiMessageControlButton
 
 /**
  * Translator widget with the `trans` commandline tool.
@@ -132,34 +133,18 @@ Item {
                     placeholderText: Translation.tr("Translation goes here...")
                     property bool hasTranslation: (root.translatedText.trim().length > 0)
                     text: hasTranslation ? root.translatedText : ""
-                    GroupButton {
+                    AiMessageControlButton { // caelestia4: Caelestia icon button (was end-4 GroupButton)
                         id: copyButton
-                        baseWidth: height
-                        buttonRadius: CC.Tokens.rounding.small
+                        buttonIcon: "content_copy"
                         enabled: outputCanvas.displayedText.trim().length > 0
-                        contentItem: MaterialSymbol {
-                            anchors.centerIn: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            iconSize: Appearance.font.pixelSize.larger
-                            text: "content_copy"
-                            color: copyButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
-                        }
                         onClicked: {
                             Quickshell.clipboardText = outputCanvas.displayedText
                         }
                     }
-                    GroupButton {
+                    AiMessageControlButton { // caelestia4: Caelestia icon button (was end-4 GroupButton)
                         id: searchButton
-                        baseWidth: height
-                        buttonRadius: CC.Tokens.rounding.small
+                        buttonIcon: "travel_explore"
                         enabled: outputCanvas.displayedText.trim().length > 0
-                        contentItem: MaterialSymbol {
-                            anchors.centerIn: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            iconSize: Appearance.font.pixelSize.larger
-                            text: "travel_explore"
-                            color: searchButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
-                        }
                         onClicked: {
                             let url = Config.options.search.engineBaseUrl + outputCanvas.displayedText;
                             for (let site of Config.options.search.excludedSites) {
@@ -188,33 +173,17 @@ Item {
             onInputTextChanged: {
                 translateTimer.restart();
             }
-            GroupButton {
+            AiMessageControlButton { // caelestia4: Caelestia icon button (was end-4 GroupButton)
                 id: pasteButton
-                baseWidth: height
-                buttonRadius: CC.Tokens.rounding.small
-                contentItem: MaterialSymbol {
-                    anchors.centerIn: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    iconSize: Appearance.font.pixelSize.larger
-                    text: "content_paste"
-                    color: deleteButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
-                }
+                buttonIcon: "content_paste"
                 onClicked: {
                     root.inputField.text = Quickshell.clipboardText
                 }
             }
-            GroupButton {
+            AiMessageControlButton { // caelestia4: Caelestia icon button (was end-4 GroupButton)
                 id: deleteButton
-                baseWidth: height
-                buttonRadius: CC.Tokens.rounding.small
+                buttonIcon: "close"
                 enabled: inputCanvas.inputTextArea.text.length > 0
-                contentItem: MaterialSymbol {
-                    anchors.centerIn: parent
-                    horizontalAlignment: Text.AlignHCenter
-                    iconSize: Appearance.font.pixelSize.larger
-                    text: "close"
-                    color: deleteButton.enabled ? Colours.palette.m3onSurface : Colours.palette.m3outline
-                }
                 onClicked: {
                     root.inputField.text = ""
                 }

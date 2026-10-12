@@ -14,6 +14,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons
 
 Button {
     id: root
@@ -83,30 +84,16 @@ Button {
             }
         }
 
-        RippleButton {
+        CCtl.IconButton { // caelestia4: Caelestia icon button
             id: menuButton
             anchors.top: parent.top
             anchors.right: parent.right
-            property real buttonSize: 30
-            anchors.margins: Math.max(root.imageRadius - buttonSize / 2, 8)
-            implicitHeight: buttonSize
-            implicitWidth: buttonSize
-
-            buttonRadius: CC.Tokens.rounding.full
-            colBackground: ColorUtils.transparentize(Colours.palette.m3surface, 0.3)
-            colBackgroundHover: ColorUtils.transparentize(ColorUtils.mix(Colours.palette.m3surface, Colours.palette.m3onSurface, 0.8), 0.2)
-            colRipple: ColorUtils.transparentize(ColorUtils.mix(Colours.palette.m3surface, Colours.palette.m3onSurface, 0.6), 0.1)
-
-            contentItem: MaterialSymbol {
-                horizontalAlignment: Text.AlignHCenter
-                iconSize: Appearance.font.pixelSize.large
-                color: Colours.palette.m3onSurface
-                text: "more_vert"
-            }
-
-            onClicked: {
-                root.showActions = !root.showActions
-            }
+            anchors.margins: Math.max(root.imageRadius - height / 2, 8)
+            type: CCtl.IconButton.Tonal
+            isRound: true
+            padding: CC.Tokens.padding.extraSmall
+            icon: "more_vert"
+            onClicked: root.showActions = !root.showActions
         }
 
         Loader {
@@ -128,9 +115,9 @@ Button {
                     anchors.centerIn: parent
                     opacity: root.showActions ? 1 : 0
                     visible: opacity > 0
-                    radius: CC.Tokens.rounding.small
-                    color: Colours.palette.m3surfaceContainer
-                    implicitHeight: contextMenuColumnLayout.implicitHeight + radius * 2
+                    radius: CC.Tokens.rounding.medium // caelestia4
+                    color: Colours.palette.m3surfaceContainerHigh
+                    implicitHeight: contextMenuColumnLayout.implicitHeight + CC.Tokens.padding.small * 2
                     implicitWidth: contextMenuColumnLayout.implicitWidth
 
                     Behavior on opacity {
@@ -146,7 +133,7 @@ Button {
                         anchors.centerIn: parent
                         spacing: 0
 
-                        MenuButton {
+                        MenuRow {
                             id: openFileLinkButton
                             Layout.fillWidth: true
                             buttonText: Translation.tr("Open file link")
@@ -157,7 +144,7 @@ Button {
                                 Hyprland.dispatch("hl.config({cursor = {no_warps = false}})")
                             }
                         }
-                        MenuButton {
+                        MenuRow {
                             id: sourceButton
                             visible: root.imageData.source && root.imageData.source.length > 0
                             Layout.fillWidth: true
@@ -170,7 +157,7 @@ Button {
                                 Hyprland.dispatch("hl.config({cursor = {no_warps = false}})")
                             }
                         }
-                        MenuButton {
+                        MenuRow {
                             id: downloadButton
                             Layout.fillWidth: true
                             buttonText: Translation.tr("Download")

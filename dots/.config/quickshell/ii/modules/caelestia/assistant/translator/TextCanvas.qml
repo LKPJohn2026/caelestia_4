@@ -81,7 +81,7 @@ Rectangle {
                 }
             }
             Item { Layout.fillWidth: true }
-            ButtonGroup {
+            RowLayout { // caelestia4: was end-4 ButtonGroup
                 id: actions
             }
         }

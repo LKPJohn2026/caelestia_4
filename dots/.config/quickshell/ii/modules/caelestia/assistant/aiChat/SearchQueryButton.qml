@@ -1,56 +1,36 @@
-import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
-import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
-import qs
-import qs.services
-import qs.modules.common
-import qs.modules.common.widgets
-import qs.modules.common.functions
 import QtQuick
-import QtQuick.Layouts
-import Quickshell.Hyprland
-import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import Caelestia.Config as CC
+import qs // caelestia4: keep (GlobalStates)
+import qs.modules.common // caelestia4: keep (Config)
+import qs.modules.common.widgets as E4W // caelestia4: keep (Favicon)
+import qs.modules.caelestia.components
+import qs.modules.caelestia.adapters
+import qs.modules.caelestia.assistant
 
-RippleButton {
+// caelestia4: web-search query the AI used, as a Caelestia chip; click searches it in the browser
+ChipBase {
     id: root
+
     property string query
 
-    implicitHeight: 30
-    leftPadding: 6
-    rightPadding: 10
-    buttonRadius: CC.Tokens.rounding.extraSmall
-    colBackground: Colours.palette.m3surfaceContainerHighest
-    colBackgroundHover: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.08))
-    colRipple: Qt.tint(Colours.palette.m3surfaceContainerHighest, Qt.alpha(Colours.palette.m3onSurface, 0.12))
-
-    PointingHandInteraction {}
     onClicked: {
         let url = Config.options.search.engineBaseUrl + root.query;
-        for (let site of (Config?.options?.search.excludedSites ?? [])) {
+        for (let site of (Config?.options?.search.excludedSites ?? []))
             url += ` -site:${site}`;
-        }
         Qt.openUrlExternally(url);
         GlobalStates.sidebarLeftOpen = false;
     }
 
-    contentItem: Item {
-        anchors.centerIn: parent
-        implicitWidth: rowLayout.implicitWidth
-        implicitHeight: rowLayout.implicitHeight
-        RowLayout {
-            id: rowLayout
-            anchors.centerIn: parent
-            spacing: 5
-            MaterialSymbol {
-                text: "search"
-                iconSize: 20
-                color: Colours.palette.m3onSurface
-            }
-            StyledText {
-                id: text
-                horizontalAlignment: Text.AlignHCenter
-                text: root.query
-                color: Colours.palette.m3onSurface
-            }
-        }
+    MaterialIcon {
+        anchors.verticalCenter: parent.verticalCenter
+        text: "search"
+        color: Colours.palette.m3primary
+    }
+
+    StyledText {
+        anchors.verticalCenter: parent.verticalCenter
+        text: root.query
+        font: CC.Tokens.font.body.small
+        color: Colours.palette.m3onSurface
     }
 }

@@ -12,6 +12,7 @@ import QtQuick.Layouts
 import Quickshell
 import org.kde.syntaxhighlighting
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons (aliased: other control names clash with end-4 widgets)
 
 ColumnLayout {
     id: root
@@ -64,7 +65,7 @@ ColumnLayout {
 
             Item { Layout.fillWidth: true }
 
-            ButtonGroup {
+            RowLayout { // caelestia4: was end-4 ButtonGroup
                 AiMessageControlButton {
                     id: copyCodeButton
                     buttonIcon: activated ? "inventory" : "content_copy"
@@ -259,22 +260,14 @@ ColumnLayout {
                     Layout.topMargin: 0
                     sourceComponent: RowLayout {
                         Item { Layout.fillWidth: true }
-                        ButtonGroup {
-                            GroupButton {
-                                contentItem: StyledText {
-                                    text: Translation.tr("Reject")
-                                    font.pixelSize: Appearance.font.pixelSize.small
-                                    color: Colours.palette.m3onSurface
-                                }
+                        RowLayout { // caelestia4: was end-4 ButtonGroup
+                            CCtl.TextButton {
+                                type: CCtl.TextButton.Tonal
+                                text: Translation.tr("Reject")
                                 onClicked: Ai.rejectCommand(root.messageData)
                             }
-                            GroupButton {
-                                toggled: true
-                                contentItem: StyledText {
-                                    text: Translation.tr("Approve")
-                                    font.pixelSize: Appearance.font.pixelSize.small
-                                    color: Colours.palette.m3onPrimary
-                                }
+                            CCtl.TextButton {
+                                text: Translation.tr("Approve")
                                 onClicked: Ai.approveCommand(root.messageData)
                             }
                         }

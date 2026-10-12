@@ -177,8 +177,8 @@ Rectangle {
                     }
                 }
 
-                ButtonGroup {
-                    spacing: 5
+                RowLayout { // caelestia4: was end-4 ButtonGroup
+                    spacing: CC.Tokens.spacing.extraSmall
 
                     AiMessageControlButton {
                         id: regenButton

@@ -10,6 +10,7 @@ import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons (aliased: other control names clash with end-4 widgets)
 
 Rectangle {
     id: root
@@ -101,21 +102,13 @@ Rectangle {
                 wrapMode: Text.Wrap
             }
 
-            RippleButton {
+            CCtl.IconButton { // caelestia4: Caelestia icon button
                 visible: root.canRemove
                 Layout.alignment: Qt.AlignTop
-                buttonRadius: CC.Tokens.rounding.full
-                colBackground: Colours.tPalette.m3surfaceContainerHigh
-                implicitHeight: 28
-                implicitWidth: 28
-                contentItem: MaterialSymbol {
-                    anchors.centerIn: parent
-                    text: "close"
-                    horizontalAlignment: Text.AlignHCenter
-                    iconSize: Appearance.font.pixelSize.larger
-                    color: Colours.palette.m3onSurfaceVariant
-                }
-
+                type: CCtl.IconButton.Tonal
+                isRound: true
+                padding: CC.Tokens.padding.extraSmall
+                icon: "close"
                 onClicked: root.remove()
             }
         }
