@@ -78,6 +78,20 @@ Item {
                 Booru.addSystemMessage(key.length > 0 ? Translation.tr("Wallhaven API key saved to the keyring") : Translation.tr("Wallhaven API key cleared"));
             }
         },
+        { // caelestia4: Gelbooru API key + user ID -> keyring (apiKeys.gelbooru); no arguments clears it
+            name: "gelboorukey",
+            description: Translation.tr("Set your Gelbooru API key and user ID: /gelboorukey <api_key> <user_id>; empty to clear"),
+            execute: (args) => {
+                const apiKey = (args[0] ?? "").trim();
+                const userId = (args[1] ?? "").trim();
+                if (apiKey.length > 0 && userId.length === 0) {
+                    Booru.addSystemMessage(Translation.tr("Usage: /gelboorukey <api_key> <user_id>"));
+                    return;
+                }
+                Booru.setGelbooruApiKey(apiKey, userId);
+                Booru.addSystemMessage(apiKey.length > 0 ? Translation.tr("Gelbooru API key saved to the keyring") : Translation.tr("Gelbooru API key cleared"));
+            }
+        },
         {
             name: "safe",
             description: Translation.tr("Disable NSFW content"),
