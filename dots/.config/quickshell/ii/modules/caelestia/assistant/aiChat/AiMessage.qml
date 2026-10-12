@@ -1,3 +1,5 @@
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -6,6 +8,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 Rectangle {
     id: root
@@ -26,8 +29,8 @@ Rectangle {
     anchors.right: parent?.right
     implicitHeight: columnLayout.implicitHeight + root.messagePadding * 2
 
-    radius: Appearance.rounding.normal
-    color: Appearance.colors.colLayer1
+    radius: CC.Tokens.rounding.medium
+    color: Colours.tPalette.m3surfaceContainer
 
     function saveMessage() {
         if (!root.editing) return;
@@ -81,8 +84,8 @@ Rectangle {
             Layout.fillWidth: true
             implicitWidth: headerRowLayout.implicitWidth + 4 * 2
             implicitHeight: headerRowLayout.implicitHeight + 4 * 2
-            color: Appearance.colors.colSecondaryContainer
-            radius: Appearance.rounding.small
+            color: Colours.palette.m3secondaryContainer
+            radius: CC.Tokens.rounding.small
         
             RowLayout { // Header
                 id: headerRowLayout
@@ -123,7 +126,7 @@ Rectangle {
                                     messageData?.role == 'user' ? 'linux-symbolic' : 'desktop-symbolic'
 
                                 colorize: true
-                                color: Appearance.m3colors.m3onSecondaryContainer
+                                color: Colours.palette.m3onSecondaryContainer
                             }
 
                             MaterialSymbol {
@@ -131,7 +134,7 @@ Rectangle {
                                 anchors.centerIn: parent
                                 visible: !modelIcon.visible
                                 iconSize: Appearance.font.pixelSize.larger
-                                color: Appearance.m3colors.m3onSecondaryContainer
+                                color: Colours.palette.m3onSecondaryContainer
                                 text: messageData?.role == 'user' ? 'person' : 
                                     messageData?.role == 'interface' ? 'settings' : 
                                     messageData?.role == 'assistant' ? 'neurology' : 
@@ -145,7 +148,7 @@ Rectangle {
                             Layout.fillWidth: true
                             elide: Text.ElideRight
                             font.pixelSize: Appearance.font.pixelSize.normal
-                            color: Appearance.m3colors.m3onSecondaryContainer
+                            color: Colours.palette.m3onSecondaryContainer
                             text: messageData?.role == 'assistant' ? Ai.models[messageData?.model].name :
                                 (messageData?.role == 'user' && SystemInfo.username) ? SystemInfo.username :
                                 Translation.tr("Interface")
@@ -166,7 +169,7 @@ Rectangle {
                         id: notVisibleToModelText
                         anchors.centerIn: parent
                         iconSize: Appearance.font.pixelSize.small
-                        color: Appearance.colors.colSubtext
+                        color: Colours.palette.m3outline
                         text: "visibility_off"
                     }
                     StyledToolTip {

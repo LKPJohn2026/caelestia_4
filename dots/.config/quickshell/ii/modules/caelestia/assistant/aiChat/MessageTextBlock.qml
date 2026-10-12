@@ -1,5 +1,7 @@
 pragma ComponentBehavior: Bound
 
+import Caelestia.Config as CC // caelestia4: Tokens as CC.Tokens (unaliased, Caelestia's Config would shadow end-4's)
+import qs.modules.caelestia.adapters // caelestia4: Colours (end-4 services below win shared names)
 import qs
 import qs.services
 import qs.modules.common
@@ -10,6 +12,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 
 ColumnLayout {
     id: root
@@ -156,10 +159,10 @@ ColumnLayout {
             font.family: Appearance.font.family.reading
             font.hintingPreference: Font.PreferNoHinting // Prevent weird bold text
             font.pixelSize: Appearance.font.pixelSize.small
-            selectedTextColor: Appearance.m3colors.m3onSecondaryContainer
-            selectionColor: Appearance.colors.colSecondaryContainer
+            selectedTextColor: Colours.palette.m3onSecondaryContainer
+            selectionColor: Colours.palette.m3secondaryContainer
             wrapMode: TextEdit.Wrap
-            color: root.messageData?.thinking ? Appearance.colors.colSubtext : Appearance.colors.colOnLayer1
+            color: root.messageData?.thinking ? Colours.palette.m3outline : Colours.palette.m3onSurface
             textFormat: renderMarkdown ? TextEdit.MarkdownText : TextEdit.PlainText
             text: modelData
 
