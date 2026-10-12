@@ -90,6 +90,10 @@ Singleton {
                 property list<var> quickToggles: []
                 property bool utilitiesSystem: true // uptime + reload / end-4 settings / session buttons
                 property bool utilitiesSliders: true // brightness / volume / mic sliders
+                property JsonObject randomWallpaper: JsonObject { // settings > Appearance > Wallpaper (scripts/caelestia4/random-wallpaper.sh)
+                    property string source: "wallhaven" // wallhaven | konachan | yandere
+                    property bool matchScreen: true // only images at least as large as the biggest monitor
+                }
                 property JsonObject idle: JsonObject { // hypridle timers, written by scripts/caelestia4/hypridle-timeouts.sh (0 = never)
                     property int lockMinutes: 5
                     property int screenOffMinutes: 10

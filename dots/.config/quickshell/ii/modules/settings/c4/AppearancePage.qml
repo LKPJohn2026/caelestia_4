@@ -36,19 +36,6 @@ ContentPage {
         return Translation.tr("From your files");
     }
 
-    // end-4's online random wallpapers (scripts/colors/random): download to Pictures/Wallpapers, then apply
-    Process {
-        id: randomWallProc
-
-        property string source
-        property string status
-
-        command: ["bash", "-c", FileUtils.trimFileProtocol(`${Directories.scriptPath}/colors/random/random_${source}_wall.sh`)]
-        stdout: SplitParser {
-            onRead: data => randomWallProc.status = data.trim()
-        }
-    }
-
     // Image size from the file header (magick identify; doesn't decode the whole image)
     property string wallpaperSize
     // The command is set here, not bound: a binding may not have updated yet when the path-change handler runs
@@ -70,9 +57,44 @@ ContentPage {
         }
     }
 
-    function fetchRandom(source): void {
-        randomWallProc.source = source;
+    // Random wallpaper from the internet (scripts/caelestia4/random-wallpaper.sh): source + "at least my screen size"
+    readonly property var rw: Config.options.caelestia.randomWallpaper
+    readonly property var biggestScreen: (HyprlandData.monitors ?? []).reduce((best, m) => (m.width * m.height > best.w * best.h ? { w: m.width, h: m.height } : best), { w: 0, h: 0 })
+    readonly property var randomSources: [
+        {
+            label: Translation.tr("Wallhaven (general & anime)"),
+            value: "wallhaven"
+        },
+        ...(Config.options.policies.weeb === 1 ? [
+                {
+                    label: Translation.tr("Konachan (anime)"),
+                    value: "konachan"
+                },
+                {
+                    label: Translation.tr("yande.re (anime)"),
+                    value: "yandere"
+                }
+            ] : [])
+    ]
+
+    Process {
+        id: randomWallProc
+
+        property string status
+        property bool failed
+
+        stdout: SplitParser {
+            onRead: data => randomWallProc.status = data.trim()
+        }
+        onExited: code => randomWallProc.failed = code !== 0
+    }
+
+    function fetchRandom(): void {
+        const source = randomSources.some(o => o.value === rw.source) ? rw.source : "wallhaven";
+        const size = rw.matchScreen && (biggestScreen?.w ?? 0) > 0 ? [String(biggestScreen.w), String(biggestScreen.h)] : [];
+        randomWallProc.command = [Quickshell.shellPath("scripts/caelestia4/random-wallpaper.sh"), source, ...size];
         randomWallProc.status = "";
+        randomWallProc.failed = false;
         randomWallProc.running = true;
     }
 
@@ -138,35 +160,31 @@ ContentPage {
             onClicked: Wallpapers.randomFromCurrentFolder()
         }
 
-        SettingRow {
-            visible: Config.options.policies.weeb === 1
+        ChoiceRow {
+            icon: "cloud"
+            title: Translation.tr("Random wallpaper source")
+            description: Translation.tr("Anime sources appear when the Anime tab is set to Shown (Apps & services > Content)")
+            options: randomSources
+            value: randomSources.some(o => o.value === rw.source) ? rw.source : "wallhaven"
+            onSelected: v => rw.source = v
+        }
+
+        SwitchRow {
+            icon: "fit_screen"
+            title: Translation.tr("Only wallpapers that fill my screen")
+            description: (biggestScreen?.w ?? 0) > 0 ? Translation.tr("At least %1 × %2, your largest monitor").arg(biggestScreen.w).arg(biggestScreen.h) : Translation.tr("At least your monitor's resolution")
+            checked: rw.matchScreen
+            onToggled: v => rw.matchScreen = v
+        }
+
+        ButtonRow {
+            enabled: !randomWallProc.running
             icon: "cloud_download"
-            title: Translation.tr("Random from the internet")
-            description: randomWallProc.running ? Translation.tr("Downloading… %1").arg(randomWallProc.status) : Translation.tr("Saved to %1").arg(`${Directories.pictures.replace(Directories.home, "~").replace("file://", "")}/Wallpapers`)
-
-            RowLayout {
-                spacing: 8
-
-                RippleButtonWithIcon {
-                    enabled: !randomWallProc.running
-                    materialIcon: "ifl"
-                    mainText: Translation.tr("Konachan")
-                    onClicked: fetchRandom("konachan")
-                    StyledToolTip {
-                        text: Translation.tr("Safe-for-work anime artwork from konachan.net")
-                    }
-                }
-
-                RippleButtonWithIcon {
-                    enabled: !randomWallProc.running
-                    materialIcon: "ifl"
-                    mainText: Translation.tr("osu! seasonal")
-                    onClicked: fetchRandom("osu")
-                    StyledToolTip {
-                        text: Translation.tr("A seasonal background from osu!")
-                    }
-                }
-            }
+            title: Translation.tr("Random wallpaper from the internet")
+            description: randomWallProc.running || randomWallProc.status ? randomWallProc.status : Translation.tr("Saved to %1").arg(`${Directories.pictures.replace(Directories.home, "~").replace("file://", "")}/Wallpapers`)
+            buttonIcon: randomWallProc.running ? "hourglass_top" : "casino"
+            buttonText: randomWallProc.running ? Translation.tr("Working…") : Translation.tr("Get one")
+            onClicked: fetchRandom()
         }
 
         SwitchRow {
