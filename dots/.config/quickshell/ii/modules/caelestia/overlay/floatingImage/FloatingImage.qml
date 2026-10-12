@@ -5,7 +5,8 @@ import Qt5Compat.GraphicalEffects
 import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.utils
-import qs.modules.ii.overlay
+import qs.modules.caelestia.overlay
+import qs.modules.caelestia.adapters
 
 StyledOverlayWidget {
     id: root
@@ -43,7 +44,7 @@ StyledOverlayWidget {
 
     contentItem: OverlayBackground {
         id: bg
-        color: ColorUtils.transparentize(Appearance.m3colors.m3surfaceContainer, root.actuallyPinned ? 1 : 0)
+        color: Qt.alpha(Colours.palette.m3surfaceContainerLow, root.actuallyPinned ? 0 : 1) // caelestia4
         radius: root.contentRadius
 
         WheelHandler {

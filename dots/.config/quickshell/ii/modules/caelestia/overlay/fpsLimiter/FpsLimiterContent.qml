@@ -6,14 +6,18 @@ import Quickshell
 import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.ii.overlay
+import qs.modules.caelestia.overlay
+import Caelestia.Config
+import qs.modules.caelestia.components
+import qs.modules.caelestia.components.controls
+import qs.modules.caelestia.adapters
 
 OverlayBackground {
     id: root
 
     enum State { Normal, Success, Error }
 
-    property real padding: 16
+    property real padding: Tokens.padding.large
     property var currentState: FpsLimiterContent.State.Normal
     implicitWidth: content.implicitWidth + (padding * 2)
     implicitHeight: content.implicitHeight + (padding * 2)
@@ -61,36 +65,38 @@ OverlayBackground {
         id: fpsSetter
     }
 
+    // caelestia4: Caelestia text field + round apply button (shows a check / cross for a second after applying)
     RowLayout {
         id: content
-        anchors.centerIn: parent
-        spacing: 4
 
-        ToolbarTextField {
+        anchors.centerIn: parent
+        spacing: Tokens.spacing.small
+
+        StyledTextField {
             id: fpsField
-            Layout.fillWidth: true
+
             Layout.preferredWidth: 200
-            placeholderText: root.currentState === FpsLimiterContent.State.Error ? Translation.tr("Enter a valid number") : Translation.tr("Set FPS limit")
+            leadingIcon: "speed"
+            placeholderText: root.currentState === FpsLimiterContent.State.Error ? Translation.tr("Enter a valid number") : Translation.tr("FPS limit (0 = off)")
             inputMethodHints: Qt.ImhDigitsOnly
             focus: true
-
-            onAccepted: {
-                root.applyLimit();
-            }
+            onAccepted: root.applyLimit()
         }
 
-        IconToolbarButton {
+        IconButton {
             id: applyButton
-            text: switch (root.currentState) {
-                case FpsLimiterContent.State.Error: return "close";
-                case FpsLimiterContent.State.Success: return "check";
-                case FpsLimiterContent.State.Normal:
-                default: return "save";
+
+            isRound: true
+            icon: switch (root.currentState) {
+            case FpsLimiterContent.State.Error:
+                return "close";
+            case FpsLimiterContent.State.Success:
+                return "check";
+            default:
+                return "save";
             }
-            enabled: root.currentState === FpsLimiterContent.State.Normal && fpsField.text.length > 0
-            onClicked: {
-                root.applyLimit();
-            }
+            disabled: !(root.currentState === FpsLimiterContent.State.Normal && fpsField.text.length > 0)
+            onClicked: root.applyLimit()
         }
     }
 }
