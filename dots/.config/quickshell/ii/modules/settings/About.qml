@@ -144,23 +144,15 @@ ContentPage {
                     Qt.openUrlExternally("https://github.com/sponsors/end-4")
                 }
             }
-
-            
         }
-    }
 
-    // caelestia4: credit for the second upstream. This setup is end-4's dots with the Caelestia shell design on top.
-    ContentSection {
-        icon: "auto_awesome"
-        title: Translation.tr("Dotfiles: Caelestia")
-
+        // caelestia4: Caelestia, the second upstream (shell design), under illogical-impulse in the same layout
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
             spacing: 20
             Layout.topMargin: 10
             Layout.bottomMargin: 10
             IconImage {
-                id: caelestiaLogo
                 implicitSize: 80
                 source: "file://" + Quickshell.shellPath("modules/caelestia/assets/logo.svg")
                 // The logo is black; tint it to the text colour so it shows on the dark theme
@@ -186,11 +178,6 @@ ContentPage {
                     }
                     PointingHandLinkHover {}
                 }
-                StyledText {
-                    text: Translation.tr("Shell design: bar, frame, drawers, launcher, dashboard (caelestia-dots/shell)")
-                    font.pixelSize: Appearance.font.pixelSize.small
-                    color: Appearance.colors.colSubtext
-                }
             }
         }
 
@@ -206,13 +193,6 @@ ContentPage {
                 }
             }
             RippleButtonWithIcon {
-                materialIcon: "code"
-                mainText: Translation.tr("Shell source")
-                onClicked: {
-                    Qt.openUrlExternally("https://github.com/caelestia-dots/shell")
-                }
-            }
-            RippleButtonWithIcon {
                 materialIcon: "adjust"
                 materialIconFill: false
                 mainText: Translation.tr("Issues")
@@ -222,9 +202,16 @@ ContentPage {
             }
             RippleButtonWithIcon {
                 materialIcon: "forum"
-                mainText: Translation.tr("Discord")
+                mainText: Translation.tr("Discussions")
                 onClicked: {
-                    Qt.openUrlExternally("https://caelestiashell.com/discord")
+                    Qt.openUrlExternally("https://github.com/caelestia-dots/shell/discussions")
+                }
+            }
+            RippleButtonWithIcon {
+                materialIcon: "favorite"
+                mainText: Translation.tr("Donate")
+                onClicked: {
+                    Qt.openUrlExternally("https://github.com/sponsors/soramanew")
                 }
             }
         }
