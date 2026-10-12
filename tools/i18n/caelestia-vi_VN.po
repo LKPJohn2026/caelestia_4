@@ -1,0 +1,1341 @@
+# Vietnamese translation of the Caelestia shell UI (caelestia4). Edit here, then: tools/build-caelestia-plugin.sh
+# Strings are found with tools/i18n-missing.py (Tr.tr / Tr.trCtx / Tr.trN in dots/.config/quickshell/ii).
+msgid ""
+msgstr ""
+"Project-Id-Version: caelestia4\n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid " · right-click to pin"
+msgstr " · chuột phải để ghim"
+
+msgid " · right-click to unpin"
+msgstr " · chuột phải để bỏ ghim"
+
+msgid "%1 (muted)"
+msgstr "%1 (đã tắt tiếng)"
+
+msgid "%1 km/h"
+msgstr "%1 km/h"
+
+msgid "%1 min focus · %2 min break · long break every %3"
+msgstr "%1 phút tập trung · %2 phút nghỉ · nghỉ dài sau mỗi %3 lượt"
+
+msgid "%1 on monitor %2 at %3, %4"
+msgstr "%1 trên màn hình %2 tại %3, %4"
+
+msgid "%1 package updates available"
+msgstr "Có %1 bản cập nhật gói"
+
+msgid "%1 tasks left"
+msgstr "Còn %1 việc"
+
+msgid "%1 windows"
+msgstr "%1 cửa sổ"
+
+msgid "%1 · click to cycle, right-click for settings"
+msgstr "%1 · bấm để chuyển, chuột phải để cài đặt"
+
+msgid "%1 · scroll to move"
+msgstr "%1 · cuộn để di chuyển"
+
+msgid "%1%"
+msgstr "%1%"
+
+msgid "%n day"
+msgid_plural "%n days"
+msgstr[0] "%n ngày"
+
+msgid "%n device available"
+msgid_plural "%n devices available"
+msgstr[0] "%n thiết bị khả dụng"
+
+msgid "%n device available (%1 connected)"
+msgid_plural "%n devices available (%1 connected)"
+msgstr[0] "%n thiết bị khả dụng (%1 đã kết nối)"
+
+msgid "%n hour"
+msgid_plural "%n hours"
+msgstr[0] "%n giờ"
+
+msgid "%n min"
+msgid_plural "%n mins"
+msgstr[0] "%n phút"
+
+msgid "%n minute"
+msgid_plural "%n minutes"
+msgstr[0] "%n phút"
+
+msgid "%n network available"
+msgid_plural "%n networks available"
+msgstr[0] "%n mạng khả dụng"
+
+msgid "1 task left"
+msgstr "Còn 1 việc"
+
+msgid "1 window"
+msgstr "1 cửa sổ"
+
+msgid "7-day forecast"
+msgstr "Dự báo 7 ngày"
+
+msgid "A medium chroma palette. The primary palette's hue is different from the seed colour, for variety."
+msgstr "Bảng màu độ bão hòa vừa. Sắc độ chính khác với màu gốc để tạo sự đa dạng."
+
+msgid "A playful theme - the seed colour's hue does not appear in the theme."
+msgstr "Chủ đề vui nhộn - sắc độ của màu gốc không xuất hiện trong chủ đề."
+
+msgid "Active since %1"
+msgstr "Đang bật từ %1"
+
+msgid "Adapt display brightness"
+msgstr "Điều chỉnh độ sáng màn hình"
+
+msgid "Add a task"
+msgstr "Thêm việc"
+
+msgid "All colours are greyscale, no chroma."
+msgstr "Tất cả màu đều xám, không có độ bão hòa."
+
+msgid "All done"
+msgstr "Xong hết"
+
+msgid "All files"
+msgstr "Tất cả tệp"
+
+msgid "All up to date!"
+msgstr "Đã cập nhật đầy đủ!"
+
+msgid "Almost identical to fidelity."
+msgstr "Gần như giống fidelity."
+
+msgid "Anti-flashbang"
+msgstr "Chống chói"
+
+msgid "Apps"
+msgstr "Ứng dụng"
+
+msgid "Apps · right-click for workspace overview"
+msgstr "Ứng dụng · chuột phải để xem tổng quan không gian làm việc"
+
+msgid "Audio input changed"
+msgstr "Đã đổi thiết bị âm thanh vào"
+
+msgid "Audio output changed"
+msgstr "Đã đổi thiết bị âm thanh ra"
+
+msgid "Authenticate"
+msgstr "Xác thực"
+
+msgid "Authentication required"
+msgstr "Yêu cầu xác thực"
+
+msgid "Automatic schedule"
+msgstr "Lịch tự động"
+
+msgid "Backend: %1"
+msgstr "Nền tảng: %1"
+
+msgid "Battery"
+msgstr "Pin"
+
+msgid "Battery is charging"
+msgstr "Pin đang sạc"
+
+msgid "Battery is discharging"
+msgstr "Pin đang xả"
+
+msgid "Battery level is low"
+msgstr "Pin yếu"
+
+msgid "Battery warning"
+msgstr "Cảnh báo pin"
+
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+msgid "Bluetooth · right-click for devices"
+msgstr "Bluetooth · chuột phải để xem thiết bị"
+
+msgid "Break"
+msgstr "Nghỉ"
+
+msgid "Brightness"
+msgstr "Độ sáng"
+
+msgid "CPU"
+msgstr "CPU"
+
+msgid "Caelestia settings"
+msgstr "Cài đặt Caelestia"
+
+msgid "Calculating remaining battery life..."
+msgstr "Đang tính thời lượng pin còn lại..."
+
+msgid "Calculating time until charged..."
+msgstr "Đang tính thời gian sạc đầy..."
+
+msgid "Calculating..."
+msgstr "Đang tính..."
+
+msgid "Cancel"
+msgstr "Hủy"
+
+msgid "Caps Lock is on"
+msgstr "Caps Lock đang bật"
+
+msgid "Caps lock disabled"
+msgstr "Đã tắt Caps Lock"
+
+msgid "Caps lock enabled"
+msgstr "Đã bật Caps Lock"
+
+msgid "Charger plugged in"
+msgstr "Đã cắm sạc"
+
+msgid "Charger unplugged"
+msgstr "Đã rút sạc"
+
+msgid "Cheatsheet"
+msgstr "Bảng phím tắt"
+
+msgid "Check again"
+msgstr "Kiểm tra lại"
+
+msgid "Checking for updates…"
+msgstr "Đang kiểm tra cập nhật…"
+
+msgid "Checking…"
+msgstr "Đang kiểm tra…"
+
+msgid "Clear"
+msgstr "Xóa"
+
+msgid "Click  go   •   Drag window  move   •   Middle-click  close   •   Arrows / Tab  select   •   Enter  switch"
+msgstr "Bấm  đi tới   •   Kéo cửa sổ  di chuyển   •   Bấm chuột giữa  đóng   •   Mũi tên / Tab  chọn   •   Enter  chuyển"
+
+msgid "Click to show/hide · scroll to move"
+msgstr "Bấm để hiện/ẩn · cuộn để di chuyển"
+
+msgid "Close to greyscale, a hint of chroma."
+msgstr "Gần như xám, có chút độ bão hòa."
+
+msgid "Collecting data..."
+msgstr "Đang thu thập dữ liệu..."
+
+msgid "Connect"
+msgstr "Kết nối"
+
+msgid "Connected to %1"
+msgstr "Đã kết nối %1"
+
+msgid "Connecting..."
+msgstr "Đang kết nối..."
+
+msgid "Connection failed. Please check your password and try again."
+msgstr "Kết nối thất bại. Hãy kiểm tra mật khẩu rồi thử lại."
+
+msgid "Copy (left click) or annotate (right click)"
+msgstr "Sao chép (chuột trái) hoặc chú thích (chuột phải)"
+
+msgid "Could not connect to %1"
+msgstr "Không kết nối được %1"
+
+msgid "Could not start %1. Is it installed?"
+msgstr "Không chạy được %1. Đã cài chưa?"
+
+msgid "Cycle %1 of %2"
+msgstr "Lượt %1 / %2"
+
+msgid "Dark"
+msgstr "Tối"
+
+msgid "Dashboard"
+msgstr "Bảng điều khiển"
+
+msgid "Default for Material theme colours. A pastel palette with a low chroma."
+msgstr "Mặc định cho màu chủ đề Material. Bảng màu pastel, độ bão hòa thấp."
+
+msgid "Delete recording?"
+msgstr "Xóa bản ghi?"
+
+msgid "Detecting GPU..."
+msgstr "Đang phát hiện GPU..."
+
+msgid "Device volume"
+msgstr "Âm lượng thiết bị"
+
+msgid "Dim bright content (screen shader)"
+msgstr "Làm dịu nội dung sáng (shader màn hình)"
+
+msgid "Disabled Hyprland animations, blur, gaps and shadows"
+msgstr "Đã tắt hiệu ứng, làm mờ, khoảng cách và bóng đổ của Hyprland"
+
+msgid "Disconnected from %1"
+msgstr "Đã ngắt kết nối %1"
+
+msgid "Do not disturb"
+msgstr "Không làm phiền"
+
+msgid "Do not disturb disabled"
+msgstr "Đã tắt Không làm phiền"
+
+msgid "Do not disturb enabled"
+msgstr "Đã bật Không làm phiền"
+
+msgid "Documents"
+msgstr "Tài liệu"
+
+msgid "Done"
+msgstr "Xong"
+
+msgid "Done · %1"
+msgstr "Đã xong · %1"
+
+msgid "Downloading"
+msgstr "Đang tải xuống"
+
+msgid "Downloads"
+msgstr "Tải xuống"
+
+msgid "Drag to pan • scroll to zoom"
+msgstr "Kéo để di chuyển • cuộn để phóng to"
+
+msgid "Drizzle"
+msgstr "Mưa phùn"
+
+msgid "Edit quick toggles"
+msgstr "Sửa nút bật nhanh"
+
+msgid "Elements"
+msgstr "Thành phần"
+
+msgid "Enable widgets in the dashboard settings"
+msgstr "Bật tiện ích trong cài đặt bảng điều khiển"
+
+msgid "Enter password"
+msgstr "Nhập mật khẩu"
+
+msgid "Ethernet"
+msgstr "Ethernet"
+
+msgid "Eye protection"
+msgstr "Bảo vệ mắt"
+
+msgid "Failed to change profile picture to %1"
+msgstr "Không đổi được ảnh đại diện thành %1"
+
+msgid "Finished tasks will show up here"
+msgstr "Việc đã xong sẽ hiện ở đây"
+
+msgid "Float"
+msgstr "Nổi"
+
+msgid "Floating: no"
+msgstr "Nổi: không"
+
+msgid "Floating: yes"
+msgstr "Nổi: có"
+
+msgid "Focus"
+msgstr "Tập trung"
+
+msgid "Fog"
+msgstr "Sương mù"
+
+msgid "Freezing drizzle"
+msgstr "Mưa phùn băng giá"
+
+msgid "From"
+msgstr "Từ"
+
+msgid "Fullscreen state: maximised"
+msgstr "Toàn màn hình: phóng to"
+
+msgid "Fullscreen state: off"
+msgstr "Toàn màn hình: tắt"
+
+msgid "Fullscreen state: on"
+msgstr "Toàn màn hình: bật"
+
+msgid "Fullscreen state: unknown"
+msgstr "Toàn màn hình: không rõ"
+
+msgid "Fully charged!"
+msgstr "Đã sạc đầy!"
+
+msgid "GPU"
+msgstr "GPU"
+
+msgid "Game mode"
+msgstr "Chế độ game"
+
+msgid "Game mode disabled"
+msgstr "Đã tắt chế độ game"
+
+msgid "Game mode enabled"
+msgstr "Đã bật chế độ game"
+
+msgid "Gamma (%1%)"
+msgstr "Gamma (%1%)"
+
+msgid "Heavy rain"
+msgstr "Mưa to"
+
+msgid "Heavy snow"
+msgstr "Tuyết dày"
+
+msgid "Heavy snow showers"
+msgstr "Mưa tuyết dày"
+
+msgid "Hibernating in 5 seconds"
+msgstr "Ngủ đông sau 5 giây"
+
+msgid "Hibernating to prevent data loss"
+msgstr "Ngủ đông để tránh mất dữ liệu"
+
+msgid "Hide keyboard"
+msgstr "Ẩn bàn phím"
+
+msgid "Home"
+msgstr "Thư mục nhà"
+
+msgid "Homework"
+msgstr "Homework"
+
+msgid "Humidity"
+msgstr "Độ ẩm"
+
+msgid "Hyprland settings restored"
+msgstr "Đã khôi phục cài đặt Hyprland"
+
+msgid "Identify music (%1) · right-click to switch source"
+msgstr "Nhận diện nhạc (%1) · chuột phải để đổi nguồn"
+
+msgid "Image"
+msgstr "Ảnh"
+
+msgid "Image files"
+msgstr "Tệp ảnh"
+
+msgid "Initial class: %1"
+msgstr "Lớp ban đầu: %1"
+
+msgid "Initial class: unknown"
+msgstr "Lớp ban đầu: không rõ"
+
+msgid "Initial title: %1"
+msgstr "Tiêu đề ban đầu: %1"
+
+msgid "Initial title: unknown"
+msgstr "Tiêu đề ban đầu: không rõ"
+
+msgid "Input"
+msgstr "Vào"
+
+msgid "It needs a service account key with the Cloud Vision and Cloud Translation APIs enabled. Paste the key's JSON with the key button below."
+msgstr "Cần khóa tài khoản dịch vụ đã bật Cloud Vision API và Cloud Translation API. Dán JSON của khóa bằng nút khóa bên dưới."
+
+msgid "Keep dock shown"
+msgstr "Luôn hiện dock"
+
+msgid "Key"
+msgstr "Khóa"
+
+msgid "Keybinds"
+msgstr "Phím tắt"
+
+msgid "Keyboard layout limit"
+msgstr "Giới hạn bố cục bàn phím"
+
+msgid "Keyboard layouts"
+msgstr "Bố cục bàn phím"
+
+msgid "Kill"
+msgstr "Buộc đóng"
+
+msgid "Lap"
+msgstr "Vòng"
+
+msgid "Laps show up here"
+msgstr "Các vòng sẽ hiện ở đây"
+
+msgid "Lens"
+msgstr "Lens"
+
+msgid "Light"
+msgstr "Sáng"
+
+msgid "Light rain"
+msgstr "Mưa nhỏ"
+
+msgid "Light snow"
+msgstr "Tuyết nhẹ"
+
+msgid "Light snow showers"
+msgstr "Mưa tuyết nhẹ"
+
+msgid "Loading lyrics..."
+msgstr "Đang tải lời bài hát..."
+
+msgid "Loading..."
+msgstr "Đang tải..."
+
+msgid "Long break"
+msgstr "Nghỉ dài"
+
+msgid "Lyrics"
+msgstr "Lời bài hát"
+
+msgid "Many updates pending, updating soon is strongly advised"
+msgstr "Có nhiều bản cập nhật đang chờ, nên cập nhật sớm"
+
+msgid "Matches the seed colour, even if the seed colour is very bright (high chroma)."
+msgstr "Khớp màu gốc, kể cả khi màu gốc rất rực (độ bão hòa cao)."
+
+msgid "Media"
+msgstr "Phương tiện"
+
+msgid "Memory"
+msgstr "Bộ nhớ"
+
+msgid "Microphone"
+msgstr "Micro"
+
+msgid "Microphone (%1%)"
+msgstr "Micro (%1%)"
+
+msgid "Microphone (muted)"
+msgstr "Micro (đã tắt tiếng)"
+
+msgid "Microphone (muted) · click to unmute"
+msgstr "Micro (đã tắt tiếng) · bấm để bật tiếng"
+
+msgid "Microphone in use: %1"
+msgstr "Micro đang được dùng: %1"
+
+msgid "Microphone · click to mute"
+msgstr "Micro · bấm để tắt tiếng"
+
+msgid "Microphone · right-click for input devices"
+msgstr "Micro · chuột phải để xem thiết bị vào"
+
+msgid "Monitor: %1 (%2) at %3, %4"
+msgstr "Màn hình: %1 (%2) tại %3, %4"
+
+msgid "Monitor: unknown"
+msgstr "Màn hình: không rõ"
+
+msgid "Move to workspace"
+msgstr "Chuyển sang không gian làm việc"
+
+msgid "Mute games in background"
+msgstr "Tắt tiếng game khi chạy nền"
+
+msgid "Network"
+msgstr "Mạng"
+
+msgid "Network: %1"
+msgstr "Mạng: %1"
+
+msgid "Night light"
+msgstr "Đèn ngủ"
+
+msgid "Night light · right-click for eye protection settings"
+msgstr "Đèn ngủ · chuột phải để cài đặt bảo vệ mắt"
+
+msgid "No active client"
+msgstr "Không có cửa sổ nào đang chọn"
+
+msgid "No app is using the microphone or capturing the screen"
+msgstr "Không ứng dụng nào dùng micro hay ghi màn hình"
+
+msgid "No apps are playing sound"
+msgstr "Không ứng dụng nào đang phát âm thanh"
+
+msgid "No apps are recording"
+msgstr "Không ứng dụng nào đang ghi âm"
+
+msgid "No battery detected"
+msgstr "Không phát hiện pin"
+
+msgid "No body here! :/"
+msgstr "Chẳng có ai ở đây! :/"
+
+msgid "No disks"
+msgstr "Không có ổ đĩa"
+
+msgid "No disks detected"
+msgstr "Không phát hiện ổ đĩa"
+
+msgid "No images or videos in this folder"
+msgstr "Không có ảnh hay video trong thư mục này"
+
+msgid "No lyrics found"
+msgstr "Không tìm thấy lời bài hát"
+
+msgid "No media"
+msgstr "Không có phương tiện"
+
+msgid "No recordings found"
+msgstr "Không có bản ghi nào"
+
+msgid "No results"
+msgstr "Không có kết quả"
+
+msgid "No wallpapers found"
+msgstr "Không tìm thấy hình nền"
+
+msgid "No wallpapers match “%1”"
+msgstr "Không có hình nền khớp “%1”"
+
+msgid "No weather"
+msgstr "Không có thời tiết"
+
+msgid "No widgets enabled"
+msgstr "Chưa bật tiện ích nào"
+
+msgid "Nothing playing"
+msgstr "Không phát gì"
+
+msgid "Nothing to do. Add a task above"
+msgstr "Không có việc gì. Thêm việc ở trên"
+
+msgid "Notifications"
+msgstr "Thông báo"
+
+msgid "Now playing"
+msgstr "Đang phát"
+
+msgid "Now using: %1"
+msgstr "Đang dùng: %1"
+
+msgid "Num lock disabled"
+msgstr "Đã tắt Num Lock"
+
+msgid "Num lock enabled"
+msgstr "Đã bật Num Lock"
+
+msgid "Offset: %1 ms"
+msgstr "Độ lệch: %1 ms"
+
+msgid "Open in calculator"
+msgstr "Mở trong máy tính"
+
+msgid "Open settings"
+msgstr "Mở cài đặt"
+
+msgid "Opens in a terminal, window stays open"
+msgstr "Mở trong terminal, cửa sổ vẫn giữ"
+
+msgid "Other"
+msgstr "Khác"
+
+msgid "Output"
+msgstr "Ra"
+
+msgid "Overcast"
+msgstr "U ám"
+
+msgid "Partly cloudy"
+msgstr "Có mây rải rác"
+
+msgid "Password"
+msgstr "Mật khẩu"
+
+msgid "Paste the service account key JSON"
+msgstr "Dán JSON khóa tài khoản dịch vụ"
+
+msgid "Pause"
+msgstr "Tạm dừng"
+
+msgid "Paused"
+msgstr "Đã tạm dừng"
+
+msgid "Performance"
+msgstr "Hiệu năng"
+
+msgid "Performance degraded"
+msgstr "Hiệu năng giảm"
+
+msgid "Pick the variant that suits the current wallpaper (end-4 default)."
+msgstr "Chọn biến thể hợp với hình nền hiện tại (mặc định của end-4)."
+
+msgid "Pictures"
+msgstr "Ảnh"
+
+msgid "Pin"
+msgstr "Ghim"
+
+msgid "Pin (windows make room)"
+msgstr "Ghim (cửa sổ nhường chỗ)"
+
+msgid "Pinned: no"
+msgstr "Đã ghim: không"
+
+msgid "Pinned: yes"
+msgstr "Đã ghim: có"
+
+msgid "Play something for it to show up here!"
+msgstr "Phát gì đó để nó hiện ở đây!"
+
+msgid "Pomodoro"
+msgstr "Pomodoro"
+
+msgid "Popup notifications are now disabled"
+msgstr "Đã tắt thông báo bật lên"
+
+msgid "Popup notifications are now enabled"
+msgstr "Đã bật thông báo bật lên"
+
+msgid "Position: %1, %2"
+msgstr "Vị trí: %1, %2"
+
+msgid "Power profile: %1"
+msgstr "Chế độ nguồn: %1"
+
+msgid "Power profile: %1 · click to cycle"
+msgstr "Chế độ nguồn: %1 · bấm để chuyển"
+
+msgid "Process id: %1"
+msgstr "ID tiến trình: %1"
+
+msgid "Profile picture changed"
+msgstr "Đã đổi ảnh đại diện"
+
+msgid "Profile picture changed to %1"
+msgstr "Đã đổi ảnh đại diện thành %1"
+
+msgid "Quick toggles"
+msgstr "Nút bật nhanh"
+
+msgid "Rain"
+msgstr "Mưa"
+
+msgid "Random"
+msgstr "Ngẫu nhiên"
+
+msgid "Recognize text"
+msgstr "Nhận diện chữ"
+
+msgid "Record"
+msgstr "Ghi hình"
+
+msgid "Record fullscreen"
+msgstr "Ghi toàn màn hình"
+
+msgid "Record fullscreen with sound"
+msgstr "Ghi toàn màn hình kèm âm thanh"
+
+msgid "Record region"
+msgstr "Ghi vùng"
+
+msgid "Record region with sound"
+msgstr "Ghi vùng kèm âm thanh"
+
+msgid "Recording '%1' will be permanently deleted."
+msgstr "Bản ghi '%1' sẽ bị xóa vĩnh viễn."
+
+msgid "Recording at %1"
+msgstr "Ghi lúc %1"
+
+msgid "Recording for %1"
+msgstr "Đã ghi %1"
+
+msgid "Recordings"
+msgstr "Bản ghi"
+
+msgid "Reload Hyprland & Quickshell"
+msgstr "Tải lại Hyprland & Quickshell"
+
+msgid "Rescan networks"
+msgstr "Quét lại mạng"
+
+msgid "Reset"
+msgstr "Đặt lại"
+
+msgid "Resume"
+msgstr "Tiếp tục"
+
+msgid "Run"
+msgstr "Chạy"
+
+msgid "Run in a terminal"
+msgstr "Chạy trong terminal"
+
+msgid "Running"
+msgstr "Đang chạy"
+
+msgid "Screen being captured: %1"
+msgstr "Màn hình đang bị ghi: %1"
+
+msgid "Screen recorder"
+msgstr "Ghi màn hình"
+
+msgid "Screen translator"
+msgstr "Dịch màn hình"
+
+msgid "Screenshot"
+msgstr "Chụp màn hình"
+
+msgid "Search this folder"
+msgstr "Tìm trong thư mục này"
+
+msgid "Search with Google Lens"
+msgstr "Tìm bằng Google Lens"
+
+msgid "Select a file"
+msgstr "Chọn một tệp"
+
+msgid "Select a profile picture"
+msgstr "Chọn ảnh đại diện"
+
+msgid "Select a wallpaper"
+msgstr "Chọn hình nền"
+
+msgid "Selected candidate: %1 | %2 | %3"
+msgstr "Ứng viên đã chọn: %1 | %2 | %3"
+
+msgid "Session"
+msgstr "Phiên"
+
+msgid "Set it now!"
+msgstr "Đặt ngay!"
+
+msgid "Set key"
+msgstr "Đặt khóa"
+
+msgid "Set your Google Cloud service account key"
+msgstr "Đặt khóa tài khoản dịch vụ Google Cloud của bạn"
+
+msgid "Setup guide"
+msgstr "Hướng dẫn cài đặt"
+
+msgid "Size: %1 x %2"
+msgstr "Kích thước: %1 x %2"
+
+msgid "Snow"
+msgstr "Tuyết"
+
+msgid "Sound · right-click for devices and app volumes"
+msgstr "Âm thanh · chuột phải để xem thiết bị và âm lượng ứng dụng"
+
+msgid "Space start / pause · L lap · R reset"
+msgstr "Space bắt đầu / dừng · L ghi vòng · R đặt lại"
+
+msgid "Start"
+msgstr "Bắt đầu"
+
+msgid "Stopwatch"
+msgstr "Bấm giờ"
+
+msgid "Storage"
+msgstr "Lưu trữ"
+
+msgid "Sunrise"
+msgstr "Bình minh"
+
+msgid "Sunset"
+msgstr "Hoàng hôn"
+
+msgid "System is up to date"
+msgstr "Hệ thống đã cập nhật"
+
+msgid "Tab  next   •   Shift+Tab  previous   •   release Alt  switch   •   Esc  cancel"
+msgstr "Tab  tiếp   •   Shift+Tab  trước   •   nhả Alt  chuyển   •   Esc  hủy"
+
+msgid "Taking a screenshot"
+msgstr "Đang chụp màn hình"
+
+msgid "Tasks"
+msgstr "Việc cần làm"
+
+msgid "Text"
+msgstr "Chữ"
+
+msgid "The device is on a lap"
+msgstr "Thiết bị đang đặt trên đùi"
+
+msgid "The device is too hot"
+msgstr "Thiết bị quá nóng"
+
+msgid "This folder is empty"
+msgstr "Thư mục này trống"
+
+msgid "Thunderstorm"
+msgstr "Dông"
+
+msgid "Thunderstorm with hail"
+msgstr "Dông kèm mưa đá"
+
+msgid "Tile"
+msgstr "Xếp"
+
+msgid "Time remaining: %1"
+msgstr "Thời gian còn lại: %1"
+
+msgid "Time until charged: %1"
+msgstr "Thời gian đến khi đầy: %1"
+
+msgid "Timer"
+msgstr "Hẹn giờ"
+
+msgid "To do · %1"
+msgstr "Cần làm · %1"
+
+msgid "Todo"
+msgstr "Việc cần làm"
+
+msgid "Try putting some wallpapers in %1"
+msgstr "Thử đặt vài hình nền vào %1"
+
+msgid "Try searching for something else"
+msgstr "Thử tìm từ khóa khác"
+
+msgid "Try switching to a window"
+msgstr "Thử chuyển sang một cửa sổ"
+
+msgid "Type \"%1\" for commands, ; clipboard, : emoji, = math, $ run, ? web"
+msgstr "Gõ \"%1\" cho lệnh, ; bộ nhớ tạm, : biểu tượng cảm xúc, = tính toán, $ chạy lệnh, ? tìm web"
+
+msgid "Type a command to run"
+msgstr "Gõ lệnh để chạy"
+
+msgid "Type an expression to calculate"
+msgstr "Gõ biểu thức để tính"
+
+msgid "Unable to change profile picture"
+msgstr "Không đổi được ảnh đại diện"
+
+msgid "Unknown album"
+msgstr "Album không rõ"
+
+msgid "Unknown app"
+msgstr "Ứng dụng không rõ"
+
+msgid "Unknown artist"
+msgstr "Nghệ sĩ không rõ"
+
+msgid "Unknown error"
+msgstr "Lỗi không rõ"
+
+msgid "Unknown network"
+msgstr "Mạng không rõ"
+
+msgid "Unknown reason"
+msgstr "Lý do không rõ"
+
+msgid "Unknown title"
+msgstr "Tiêu đề không rõ"
+
+msgid "Unpin"
+msgstr "Bỏ ghim"
+
+msgid "Unpin (stop reserving space)"
+msgstr "Bỏ ghim (thôi giữ chỗ)"
+
+msgid "Unpin dock"
+msgstr "Bỏ ghim dock"
+
+msgid "Up %1"
+msgstr "Đã chạy %1"
+
+msgid "Update now"
+msgstr "Cập nhật ngay"
+
+msgid "Updating"
+msgstr "Đang cập nhật"
+
+msgid "Updating soon is advised"
+msgstr "Nên cập nhật sớm"
+
+msgid "VPN"
+msgstr "VPN"
+
+msgid "VPN authentication required"
+msgstr "VPN yêu cầu xác thực"
+
+msgid "VPN connected"
+msgstr "Đã kết nối VPN"
+
+msgid "VPN connection failed"
+msgstr "Kết nối VPN thất bại"
+
+msgid "VPN disconnected"
+msgstr "Đã ngắt VPN"
+
+msgid "VPN disconnection failed"
+msgstr "Ngắt VPN thất bại"
+
+msgid "VPN error"
+msgstr "Lỗi VPN"
+
+msgid "Videos"
+msgstr "Video"
+
+msgid "Volume (%1%)"
+msgstr "Âm lượng (%1%)"
+
+msgid "Volume (muted)"
+msgstr "Âm lượng (đã tắt tiếng)"
+
+msgid "Volume (muted) · click to unmute"
+msgstr "Âm lượng (đã tắt tiếng) · bấm để bật tiếng"
+
+msgid "Volume · click to mute"
+msgstr "Âm lượng · bấm để tắt tiếng"
+
+msgid "Wallpaper missing?"
+msgstr "Không thấy hình nền?"
+
+msgid "Wallpapers"
+msgstr "Hình nền"
+
+msgid "Warmth (%1K)"
+msgstr "Độ ấm (%1K)"
+
+msgid "Weather"
+msgstr "Thời tiết"
+
+msgid "Wi-Fi · right-click for networks"
+msgstr "Wi-Fi · chuột phải để xem mạng"
+
+msgid "Wind"
+msgstr "Gió"
+
+msgid "Wireless"
+msgstr "Không dây"
+
+msgid "Workspace %1"
+msgstr "Không gian làm việc %1"
+
+msgid "Workspace %1 (current)"
+msgstr "Không gian làm việc %1 (hiện tại)"
+
+msgid "Workspace: %1 (%2)"
+msgstr "Không gian làm việc: %1 (%2)"
+
+msgid "Workspaces"
+msgstr "Không gian làm việc"
+
+msgid "Wrong password, try again"
+msgstr "Sai mật khẩu, thử lại"
+
+msgid "XKB limitation: maximum 4 layouts allowed"
+msgstr "Giới hạn XKB: tối đa 4 bố cục"
+
+msgid "XKB supports only 4 layouts at a time"
+msgstr "XKB chỉ hỗ trợ 4 bố cục cùng lúc"
+
+msgid "Xwayland: no"
+msgstr "Xwayland: không"
+
+msgid "Xwayland: yes"
+msgstr "Xwayland: có"
+
+msgid "end-4 settings"
+msgstr "Cài đặt end-4"
+
+msgid "now"
+msgstr "vừa xong"
+
+msgid "to"
+msgstr "đến"
+
+msgid "↓%1 ↑%2"
+msgstr "↓%1 ↑%2"
+
+msgctxt "GPU name"
+msgid "None"
+msgstr "Không có"
+
+msgctxt "M3 scheme variant name"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "M3 scheme variant name"
+msgid "Content"
+msgstr "Content"
+
+msgctxt "M3 scheme variant name"
+msgid "Expressive"
+msgstr "Expressive"
+
+msgctxt "M3 scheme variant name"
+msgid "Fidelity"
+msgstr "Fidelity"
+
+msgctxt "M3 scheme variant name"
+msgid "Fruit Salad"
+msgstr "Fruit Salad"
+
+msgctxt "M3 scheme variant name"
+msgid "Monochrome"
+msgstr "Đơn sắc"
+
+msgctxt "M3 scheme variant name"
+msgid "Neutral"
+msgstr "Trung tính"
+
+msgctxt "M3 scheme variant name"
+msgid "Rainbow"
+msgstr "Cầu vồng"
+
+msgctxt "M3 scheme variant name"
+msgid "Tonal Spot"
+msgstr "Tonal Spot"
+
+msgctxt "abbreviated notification age, days"
+msgid "%1d"
+msgstr "%1 ngày"
+
+msgctxt "abbreviated notification age, hours"
+msgid "%1h"
+msgstr "%1 giờ"
+
+msgctxt "abbreviated notification age, minutes"
+msgid "%1m"
+msgstr "%1 phút"
+
+msgctxt "apparent temperature"
+msgid "Feels like"
+msgstr "Cảm giác như"
+
+msgctxt "audio input device"
+msgid "Input device"
+msgstr "Thiết bị vào"
+
+msgctxt "audio output device"
+msgid "Output device"
+msgstr "Thiết bị ra"
+
+msgctxt "battery remaining"
+msgid "Remaining: %1%"
+msgstr "Còn lại: %1%"
+
+msgctxt "battery state"
+msgid "Charging"
+msgstr "Đang sạc"
+
+msgctxt "battery state"
+msgid "Full"
+msgstr "Đầy"
+
+msgctxt "battery time remaining"
+msgid "%1h %2m"
+msgstr "%1 giờ %2 phút"
+
+msgctxt "battery time remaining"
+msgid "%1m"
+msgstr "%1 phút"
+
+msgctxt "bluetooth adapter state"
+msgid "Discovering"
+msgstr "Đang dò tìm"
+
+msgctxt "button"
+msgid "Back"
+msgstr "Quay lại"
+
+msgctxt "button"
+msgid "Cancel"
+msgstr "Hủy"
+
+msgctxt "button"
+msgid "Delete"
+msgstr "Xóa"
+
+msgctxt "button"
+msgid "Select"
+msgstr "Chọn"
+
+msgctxt "duration component separator"
+msgid ", "
+msgstr ", "
+
+msgctxt "file dialog sidebar heading"
+msgid "Files"
+msgstr "Tệp"
+
+msgctxt "file filter"
+msgid "Filter:"
+msgstr "Bộ lọc:"
+
+msgctxt "file filter label and patterns"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+msgctxt "file filter separator"
+msgid ", "
+msgstr ", "
+
+msgctxt "forecast column"
+msgid "Today"
+msgstr "Hôm nay"
+
+msgctxt "idle inhibitor"
+msgid "Keep awake"
+msgstr "Giữ máy thức"
+
+msgctxt "idle inhibitor"
+msgid "Normal power management"
+msgstr "Quản lý nguồn bình thường"
+
+msgctxt "idle inhibitor"
+msgid "Preventing sleep mode"
+msgstr "Đang chặn chế độ ngủ"
+
+msgctxt "keyboard layout"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "keyboard layout code and name"
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
+msgctxt "keyboard layout language and code"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+msgctxt "launcher action with no description"
+msgid "No description"
+msgstr "Không có mô tả"
+
+msgctxt "launcher action with no name"
+msgid "Unnamed"
+msgstr "Chưa đặt tên"
+
+msgctxt "memory used"
+msgid "Used"
+msgstr "Đã dùng"
+
+msgctxt "min/max temperature"
+msgid "%1 / %2"
+msgstr "%1 / %2"
+
+msgctxt "network throughput"
+msgid "Download"
+msgstr "Tải xuống"
+
+msgctxt "network throughput"
+msgid "Upload"
+msgstr "Tải lên"
+
+msgctxt "no media players active"
+msgid "No players"
+msgstr "Không có trình phát"
+
+msgctxt "power profile"
+msgid "Balanced"
+msgstr "Cân bằng"
+
+msgctxt "power profile"
+msgid "Performance"
+msgstr "Hiệu năng"
+
+msgctxt "power profile"
+msgid "Power saver"
+msgstr "Tiết kiệm pin"
+
+msgctxt "power profile"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "recorder state"
+msgid "Paused"
+msgstr "Đã tạm dừng"
+
+msgctxt "recorder state"
+msgid "Ready"
+msgstr "Sẵn sàng"
+
+msgctxt "recorder state"
+msgid "Running..."
+msgstr "Đang chạy..."
+
+msgctxt "recording mode"
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+msgctxt "recording mode"
+msgid "Region"
+msgstr "Vùng"
+
+msgctxt "recording status"
+msgid "PAUSED"
+msgstr "TẠM DỪNG"
+
+msgctxt "recording status"
+msgid "REC"
+msgstr "GHI"
+
+msgctxt "resource usage"
+msgid "Usage"
+msgstr "Mức dùng"
+
+msgctxt "shown when no window is focused"
+msgid "Desktop"
+msgstr "Màn hình chính"
+
+msgctxt "storage used"
+msgid "Used"
+msgstr "Đã dùng"
+
+msgctxt "system uptime"
+msgid "up %1"
+msgstr "đã chạy %1"
+
+msgctxt "toggle label"
+msgid "Enabled"
+msgstr "Đã bật"
+
+msgctxt "total network data transferred"
+msgid "Total"
+msgstr "Tổng"
+
+msgctxt "track artist and title"
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
+msgctxt "unknown application audio stream"
+msgid "Unknown application"
+msgstr "Ứng dụng không rõ"
+
+msgctxt "unknown audio device"
+msgid "Unknown device"
+msgstr "Thiết bị không rõ"
+
+msgctxt "unknown audio stream"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "unknown network interface"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "uptime component separator"
+msgid ", "
+msgstr ", "
+
+msgctxt "vpn name and reason"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+msgctxt "weather condition"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "weather location unavailable"
+msgid "Unknown city"
+msgstr "Thành phố không rõ"
+
+msgctxt "window address"
+msgid "Address: %1"
+msgstr "Địa chỉ: %1"
+
+msgctxt "window address"
+msgid "Address: unknown"
+msgstr "Địa chỉ: không rõ"
