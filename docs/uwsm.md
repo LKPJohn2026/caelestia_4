@@ -1,8 +1,9 @@
 # uwsm-managed Hyprland session (2026-10-11)
 
 "Hyprland (uwsm-managed)" at the login screen runs Hyprland under [uwsm](https://github.com/Vladimir-csp/uwsm):
-the compositor, the shell and every app are systemd user units. The plain "Hyprland" entry still works as before;
-the config checks `CAELESTIA4_UWSM` (set only by uwsm's env file) and switches behaviour.
+the compositor, the shell and every app are systemd user units. **uwsm-only since 2026-10-12**: the plain-session
+branches are gone (env.lua is empty, execs.lua starts nothing without uwsm and shows a critical notification asking
+for the uwsm session; `CAELESTIA4_UWSM` is only used for that check). The plain login entry is hidden.
 
 ## Setup
 ```
@@ -35,6 +36,14 @@ Packaged units (hypridle, plasma-kwallet-pam, ydotool) can't take the condition 
 `execs.lua` starts them under uwsm. XDG autostart is masked because `XDG_CURRENT_DESKTOP=Hyprland:KDE` (needed so
 Chromium/Electron use KWallet in both sessions) would make every `OnlyShowIn=KDE` entry (plasmashell, powerdevil,
 kglobalacceld, polkit-kde-agent, xembedsniproxy…) match.
+
+## Launching apps and terminals
+Everything goes through `uwsm-app` (`services/AppLauncher.qml`, Hyprland `app()`/`bg()`, `launch_first_available.sh`):
+desktop entries by id (`uwsm-app -- btop.desktop`: uwsm handles `Terminal=true`, field codes, `Path=`), commands as
+their own unit, terminal commands with `uwsm-app -T` (`$` commands, the calculator, sudo commands, Super+Return,
+`@term …` fallbacks). The terminal is the first entry of `~/.config/xdg-terminals.list` (xdg-terminal-exec spec;
+Settings > Apps > Terminal; installed with `kitty.desktop` if missing). Quickshell's `DesktopEntry.execute()` ignores
+`Terminal=true`, which is why launches don't use it.
 
 ## System tray
 kded6 (KDE daemon, `plasma-kded6.service`) is started before the shell (`Wants=`/`After=` in `caelestia4-shell`) and

@@ -32,6 +32,9 @@ for f in "$REPO"/dots-extra/uwsm/env-hyprland.d/*; do
   [[ -e "$dst" ]] && say "kept $dst (machine-specific, not overwritten)" || { install -m644 "$f" "$dst"; say "installed $dst"; }
 done
 
+# default terminal for uwsm -T (xdg-terminal-exec spec); a user choice, so only if missing
+[[ -e "$CFG/xdg-terminals.list" ]] && say "kept $CFG/xdg-terminals.list" || { install -m644 "$REPO/dots/.config/xdg-terminals.list" "$CFG/xdg-terminals.list"; say "installed $CFG/xdg-terminals.list"; }
+
 # units
 mkdir -p "$CFG/systemd/user"
 units=()

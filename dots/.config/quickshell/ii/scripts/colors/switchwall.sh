@@ -133,7 +133,7 @@ create_restore_script() {
 pkill -f -9 mpvpaper
 
 for monitor in \$(hyprctl monitors -j | jq -r '.[] | .name'); do
-    \${CAELESTIA4_UWSM:+uwsm-app -s b --} mpvpaper -o "$VIDEO_OPTS" "\$monitor" "$video_path" & # caelestia4: own unit under uwsm
+    uwsm-app -s b -- mpvpaper -o "$VIDEO_OPTS" "\$monitor" "$video_path" & # caelestia4: own unit
     sleep 0.1
 done
 EOF
@@ -238,7 +238,7 @@ switch() {
             local video_path="$imgpath"
             monitors=$(hyprctl monitors -j | jq -r '.[] | .name')
             for monitor in $monitors; do
-                ${CAELESTIA4_UWSM:+uwsm-app -s b --} mpvpaper -o "$VIDEO_OPTS" "$monitor" "$video_path" & # caelestia4: own unit under uwsm (survives a shell restart)
+                uwsm-app -s b -- mpvpaper -o "$VIDEO_OPTS" "$monitor" "$video_path" & # caelestia4: own unit (survives a shell restart)
                 sleep 0.1
             done
 

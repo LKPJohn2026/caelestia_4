@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -11,17 +13,35 @@ import qs.modules.settings.c4 // caelestia4: explicit, so Quickshell's scanner r
 ContentPage {
     forceWidth: true
 
+    // caelestia4: ~/.config/xdg-terminals.list (default terminal for uwsm -T); `current` = its first entry
+    FileView {
+        id: terminalList
+
+        property string current
+
+        path: `${Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config"}/xdg-terminals.list`
+        watchChanges: true
+        onFileChanged: reload()
+        onLoaded: current = text().split("\n").map(l => l.trim()).find(l => l && !l.startsWith("#")) ?? ""
+    }
+
     ContentSection {
         icon: "apps"
         title: Translation.tr("Default apps")
 
-        TextRow {
+        // caelestia4: the default terminal is ~/.config/xdg-terminals.list (freedesktop xdg-terminal-exec spec), read by
+        // uwsm -T: terminal apps from the docks and launchers, $ commands, the calculator and Super+Return
+        ChoiceRow {
             icon: "terminal"
             title: Translation.tr("Terminal")
-            description: Translation.tr("Used by the launcher for commands and terminal apps")
-            fieldWidth: 260
-            value: CC.GlobalConfig.general.apps.terminal.join(" ")
-            onEdited: v => CC.GlobalConfig.general.apps.terminal = v.trim().split(/\s+/)
+            description: Translation.tr("For terminal apps (btop…), $ commands, the calculator and Super+Return")
+            options: DesktopEntries.applications.values.filter(e => e.categories.includes("TerminalEmulator")).sort((a, b) => a.name.localeCompare(b.name)).map(e => ({
+                        label: e.name,
+                        value: `${e.id}.desktop`
+                    }))
+            value: terminalList.current
+            onSelected: v => terminalList.setText(`# caelestia4: default terminal (uwsm -T / xdg-terminal-exec). Settings > Apps > Terminal\n${v}\n`)
+
         }
 
         TextRow {

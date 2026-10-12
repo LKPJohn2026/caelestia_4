@@ -1,0 +1,3 @@
+# caelestia4: default terminal (uwsm -T / xdg-terminal-exec): terminal apps, $ commands, Super+Return.
+# Change it in Settings > Apps > Terminal. Installed by tools/uwsm-setup.sh only if missing.
+kitty.desktop

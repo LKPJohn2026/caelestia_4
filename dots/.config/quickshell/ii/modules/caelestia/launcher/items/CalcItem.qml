@@ -80,7 +80,7 @@ Item {
                 id: stateLayer
 
                 onClicked: {
-                    E4.AppLauncher.exec([...GlobalConfig.general.apps.terminal, "fish", "-C", `exec qalc -i '${root.math}'`]);
+                    E4.AppLauncher.execInTerminal(["fish", "-C", `exec qalc -i '${root.math}'`]); // caelestia4: default terminal (uwsm -T)
                     root.list.screenState.launcher = false;
                 }
 
