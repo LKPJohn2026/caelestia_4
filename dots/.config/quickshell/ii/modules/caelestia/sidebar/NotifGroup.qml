@@ -86,7 +86,7 @@ StyledRect {
                     source: Qt.resolvedUrl(root.image)
                     fillMode: Image.PreserveAspectCrop
                     sourceSize: {
-                        const size = TokenConfig.sizes.notifs.image * ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1);
+                        const size = TokenConfig.sizes.notifs.image; // caelestia4: Qt applies the devicePixelRatio itself
                         return Qt.size(size, size);
                     }
                     cache: false

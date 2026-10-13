@@ -10,8 +10,7 @@ Image {
     asynchronous: true
     fillMode: Image.PreserveAspectCrop
     source: IUtils.urlForPath(path, fillMode)
-    sourceSize: {
-        const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
-        return Qt.size(width * dpr, height * dpr);
-    }
+    // caelestia4: Qt already multiplies sourceSize by the window's devicePixelRatio; multiplying here too decoded
+    // images at dpr^2 (11520x3240 for the 7680x2160 / 1.5 screen, ~150 MB per wallpaper)
+    sourceSize: Qt.size(width, height)
 }
