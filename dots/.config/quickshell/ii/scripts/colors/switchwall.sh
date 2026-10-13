@@ -11,6 +11,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_FILE="$XDG_CONFIG_HOME/illogical-impulse/config.json"
 MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
 terminalscheme="$SCRIPT_DIR/terminal/scheme-base.json"
+# caelestia4: preset colour schemes (Nexus > Wallpaper & style > Colours)
+SCHEME_SCRIPT="$CONFIG_DIR/modules/caelestia/utils/scripts/scheme.py"
 
 handle_kde_material_you_colors() {
     # Check if Qt app theming is enabled in config
@@ -301,6 +303,12 @@ switch() {
         fi
     fi
 
+    # caelestia4: while a preset scheme is active it stays: re-apply it (in the requested mode) instead of
+    # generating colours from the wallpaper. `scheme.py apply` exits 1 when the scheme is "dynamic" (wallpaper).
+    if [[ -x "$SCHEME_SCRIPT" ]] && "$SCHEME_SCRIPT" apply --mode "$mode_flag"; then
+        return
+    fi
+
     # Set harmony and related properties
     if [ -f "$SHELL_CONFIG_FILE" ]; then
         harmony=$(jq -r '.appearance.wallpaperTheming.terminalGenerationProps.harmony' "$SHELL_CONFIG_FILE")
@@ -358,9 +366,11 @@ main() {
                 ;;
             --type)
                 type_flag="$2"
+                caelestia4_dynamic=1 # caelestia4: choosing a variant means wallpaper colours
                 shift 2
                 ;;
             --color)
+                caelestia4_dynamic=1 # caelestia4: an accent colour means generated colours, not a preset
                 if [[ "$2" =~ ^#?[A-Fa-f0-9]{6}$ ]]; then
                     set_accent_color "$2"
                     shift 2
@@ -389,6 +399,11 @@ main() {
                 ;;
         esac
     done
+
+    # caelestia4: leave the preset scheme for generated colours
+    if [[ -n "$caelestia4_dynamic" && -x "$SCHEME_SCRIPT" ]]; then
+        "$SCHEME_SCRIPT" clear
+    fi
 
     # If accentColor is set in config, use it
     config_color="$(get_accent_color_from_config)"

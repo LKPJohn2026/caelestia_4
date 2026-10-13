@@ -8,6 +8,9 @@ pragma ComponentBehavior: Bound
 // Contract used by Caelestia UI: palette, tPalette, layer(), on(), light, transparency{enabled,base,layers},
 // scheme, setMode(), showPreview, wallLuminance.
 // Not supported: colour *preview* (needs caelestia-cli). `preview` mirrors `current`; showPreview stays false.
+// Colour source: `scheme` is "dynamic" (wallpaper colours, end-4's matugen) or one of Caelestia's preset schemes
+// (catppuccin, gruvbox, ...), applied by utils/scripts/scheme.py through the same end-4 outputs. The choice lives in
+// $XDG_STATE_HOME/caelestia4/scheme.json (watched here, so switchwall.sh --color / --type resetting it shows up).
 // term0..15 keep Caelestia's defaults (end-4 has no terminal palette here).
 
 import QtQuick
@@ -24,8 +27,23 @@ Singleton {
     id: root
 
     property bool showPreview
-    property string scheme: "dynamic" // caelestia4: end-4 always derives colours from the wallpaper
+    property string scheme: "dynamic"
     property string flavour
+    // Preset schemes: [{ name, flavour, modes: { dark?: {role: "rrggbb"}, light?: {...} } }], sorted by name
+    property var schemes: []
+    readonly property string schemeScript: Quickshell.shellPath("modules/caelestia/utils/scripts/scheme.py")
+
+    // Use a preset scheme (in the current light/dark mode when it has one) or "dynamic" for wallpaper colours
+    function setScheme(name: string, flavour: string): void {
+        const mode = root.currentLight ? "light" : "dark";
+        root.scheme = name;
+        root.flavour = name === "dynamic" ? "" : flavour;
+        Quickshell.execDetached(name === "dynamic" ? [root.schemeScript, "set", "dynamic", "--mode", mode] : [root.schemeScript, "set", name, flavour, "--mode", mode]);
+    }
+
+    function reloadSchemes(): void {
+        schemeListProc.running = true;
+    }
     readonly property bool light: showPreview ? previewLight : currentLight
     readonly property bool currentLight: !E4C.Appearance.m3colors.darkmode
     property bool previewLight
@@ -156,6 +174,48 @@ Singleton {
     }
 
     Component.onCompleted: root.requestReloadHyprRules()
+
+    Process {
+        id: schemeListProc
+
+        running: true
+        command: [root.schemeScript, "list"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const data = JSON.parse(text || "{}");
+                const flat = [];
+                for (const [name, flavours] of Object.entries(data))
+                    for (const [flavour, modes] of Object.entries(flavours))
+                        flat.push({
+                            name,
+                            flavour,
+                            modes
+                        });
+                root.schemes = flat;
+            }
+        }
+    }
+
+    FileView {
+        path: `${Quickshell.env("XDG_STATE_HOME") || `${Quickshell.env("HOME")}/.local/state`}/caelestia4/scheme.json`
+        watchChanges: true
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: {
+            try {
+                const state = JSON.parse(text());
+                root.scheme = state.name || "dynamic";
+                root.flavour = state.flavour ?? "";
+            } catch (e) {
+                root.scheme = "dynamic";
+                root.flavour = "";
+            }
+        }
+        onLoadFailed: {
+            root.scheme = "dynamic";
+            root.flavour = "";
+        }
+    }
 
     Connections {
         function onConfigReloaded(): void {
