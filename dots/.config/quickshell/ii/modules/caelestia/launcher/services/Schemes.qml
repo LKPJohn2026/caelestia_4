@@ -4,15 +4,16 @@ import ".."
 import QtQuick
 import Quickshell
 import Caelestia.Config
+import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.common as E4C // caelestia4: keep
 
 Searcher {
     id: root
 
-    // caelestia4: named schemes come from caelestia-cli (not installed) -> empty list (the "Scheme" action is hidden).
-    // The current variant mirrors end-4's palette type ("scheme-tonal-spot" -> "tonalspot", "auto" -> "auto").
-    property string currentScheme
+    // caelestia4: preset schemes come from utils/scripts/scheme.py via the Colours adapter (Caelestia asks
+    // caelestia-cli). The current variant mirrors end-4's palette type ("scheme-tonal-spot" -> "tonalspot").
+    readonly property string currentScheme: `${Colours.scheme} ${Colours.flavour}`
     readonly property string currentVariant: (E4C.Config.options.appearance.palette.type ?? "auto").replace(/^scheme-/, "").replace(/-/g, "")
 
     function transformSearch(search: string): string {
@@ -24,6 +25,7 @@ Searcher {
     }
 
     function reload(): void {
+        Colours.reloadSchemes();
     }
 
     list: schemes.instances
@@ -34,6 +36,8 @@ Searcher {
     Variants {
         id: schemes
 
+        model: Colours.schemes
+
         Scheme {}
     }
 
@@ -41,11 +45,12 @@ Searcher {
         required property var modelData
         readonly property string name: modelData.name
         readonly property string flavour: modelData.flavour
-        readonly property var colours: modelData.colours
+        // Preview colours in the current light/dark mode when the scheme has it
+        readonly property var colours: modelData.modes[Colours.light ? "light" : "dark"] ?? Object.values(modelData.modes)[0]
 
         function onClicked(list: AppList): void {
             list.screenState.launcher = false;
-            console.warn("[caelestia4] named schemes need caelestia-cli, not available");
+            Colours.setScheme(name, flavour);
         }
     }
 }

@@ -1,0 +1,3 @@
+Preset colour schemes from caelestia-dots/cli (src/caelestia/data/schemes, GPL-3.0), commit 289e208.
+One file per <name>/<flavour>/<mode>.txt: "<role> <hex>" lines (Material 3 roles, term0-15, extras).
+Applied by ../../utils/scripts/scheme.py.

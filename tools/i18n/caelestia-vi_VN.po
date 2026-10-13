@@ -2576,3 +2576,28 @@ msgstr "Không (mở)"
 msgctxt "wifi security type"
 msgid "Open"
 msgstr "Mở"
+
+# caelestia4: colour schemes (2026-10-13)
+msgid "A preset stays when the wallpaper changes. Presets with only one mode keep it when the theme is switched."
+msgstr "Bộ màu có sẵn được giữ khi đổi hình nền. Bộ màu chỉ có một chế độ sẽ giữ nguyên chế độ đó khi đổi sáng/tối."
+
+msgid "Choosing a style switches back to wallpaper colours"
+msgstr "Chọn một kiểu sẽ chuyển về màu theo hình nền"
+
+msgid "Colour style"
+msgstr "Kiểu màu"
+
+msgid "Colours are generated from the current wallpaper and change with it"
+msgstr "Màu được tạo từ hình nền hiện tại và đổi theo hình nền"
+
+msgid "Follow the wallpaper"
+msgstr "Theo hình nền"
+
+msgid "How colours are picked from the wallpaper"
+msgstr "Cách lấy màu từ hình nền"
+
+msgid "Preset schemes"
+msgstr "Bộ màu có sẵn"
+
+msgid "Wallpaper colours"
+msgstr "Màu theo hình nền"

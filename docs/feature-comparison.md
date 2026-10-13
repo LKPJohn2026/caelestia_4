@@ -56,12 +56,12 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | App search with frequency ranking | ✅ C | apps launched as their own uwsm units |
-| Actions (`>`): wallpaper, random, settings, variant… | ⚠️ Partial | "Scheme" action hidden: needs the Caelestia CLI's preset schemes |
+| Actions (`>`): wallpaper, random, settings, variant… | ✅ C | `>scheme` lists the preset schemes (utils/scripts/scheme.py instead of the CLI) |
 | Calculator (`=`), emoji (`:`), clipboard (`;`) | ✅ C | clipboard from end-4's cliphist |
 | Run commands (`$`) in a terminal | ✅ C | via uwsm -T |
 | Web search (`?`) | ✅ C | |
 | Wallpaper picker with live preview | ✅ C | |
-| Colour scheme picker (preset schemes: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes) | ❌ Missing | needs `caelestia scheme` (CLI not installed); colours here come from the wallpaper (matugen) only |
+| Colour scheme picker (preset schemes: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes) | ✅ C | Nexus > Wallpaper & style > Colours and launcher `>scheme`; 29 presets from the CLI repo, applied through end-4's matugen templates + terminal colours; "Follow the wallpaper" keeps end-4's colour styles |
 | Variant picker (tonal spot, fruit salad…) | ✅ E→C | mapped to end-4's palette type |
 
 ### Utilities drawer (bottom right)
@@ -127,7 +127,7 @@ Status legend:
 |---|---|---|
 | `caelestia shell` (start / restart / IPC / log) | 🔁 Equivalent | systemd unit `caelestia4-shell` (uwsm), `qs ipc` |
 | `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ❌ Missing | only the default scratchpad (Super+S) here |
-| `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ❌ Missing | wallpaper-generated colours only |
+| `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ✅ | `scheme.py set NAME FLAVOUR` / `set dynamic`; a preset survives wallpaper changes; single-mode presets keep their mode |
 | `caelestia screenshot` (region, freeze) | 🔁 Equivalent | region selector |
 | `caelestia record` (region, sound, pause, path to clipboard) | ⚠️ Partial | record region/screen/sound here; the recorder card's pause button does nothing (end-4's wf-recorder script can't pause) |
 | `caelestia clipboard` (pick / delete entries) | ✅ C | launcher `;` |
@@ -200,10 +200,9 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Preset colour schemes** (`caelestia scheme`: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes, flavours, light/dark, variants). Colours here only follow the wallpaper.
-2. **Special workspaces** (`caelestia toggle`: communication, music, sysmon, todo), each opening its app on first use.
-3. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
-4. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
-5. **Recording pause / resume** and copying the recording path.
-6. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-7. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Special workspaces** (`caelestia toggle`: communication, music, sysmon, todo), each opening its app on first use.
+2. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
+3. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
+4. **Recording pause / resume** and copying the recording path.
+5. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
+6. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).

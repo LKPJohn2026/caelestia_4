@@ -25,8 +25,7 @@ Searcher {
 
         model: {
             const enableDangerous = GlobalConfig.launcher.enableDangerousActions;
-            // caelestia4: "Scheme" (named schemes) needs caelestia-cli, which end-4 has no equivalent for: hidden
-            return GlobalConfig.launcher.actions.values.filter(a => a.enabled && (enableDangerous || !a.dangerous) && !(a.command?.[0] === "autocomplete" && a.command?.[1] === "scheme"));
+            return GlobalConfig.launcher.actions.values.filter(a => a.enabled && (enableDangerous || !a.dangerous));
         }
 
         Action {}
