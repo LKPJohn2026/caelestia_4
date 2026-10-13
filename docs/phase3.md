@@ -19,7 +19,7 @@ Ported (Caelestia v2.5.0 → `modules/caelestia/`): `background`, `bar`, `dashbo
 
 ## 3.2 Fixes applied while porting
 - Shell-root paths → `modules/caelestia/assets/…`: `GSFLoader` font, `launcher/services/Apps.qml` terminal wrapper (Phase 2: `SysInfo` logo).
-- **`nexus` stand-in** (`modules/caelestia/nexus/`): `WindowFactory.create()` and the docked `Nexus` popout open **end-4's settings app** (`qs -p settings.qml`); the popout closes itself. Upstream Caelestia files stay unmodified, so re-syncs stay easy.
+- *(Replaced 2026-10-12 by the real Nexus: upstream `modules/nexus` ported with `tools/port-imports.sh`, the Nmcli adapter extended for its network pages, 385 Vietnamese strings added, Hyprland rule floats the `Nexus — …` window.)* **`nexus` stand-in** (`modules/caelestia/nexus/`): `WindowFactory.create()` and the docked `Nexus` popout open **end-4's settings app** (`qs -p settings.qml`); the popout closes itself. Upstream Caelestia files stay unmodified, so re-syncs stay easy.
 - IPC audit: the caelestia family registers `audio caelestiaMpris drawers gameMode hypr idleInhibitor nexus notifs toaster wallpaper`. None clash with end-4.
 
 ## 3.3 Family composition (`panelFamilies/CaelestiaFamily.qml`)

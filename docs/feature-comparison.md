@@ -34,7 +34,7 @@ Status legend:
 | System tray (compact mode, recolour, icon substitutions) | ✅ C | kded6 owns the tray watcher so icons survive shell restarts |
 | Scroll actions on the bar (workspaces, volume, brightness) | ✅ C | |
 | Hide / show bar (Super+J), persistent or edge-reveal | ✅ C | |
-| "Open settings" from popouts → Nexus control centre | ⚠️ Partial | opens end-4's settings app (Nexus is a stand-in, see §1 Nexus) |
+| "Open settings" from popouts → Nexus control centre | ✅ C | real Nexus, ported 2026-10-12 (see §1 Nexus) |
 
 ### Drawers / frame
 | Feature | Status | Notes |
@@ -69,7 +69,7 @@ Status legend:
 |---|---|---|
 | Quick toggles (Wi-Fi, Bluetooth, mic, game mode, DND, VPN, settings) | ✅ C | + 12 end-4 toggles, edit mode (order / hide) |
 | Speaker mute toggle | ✅ E→C | end-4 parity, added 2026-10-12 |
-| Right-click Wi-Fi / Bluetooth / sound / mic → detailed page | ⚠️ Partial | opens end-4's settings app, not the network/Bluetooth/audio page (Nexus stand-in) |
+| Right-click Wi-Fi / Bluetooth / sound / mic → detailed page | ✅ C | opens the Nexus network / Bluetooth / audio page |
 | Keep awake (idle inhibit) card | ✅ C | one control; end-4's idle toggle merged into it |
 | Screen recorder card + recordings list (play, open folder, delete) | ✅ C | |
 | Eye protection: night light, schedule, warmth, gamma, anti-flashbang | ✅ E→C | |
@@ -106,18 +106,18 @@ Status legend:
 |---|---|---|
 | Region / window screenshot picker, freeze | 🔁 Equivalent | end-4 region selector in Caelestia style: screenshot, Lens, OCR, record, circle, freeze |
 
-### Nexus control centre (modules/nexus, 65 files)
+### Nexus control centre (modules/nexus, 65 files, ported 2026-10-12)
 | Page | Status | Notes |
 |---|---|---|
-| Wallpaper & style (wallpapers, colours) | 🔁 Equivalent | Settings > Appearance |
-| Panels (bar: workspaces, clock, status icons, tray, active window; dashboard; launcher; sidebar; utilities) | 🔁 Equivalent | Settings > Desktop |
-| Network: networks, saved networks, add network, add VPN, Ethernet details | ⚠️ Partial | bar network popout lists/joins Wi-Fi; no saved-network or VPN editor |
-| Bluetooth: pairing, device info | ⚠️ Partial | bar Bluetooth popout connects; no pairing page |
-| Audio: devices, per-app volumes | 🔁 Equivalent | audio popout, overlay mixer |
-| Apps: all apps, app info | ❌ Missing | |
-| Notifications settings | 🔁 Equivalent | Settings > Desktop > Notifications |
-| Language & region | 🔁 Equivalent | Settings > Apps > Language |
-| About | 🔁 Equivalent | Settings > About |
+| Wallpaper & style (wallpapers, colours) | ✅ C | wallpapers apply through end-4 (colours regenerate); end-4 Settings > Appearance still has more |
+| Panels (bar: workspaces, clock, status icons, tray, active window; dashboard; launcher; sidebar; utilities) | ✅ C | writes ~/.config/caelestia/shell.json |
+| Network: networks, saved networks, add network, add VPN, Ethernet details | ✅ C | Nmcli adapter extended with one-off nmcli calls (still one `nmcli monitor`, end-4's) |
+| Bluetooth: pairing, device info | ✅ C | |
+| Audio: devices, per-app volumes | ✅ C | |
+| Apps: all apps, app info | ✅ C | |
+| Notifications settings | ✅ C | Caelestia popups / toasts; end-4 settings keep its own options |
+| Language & region | ✅ C | UI language here is the Caelestia part only; end-4 text follows Settings > Apps > Language |
+| About | ✅ C | |
 
 ---
 
@@ -200,11 +200,10 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Nexus control centre** (Caelestia's settings for network, Bluetooth, audio, apps). It is a stand-in here, so right-click on Wi-Fi / Bluetooth / sound toggles and the popouts' "Open settings" only open end-4's settings app. Porting the real Nexus (65 files, vendored but unused) would give saved networks, VPN editing, Bluetooth pairing and app info.
-2. **Preset colour schemes** (`caelestia scheme`: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes, flavours, light/dark, variants). Colours here only follow the wallpaper.
-3. **Special workspaces** (`caelestia toggle`: communication, music, sysmon, todo), each opening its app on first use.
-4. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
-5. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
-6. **Recording pause / resume** and copying the recording path.
-7. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-8. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Preset colour schemes** (`caelestia scheme`: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes, flavours, light/dark, variants). Colours here only follow the wallpaper.
+2. **Special workspaces** (`caelestia toggle`: communication, music, sysmon, todo), each opening its app on first use.
+3. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
+4. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
+5. **Recording pause / resume** and copying the recording path.
+6. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
+7. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).

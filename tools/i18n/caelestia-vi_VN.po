@@ -1339,3 +1339,1240 @@ msgstr "Địa chỉ: %1"
 msgctxt "window address"
 msgid "Address: unknown"
 msgstr "Địa chỉ: không rõ"
+
+# caelestia4: Nexus control centre (2026-10-12)
+msgid "%1 Gbps"
+msgstr "%1 Gbps"
+
+msgid "%1 MHz"
+msgstr "%1 MHz"
+
+msgid "%1 Mbps"
+msgstr "%1 Mbps"
+
+msgid "%1 ms"
+msgstr "%1 ms"
+
+msgid "%n app playing audio"
+msgid_plural "%n apps playing audio"
+msgstr[0] "%n ứng dụng đang phát âm thanh"
+
+msgid "12-hour"
+msgstr "12 giờ"
+
+msgid "24-hour"
+msgstr "24 giờ"
+
+msgid "About"
+msgstr "Giới thiệu"
+
+msgid "Action prefix"
+msgstr "Tiền tố hành động"
+
+msgid "Actions"
+msgstr "Hành động"
+
+msgid "Active window"
+msgstr "Cửa sổ đang mở"
+
+msgid "Actively probe for a network that doesn't broadcast its name"
+msgstr "Chủ động dò tìm mạng không phát tên"
+
+msgid "Add VPN provider"
+msgstr "Thêm nhà cung cấp VPN"
+
+msgid "Add entry"
+msgstr "Thêm mục"
+
+msgid "Add network"
+msgstr "Thêm mạng"
+
+msgid "Add new entry"
+msgstr "Thêm mục mới"
+
+msgid "Add provider"
+msgstr "Thêm nhà cung cấp"
+
+msgid "Address (CIDR)"
+msgstr "Địa chỉ (CIDR)"
+
+msgid "Adjust the volume of individual apps currently playing audio."
+msgstr "Chỉnh âm lượng riêng cho từng ứng dụng đang phát âm thanh."
+
+msgid "All apps"
+msgstr "Tất cả ứng dụng"
+
+msgid "All networks"
+msgstr "Tất cả mạng"
+
+msgid "Allow actions that shut down or log out"
+msgstr "Cho phép các thao tác tắt máy hoặc đăng xuất"
+
+msgid "Allow nearby devices to find this one"
+msgstr "Cho phép thiết bị gần đó tìm thấy máy này"
+
+msgid "Allow nearby devices to pair with this one"
+msgstr "Cho phép thiết bị gần đó ghép đôi với máy này"
+
+msgid "Allow this device to connect automatically"
+msgstr "Cho phép thiết bị này tự kết nối"
+
+msgid "Allow this device to wake the system"
+msgstr "Cho phép thiết bị này đánh thức hệ thống"
+
+msgid "Always visible"
+msgstr "Luôn hiển thị"
+
+msgid "Amount the brightness changes per scroll (%)"
+msgstr "Mức thay đổi độ sáng mỗi lần cuộn (%)"
+
+msgid "Amount the volume changes per scroll (%)"
+msgstr "Mức thay đổi âm lượng mỗi lần cuộn (%)"
+
+msgid "An error occurred"
+msgstr "Đã xảy ra lỗi"
+
+msgid "App ID"
+msgstr "ID ứng dụng"
+
+msgid "App info"
+msgstr "Thông tin ứng dụng"
+
+msgid "App volumes"
+msgstr "Âm lượng ứng dụng"
+
+msgid "App volumes, sound devices"
+msgstr "Âm lượng ứng dụng, thiết bị âm thanh"
+
+msgid "Apply"
+msgstr "Áp dụng"
+
+msgid "Audio"
+msgstr "Âm thanh"
+
+msgid "Audio input changes"
+msgstr "Đổi đầu vào âm thanh"
+
+msgid "Audio output changes"
+msgstr "Đổi đầu ra âm thanh"
+
+msgid "Auto"
+msgstr "Tự động"
+
+msgid "Automatic (DHCP)"
+msgstr "Tự động (DHCP)"
+
+msgid "Automatic, DNS only"
+msgstr "Tự động, chỉ đặt DNS"
+
+msgid "Available devices"
+msgstr "Thiết bị khả dụng"
+
+msgid "Base %1, layers %2"
+msgstr "Nền %1, lớp %2"
+
+msgid "Behaviour"
+msgstr "Hành vi"
+
+msgid "Binary (KiB, MiB)"
+msgstr "Nhị phân (KiB, MiB)"
+
+msgid "Bluetooth disabled"
+msgstr "Bluetooth đang tắt"
+
+msgid "Bluetooth, pairing"
+msgstr "Bluetooth, ghép đôi"
+
+msgid "Brightness step"
+msgstr "Bước độ sáng"
+
+msgid "Browse"
+msgstr "Duyệt"
+
+msgid "Browse installed apps, set favourites and hidden"
+msgstr "Xem ứng dụng đã cài, đặt mục yêu thích và ẩn"
+
+msgid "Built-in id or a custom name"
+msgstr "ID có sẵn hoặc tên tuỳ chọn"
+
+msgid "Built-in names (wireguard, warp, tailscale, netbird) auto-fill their commands. For others, provide the connect/disconnect commands."
+msgstr "Các tên có sẵn (wireguard, warp, tailscale, netbird) tự điền lệnh. Với loại khác, hãy nhập lệnh kết nối/ngắt kết nối."
+
+msgid "CPU, memory and GPU update interval (seconds)"
+msgstr "Chu kỳ cập nhật CPU, bộ nhớ và GPU (giây)"
+
+msgid "Caps lock changes"
+msgstr "Đổi Caps Lock"
+
+msgid "Cards"
+msgstr "Thẻ"
+
+msgid "Charging changes"
+msgstr "Đổi trạng thái sạc"
+
+msgid "Choose your weather location on a map in a future update"
+msgstr "Chọn vị trí thời tiết trên bản đồ trong bản cập nhật sau"
+
+msgid "Clock"
+msgstr "Đồng hồ"
+
+msgid "Clock format"
+msgstr "Định dạng giờ"
+
+msgid "Colours"
+msgstr "Màu sắc"
+
+msgid "Comma-separated"
+msgstr "Phân tách bằng dấu phẩy"
+
+msgid "Command"
+msgstr "Lệnh"
+
+msgid "Components"
+msgstr "Thành phần"
+
+msgid "Connect automatically"
+msgstr "Tự động kết nối"
+
+msgid "Connect command"
+msgstr "Lệnh kết nối"
+
+msgid "Connect or disconnect the VPN"
+msgstr "Kết nối hoặc ngắt VPN"
+
+msgid "Connected devices"
+msgstr "Thiết bị đã kết nối"
+
+msgid "Connection"
+msgstr "Kết nối"
+
+msgid "Connection failed — check the password"
+msgstr "Kết nối thất bại — hãy kiểm tra mật khẩu"
+
+msgid "Custom commands (optional)"
+msgstr "Lệnh tuỳ chỉnh (không bắt buộc)"
+
+msgid "DNS servers"
+msgstr "Máy chủ DNS"
+
+msgid "Dark theme"
+msgstr "Giao diện tối"
+
+msgid "Dashboard, taskbar, launcher, sidebar"
+msgstr "Bảng điều khiển, thanh tác vụ, trình khởi chạy, thanh bên"
+
+msgid "Data sizes"
+msgstr "Kích thước dữ liệu"
+
+msgid "Data usage: %1"
+msgstr "Dữ liệu đã dùng: %1"
+
+msgid "Date, icon, background"
+msgstr "Ngày, biểu tượng, nền"
+
+msgid "Decimal (KB, MB)"
+msgstr "Thập phân (KB, MB)"
+
+msgid "Default applications"
+msgstr "Ứng dụng mặc định"
+
+msgid "Default apps, favourites, hidden apps"
+msgstr "Ứng dụng mặc định, yêu thích, ứng dụng ẩn"
+
+msgid "Default player"
+msgstr "Trình phát mặc định"
+
+msgid "Default timeout"
+msgstr "Thời gian chờ mặc định"
+
+msgid "Delete"
+msgstr "Xoá"
+
+msgid "Derive theme mode and variant from the wallpaper"
+msgstr "Lấy chế độ và biến thể giao diện từ hình nền"
+
+msgid "Details"
+msgstr "Chi tiết"
+
+msgid "Disconnect"
+msgstr "Ngắt kết nối"
+
+msgid "Disconnect command"
+msgstr "Lệnh ngắt kết nối"
+
+msgid "Disconnecting..."
+msgstr "Đang ngắt kết nối..."
+
+msgid "Dismiss notifications after their timeout"
+msgstr "Đóng thông báo khi hết thời gian chờ"
+
+msgid "Display"
+msgstr "Màn hình"
+
+msgid "Display name"
+msgstr "Tên hiển thị"
+
+msgid "Display seconds for the clock in the main panel"
+msgstr "Hiện giây trên đồng hồ ở bảng chính"
+
+msgid "Display wallpaper"
+msgstr "Hiện hình nền"
+
+msgid "Distro"
+msgstr "Bản phân phối"
+
+msgid "Do not disturb changes"
+msgstr "Đổi chế độ không làm phiền"
+
+msgid "Drag threshold"
+msgstr "Ngưỡng kéo"
+
+msgid "Edit VPN provider"
+msgstr "Sửa nhà cung cấp VPN"
+
+msgid "Enable dangerous actions"
+msgstr "Bật thao tác nguy hiểm"
+
+msgid "Enhanced Open"
+msgstr "Mở nâng cao"
+
+msgid "Enter a valid address in CIDR notation"
+msgstr "Nhập địa chỉ hợp lệ theo dạng CIDR"
+
+msgid "Enter a valid gateway address"
+msgstr "Nhập địa chỉ cổng hợp lệ"
+
+msgid "Enter the details below to manually connect to a network."
+msgstr "Nhập thông tin bên dưới để kết nối thủ công tới một mạng."
+
+msgid "Enter valid DNS server addresses"
+msgstr "Nhập địa chỉ máy chủ DNS hợp lệ"
+
+msgid "Enterprise"
+msgstr "Doanh nghiệp"
+
+msgid "Expire automatically"
+msgstr "Tự hết hạn"
+
+msgid "Favourite"
+msgstr "Yêu thích"
+
+msgid "Featured wallpaper"
+msgstr "Hình nền nổi bật"
+
+msgid "Firmware"
+msgstr "Firmware"
+
+msgid "Forget"
+msgstr "Quên"
+
+msgid "Frequency"
+msgstr "Tần số"
+
+msgid "Fuzzy search"
+msgstr "Tìm kiếm mờ"
+
+msgid "Game mode changes"
+msgstr "Đổi chế độ chơi game"
+
+msgid "Gateway"
+msgstr "Cổng mặc định"
+
+msgid "General"
+msgstr "Chung"
+
+msgid "Group preview count"
+msgstr "Số thông báo xem trước trong nhóm"
+
+msgid "Hidden"
+msgstr "Ẩn"
+
+msgid "Hidden network"
+msgstr "Mạng ẩn"
+
+msgid "Hide from the launcher"
+msgstr "Ẩn khỏi trình khởi chạy"
+
+msgid "Hide workspaces not on the current monitor"
+msgstr "Ẩn các không gian làm việc không thuộc màn hình hiện tại"
+
+msgid "Hostname"
+msgstr "Tên máy"
+
+msgid "How often available networks are rescanned (seconds)"
+msgstr "Chu kỳ quét lại mạng khả dụng (giây)"
+
+msgid "How often the media position updates (ms)"
+msgstr "Chu kỳ cập nhật vị trí phát (ms)"
+
+msgid "How times are shown across the shell"
+msgstr "Cách hiển thị thời gian trong toàn bộ shell"
+
+msgid "IP address"
+msgstr "Địa chỉ IP"
+
+msgid "IP and prefix, e.g. 192.168.1.50/24"
+msgstr "IP và tiền tố, ví dụ 192.168.1.50/24"
+
+msgid "IP assignment"
+msgstr "Cấp phát IP"
+
+msgid "IPv4"
+msgstr "IPv4"
+
+msgid "Indicators, window icons"
+msgstr "Chỉ báo, biểu tượng cửa sổ"
+
+msgid "Input increments"
+msgstr "Bước nhập"
+
+msgid "Join this network when it's in range"
+msgstr "Tự kết nối khi mạng này trong vùng phủ sóng"
+
+msgid "K"
+msgstr "K"
+
+msgid "Keep awake"
+msgstr "Giữ máy thức"
+
+msgid "Keep the bar visible at all times"
+msgstr "Luôn hiển thị thanh"
+
+msgid "Kernel"
+msgstr "Nhân hệ điều hành"
+
+msgid "Keyboard layout"
+msgstr "Bố cục bàn phím"
+
+msgid "Keyboard layout changes"
+msgstr "Đổi bố cục bàn phím"
+
+msgid "Language"
+msgstr "Ngôn ngữ"
+
+msgid "Language & region"
+msgstr "Ngôn ngữ & khu vực"
+
+msgid "Launcher"
+msgstr "Trình khởi chạy"
+
+msgid "Leave empty to use the built-in default"
+msgstr "Để trống để dùng mặc định có sẵn"
+
+msgid "Loaded plugins"
+msgstr "Plugin đã nạp"
+
+msgid "Local IP Address"
+msgstr "Địa chỉ IP cục bộ"
+
+msgid "Local wallpapers"
+msgstr "Hình nền trong máy"
+
+msgid "Location picker coming soon"
+msgstr "Sắp có công cụ chọn vị trí"
+
+msgid "Lock keys"
+msgstr "Phím khoá"
+
+msgid "Lyrics backend"
+msgstr "Nguồn lời bài hát"
+
+msgid "MAC address"
+msgstr "Địa chỉ MAC"
+
+msgid "Manage plugins"
+msgstr "Quản lý plugin"
+
+msgid "Matched by a regex in favouriteApps — edit the config file to change"
+msgstr "Khớp một biểu thức trong favouriteApps — sửa tệp cấu hình để thay đổi"
+
+msgid "Matched by a regex in hiddenApps — edit the config file to change"
+msgstr "Khớp một biểu thức trong hiddenApps — sửa tệp cấu hình để thay đổi"
+
+msgid "Max items shown"
+msgstr "Số mục tối đa"
+
+msgid "Max volume"
+msgstr "Âm lượng tối đa"
+
+msgid "Max wallpapers"
+msgstr "Số hình nền tối đa"
+
+msgid "Maximum number of toasts shown at once"
+msgstr "Số thông báo nhanh tối đa hiển thị cùng lúc"
+
+msgid "Media & lyrics"
+msgstr "Đa phương tiện & lời bài hát"
+
+msgid "Media refresh"
+msgstr "Làm mới đa phương tiện"
+
+msgid "Monitoring: %1"
+msgstr "Đang theo dõi: %1"
+
+msgid "Mute or unmute the default source"
+msgstr "Bật hoặc tắt tiếng nguồn mặc định"
+
+msgid "Navigate results with Ctrl+hjkl"
+msgstr "Di chuyển trong kết quả bằng Ctrl+hjkl"
+
+msgid "Network interface (for WireGuard / status checks)"
+msgstr "Giao diện mạng (cho WireGuard / kiểm tra trạng thái)"
+
+msgid "Network name (SSID)"
+msgstr "Tên mạng (SSID)"
+
+msgid "Network name is required"
+msgstr "Cần nhập tên mạng"
+
+msgid "Nexus — %1"
+msgstr "Nexus — %1"
+
+msgid "No VPN providers configured"
+msgstr "Chưa cấu hình nhà cung cấp VPN nào"
+
+msgid "No apps playing audio"
+msgstr "Không có ứng dụng nào đang phát âm thanh"
+
+msgid "No local wallpapers found"
+msgstr "Không tìm thấy hình nền trong máy"
+
+msgid "No networks found"
+msgstr "Không tìm thấy mạng nào"
+
+msgid "No saved devices"
+msgstr "Không có thiết bị đã lưu"
+
+msgid "No saved networks"
+msgstr "Không có mạng đã lưu"
+
+msgid "Notifications shown per group before collapsing"
+msgstr "Số thông báo hiển thị mỗi nhóm trước khi thu gọn"
+
+msgid "Notifications, toasts, timeouts"
+msgstr "Thông báo, thông báo nhanh, thời gian chờ"
+
+msgid "Num lock changes"
+msgstr "Đổi Num Lock"
+
+msgid "Number of bars in the audio visualisers"
+msgstr "Số cột trong bộ hiển thị âm thanh"
+
+msgid "Number of workspaces displayed"
+msgstr "Số không gian làm việc hiển thị"
+
+msgid "Only show the active window title while hovering"
+msgstr "Chỉ hiện tiêu đề cửa sổ khi rê chuột"
+
+msgid "Open expanded"
+msgstr "Mở rộng sẵn"
+
+msgid "Open the settings window"
+msgstr "Mở cửa sổ cài đặt"
+
+msgid "Output configuration"
+msgstr "Cấu hình đầu ra"
+
+msgid "Override for GPU type"
+msgstr "Ghi đè loại GPU"
+
+msgid "Page under construction"
+msgstr "Trang đang xây dựng"
+
+msgid "Pair new device"
+msgstr "Ghép đôi thiết bị mới"
+
+msgid "Pairing..."
+msgstr "Đang ghép đôi..."
+
+msgid "Panels"
+msgstr "Bảng"
+
+msgid "Password must be at least 8 characters"
+msgstr "Mật khẩu phải có ít nhất 8 ký tự"
+
+msgid "Performance widgets"
+msgstr "Tiện ích hiệu năng"
+
+msgid "Persistent"
+msgstr "Cố định"
+
+msgid "Pin to the top of the launcher"
+msgstr "Ghim lên đầu trình khởi chạy"
+
+msgid "Pixels dragged before the bar reveals"
+msgstr "Số điểm ảnh cần kéo để hiện thanh"
+
+msgid "Pixels dragged before the dashboard opens"
+msgstr "Số điểm ảnh cần kéo để mở bảng điều khiển"
+
+msgid "Pixels dragged before the launcher opens"
+msgstr "Số điểm ảnh cần kéo để mở trình khởi chạy"
+
+msgid "Pixels dragged before the sidebar opens"
+msgstr "Số điểm ảnh cần kéo để mở thanh bên"
+
+msgid "Plugins"
+msgstr "Plugin"
+
+msgid "Poll intervals, lyrics backend"
+msgstr "Chu kỳ cập nhật, nguồn lời bài hát"
+
+msgid "Polling"
+msgstr "Cập nhật định kỳ"
+
+msgid "Popout on hover"
+msgstr "Bật lên khi rê chuột"
+
+msgid "Preferred media player when several are open"
+msgstr "Trình phát ưu tiên khi mở nhiều trình phát"
+
+msgid "Prefix must not be alphanumeric"
+msgstr "Tiền tố không được là chữ hoặc số"
+
+msgid "Prefix used to run actions in the launcher"
+msgstr "Tiền tố để chạy hành động trong trình khởi chạy"
+
+msgid "Prevent this device from connecting"
+msgstr "Không cho thiết bị này kết nối"
+
+msgid "Primary DNS"
+msgstr "DNS chính"
+
+msgid "Provider name"
+msgstr "Tên nhà cung cấp"
+
+msgid "Provider name is required"
+msgstr "Cần nhập tên nhà cung cấp"
+
+msgid "Recolour icons"
+msgstr "Tô lại màu biểu tượng"
+
+msgid "Reveal on drag"
+msgstr "Hiện khi kéo"
+
+msgid "Reveal on hover"
+msgstr "Hiện khi rê chuột"
+
+msgid "Reveal the bar when the cursor reaches the screen edge"
+msgstr "Hiện thanh khi con trỏ chạm mép màn hình"
+
+msgid "Reveal when the cursor reaches the screen edge"
+msgstr "Hiện khi con trỏ chạm mép màn hình"
+
+msgid "Saved networks"
+msgstr "Mạng đã lưu"
+
+msgid "Schemes"
+msgstr "Bộ màu"
+
+msgid "Scroll actions"
+msgstr "Thao tác cuộn"
+
+msgid "Scroll on the bottom half of the bar to adjust brightness"
+msgstr "Cuộn ở nửa dưới thanh để chỉnh độ sáng"
+
+msgid "Scroll on the top half of the bar to adjust volume"
+msgstr "Cuộn ở nửa trên thanh để chỉnh âm lượng"
+
+msgid "Scroll over the workspace indicator to switch workspaces"
+msgstr "Cuộn trên chỉ báo không gian làm việc để chuyển không gian"
+
+msgid "Search settings"
+msgstr "Tìm trong cài đặt"
+
+msgid "Searching for devices…"
+msgstr "Đang tìm thiết bị…"
+
+msgid "Security"
+msgstr "Bảo mật"
+
+msgid "Select an image"
+msgstr "Chọn một ảnh"
+
+msgid "Selected"
+msgstr "Đã chọn"
+
+msgid "Service tuning"
+msgstr "Tinh chỉnh dịch vụ"
+
+msgid "Services"
+msgstr "Dịch vụ"
+
+msgid "Settings"
+msgstr "Cài đặt"
+
+msgid "Show a details popout when hovering the status icons"
+msgstr "Hiện bảng chi tiết khi rê chuột lên biểu tượng trạng thái"
+
+msgid "Show a window details popout when hovering"
+msgstr "Hiện bảng chi tiết cửa sổ khi rê chuột"
+
+msgid "Show all networks (%1)"
+msgstr "Hiện tất cả mạng (%1)"
+
+msgid "Show clock seconds"
+msgstr "Hiện giây trên đồng hồ"
+
+msgid "Show date"
+msgstr "Hiện ngày"
+
+msgid "Show icon"
+msgstr "Hiện biểu tượng"
+
+msgid "Show icons of open windows on each workspace"
+msgstr "Hiện biểu tượng cửa sổ đang mở trên mỗi không gian làm việc"
+
+msgid "Show in fullscreen"
+msgstr "Hiện khi toàn màn hình"
+
+msgid "Show notifications expanded by default"
+msgstr "Mở rộng thông báo theo mặc định"
+
+msgid "Show on hover"
+msgstr "Hiện khi rê chuột"
+
+msgid "Show seconds"
+msgstr "Hiện giây"
+
+msgid "Show the idle inhibitor card"
+msgstr "Hiện thẻ giữ máy thức"
+
+msgid "Show the quick toggles card"
+msgstr "Hiện thẻ bật nhanh"
+
+msgid "Show the screen recorder card"
+msgstr "Hiện thẻ ghi màn hình"
+
+msgid "Show the tray menu popout when hovering"
+msgstr "Hiện menu khay hệ thống khi rê chuột"
+
+msgid "Show the utilities panel"
+msgstr "Hiện bảng tiện ích"
+
+msgid "Show workspaces that are inactive and empty"
+msgstr "Hiện các không gian làm việc trống và không hoạt động"
+
+msgid "Shown in the list"
+msgstr "Hiện trong danh sách"
+
+msgid "Sidebar"
+msgstr "Thanh bên"
+
+msgid "Signal"
+msgstr "Tín hiệu"
+
+msgid "Silence notifications"
+msgstr "Tắt tiếng thông báo"
+
+msgid "Smart colour scheme"
+msgstr "Bộ màu thông minh"
+
+msgid "Software"
+msgstr "Phần mềm"
+
+msgid "Source used to fetch synced lyrics"
+msgstr "Nguồn lấy lời bài hát đồng bộ"
+
+msgid "Speakers"
+msgstr "Loa"
+
+msgid "Speed"
+msgstr "Tốc độ"
+
+msgid "Status"
+msgstr "Trạng thái"
+
+msgid "Status icons"
+msgstr "Biểu tượng trạng thái"
+
+msgid "System"
+msgstr "Hệ thống"
+
+msgid "System information, credits"
+msgstr "Thông tin hệ thống, ghi công"
+
+msgid "System stats refresh"
+msgstr "Làm mới thông số hệ thống"
+
+msgid "System temperatures"
+msgstr "Nhiệt độ hệ thống"
+
+msgid "System tray icons"
+msgstr "Biểu tượng khay hệ thống"
+
+msgid "System updates"
+msgstr "Cập nhật hệ thống"
+
+msgid "Tabs"
+msgstr "Thẻ"
+
+msgid "Tap to select"
+msgstr "Chạm để chọn"
+
+msgid "Taskbar"
+msgstr "Thanh tác vụ"
+
+msgid "Temperature"
+msgstr "Nhiệt độ"
+
+msgid "The language used in the shell UI"
+msgstr "Ngôn ngữ dùng trong giao diện shell"
+
+msgid "This page will be available in a future update."
+msgstr "Trang này sẽ có trong bản cập nhật sau."
+
+msgid "Time & date"
+msgstr "Giờ & ngày"
+
+msgid "Time before a notification dismisses (ms)"
+msgstr "Thời gian trước khi thông báo tự đóng (ms)"
+
+msgid "Title display, popout"
+msgstr "Hiển thị tiêu đề, bảng bật lên"
+
+msgid "Toast events"
+msgstr "Sự kiện thông báo nhanh"
+
+msgid "Toasts"
+msgstr "Thông báo nhanh"
+
+msgid "Toggle game mode"
+msgstr "Bật/tắt chế độ chơi game"
+
+msgid "Toggle the Bluetooth adapter"
+msgstr "Bật/tắt bộ điều hợp Bluetooth"
+
+msgid "Toggle wireless networking"
+msgstr "Bật/tắt mạng không dây"
+
+msgid "Transparency"
+msgstr "Độ trong suốt"
+
+msgid "Tray"
+msgstr "Khay"
+
+msgid "UI language"
+msgstr "Ngôn ngữ giao diện"
+
+msgid "UI language, weather location, display units"
+msgstr "Ngôn ngữ giao diện, vị trí thời tiết, đơn vị hiển thị"
+
+msgid "Units"
+msgstr "Đơn vị"
+
+msgid "Units for CPU and GPU temperatures"
+msgstr "Đơn vị cho nhiệt độ CPU và GPU"
+
+msgid "Units for data sizes and network speeds"
+msgstr "Đơn vị cho kích thước dữ liệu và tốc độ mạng"
+
+msgid "Units for weather temperatures"
+msgstr "Đơn vị cho nhiệt độ thời tiết"
+
+msgid "Unknown device"
+msgstr "Thiết bị không rõ"
+
+msgid "Updates"
+msgstr "Cập nhật"
+
+msgid "Upper limit for output volume (%)"
+msgstr "Giới hạn trên của âm lượng đầu ra (%)"
+
+msgid "Utilities"
+msgstr "Tiện ích"
+
+msgid "VPN changes"
+msgstr "Đổi trạng thái VPN"
+
+msgid "Variants"
+msgstr "Biến thể"
+
+msgid "Vim keybinds"
+msgstr "Phím tắt kiểu Vim"
+
+msgid "Visible icons"
+msgstr "Biểu tượng hiển thị"
+
+msgid "Visible indicators"
+msgstr "Chỉ báo hiển thị"
+
+msgid "Visible toasts"
+msgstr "Thông báo nhanh hiển thị"
+
+msgid "Visualiser bars"
+msgstr "Số cột hiển thị âm thanh"
+
+msgid "Volume"
+msgstr "Âm lượng"
+
+msgid "Volume step"
+msgstr "Bước âm lượng"
+
+msgid "WPA passwords are at least 8 characters"
+msgstr "Mật khẩu WPA có ít nhất 8 ký tự"
+
+msgid "WPA/WPA2/WPA3 Personal"
+msgstr "WPA/WPA2/WPA3 Cá nhân"
+
+msgid "Wake allowed"
+msgstr "Cho phép đánh thức"
+
+msgid "Wallpaper & style"
+msgstr "Hình nền & phong cách"
+
+msgid "Wallpaper disabled"
+msgstr "Đã tắt hình nền"
+
+msgid "Wallpaper, fonts, colours"
+msgstr "Hình nền, phông chữ, màu sắc"
+
+msgid "Whether notifications appear over fullscreen apps"
+msgstr "Có hiện thông báo trên ứng dụng toàn màn hình không"
+
+msgid "Whether toasts appear over fullscreen apps"
+msgstr "Có hiện thông báo nhanh trên ứng dụng toàn màn hình không"
+
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+msgid "Wi-Fi disabled"
+msgstr "Wi-Fi đang tắt"
+
+msgid "Wi-Fi rescan"
+msgstr "Quét lại Wi-Fi"
+
+msgid "Wi-Fi, ethernet, VPN"
+msgstr "Wi-Fi, mạng dây, VPN"
+
+msgid "Wired connection"
+msgstr "Kết nối có dây"
+
+msgid "e.g. MyHiddenNetwork"
+msgstr "ví dụ MạngẨnCủaTôi"
+
+msgid "°C"
+msgstr "°C"
+
+msgid "°F"
+msgstr "°F"
+
+msgctxt "app library"
+msgid "Library"
+msgstr "Thư viện"
+
+msgctxt "audio input"
+msgid "Input"
+msgstr "Đầu vào"
+
+msgctxt "audio input muted"
+msgid "Muted"
+msgstr "Đã tắt tiếng"
+
+msgctxt "audio output"
+msgid "Output"
+msgstr "Đầu ra"
+
+msgctxt "audio output muted"
+msgid "Muted"
+msgstr "Đã tắt tiếng"
+
+msgctxt "bar workspaces"
+msgid "Active indicator"
+msgstr "Chỉ báo đang hoạt động"
+
+msgctxt "bar workspaces"
+msgid "Active trail"
+msgstr "Vệt chuyển động"
+
+msgctxt "bar workspaces"
+msgid "Max window icons"
+msgstr "Số biểu tượng cửa sổ tối đa"
+
+msgctxt "bar workspaces"
+msgid "Occupied background"
+msgstr "Nền khi có cửa sổ"
+
+msgctxt "bar workspaces"
+msgid "Per monitor"
+msgstr "Theo từng màn hình"
+
+msgctxt "bar workspaces"
+msgid "Show unoccupied"
+msgstr "Hiện không gian trống"
+
+msgctxt "bar workspaces"
+msgid "Show windows"
+msgstr "Hiện cửa sổ"
+
+msgctxt "bar workspaces"
+msgid "Shown"
+msgstr "Số không gian hiển thị"
+
+msgctxt "bar workspaces"
+msgid "Windows on special workspaces"
+msgstr "Cửa sổ trong không gian đặc biệt"
+
+msgctxt "bluetooth MAC address"
+msgid "Address"
+msgstr "Địa chỉ"
+
+msgctxt "bluetooth device state"
+msgid "Blocked"
+msgstr "Đã chặn"
+
+msgctxt "bluetooth device state"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "bluetooth device state"
+msgid "Not paired"
+msgstr "Chưa ghép đôi"
+
+msgctxt "bluetooth device state"
+msgid "Paired"
+msgstr "Đã ghép đôi"
+
+msgctxt "bluetooth device state"
+msgid "Saved"
+msgstr "Đã lưu"
+
+msgctxt "bluetooth device state"
+msgid "Trusted"
+msgstr "Tin cậy"
+
+msgctxt "bluetooth device state"
+msgid "Unavailable"
+msgstr "Không khả dụng"
+
+msgctxt "bluetooth device state with battery"
+msgid "Connected • %1"
+msgstr "Đã kết nối • %1"
+
+msgctxt "bluetooth setting"
+msgid "Discoverable"
+msgstr "Cho phép tìm thấy"
+
+msgctxt "bluetooth setting"
+msgid "Pairable"
+msgstr "Cho phép ghép đôi"
+
+msgctxt "button"
+msgid "Add"
+msgstr "Thêm"
+
+msgctxt "button"
+msgid "Connect"
+msgstr "Kết nối"
+
+msgctxt "button"
+msgid "Disconnect"
+msgstr "Ngắt kết nối"
+
+msgctxt "button"
+msgid "Forget"
+msgstr "Quên"
+
+msgctxt "button"
+msgid "Save"
+msgstr "Lưu"
+
+msgctxt "default app category"
+msgid "Audio"
+msgstr "Âm thanh"
+
+msgctxt "default app category"
+msgid "File manager"
+msgstr "Trình quản lý tệp"
+
+msgctxt "default app category"
+msgid "Media playback"
+msgstr "Phát đa phương tiện"
+
+msgctxt "default app category"
+msgid "Terminal"
+msgstr "Terminal"
+
+msgctxt "default media player"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "ethernet link state"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "ethernet link state"
+msgid "Not connected"
+msgstr "Chưa kết nối"
+
+msgctxt "ethernet link state with interface name"
+msgid "Not connected • %1"
+msgstr "Chưa kết nối • %1"
+
+msgctxt "gpu type"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "gpu type"
+msgid "Generic"
+msgstr "Chung"
+
+msgctxt "gpu type"
+msgid "None"
+msgstr "Không"
+
+msgctxt "ip configuration method"
+msgid "Manual"
+msgstr "Thủ công"
+
+msgctxt "lyrics backend"
+msgid "Auto"
+msgstr "Tự động"
+
+msgctxt "lyrics backend"
+msgid "Local"
+msgstr "Trong máy"
+
+msgctxt "network connected"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "network connected with security"
+msgid "Connected • %1"
+msgstr "Đã kết nối • %1"
+
+msgctxt "network filter"
+msgid "2.4 GHz"
+msgstr "2.4 GHz"
+
+msgctxt "network filter"
+msgid "5 GHz"
+msgstr "5 GHz"
+
+msgctxt "network filter"
+msgid "Saved"
+msgstr "Đã lưu"
+
+msgctxt "network filter"
+msgid "Secured"
+msgstr "Có bảo mật"
+
+msgctxt "network filter heading"
+msgid "Filters"
+msgstr "Bộ lọc"
+
+msgctxt "network interface"
+msgid "Interface"
+msgstr "Giao diện"
+
+msgctxt "network saved"
+msgid "Saved"
+msgstr "Đã lưu"
+
+msgctxt "network security"
+msgid "Security: %1"
+msgstr "Bảo mật: %1"
+
+msgctxt "network security and status"
+msgid "Security: %1 • %2"
+msgstr "Bảo mật: %1 • %2"
+
+msgctxt "no audio inputs"
+msgid "No input devices"
+msgstr "Không có thiết bị đầu vào"
+
+msgctxt "no audio outputs"
+msgid "No output devices"
+msgstr "Không có thiết bị đầu ra"
+
+msgctxt "panel status"
+msgid "Disabled"
+msgstr "Đã tắt"
+
+msgctxt "panel status"
+msgid "Enabled"
+msgstr "Đã bật"
+
+msgctxt "round-trip latency to the VPN endpoint"
+msgid "Current ping"
+msgstr "Độ trễ hiện tại"
+
+msgctxt "show notifications over fullscreen apps"
+msgid "Off"
+msgstr "Tắt"
+
+msgctxt "show notifications over fullscreen apps"
+msgid "On"
+msgstr "Bật"
+
+msgctxt "show toasts over fullscreen apps"
+msgid "Off"
+msgstr "Tắt"
+
+msgctxt "show toasts over fullscreen apps"
+msgid "On"
+msgstr "Bật"
+
+msgctxt "show toasts over fullscreen apps: important ones only"
+msgid "Important"
+msgstr "Quan trọng"
+
+msgctxt "system model name"
+msgid "Device"
+msgstr "Thiết bị"
+
+msgctxt "taskbar active window layout"
+msgid "Compact"
+msgstr "Gọn"
+
+msgctxt "taskbar active window: swap the title and class order"
+msgid "Inverted"
+msgstr "Đảo ngược"
+
+msgctxt "taskbar clock: draw a background behind the clock"
+msgid "Background"
+msgstr "Nền"
+
+msgctxt "taskbar tray layout"
+msgid "Compact"
+msgstr "Gọn"
+
+msgctxt "taskbar tray: draw a background behind the tray"
+msgid "Background"
+msgstr "Nền"
+
+msgctxt "the caelestia command line tool"
+msgid "CLI"
+msgstr "CLI"
+
+msgctxt "the caelestia shell itself, not a unix shell"
+msgid "Shell"
+msgstr "Shell"
+
+msgctxt "unknown audio device"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "unknown bluetooth device"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "unknown wifi security"
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "unnamed bluetooth device"
+msgid "Device"
+msgstr "Thiết bị"
+
+msgctxt "vpn state"
+msgid "Connected"
+msgstr "Đã kết nối"
+
+msgctxt "wifi security type"
+msgid "None (open)"
+msgstr "Không (mở)"
+
+msgctxt "wifi security type"
+msgid "Open"
+msgstr "Mở"
