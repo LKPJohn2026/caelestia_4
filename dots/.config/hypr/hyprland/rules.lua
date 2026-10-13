@@ -44,6 +44,9 @@ hl.window_rule({match = {class = "kcm_.*" },                                  fl
 hl.window_rule({match = {class = ".*bluedevilwizard" },                      float = true})
 hl.window_rule({match = {title = ".*Welcome" },                              float = true})
 hl.window_rule({match = {title = "^(illogical-impulse Settings)$" },         float = true})
+-- Caelestia's Nexus control centre sizes itself from the screen height; float it centred like upstream
+hl.window_rule({match = {class = "^(org.quickshell)$", title = "^(Nexus — .*)$" }, float = true})
+hl.window_rule({match = {class = "^(org.quickshell)$", title = "^(Nexus — .*)$" }, center = true})
 hl.window_rule({match = {title = ".*Shell conflicts.*" },                    float = true})
 hl.window_rule({match = {class = "org.freedesktop.impl.portal.desktop.kde" }, float = true})
 hl.window_rule({match = {class = "org.freedesktop.impl.portal.desktop.kde" }, size = {"(monitor_w*0.60)", "(monitor_h*0.65)"} })

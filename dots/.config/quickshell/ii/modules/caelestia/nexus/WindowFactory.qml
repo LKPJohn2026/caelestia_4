@@ -1,13 +1,61 @@
 pragma Singleton
 
-// caelestia4 STAND-IN for Caelestia's `nexus` settings app (not ported; see docs/phase3.md).
-// Every "open settings" in the Caelestia UI opens end-4's settings app instead.
 import QtQuick
 import Quickshell
-import qs.services as E4 // caelestia4: AppLauncher (apps get their own unit under uwsm)
+import Caelestia.Config
+import Caelestia.I18n
+import qs.modules.caelestia.components
+import qs.modules.caelestia.adapters
+import qs.modules.caelestia.nexus
 
 Singleton {
-    function create(parent = null, props = null): void {
-        E4.AppLauncher.exec(["qs", "-p", Quickshell.shellPath("settings.qml")]);
+    id: root
+
+    function create(parent: Item, props: var): void {
+        nexusComp.createObject(parent ?? dummy, props);
+    }
+
+    QtObject {
+        id: dummy
+    }
+
+    Component {
+        id: nexusComp
+
+        FloatingWindow {
+            id: win
+
+            color: Colours.tPalette.m3surface
+            surfaceFormat.opaque: false
+
+            onVisibleChanged: {
+                if (!visible)
+                    destroy();
+            }
+
+            implicitWidth: nexus.implicitWidth
+            implicitHeight: nexus.implicitHeight
+
+            minimumSize.width: contentItem.Tokens.sizes.nexus.minWidth
+            minimumSize.height: contentItem.Tokens.sizes.nexus.minHeight
+
+            contentItem.Config.screen: screen.name
+            contentItem.Tokens.screen: screen.name
+
+            title: Tr.tr("Nexus — %1").arg(PageRegistry.pages[nexus.nState.currentPageIdx].label)
+
+            Nexus {
+                id: nexus
+
+                anchors.fill: parent
+                nState.screen: win.screen
+                nState.isWindow: true
+                onClose: win.destroy()
+            }
+
+            Behavior on color {
+                CAnim {}
+            }
+        }
     }
 }

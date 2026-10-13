@@ -221,7 +221,7 @@ StyledRect {
                         tip: Tr.tr("Wi-Fi · right-click for networks")
                         checked: Nmcli.wifiEnabled
                         onActivated: Nmcli.toggleWifi()
-                        onSecondary: root.openPanel("network") // caelestia4: end-4's Wi-Fi dialog
+                        onSecondary: root.openPanel("network") // Nexus network page
                     }
                 }
                 DelegateChoice {
@@ -235,7 +235,7 @@ StyledRect {
                             if (adapter)
                                 adapter.enabled = !adapter.enabled;
                         }
-                        onSecondary: root.openPanel("bluetooth") // caelestia4: end-4's Bluetooth dialog
+                        onSecondary: root.openPanel("bluetooth") // Nexus Bluetooth page
                     }
                 }
                 DelegateChoice {
@@ -249,7 +249,7 @@ StyledRect {
                             if (audio)
                                 audio.muted = !audio.muted;
                         }
-                        onSecondary: root.openPanel("audio") // caelestia4: end-4's volume dialog
+                        onSecondary: root.openPanel("audio") // Nexus audio page
                     }
                 }
                 // caelestia4: speaker mute (end-4's "Audio" toggle); right-click: output devices + per-app mixer
