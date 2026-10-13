@@ -22,10 +22,7 @@ Image {
     asynchronous: true
     fillMode: Image.PreserveAspectCrop
 
-    sourceSize: {
-        const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
-        return Qt.size(width * dpr, height * dpr);
-    }
+    sourceSize: Qt.size(width, height) // caelestia4: Qt applies the devicePixelRatio itself
 
     retainWhileLoading: true
     opacity: 0
