@@ -68,10 +68,7 @@ Item {
             anchors.fill: parent
             path: root.modelData.path
             smooth: !root.PathView.view.moving
-            sourceSize: {
-                const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
-                return Qt.size(image.implicitWidth * dpr, image.implicitHeight * dpr);
-            }
+            sourceSize: Qt.size(image.implicitWidth, image.implicitHeight) // caelestia4: Qt applies the devicePixelRatio itself
         }
     }
 

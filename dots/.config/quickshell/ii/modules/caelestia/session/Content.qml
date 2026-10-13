@@ -131,7 +131,7 @@ Column {
     AnimatedImage {
         width: Tokens.sizes.session.button
         height: Tokens.sizes.session.button
-        sourceSize.width: width * ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1)
+        sourceSize.width: width // caelestia4: Qt applies the devicePixelRatio itself
 
         playing: visible
         asynchronous: true
