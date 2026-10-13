@@ -8,7 +8,7 @@ import Caelestia.I18n
 import Caelestia.Services
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
-import qs.services as E4 // caelestia4: AppLauncher (apps get their own unit under uwsm)
+import qs.modules.caelestia.nexus
 
 Searcher {
     id: root
@@ -56,7 +56,7 @@ Searcher {
                 if (command[1] === "wallpaper" && command.includes("-r"))
                     Wallpapers.setRandom(); // random wallpaper from the list -> end-4 switchwall + colours
                 else if (command[1] === "shell" && command[2] === "nexus")
-                    E4.AppLauncher.exec(["qs", "-p", Quickshell.shellPath("settings.qml")]); // end-4 settings app
+                    WindowFactory.create(); // Nexus control centre
                 else
                     console.warn("[caelestia4] launcher action needs caelestia-cli, not available:", command.join(" "));
             } else {

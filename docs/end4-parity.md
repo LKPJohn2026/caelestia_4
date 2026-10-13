@@ -162,7 +162,7 @@ Method: every `quickshell:<action>` used by Hyprland keybinds, checked against t
   - Verified: a GStreamer test Video/Source with a linked consumer showed the red capture icon, which collapsed after; a fake `checkupdates` (3 lines) showed the icon with "3". Popouts not hovered yet.
 
 ## Follow-up: launcher actions without caelestia-cli (2026-10-09)
-- `launcher/services/Actions.qml`: `caelestia …` commands are redirected. `wallpaper -r` → `Wallpapers.setRandom()` (end-4 `randomFromCurrentFolder`, colours regenerate); `shell nexus open` → `qs -p settings.qml` (end-4 settings app). Anything else logs a warning. The **Scheme** action (named schemes, caelestia-cli only) is filtered out.
+- `launcher/services/Actions.qml`: `caelestia …` commands are redirected. `wallpaper -r` → `Wallpapers.setRandom()` (end-4 `randomFromCurrentFolder`, colours regenerate); `shell nexus open` → `WindowFactory.create()` (the Nexus control centre, ported 2026-10-12). Anything else logs a warning. The **Scheme** action (named schemes, caelestia-cli only) is filtered out.
 - `M3Variants.qml`: a variant sets end-4 `appearance.palette.type` (`tonalspot` → `scheme-tonal-spot`, …) and runs `switchwall.sh --noswitch --type <type>`. `--type` is passed explicitly because the shell writes config.json with a delay; without it, switchwall re-read the old type and nothing changed. Caelestia's `vibrant` (no end-4 equivalent) is replaced by end-4's **Auto**.
 - `Schemes.qml`: no caelestia-cli processes; `currentVariant` mirrors end-4's palette type, so the variant list ticks the active one.
 - Verified with typed input: the action list (no Scheme), the variant list (Auto ticked), Monochrome recoloured (primary `#a0cafd` → `#ffffff`), Settings opened the settings app, Random switched the wallpaper and colours. Then restored to Auto + the previous wallpaper.
@@ -272,7 +272,7 @@ restored from disk with missing fields).
   (`tools/build-caelestia-plugin.sh`, revision updated). The "Config.* accessed without a screen set" warnings
   (80+ per session) are gone. QML changes ported into our copies: `Workspace.qml` (bool onOtherMonitor),
   `LyricList.qml` (workaround removed), `drawers/ContentWindow.qml` (toplevels count). `lock/` and `nexus` changes
-  don't apply (hyprlock; nexus not used).
+  don't apply (hyprlock); `nexus` is used since 2026-10-12, sync it like the other modules.
 
 ## De-duplication (2026-10-11)
 - **Network**: one `nmcli monitor` instead of two. `modules/caelestia/adapters/Nmcli.qml` (upstream Caelestia, 1.8k
