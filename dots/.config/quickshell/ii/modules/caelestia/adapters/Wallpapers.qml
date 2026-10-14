@@ -7,7 +7,8 @@ pragma Singleton
 // and the current wallpaper is read from end-4's config, not caelestia-cli's path.txt.
 // Contract used by Caelestia UI: list, query(search), current, actualCurrent, setWallpaper(path),
 // preview(path), stopPreview(), previewColourLock, getCategoryFor(entry), setRandom().
-// Not supported: *colour* preview while browsing (needs caelestia-cli); the image preview still works.
+// Colour preview while browsing (Caelestia's `caelestia wallpaper -p`): utils/scripts/wallpreview.sh runs matugen
+// dry, with end-4's colour style, and Colours shows the result until the preview stops (not for videos).
 // Keep Caelestia's wallpaper dir (shell.json paths.wallpaperDir) and end-4's wallpaper folder the same.
 
 import QtQuick
@@ -73,7 +74,10 @@ Searcher {
         command: ["pgrep", "-x", "mpvpaper"]
         onExited: code => root.videoPlaying = root.isVideo && code === 0
     }
+    // Set by the launcher when a previewed wallpaper is picked: keep showing the preview colours until end-4's
+    // regenerated colours arrive, so the old ones don't flash back in between
     property bool previewColourLock
+    property bool pendingPreviewClear
 
     function getCategoryFor(w: FileSystemEntry): string {
         let category = w.parentDir.slice(Paths.wallsdir.length + 1);
@@ -94,16 +98,78 @@ Searcher {
     function preview(path: string): void {
         previewPath = path;
         showPreview = true;
+        // Colours only follow the wallpaper with the "dynamic" scheme; videos have no frame to read here
+        if (Colours.scheme === "dynamic" && !/\.(mp4|webm|mkv|avi|mov)$/i.test(path))
+            previewDebounce.restart();
     }
 
     function stopPreview(): void {
         showPreview = false;
+        previewDebounce.stop();
+        previewProc.running = false;
+        if (previewColourLock)
+            pendingPreviewClear = true;
+        else
+            Colours.showPreview = false;
     }
 
-    // end-4 finished applying: follow its config and release the launcher's colour lock
-    onEnd4CurrentChanged: {
-        actualCurrent = end4Current || fallback;
-        previewColourLock = false;
+    onPreviewColourLockChanged: {
+        if (previewColourLock) {
+            lockTimeout.restart();
+        } else if (pendingPreviewClear) {
+            pendingPreviewClear = false;
+            Colours.showPreview = false;
+        }
+    }
+
+    // end-4 wrote the new wallpaper path (colours are generated after this): follow it
+    onEnd4CurrentChanged: actualCurrent = end4Current || fallback
+
+    // end-4's colours changed: the applied wallpaper's palette is in, the preview can go
+    Connections {
+        target: E4C.Appearance.m3colors
+
+        function onM3primaryChanged(): void {
+            root.previewColourLock = false;
+        }
+        function onM3surfaceChanged(): void {
+            root.previewColourLock = false;
+        }
+    }
+
+    Timer {
+        id: lockTimeout
+
+        interval: 15000 // same colours (or theming off): don't keep the preview forever
+        onTriggered: root.previewColourLock = false
+    }
+
+    Timer {
+        id: previewDebounce
+
+        interval: 120 // scrolling through the list only computes the one it stops on
+        onTriggered: {
+            previewProc.running = false;
+            previewProc.command = [Quickshell.shellPath("modules/caelestia/utils/scripts/wallpreview.sh"), root.previewPath, Colours.currentLight ? "light" : "dark"];
+            previewProc.running = true;
+        }
+    }
+
+    Process {
+        id: previewProc
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (!root.showPreview || !text)
+                    return;
+                try {
+                    Colours.loadPreview(text, Colours.currentLight);
+                    Colours.showPreview = true;
+                } catch (e) {
+                    // cut off by a newer preview (fast scrolling): its own result follows
+                }
+            }
+        }
     }
 
     list: wallpapers.entries
