@@ -899,7 +899,7 @@ msgid "Try switching to a window"
 msgstr "Thử chuyển sang một cửa sổ"
 
 msgid "Type \"%1\" for commands, ; clipboard, : emoji, = math, $ run, ? web"
-msgstr "Gõ \"%1\" cho lệnh, ; bộ nhớ tạm, : biểu tượng cảm xúc, = tính toán, $ chạy lệnh, ? tìm web"
+msgstr "\"%1\" lệnh · ; bộ nhớ tạm · : emoji · = tính · $ chạy · ? web"
 
 msgid "Type a command to run"
 msgstr "Gõ lệnh để chạy"
@@ -2601,3 +2601,6 @@ msgstr "Bộ màu có sẵn"
 
 msgid "Wallpaper colours"
 msgstr "Màu theo hình nền"
+
+msgid "not synced"
+msgstr "không đồng bộ"

@@ -20,7 +20,8 @@ namespace caelestia::config {
 
 ENUM(BarWorkspaceDisplay, Shapes, Text, Icons)
 ENUM(BarWorkspaceCapitalisation, Preserve, Upper, Lower)
-ENUM(LyricsBackend, Auto, Local, LRCLIB, NetEase)
+// caelestia4: Kugou and QQMusic added (synced lyrics); new values go last so saved configs keep their meaning
+ENUM(LyricsBackend, Auto, Local, LRCLIB, NetEase, Kugou, QQMusic)
 ENUM(GpuType, Auto, Nvidia, Generic, None)
 ENUM(NotifsFullscreen, On, Off)
 ENUM(TemperatureUnit, Auto, Celsius, Fahrenheit, Kelvin)

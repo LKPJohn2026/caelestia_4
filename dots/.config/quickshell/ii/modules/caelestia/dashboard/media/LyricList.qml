@@ -286,7 +286,7 @@ Item {
                 hoverEnabled: true
                 onClicked: {
                     const p = Players.active;
-                    if (p)
+                    if (p && Lyrics.synced) // caelestia4: plain (untimed) lyrics have no position to seek to
                         p.position = Lyrics.timeForIndex(lyric.index);
                 }
             }
