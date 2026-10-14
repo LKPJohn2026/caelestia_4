@@ -148,28 +148,40 @@ Item {
                         values: root.dashboardTabs
                     }
 
-                    delegate: Loader {
-                        id: paneLoader
+                    // caelestia4: each pane is at least as wide as the tab bar, its content centred. The view is never
+                    // narrower than the tab bar (long Vietnamese labels: ~920 px for 840 px panes), so a pane only as
+                    // wide as its content let the next one show at the edge (Todo and Timer overlapped).
+                    delegate: Item {
+                        id: pane
 
                         required property int index
                         required property var modelData
 
                         Layout.alignment: Qt.AlignTop
+                        implicitWidth: Math.max(paneLoader.implicitWidth, tabs.minimumWidth)
+                        implicitHeight: paneLoader.implicitHeight
                         focus: index === view.currentIndex // caelestia4: Todo / Timer keys (N, Space, R, L, PgUp/PgDn)
 
-                        sourceComponent: modelData.component
+                        Loader {
+                            id: paneLoader
 
-                        Component.onCompleted: active = Qt.binding(() => {
-                            // caelestia4: end-4 panes stay loaded. Lazily (un)loading them changed their width,
-                            // which fed back into this binding (binding loop) and collapsed the pane.
-                            if (modelData.keepLoaded)
-                                return true;
-                            if (index === view.currentIndex)
-                                return true;
-                            const vx = Math.floor(view.visibleArea.xPosition * view.contentWidth);
-                            const vex = Math.floor(vx + view.visibleArea.widthRatio * view.contentWidth);
-                            return (vx >= x && vx <= x + implicitWidth) || (vex >= x && vex <= x + implicitWidth);
-                        })
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            focus: true
+
+                            sourceComponent: pane.modelData.component
+
+                            Component.onCompleted: active = Qt.binding(() => {
+                                // caelestia4: end-4 panes stay loaded. Lazily (un)loading them changed their width,
+                                // which fed back into this binding (binding loop) and collapsed the pane.
+                                if (pane.modelData.keepLoaded)
+                                    return true;
+                                if (pane.index === view.currentIndex)
+                                    return true;
+                                const vx = Math.floor(view.visibleArea.xPosition * view.contentWidth);
+                                const vex = Math.floor(vx + view.visibleArea.widthRatio * view.contentWidth);
+                                return (vx >= pane.x && vx <= pane.x + pane.implicitWidth) || (vex >= pane.x && vex <= pane.x + pane.implicitWidth);
+                            })
+                        }
                     }
                 }
             }

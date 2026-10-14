@@ -41,10 +41,13 @@ TextFieldBase {
         id: placeholder
 
         anchors.left: parent.left
+        anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: root.leftPadding
+        anchors.rightMargin: root.rightPadding
 
         text: root.placeholderText
+        elide: Text.ElideRight // caelestia4: a long hint ran past the field's edge and over the bar
         color: root.placeholderTextColor
         font: root.font
 

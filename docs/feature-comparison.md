@@ -47,7 +47,7 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | Dash tab: user/pfp, date-time, calendar, small weather, resources, media | ✅ C | |
-| Media tab: player controls, cover art, visualiser, lyrics | ✅ C | |
+| Media tab: player controls, cover art, visualiser, lyrics | ✅ C | lyrics: local .lrc → LRCLIB → NetEase → Kugou → QQ Music (all synced), then untimed lyrics (LRCLIB plain, lyrics.ovh) as the last resort; Kugou / QQ Music added here |
 | Performance tab: CPU, GPU, memory, storage, network | ✅ C | |
 | Weather tab: 7-day forecast, sunrise/sunset, humidity, wind | ✅ C | |
 | Todo tab, Timer tab (pomodoro + stopwatch) | ✅ E→C | end-4 features as dashboard tabs |

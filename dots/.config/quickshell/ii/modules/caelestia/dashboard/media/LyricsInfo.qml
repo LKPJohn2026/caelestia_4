@@ -151,7 +151,7 @@ Item {
 
                 StyledText {
                     // TRANSLATORS: %1 = lyrics backend name, e.g. LRCLIB
-                    text: Tr.tr("Backend: %1").arg(CUtils.enumToString(Lyrics, "backend"))
+                    text: Tr.tr("Backend: %1").arg(CUtils.enumToString(Lyrics, "backend")) + (Lyrics.synced ? "" : ` (${Tr.tr("not synced")})`) // caelestia4
                     color: Colours.palette.m3onSurfaceVariant
                     animate: true
                 }
