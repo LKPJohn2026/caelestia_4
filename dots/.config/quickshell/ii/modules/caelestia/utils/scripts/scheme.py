@@ -60,6 +60,14 @@ def pick_mode(name, flavour, mode):
     return mode if mode in modes else modes[0]
 
 
+def counterpart(name, flavour, mode):
+    """When the light/dark switch asks for a mode this flavour doesn't have, the flavour of the same scheme to
+    switch to (e.g. catppuccin mocha -> latte for light), or None to keep the current flavour in its own mode.
+    Flavours per scheme and their modes: see assets/schemes/<name>/<flavour>/{dark,light}.txt (modes_of())."""
+    # TODO(human)
+    return None
+
+
 def current_mode():
     """dark/light from the colours on screen now (end-4's colours.json)"""
     try:
@@ -184,7 +192,10 @@ def main():
         state = load_state()
         if state["name"] == "dynamic":
             sys.exit(1)
-        mode = pick_mode(state["name"], state["flavour"], mode or state.get("mode") or "dark")
+        wanted = mode or state.get("mode") or "dark"
+        if wanted not in modes_of(state["name"], state["flavour"]):
+            state["flavour"] = counterpart(state["name"], state["flavour"], wanted) or state["flavour"]
+        mode = pick_mode(state["name"], state["flavour"], wanted)
         save_state({**state, "mode": mode})
         apply_preset(state["name"], state["flavour"], mode)
     else:

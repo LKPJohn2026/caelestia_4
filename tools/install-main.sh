@@ -18,7 +18,7 @@ warn() { printf '\033[33m!!\033[0m %s\n' "$*"; }
 
 # ---- preflight ----
 [[ "$(id -u)" -ne 0 ]] || { echo "Run as your user, not root." >&2; exit 1; }
-for p in hyprland caelestia4-quickshell qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets; do
+for p in hyprland caelestia4-quickshell qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets gpu-screen-recorder; do
   pacman -Q "$p" >/dev/null 2>&1 || warn "package $p not installed (install it first; see docs/install.md)"
 done
 [[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" == masked ]] \
