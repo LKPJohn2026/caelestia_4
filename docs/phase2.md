@@ -16,7 +16,7 @@ service **owns**, the rule became:
 | `Colours` | `Appearance.m3colors` (58 of 74 roles bound live; key colours mapped; term0-15 = Caelestia defaults) | one colour pipeline (end-4 matugen); Caelestia reads `caelestia-cli` scheme files | colour **preview** while browsing wallpapers |
 | `Notifs` + `NotifData` | `Notifications` (list mirrored by id, newest first; `dnd` ↔ `silent`; close → `discardNotification`; popup hide → `timeoutNotification`; hover → end-4 timer stop/start; urgency string → enum) | only one notification server may own `org.freedesktop.Notifications` | — |
 | `Wallpapers` | `Wallpapers.apply` / `randomFromCurrentFolder`; current = `Config.options.background.wallpaperPath` | applying runs end-4's colour generation; Caelestia would call `caelestia wallpaper` | colour preview (image preview works) |
-| `Recorder` | `scripts/videos/record.sh` (wf-recorder; state via `pgrep -x wf-recorder`) | Caelestia calls `caelestia record` | **pause** (wf-recorder can't) |
+| `Recorder` | `scripts/videos/record.sh` (gpu-screen-recorder since 2026-10-14, was wf-recorder; state via `pidof`, pause marker in `$XDG_RUNTIME_DIR`) | Caelestia calls `caelestia record` | — (pause added 2026-10-14) |
 | `IdleInhibitor` | `Idle.inhibit` / `toggleInhibit` | one keep-awake state for both families | — |
 | `Brightness` | `Brightness.getMonitorForScreen` wrapped in a `Monitor` type | two `ddcutil` managers would race on the DDC/CI bus | — |
 

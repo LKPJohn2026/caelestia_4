@@ -129,7 +129,7 @@ Status legend:
 | `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ✅ | hyprland/specialws.lua (upstream's Lua toggle): Ctrl+Shift+Esc sysmon (btop), Ctrl+Super+M music, Super+Alt+D communication, Super+R todo; apps start on first use, strays are gathered; apps from ~/.config/caelestia/cli.json `toggles` |
 | `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ✅ | `scheme.py set NAME FLAVOUR` / `set dynamic`; a preset survives wallpaper changes; single-mode presets keep their mode |
 | `caelestia screenshot` (region, freeze) | 🔁 Equivalent | region selector |
-| `caelestia record` (region, sound, pause, path to clipboard) | ⚠️ Partial | record region/screen/sound here; the recorder card's pause button does nothing (end-4's wf-recorder script can't pause) |
+| `caelestia record` (region, sound, pause, path to clipboard) | ✅ | record.sh now uses gpu-screen-recorder like Caelestia (NVENC, HEVC at 7680x2160): pause/resume from the recorder card (SIGUSR2); region, sound, full screen as before; no copy-path-to-clipboard |
 | `caelestia clipboard` (pick / delete entries) | ✅ C | launcher `;` |
 | `caelestia emoji` (+ fetch glyph data) | ✅ C | launcher `:` |
 | `caelestia wallpaper` (set / random / size filter / preview) | 🔁 Equivalent | switchwall.sh, random wallpaper fetch with size + shape filters |
@@ -200,6 +200,5 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Recording pause / resume** and copying the recording path.
-2. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-3. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
+2. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
