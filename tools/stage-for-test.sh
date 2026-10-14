@@ -21,7 +21,8 @@ cat > "$STAGE/deploy.sh" <<'DEPLOY'
 set -euo pipefail
 STAGE=/var/tmp/caelestia4-stage
 QS="$HOME/.config/quickshell"
-[[ "$(id -un)" != "windy_dust_2026" ]] || { echo "Refusing: run this as a TEST user, not the main account." >&2; exit 1; }
+# The stage is written by the main account (stage-for-test.sh); refuse to install it into that same account
+[[ "$(stat -c %U "$STAGE")" != "$(id -un)" ]] || { echo "Refusing: run this as a TEST user, not the account that staged it." >&2; exit 1; }
 mkdir -p "$QS" "$HOME/.local/lib/qt6/qml" "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"  # caelestia4: dirs caelestia-cli would create
 if [[ -d "$QS/ii" && ! -d "$QS/ii.upstream-backup" ]]; then
   cp -a "$QS/ii" "$QS/ii.upstream-backup"

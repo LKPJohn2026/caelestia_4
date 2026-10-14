@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bring in newer upstream code, then rebuild and smoke-test. (PLAN.md Phase 10)
+# Bring in newer upstream code, then rebuild and smoke-test. (docs/dev/PLAN.md Phase 10)
 #   tools/sync-upstreams.sh end4 <commit-or-ref>        merge end-4/dots-hyprland at a pinned ref
 #   tools/sync-upstreams.sh caelestia <tag>             move third_party/caelestia-shell to a new tag
 # Before running: take a snapshot (sudo snapper create -d "caelestia_4 sync ...").

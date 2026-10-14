@@ -22,7 +22,7 @@ for p in hyprland caelestia4-quickshell qt6-m3shapes-git illogical-impulse-kde i
   pacman -Q "$p" >/dev/null 2>&1 || warn "package $p not installed (install it first; see docs/install.md)"
 done
 [[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" == masked ]] \
-  || warn "gnome-keyring socket is not masked for this user (see docs/phase0.md: KWallet must own org.freedesktop.secrets)"
+  || warn "gnome-keyring socket is not masked for this user (see docs/dev/phase0.md: KWallet must own org.freedesktop.secrets)"
 "$REPO/tools/lint-caelestia.sh"
 
 backup() { # backup <path>
@@ -160,4 +160,4 @@ fi
 mkdir -p "$STATE/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"
 
 [[ -d "$BK" ]] && say "backups: $BK" || say "nothing needed backing up"
-say "done. Log out, pick the 'Hyprland' session on the login screen. Ctrl+Super+P cycles panel families."
+say "done. Run tools/uwsm-setup.sh if you haven't, log out and pick 'Hyprland (uwsm-managed)' on the login screen."
