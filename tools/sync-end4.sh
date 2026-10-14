@@ -16,7 +16,7 @@ REMOVED=(
   dots/.config/quickshell/ii/panelFamilies/IllogicalImpulseFamily.qml
   dots/.config/quickshell/ii/modules/ii/bar                # tray files moved to modules/ii/lock (lock screen tray)
   dots/.config/quickshell/ii/modules/ii/verticalBar
-  dots/.config/quickshell/ii/modules/ii/background
+  dots/.config/quickshell/ii/modules/ii/background        # widgets/ copied to modules/caelestia/background/e4widgets (2026-10-14): port upstream fixes by hand
   dots/.config/quickshell/ii/modules/ii/dock
   dots/.config/quickshell/ii/modules/ii/mediaControls
   dots/.config/quickshell/ii/modules/ii/notificationPopup
