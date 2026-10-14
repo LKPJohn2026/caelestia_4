@@ -368,7 +368,7 @@ Singleton {
                 property bool pinnedOnStartup: false
                 property bool hoverToReveal: true // When false, only reveals on empty workspace
                 property list<string> pinnedApps: [ // IDs of pinned entries
-                    "org.kde.dolphin", "kitty",]
+                    "thunar", "kitty",] // caelestia4: Thunar is the file manager here
                 property list<string> ignoredAppRegexes: []
             }
 
@@ -394,7 +394,7 @@ Singleton {
             }
 
             property JsonObject launcher: JsonObject {
-                property list<string> pinnedApps: [ "org.kde.dolphin", "kitty", "cmake-gui"]
+                property list<string> pinnedApps: [ "thunar", "kitty", "cmake-gui"] // caelestia4: Thunar
             }
 
             property JsonObject light: JsonObject {
