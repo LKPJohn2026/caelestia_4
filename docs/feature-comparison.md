@@ -1,4 +1,4 @@
-# Feature comparison: Caelestia vs end-4 vs caelestia_4 (2026-10-13)
+# Feature comparison: Caelestia vs end-4 vs caelestia_4 (2026-10-13, reviewed 2026-10-14)
 
 Upstreams checked (fresh clones, not the local copies):
 - end-4/dots-hyprland `2f2a376` (2026-10-11): ii family + Waffle family, services, Hyprland config, keybinds
@@ -60,7 +60,7 @@ Status legend:
 | Calculator (`=`), emoji (`:`), clipboard (`;`) | ✅ C | clipboard from end-4's cliphist |
 | Run commands (`$`) in a terminal | ✅ C | via uwsm -T |
 | Web search (`?`) | ✅ C | |
-| Wallpaper picker with live preview | ✅ C | |
+| Wallpaper picker with live preview | ⚠️ Partial | image preview works; the colour preview while browsing doesn't (needs caelestia-cli; colours change once a wallpaper is applied) |
 | Colour scheme picker (preset schemes: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes) | ✅ C | Nexus > Wallpaper & style > Colours and launcher `>scheme`; 29 presets from the CLI repo, applied through end-4's matugen templates + terminal colours; "Follow the wallpaper" keeps end-4's colour styles |
 | Variant picker (tonal spot, fruit salad…) | ✅ E→C | mapped to end-4's palette type |
 
@@ -129,7 +129,7 @@ Status legend:
 | `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ✅ | hyprland/specialws.lua (upstream's Lua toggle): Ctrl+Shift+Esc sysmon (btop), Ctrl+Super+M music, Super+Alt+D communication, Super+R todo; apps start on first use, strays are gathered; apps from ~/.config/caelestia/cli.json `toggles` |
 | `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ✅ | `scheme.py set NAME FLAVOUR` / `set dynamic`; a preset survives wallpaper changes; single-mode presets keep their mode |
 | `caelestia screenshot` (region, freeze) | 🔁 Equivalent | region selector |
-| `caelestia record` (region, sound, pause, path to clipboard) | ✅ | record.sh now uses gpu-screen-recorder like Caelestia (NVENC, HEVC at 7680x2160): pause/resume from the recorder card (SIGUSR2); region, sound, full screen as before; no copy-path-to-clipboard |
+| `caelestia record` (region, sound, pause, path to clipboard) | ⚠️ Partial | record.sh now uses gpu-screen-recorder like Caelestia (NVENC, HEVC at 7680x2160): pause/resume from the recorder card (SIGUSR2); region, sound, full screen as before; no copy-path-to-clipboard |
 | `caelestia clipboard` (pick / delete entries) | ✅ C | launcher `;` |
 | `caelestia emoji` (+ fetch glyph data) | ✅ C | launcher `:` |
 | `caelestia wallpaper` (set / random / size filter / preview) | 🔁 Equivalent | switchwall.sh, random wallpaper fetch with size + shape filters |
@@ -139,7 +139,7 @@ Status legend:
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
 | App themes: foot, fish, starship, fastfetch, btop | ✅ | foot, fish, starship themed; btop + fastfetch now too (apptheme.py) |
-| App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ✅ partly | utils/scripts/apptheme.py after every colour change: btop, cava, Zed, Zen (userChrome, own fix: upstream's Zen theme doesn't work), Brave frame colour (policy dir must be writable), Cursor/VS Code/VSCodium extension via ~/.local/state/caelestia/scheme.json. Not here: Firefox (no profile), spicetify (no Spotify), Thunar, micro, nvim |
+| App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ⚠️ Partial | utils/scripts/apptheme.py after every colour change: btop, cava, Zed, Zen (userChrome, own fix: upstream's Zen theme doesn't work), Brave frame colour (policy dir must be writable), Cursor/VS Code/VSCodium extension via ~/.local/state/caelestia/scheme.json. Not here: Firefox (no profile), spicetify (no Spotify), Thunar, micro, nvim |
 
 ---
 
@@ -165,7 +165,7 @@ Status legend:
 | Session screen | 🔁 Equivalent | Caelestia session + end-4 extras |
 | Left sidebar: AI chat (Gemini Interactions API, OpenAI-compatible, Mistral, Ollama/LM Studio), tools, attachments, LaTeX, think blocks | ✅ E→C | Assistant drawer, detachable |
 | Left sidebar: translator, Anime (8 image boards) | ✅ E→C | |
-| Right sidebar: quick toggles, sliders, notifications, calendar, todo, timer, Wi-Fi/Bluetooth/volume/night-light dialogs | ✅ E→C | utilities drawer + dashboard + sidebar; dialogs ⚠️ (Nexus stand-in) |
+| Right sidebar: quick toggles, sliders, notifications, calendar, todo, timer, Wi-Fi/Bluetooth/volume/night-light dialogs | ✅ E→C | utilities drawer + dashboard + sidebar; dialogs open the Nexus pages |
 | Wallpaper selector (Ctrl+Super+T) | ✅ E→C | + videos listed |
 | Cheatsheet (keybinds + periodic table) | ✅ E→C | |
 | Settings app | ✅ E | rebuilt pages, Vietnamese |
@@ -200,4 +200,12 @@ Status legend:
 
 ## Gaps, most useful first
 
-None left from the upstream feature lists (2026-10-14). See the ⚠️ / 🔁 rows for partial or equivalent items.
+Still partial (review 2026-10-14):
+
+1. **Wallpaper colour preview**: browsing wallpapers previews the image, not the colours it would give.
+2. **App themes not covered**: micro (has catppuccin schemes, not the live palette), nvim (no config here; Caelestia ships a whole nvim config), Firefox (installed, no profile yet), spicetify / Thunar (not installed).
+3. **Recording path to the clipboard** (`caelestia record -c`).
+4. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
+5. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
+
+Waiting on a one-time step: Brave's frame colour needs `sudo install -d -o "$USER" /etc/brave/policies/managed`; Zen and Cursor/Zed need their theme picked once (see install notes).
