@@ -303,7 +303,8 @@ for i = 1, 4 do
     hl.bind(keycombos[i], hl.dsp.focus({ workspace = prefix[i] .. "1" }))
 end
 --## Special
-hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("special"), { description = "Workspace: Toggle scratchpad" })
+-- caelestia4: hides whichever special workspace is shown (music, communication...), else toggles the scratchpad
+hl.bind("SUPER + S", function() require("hyprland.specialws").toggle("specialws")() end, { description = "Workspace: Toggle scratchpad / hide special" })
 hl.bind("SUPER + mouse:275", hl.dsp.workspace.toggle_special("special"))
 for i = 1, 4 do
     local key = { "BracketLeft", "BracketRight", "Up", "Down" }
@@ -362,7 +363,17 @@ hl.bind("CTRL + SUPER + SHIFT + ALT + W", hl.dsp.exec_cmd(officeSoftware), { des
 hl.bind("SUPER + X", hl.dsp.exec_cmd(textEditor), { description = "App: Text editor" })
 hl.bind("CTRL + SUPER + V", hl.dsp.exec_cmd(volumeMixer), { description = "App: Volume mixer" })
 hl.bind("SUPER + I", hl.dsp.exec_cmd(settingsApp), { description = "App: Settings app" })
-hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
+-- caelestia4: Ctrl+Shift+Esc shows the system-monitor special workspace (btop) instead, see below; the task manager
+-- moved to Ctrl+Shift+Alt+Esc
+hl.bind("CTRL + SHIFT + ALT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
+
+-- caelestia4: Caelestia's special workspaces; each opens its app on first use (specialws.lua, apps in
+-- ~/.config/caelestia/cli.json "toggles"). Super+S still toggles the scratchpad.
+local specialws = require("hyprland.specialws")
+hl.bind("CTRL + SHIFT + Escape", specialws.toggle("sysmon"), { description = "Workspace: System monitor (btop)" })
+hl.bind("CTRL + SUPER + M", specialws.toggle("music"), { description = "Workspace: Music" })
+hl.bind("SUPER + ALT + D", specialws.toggle("communication"), { description = "Workspace: Communication (Discord)" })
+hl.bind("SUPER + R", specialws.toggle("todo"), { description = "Workspace: Todo" })
 
 --# Cursed stuff
 --## Make window not amogus large

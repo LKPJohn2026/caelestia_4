@@ -175,3 +175,12 @@ hl.layer_rule({ match = { namespace = "quickshell:wTaskView" }, no_anim = true})
 
 -- Launchers need to be FAST
 hl.layer_rule({ match = { namespace = "gtk4-layer-shell" }, no_anim = true})
+
+
+-- caelestia4: Caelestia's special workspaces (toggles in specialws.lua). These apps open on their special workspace
+-- however they're started; the toggle keys show / hide it (Ctrl+Shift+Esc, Ctrl+Super+M, Super+Alt+D, Super+R).
+hl.window_rule({match = {class = "^(btop)$" },                                                           workspace = "special:sysmon"})
+hl.window_rule({match = {class = "^(feishin|Supersonic|Plexamp|Spotify|Cider|com.github.th-ch.youtube-music|com-maxrave-simpmusic-MainKt)$" }, workspace = "special:music"})
+hl.window_rule({match = {initial_title = "^(Spotify|Spotify Free)$" },                                   workspace = "special:music"})
+hl.window_rule({match = {class = "^(discord|equibop|vesktop|whatsapp)$" },                               workspace = "special:communication"})
+hl.window_rule({match = {class = "^(todoist)$" },                                                        workspace = "special:todo"})
