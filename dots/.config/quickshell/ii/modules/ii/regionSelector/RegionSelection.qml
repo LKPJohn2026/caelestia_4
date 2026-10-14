@@ -201,7 +201,7 @@ PanelWindow {
     Process {
         id: checkRecordingProc
         running: isRecording
-        command: ["pidof", "wf-recorder"]
+        command: ["pidof", "gpu-screen-recorder"] // caelestia4: record.sh uses gpu-screen-recorder
         onExited: (exitCode, exitStatus) => {
             root.preparationDone = !screenshotProc.running
             root.recordingShouldStop = (exitCode === 0);
