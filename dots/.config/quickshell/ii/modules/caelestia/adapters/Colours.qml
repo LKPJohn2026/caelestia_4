@@ -7,7 +7,8 @@ pragma ComponentBehavior: Bound
 // pipeline is the only colour source (Caelestia normally reads caelestia-cli's generated scheme file).
 // Contract used by Caelestia UI: palette, tPalette, layer(), on(), light, transparency{enabled,base,layers},
 // scheme, setMode(), showPreview, wallLuminance.
-// Not supported: colour *preview* (needs caelestia-cli). `preview` mirrors `current`; showPreview stays false.
+// Colour preview: while browsing wallpapers, Wallpapers.preview() fills `preview` from utils/scripts/wallpreview.sh
+// (matugen dry run, same colour style as end-4) and sets showPreview; nothing is applied until a wallpaper is picked.
 // Colour source: `scheme` is "dynamic" (wallpaper colours, end-4's matugen) or one of Caelestia's preset schemes
 // (catppuccin, gruvbox, ...), applied by utils/scripts/scheme.py through the same end-4 outputs. The choice lives in
 // $XDG_STATE_HOME/caelestia4/scheme.json (watched here, so switchwall.sh --color / --type resetting it shows up).
@@ -109,7 +110,26 @@ Singleton {
         m3onTertiaryFixed: E4C.Appearance.m3colors.m3onTertiaryFixed
         m3onTertiaryFixedVariant: E4C.Appearance.m3colors.m3onTertiaryFixedVariant
     }
-    readonly property M3Palette preview: current
+    readonly property M3Palette preview: M3Palette {}
+
+    // Fill `preview` from matugen's JSON (colors.<snake_case role>.default.color). Roles matugen doesn't make
+    // (success, terminal colours) come from the current palette; key colours follow their roles, as in `current`.
+    function loadPreview(json: string, light: bool): void {
+        const roles = JSON.parse(json).colors ?? {};
+        const p = root.preview;
+        for (const key of ["m3success", "m3onSuccess", "m3successContainer", "m3onSuccessContainer"])
+            p[key] = root.current[key];
+        for (let i = 0; i < 16; i++)
+            p[`term${i}`] = root.current[`term${i}`];
+        for (const [role, value] of Object.entries(roles)) {
+            const prop = "m3" + role.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+            if (prop in p && value?.default?.color)
+                p[prop] = value.default.color;
+        }
+        for (const [key, role] of [["primary", "primary"], ["secondary", "secondary"], ["tertiary", "tertiary"], ["neutral", "surface"], ["neutral_variant", "outlineVariant"]])
+            p[`m3${key}_paletteKeyColor`] = p[`m3${role}`];
+        root.previewLight = light;
+    }
     readonly property Transparency transparency: Transparency {}
     readonly property alias wallLuminance: analyser.luminance
 
