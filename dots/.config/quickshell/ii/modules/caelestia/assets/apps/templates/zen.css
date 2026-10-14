@@ -1,0 +1,67 @@
+/* caelestia4: Zen colours from the desktop scheme (written by utils/scripts/apptheme.py on every colour change;
+ * Zen reads it at start-up). Based on caelestia-dots/caelestia zen/userChrome.css, whose colours came from the
+ * CaelestiaFox extension's theme (--lwt-* variables); that extension doesn't work in Zen, so the colours are
+ * filled in here directly. */
+:root {
+    --c-accent: {{ $primary }};
+    --c-text: {{ $onSurface }};
+    --c-mantle: {{ $surfaceContainerLow }};
+    --c-base: {{ $surface }};
+    --c-surface0: {{ $surfaceContainer }};
+    --c-surface1: {{ $outlineVariant }};
+
+    --zen-primary-color: var(--c-accent) !important;
+    --zen-colors-primary: var(--c-surface0) !important;
+    --zen-colors-secondary: var(--c-surface0) !important;
+    --zen-colors-tertiary: var(--c-base) !important;
+    --zen-colors-border: var(--c-surface1) !important;
+    --toolbarbutton-icon-fill: var(--c-accent) !important;
+    --toolbarbutton-icon-fill-attention: var(--c-accent) !important;
+    --toolbarbutton-icon-fill-attention-text-light: var(--c-text) !important;
+    --toolbarbutton-icon-fill-attention-text-dark: var(--c-base) !important;
+    --lwt-text-color: var(--c-text) !important;
+    --toolbar-color: var(--c-text) !important;
+    --toolbar-field-color: color-mix(in srgb, var(--c-text), transparent 15%) !important;
+    --toolbar-field-focus-color: color-mix(in srgb, var(--c-text), transparent 10%) !important;
+    --toolbar-field-background-color: var(--c-surface0) !important;
+    --arrowpanel-color: var(--c-text) !important;
+    --arrowpanel-background: var(--c-base) !important;
+    --arrowpanel-border-color: var(--c-surface1) !important;
+    --lwt-sidebar-text-color: var(--c-text) !important;
+    --lwt-sidebar-background-color: var(--c-mantle) !important;
+    --toolbar-bgcolor: var(--c-surface0) !important;
+    --newtab-background-color: var(--c-base) !important;
+    --zen-themed-toolbar-bg: var(--c-mantle) !important;
+    --zen-main-browser-background: var(--c-mantle) !important;
+    --zen-branding-bg: var(--c-mantle) !important;
+    --urlbarView-highlight-color: var(--c-text) !important;
+    --in-content-primary-button-text-color: var(--c-base) !important;
+    --in-content-primary-button-background: var(--c-accent) !important;
+    --in-content-primary-button-background-hover: color-mix(in srgb, var(--c-accent), var(--c-text) 15%) !important;
+    --tab-selected-bgcolor: var(--c-surface0) !important;
+    --tab-loading-fill: var(--c-accent) !important;
+}
+
+tooltip {
+    appearance: none !important;
+    background-color: var(--c-mantle) !important;
+    color: var(--c-text) !important;
+    border: 1px solid color-mix(in srgb, var(--c-accent), transparent 70%) !important;
+    border-radius: 8px !important;
+}
+
+.sidebar-placesTree {
+    background-color: var(--c-base) !important;
+}
+
+#urlbar-background {
+    background-color: var(--c-surface0) !important;
+}
+
+.urlbarView-url {
+    color: var(--c-accent) !important;
+}
+
+#zenEditBookmarkPanelFaviconContainer {
+    background: var(--c-mantle) !important;
+}

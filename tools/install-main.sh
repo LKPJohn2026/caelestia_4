@@ -52,6 +52,9 @@ rsync -a --delete --exclude '.git' "$DOTS/quickshell/ii/" "$CFG/quickshell/ii/"
 # caelestia4: the shell doesn't hot-reload (Quickshell.watchFiles = false, see shell.qml): restart it to pick up
 # the new files, if it's running as a unit
 systemctl --user try-restart caelestia4-shell.service 2>/dev/null || true
+# caelestia4: Caelestia's app themes (btop / fastfetch / cava configs, Zen userChrome, the Caelestia extension in
+# Cursor / VS Code / VSCodium); never replaces a file it didn't create. Colours then follow every scheme change.
+python3 "$CFG/quickshell/ii/modules/caelestia/utils/scripts/apptheme.py" setup || warn "app themes setup failed"
 
 # end-4 Python venv (end-4's installer makes it; ours didn't): terminal colours from the wallpaper
 # (generate_colors_material.py), screen translator sign-in (google-auth), image regions / text colours (opencv).
