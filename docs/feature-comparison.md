@@ -150,7 +150,7 @@ Status legend:
 | Bar (horizontal / vertical) | 🔁 Equivalent | Caelestia bar |
 | Bar extras: resources, media, weather, utility buttons, clock & battery popups, unread count | 🔁 Equivalent | dashboard tabs, utilities drawer, status icons |
 | Screen corners + hot corners | 🔁 Equivalent | Caelestia frame + edge hover |
-| Background widgets: cookie / digital clock, quote, parallax wallpaper | ⚠️ Partial | Caelestia desktop clock + weather; no cookie clock, quote or parallax |
+| Background widgets: cookie / digital clock, quote, parallax wallpaper | ✅ E→C | end-4's widgets (modules/caelestia/background/e4widgets) on the Caelestia background: Settings > Desktop > Desktop clock (Caelestia / Cookie / Digital / Off), placement free / least busy / most busy, quote, weather card; workspace parallax with zoom and widget factor |
 | Dock (pinned apps, open windows, previews) | ✅ E→C | Caelestia-style dock with end-4's features |
 | Lock screen (QML) | 🔁 Equivalent | hyprlock (end-4 option `useHyprlock`) |
 | Media controls popup | 🔁 Equivalent | dashboard media tab |
@@ -200,4 +200,4 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Background widgets** (end-4): cookie clock, quote, parallax wallpaper.
+None left from the upstream feature lists (2026-10-14). See the ⚠️ / 🔁 rows for partial or equivalent items.

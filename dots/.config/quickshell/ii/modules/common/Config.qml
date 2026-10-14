@@ -202,7 +202,7 @@ Singleton {
             property JsonObject background: JsonObject {
                 property JsonObject widgets: JsonObject {
                     property JsonObject clock: JsonObject {
-                        property bool enable: true
+                        property bool enable: false // caelestia4: Caelestia's desktop clock is the default (Settings > Desktop > Desktop clock)
                         property bool showOnlyWhenLocked: false
                         property string placementStrategy: "leastBusy" // "free", "leastBusy", "mostBusy"
                         property real x: 100
