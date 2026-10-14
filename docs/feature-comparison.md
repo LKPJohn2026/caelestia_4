@@ -99,7 +99,7 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | PAM lock with clock, profile picture, password field | 🔁 Equivalent | hyprlock with the Caelestia theme (survives monitor drop on wake) |
-| Lock screen extras: notifications, media, weather, resources, fetch | ❌ Missing | hyprlock shows clock + input only |
+| Lock screen extras: notifications, media, weather, resources, fetch | 🔁 Equivalent | hyprlock (Caelestia layout) has weather, system, media, resources and, since 2026-10-14, notifications (app + summary, newest 4); read-only, no media buttons. Kept hyprlock over the in-shell lock: it survives the G95NC dropping off DP on wake |
 
 ### Area picker (modules/areapicker)
 | Feature | Status | Notes |
@@ -200,7 +200,6 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
-2. **Recording pause / resume** and copying the recording path.
-3. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-4. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Recording pause / resume** and copying the recording path.
+2. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
+3. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
