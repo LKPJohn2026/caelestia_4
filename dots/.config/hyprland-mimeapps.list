@@ -1,0 +1,4 @@
+# caelestia4: defaults for the Hyprland session only (XDG_CURRENT_DESKTOP=Hyprland:KDE, so this file wins over
+# mimeapps.list there; Plasma keeps its own). Installed by tools/install-main.sh, merged into an existing file.
+[Default Applications]
+inode/directory=thunar.desktop

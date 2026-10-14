@@ -129,7 +129,7 @@ Status legend:
 | `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ✅ | hyprland/specialws.lua (upstream's Lua toggle): Ctrl+Shift+Esc sysmon (btop), Ctrl+Super+M music, Super+Alt+D communication, Super+R todo; apps start on first use, strays are gathered; apps from ~/.config/caelestia/cli.json `toggles` |
 | `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ✅ | `scheme.py set NAME FLAVOUR` / `set dynamic`; a preset survives wallpaper changes; single-mode presets keep their mode |
 | `caelestia screenshot` (region, freeze) | 🔁 Equivalent | region selector |
-| `caelestia record` (region, sound, pause, path to clipboard) | ⚠️ Partial | record.sh now uses gpu-screen-recorder like Caelestia (NVENC, HEVC at 7680x2160): pause/resume from the recorder card (SIGUSR2); region, sound, full screen as before; no copy-path-to-clipboard |
+| `caelestia record` (region, sound, pause, path to clipboard) | ✅ | record.sh uses gpu-screen-recorder like Caelestia (NVENC, HEVC at 7680x2160): pause/resume (SIGUSR2); region, sound, full screen; stopping copies the file to the clipboard (text/uri-list) |
 | `caelestia clipboard` (pick / delete entries) | ✅ C | launcher `;` |
 | `caelestia emoji` (+ fetch glyph data) | ✅ C | launcher `:` |
 | `caelestia wallpaper` (set / random / size filter / preview) | 🔁 Equivalent | switchwall.sh, random wallpaper fetch with size + shape filters |
@@ -139,7 +139,7 @@ Status legend:
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
 | App themes: foot, fish, starship, fastfetch, btop | ✅ | foot, fish, starship themed; btop + fastfetch now too (apptheme.py) |
-| App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ⚠️ Partial | utils/scripts/apptheme.py after every colour change: btop, cava, Zed, Zen (userChrome, own fix: upstream's Zen theme doesn't work), Brave frame colour (policy dir must be writable), Cursor/VS Code/VSCodium extension via ~/.local/state/caelestia/scheme.json. Not here: Firefox (no profile), spicetify (no Spotify), Thunar, micro, nvim |
+| App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ✅ partly | apptheme.py after every colour change: btop, cava, Zed, Zen, Brave, Cursor/VS Code/VSCodium (scheme.json), Thunar (gtk-3.0/thunar.css), Spotify (spicetify color.ini, live via `spicetify watch -s`), nvim (colorscheme watches scheme.json), micro ("simple" = terminal palette). Not here: Firefox (no profile yet) |
 
 ---
 
@@ -203,9 +203,8 @@ Status legend:
 Still partial (review 2026-10-14):
 
 1. **Wallpaper colour preview**: browsing wallpapers previews the image, not the colours it would give.
-2. **App themes not covered**: micro (has catppuccin schemes, not the live palette), nvim (no config here; Caelestia ships a whole nvim config), Firefox (installed, no profile yet), spicetify / Thunar (not installed).
-3. **Recording path to the clipboard** (`caelestia record -c`).
-4. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
-5. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
+2. **App themes not covered**: Firefox (installed, no profile yet).
+3. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
+4. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
 
 Waiting on a one-time step: Brave's frame colour needs `sudo install -d -o "$USER" /etc/brave/policies/managed`; Zen and Cursor/Zed need their theme picked once (see install notes).
