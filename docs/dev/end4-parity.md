@@ -134,7 +134,7 @@ Also: end-4's `ConflictKiller` opened its "Shell conflicts killer" dialog on eve
 - Caveat: if LM Studio deletes or re-downloads a model, Ollama keeps its hard link, so the space is only freed after `ollama rm`.
 
 ## Gap review: end-4 functions still unavailable in the Caelestia family (2026-10-08)
-Method: every `quickshell:<action>` used by Hyprland keybinds, checked against the GlobalShortcuts/CustomShortcuts registered by the modules the Caelestia family loads. Plus PLAN.md phases, the docs, and runtime logs.
+Method: every `quickshell:<action>` used by Hyprland keybinds, checked against the GlobalShortcuts/CustomShortcuts registered by the modules the Caelestia family loads. Plus docs/dev/PLAN.md phases, the docs, and runtime logs.
 
 **Not working**
 1. ~~`Super+J` → `quickshell:barToggle`: no handler~~ **fixed 2026-10-08** (ScreenState.barHidden).

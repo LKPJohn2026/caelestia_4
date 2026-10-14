@@ -1,4 +1,4 @@
-// caelestia4: the Caelestia-design panel family (see PLAN.md, docs/phase3.md).
+// caelestia4: the Caelestia-design panel family (see docs/dev/PLAN.md, docs/dev/phase3.md).
 //  - Caelestia design: frame + bar + all drawers (dashboard, launcher, notifications, OSD, session,
 //    sidebar, utilities, popouts, toasts) and the background, running on end-4 services via adapters.
 //  - Launcher = Caelestia launcher + end-4 LauncherSearch (Phase 5 merge); Overview (modules/caelestia/overview) = end-4's

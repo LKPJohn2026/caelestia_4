@@ -9,7 +9,7 @@
 | Caelestia v2.5.0 | ❌ fails at load: `Unrecognized pragma "DefaultEnv …"` | ✅ fully working (Phase 0.9) |
 | end-4 `ii` @ `547836f1b0` | ✅ (upstream default) | ✅ user-tested: bar, both sidebars, overview, launcher, notifications, lock, settings, waffle switch |
 
-### end-4 log on `41651d7d` (`docs/logs/ii-on-quickshell-41651d7.log`)
+### end-4 log on `41651d7d` (`docs/dev/logs/ii-on-quickshell-41651d7.log`)
 31 lines: 4 INFO, 10 DEBUG, 16 WARN, 1 "ERROR". **None comes from a Quickshell API or version mismatch.** A version problem looks like Caelestia's: `Unrecognized pragma`, `… is not a type`, `module "Quickshell.X" is not installed`. Nothing like that appears.
 
 | Message | Cause | Action |

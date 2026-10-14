@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Rewrite Caelestia's internal QML imports so ported files live under
 # end-4's tree at modules/caelestia/ without clashing with end-4's own qs.* names.
-# (PLAN.md §3.2). Rewrites import lines only, in place. Idempotent.
+# (docs/dev/PLAN.md §3.2). Rewrites import lines only, in place. Idempotent.
 #
 #   qs.components[.x]  -> qs.modules.caelestia.components[.x]
 #   qs.utils           -> qs.modules.caelestia.utils

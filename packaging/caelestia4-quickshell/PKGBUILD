@@ -1,5 +1,5 @@
 # caelestia_4: Quickshell pinned to the one revision verified to run BOTH
-# end-4 `ii` (@547836f1b0) and Caelestia v2.5.0. See docs/phase1.md.
+# end-4 `ii` (@547836f1b0) and Caelestia v2.5.0. See docs/dev/phase1.md.
 # Based on the AUR quickshell-git PKGBUILD (maintainer: Entailz).
 # Replaces both quickshell-git (AUR) and illogical-impulse-quickshell-git (end-4).
 

@@ -66,6 +66,6 @@ After a fresh login the family loads; probe 18/18 OK; no warnings from any caele
 ### Phase 3 status
 Done: frame + bar + all drawers render and work (user-tested); keybind bridge; end-4 modules (search, AI sidebar, lock, polkit, …) inside the family.
 Open:
-- Visual comparison against `docs/reference/` at 7680×2160 @ 1.5×
+- Visual comparison against a private reference folder (phone captures, kept out of the repo) at 7680×2160 @ 1.5×
 - Caelestia launcher keybind (vs end-4 Super search; Phase 5 decision)
 - A day of normal use (PLAN Phase 3 "done when")
