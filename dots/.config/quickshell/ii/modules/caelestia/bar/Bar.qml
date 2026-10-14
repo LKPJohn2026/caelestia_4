@@ -20,9 +20,6 @@ ColumnLayout {
     readonly property int vPadding: Tokens.padding.large
 
     function closeTray(): void {
-        if (!Config.bar.tray.compact)
-            return;
-
         for (let i = 0; i < repeater.count; i++) {
             const tray = (repeater.itemAt(i) as EntryWrapper)?.item as Tray;
             if (tray)
@@ -54,11 +51,12 @@ ColumnLayout {
             }
         } else if (id === "tray" && Config.bar.popouts.tray) {
             const tray = ch.item as Tray;
-            if (!Config.bar.tray.compact || (tray.expanded && !tray.expandIcon.contains(mapToItem(tray.expandIcon, tray.implicitWidth / 2, y)))) {
+            // caelestia4: pinned items are shown while collapsed too, so only the expand arrow expands
+            if (!tray.expandIcon.contains(mapToItem(tray.expandIcon, tray.implicitWidth / 2, y))) {
                 const index = Math.floor(((y - top - tray.padding * 2 + tray.spacing) / tray.layout.implicitHeight) * tray.items.count);
                 const trayItem = tray.items.itemAt(index);
                 if (trayItem) {
-                    popouts.currentName = `traymenu${index}`;
+                    popouts.currentName = `traymenu-${(trayItem as TrayItem).modelData.id}`; // caelestia4: by id (order changes with pins)
                     popouts.currentCenter = Qt.binding(() => trayItem.mapToItem(root, 0, trayItem.implicitHeight / 2).y);
                     popouts.hasCurrent = true;
                 } else {
