@@ -126,7 +126,7 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | `caelestia shell` (start / restart / IPC / log) | 🔁 Equivalent | systemd unit `caelestia4-shell` (uwsm), `qs ipc` |
-| `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ❌ Missing | only the default scratchpad (Super+S) here |
+| `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ✅ | hyprland/specialws.lua (upstream's Lua toggle): Ctrl+Shift+Esc sysmon (btop), Ctrl+Super+M music, Super+Alt+D communication, Super+R todo; apps start on first use, strays are gathered; apps from ~/.config/caelestia/cli.json `toggles` |
 | `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ✅ | `scheme.py set NAME FLAVOUR` / `set dynamic`; a preset survives wallpaper changes; single-mode presets keep their mode |
 | `caelestia screenshot` (region, freeze) | 🔁 Equivalent | region selector |
 | `caelestia record` (region, sound, pause, path to clipboard) | ⚠️ Partial | record region/screen/sound here; the recorder card's pause button does nothing (end-4's wf-recorder script can't pause) |
@@ -200,9 +200,8 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Special workspaces** (`caelestia toggle`: communication, music, sysmon, todo), each opening its app on first use.
-2. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
-3. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
-4. **Recording pause / resume** and copying the recording path.
-5. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-6. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
+2. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
+3. **Recording pause / resume** and copying the recording path.
+4. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
+5. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
