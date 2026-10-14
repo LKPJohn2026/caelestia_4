@@ -60,7 +60,7 @@ Status legend:
 | Calculator (`=`), emoji (`:`), clipboard (`;`) | ✅ C | clipboard from end-4's cliphist |
 | Run commands (`$`) in a terminal | ✅ C | via uwsm -T |
 | Web search (`?`) | ✅ C | |
-| Wallpaper picker with live preview | ⚠️ Partial | image preview works; the colour preview while browsing doesn't (needs caelestia-cli; colours change once a wallpaper is applied) |
+| Wallpaper picker with live preview | ✅ C | image and colour preview: utils/scripts/wallpreview.sh (matugen dry run, end-4's colour style incl. auto) fills Colours.preview; picking keeps it until end-4's colours arrive. Not for video wallpapers |
 | Colour scheme picker (preset schemes: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes) | ✅ C | Nexus > Wallpaper & style > Colours and launcher `>scheme`; 29 presets from the CLI repo, applied through end-4's matugen templates + terminal colours; "Follow the wallpaper" keeps end-4's colour styles |
 | Variant picker (tonal spot, fruit salad…) | ✅ E→C | mapped to end-4's palette type |
 
@@ -202,9 +202,8 @@ Status legend:
 
 Still partial (review 2026-10-14):
 
-1. **Wallpaper colour preview**: browsing wallpapers previews the image, not the colours it would give.
-2. **App themes not covered**: Firefox (installed, no profile yet).
-3. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
-4. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
+1. **App themes not covered**: Firefox (installed, no profile yet).
+2. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
+3. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
 
 Waiting on a one-time step: Brave's frame colour needs `sudo install -d -o "$USER" /etc/brave/policies/managed`; Zen and Cursor/Zed need their theme picked once (see install notes).
