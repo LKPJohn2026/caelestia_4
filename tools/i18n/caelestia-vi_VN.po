@@ -2604,3 +2604,9 @@ msgstr "Màu theo hình nền"
 
 msgid "not synced"
 msgstr "không đồng bộ"
+
+msgid "Pin to the bar"
+msgstr "Ghim lên thanh"
+
+msgid "Unpin from the bar"
+msgstr "Bỏ ghim khỏi thanh"

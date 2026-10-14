@@ -186,7 +186,7 @@ Status legend:
 | Battery warnings, updates check, privacy indicator | ✅ | |
 | Hyprsunset night light + gamma, anti-flashbang shader | ✅ | |
 | EasyEffects integration | ✅ | |
-| Tray: pin items | ❌ Missing | Caelestia tray has compact / recolour but no pinning |
+| Tray: pin items | ✅ E→C | end-4's tray.pinnedItems / invertPinnedItems (TrayService): pinned icons stay on the bar, the rest behind the expand arrow; middle-click an icon or use "Ghim lên thanh" at the top of its menu |
 | Background-mute games | ✅ | caelestia4 addition |
 | Panel family switch (Ctrl+Super+P) | 🚫 Dropped | ii family removed 2026-10-12 |
 
@@ -200,4 +200,4 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Background widgets** (end-4): cookie clock, quote, parallax wallpaper.
