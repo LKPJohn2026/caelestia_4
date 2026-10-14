@@ -6,6 +6,8 @@
 #include <qnetworkreply.h>
 #include <qtimer.h>
 
+#include <functional>
+
 #include "lyriccandidate.hpp"
 
 namespace caelestia::services {
@@ -30,6 +32,8 @@ class Lyrics : public QObject {
             NOTIFY selectedCandidateChanged)
     Q_PROPERTY(bool loading READ loading NOTIFY loadingChanged)
     Q_PROPERTY(bool hasLyrics READ hasLyrics NOTIFY hasLyricsChanged)
+    // caelestia4: false for plain (untimed) lyrics, the last resort when no source has synced ones
+    Q_PROPERTY(bool synced READ synced NOTIFY syncedChanged)
     Q_PROPERTY(qreal offset READ offset WRITE setOffset NOTIFY offsetChanged)
     Q_PROPERTY(QString trackArtist READ trackArtist NOTIFY trackChanged)
     Q_PROPERTY(QString trackTitle READ trackTitle NOTIFY trackChanged)
@@ -46,6 +50,7 @@ public:
     void setSelectedCandidate(const LyricCandidate& value);
     [[nodiscard]] bool loading() const;
     [[nodiscard]] bool hasLyrics() const;
+    [[nodiscard]] bool synced() const;
     [[nodiscard]] qreal offset() const;
     void setOffset(qreal value);
     [[nodiscard]] QString trackArtist() const;
@@ -66,13 +71,14 @@ signals:
     void selectedCandidateChanged();
     void loadingChanged();
     void hasLyricsChanged();
+    void syncedChanged();
     void offsetChanged();
     void trackChanged();
 
 private:
     void setBackend(LyricsBackend value);
     void setLoading(bool value);
-    void setLines(QVector<LyricLine> lines, LyricsBackend source);
+    void setLines(QVector<LyricLine> lines, LyricsBackend source, bool synced = true);
     void clearLines();
     void appendCandidates(const QList<LyricCandidate>& add);
     void clearCandidates();
@@ -85,13 +91,30 @@ private:
     void tryLocal(int reqId);
     void tryLrclib(int reqId);
     void tryNetEase(int reqId);
+    void tryKugou(int reqId);
+    void tryQQMusic(int reqId);
+    void tryPlain(int reqId);
     void chainNext(LyricsBackend justFailed, int reqId);
 
     void searchLrclibCandidates(int reqId);
     void searchNetEaseCandidates(int reqId);
+    void searchKugouCandidates(int reqId);
+    void searchQQMusicCandidates(int reqId);
 
     void fetchLrclibById(const QString& id, int reqId);
-    void fetchNetEaseLyricsById(const QString& id, int reqId);
+    void fetchNetEaseLyricsById(const QString& id, int reqId, bool chain = false);
+    // done(lrc): empty when nothing usable was found
+    void fetchKugouById(const QString& hash, int reqId, const std::function<void(const QString&)>& done);
+    void fetchQQMusicById(const QString& songmid, int reqId, const std::function<void(const QString&)>& done);
+    bool applyFetched(const QString& lrc, LyricsBackend source, const LyricCandidate& cand);
+
+    struct Match {
+        QString title;
+        QString artist;
+        qreal duration = 0.0;
+    };
+    // Index of the result that best fits the playing track (artist, title, length), or -1 if none fits
+    [[nodiscard]] int bestMatch(const QList<Match>& results) const;
 
     QNetworkReply* getJson(const QUrl& url, const QHash<QByteArray, QByteArray>& headers = {});
     void trackReply(int reqId, QNetworkReply* reply);
@@ -115,6 +138,7 @@ private:
     static void writeCachedLrc(LyricsBackend backend, const QString& id, const QString& text);
 
     [[nodiscard]] static QVector<LyricLine> parseLrc(const QString& text);
+    [[nodiscard]] static QVector<LyricLine> parsePlain(const QString& text);
     [[nodiscard]] static QString tryReadLocalLrc(const QString& dir, const QString& artist, const QString& title);
     [[nodiscard]] static QString findLocalLrcRecursive(const QString& dir, const QString& artist, const QString& title);
 
@@ -129,6 +153,10 @@ private:
     LyricCandidate m_selected;
     bool m_loading = false;
     bool m_hasLyrics = false;
+    bool m_synced = true;
+    // Untimed lyrics met on the way (LRCLIB plainLyrics), used only if no source has synced ones
+    QString m_plainFallback;
+    LyricCandidate m_plainFallbackCandidate;
     qreal m_offset = 0.0;
 
     QString m_artist;
