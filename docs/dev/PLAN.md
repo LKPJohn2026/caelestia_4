@@ -187,12 +187,12 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
   - which GPU drives the screen (`AQ_DRM_DEVICES` → the card with the monitor attached; confirm with `/dev/dri/by-path`);
   - 240 Hz + VRR, scale 1.5, `QT_SCALE_FACTOR` behavior.
 - [x] Separately, install **upstream Caelestia** for `e4test` (swapping Quickshell packages) to record its look as a visual reference: screenshots and screen recordings of every drawer at 7680×2160.
-- **Done when:** both upstreams were seen working on this hardware, the references are saved in `docs/reference/`, and Plasma is unchanged (`git diff` is clean in `oxygen-plasma`).
+- **Done when:** both upstreams were seen working on this hardware, the references are saved in a private reference folder (phone captures, kept out of the repo), and Plasma is unchanged (`git diff` is clean in `oxygen-plasma`).
 
 ### Phase 1: Repo and toolchain (1–2 sessions)
 - [x] Bring end-4 into this repo as **upstream**: `git remote add upstream https://github.com/end-4/dots-hyprland`, merge `main` at a pinned commit. A private GitHub repo can't be a fork of a public one, hence the remote.
 - [x] Vendor Caelestia **shell source at tag `v2.5.0`** under `third_party/caelestia-shell/` with `git subtree`. Used for the plugin build and as the UI port source.
-- [x] **Choose one Quickshell commit** → `41651d7d` (see docs/phase1.md) that runs both end-4 `ii` and the Caelestia UI:
+- [x] **Choose one Quickshell commit** → `41651d7d` (see docs/dev/phase1.md) that runs both end-4 `ii` and the Caelestia UI:
   - try end-4's pin `7511545e` with the Caelestia plugin;
   - if the Caelestia QML needs newer APIs, move to the oldest `quickshell-git` commit that Caelestia v2.5.0 accepts, then re-test `ii`;
   - package it as `caelestia4-quickshell` (`provides/conflicts` like end-4's PKGBUILD).
@@ -208,7 +208,7 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [x] Copy `modules/caelestia/components/` and run the import rewrite.
 - **Done when:** Ctrl+Super+P cycles ii → waffle → caelestia (blank) → ii without errors in `qs log`.
 
-### Phase 3: Frame + bar, the signature look (3–4 sessions) ⭐ first usable milestone (done 2026-10-03, docs/phase3.md; Phases 4 and 6 were folded in)
+### Phase 3: Frame + bar, the signature look (3–4 sessions) ⭐ first usable milestone (done 2026-10-03, docs/dev/phase3.md; Phases 4 and 6 were folded in)
 - [x] Port `modules/drawers/*` (Drawers, Panels, Exclusions, Regions, Interactions, ContentWindow).
 - [x] Port `modules/bar/**` (32 files): workspaces, active window, tray (end-4 `TrayService`), clock, status icons, popouts. Network popout shows Wi-Fi + ethernet ("both" view).
 - [x] Add status icons: privacy ✅ + updates ✅ (2026-10-08), keyboard layout (Caelestia `kbLayout`, off by default), speaker on (`shell.json`). Song recognition lives in the quick toggles instead.
@@ -220,7 +220,7 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [x] OSD (volume, brightness, keyboard layout) on end-4 services.
 - [x] Session menu (lock / logout / suspend / reboot / shutdown) using end-4's session actions.
 
-### Phase 5: Launcher + wallpapers + theming (done 2026-10-03, docs/phase5.md)
+### Phase 5: Launcher + wallpapers + theming (done 2026-10-03, docs/dev/phase5.md)
 - [x] Caelestia launcher UI over `LauncherSearch` / `LauncherApps` / `AppSearch`: apps, calculator, emoji, clipboard, actions (merged "option C").
 - [x] Wallpaper list over end-4 `Wallpapers`; the `Colours` adapter recolors everything live.
 - [x] KDE colour hook disabled on the shared account (`switchwall.sh` checks the `shared-desktop` marker).
@@ -230,7 +230,7 @@ Effort is in working sessions (~2–4 h each), as a rough guide.
 - [x] Dash, Media (with plugin lyrics), Performance, Weather.
 - [x] **Todo** and **Timer** tabs (end-4 widgets, `keepLoaded` fix for the collapsing panes).
 
-### Phase 7: end-4 exclusives in Caelestia style (done for daily use; docs/phase7.md, docs/end4-parity.md)
+### Phase 7: end-4 exclusives in Caelestia style (done for daily use; docs/dev/phase7.md, docs/dev/end4-parity.md)
 - [x] **Assistant drawer** (left edge): AI chat, Translator, Anime (Booru + Wallhaven with keyring API key).
 - [x] Utilities drawer: all 16 end-4 quick toggles (edit mode, tooltips, right-click actions), System card (uptime / reload / end-4 settings / session), quick sliders, Eye-protection panel (night light schedule, warmth, gamma, anti-flashbang).
 - [x] Audio popout: per-app mixer (icons resolved via the owning window), mic slider.

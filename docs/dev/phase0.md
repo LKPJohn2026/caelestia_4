@@ -57,7 +57,7 @@ Read before running: `setup`, `sdata/lib/*.sh`, `sdata/subcmd-install/*.sh`, `sd
   - Ctrl+Super+P → `waffle` and back;
   - 240 Hz + VRR.
 - [ ] **0.8** Back in the main account: Plasma still Oxygen? `git -C ~/oxygen-plasma diff --stat` after copying the current config. KWallet still unlocks?
-- [ ] **0.9** Caelestia reference (second throwaway user `caetest`, since it needs `quickshell-git`, which conflicts with end-4's build): snapshot, install, capture every drawer at 7680×2160 into `docs/reference/`, then roll back the snapshot or remove the packages.
+- [ ] **0.9** Caelestia reference (second throwaway user `caetest`, since it needs `quickshell-git`, which conflicts with end-4's build): snapshot, install, capture every drawer at 7680×2160 into a private reference folder (kept out of the repo), then roll back the snapshot or remove the packages.
 - [ ] **0.10** Remove the test users (`sudo userdel -r e4test caetest`) once the references are saved.
 
 ## 4. Results
@@ -94,4 +94,4 @@ Read before running: `setup`, `sdata/lib/*.sh`, `sdata/subcmd-install/*.sh`, `sd
 - **Result: Caelestia v2.5.0 does not start on end-4's pin.** Headless load: `ERROR: Unrecognized pragma "DefaultEnv QS_NO_RELOAD_POPUP=1"` (shell.qml line 2). Hyprland runs with keybinds but no shell UI.
 - **Phase 1 input:** end-4's pin is too old for Caelestia v2.5.0 as-is. Either move to a newer `quickshell-git` and re-test `ii`, or patch the Caelestia QML that needs newer APIs (`DefaultEnv` → `Env` is the first one; there may be more).
 - Workaround for the test: `yay -S aur/quickshell-git` (replaces end-4's package).
-- **With `quickshell-git 0.3.1.r18.g41651d7` (`41651d7d`) Caelestia v2.5.0 runs fully** (confirmed by the user). Reference captures: `docs/reference/` (17 frames from a phone recording + README with design notes).
+- **With `quickshell-git 0.3.1.r18.g41651d7` (`41651d7d`) Caelestia v2.5.0 runs fully** (confirmed by the user). Reference captures: 17 frames from a phone recording, kept out of the repo (they show the room and nearby networks).

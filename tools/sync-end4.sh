@@ -4,11 +4,18 @@
 #  - upstream edits to a removed file  -> modify/delete conflict  -> resolved by keeping it removed
 #  - upstream adds a file under a removed directory -> merges cleanly -> removed again after the merge
 # Anything else that conflicts is left for you to resolve (the script stops and lists it).
-# Usage: tools/sync-end4.sh        Author: git config of this repo (John La).
+# Usage: tools/sync-end4.sh        Commits use this repo's git identity (git config user.name / user.email).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 REMOVED=(
+  # end-4's GitHub files (repo README, issue templates, CI that moderates / auto-closes issues): this fork has its own
+  .github/README.md
+  .github/CONTRIBUTING.md
+  .github/ISSUE_TEMPLATE
+  .github/workflows
+  .github/pull_request_template.md
+  .github/assets
   dots/.config/quickshell/ii/modules/waffle            # Waffle panel family (removed 2026-10-11)
   dots/.config/quickshell/ii/panelFamilies/WaffleFamily.qml
   dots/.config/quickshell/ii/modules/common/widgets/CalendarView.qml  # only used by Waffle
@@ -33,7 +40,7 @@ REMOVED=(
   dots/.config/quickshell/ii/modules/ii/sidebarLeft        # -> modules/caelestia/assistant (moved, then restyled)
 )
 is_removed() { local p; for p in "${REMOVED[@]}"; do [[ "$1" == "$p" || "$1" == "$p"/* ]] && return 0; done; return 1; }
-GIT=(git -c user.name="John La" -c user.email=john.pla1998@gmail.com)
+GIT=(git)
 
 git diff --quiet && git diff --cached --quiet || { echo "working tree not clean" >&2; exit 1; }
 git fetch -q upstream
