@@ -109,6 +109,7 @@ KDE-style "reopen my apps on the same workspaces" for the Hyprland session: `dot
   - Font: Google Sans Flex is installed to `~/.local/share/fonts/caelestia4` (installer step). end-4's old theme referenced this font without it being installed.
   - Verified: a real lock with a screenshot (grim works while locked); no hyprlock config errors; then the layout was balanced (right column, panel height, media ellipsis).
   - end-4's original theme is backed up at `~/.local/state/caelestia4/hyprlock.conf.end4-backup`.
+- **Lock screen notifications (2026-10-14):** the right column's session card became a notifications card like Caelestia's lock: count + newest 4 as "app · summary  HH:MM" from end-4's store (`~/.cache/quickshell/notifications/notifications.json`, script `hyprlock/caelestia/notifications.sh`). Never the body (anyone at the screen can read it). "Locked at" and the keyboard layout moved to the card's bottom line. Lock screen text is Vietnamese now (cards, placeholder, Caps Lock hint; weather from wttr.in with `lang=vi&m`).
 - **Qt 6.12 update (2026-10-08):** pacman's `quickshell-check.hook` warned that Quickshell was built against Qt 6.11.2. Quickshell and the Caelestia plugin use Qt **private** API, so they must be rebuilt for every Qt minor update.
   - The build tools (`ninja`, `vulkan-headers`, `cli11`) had been removed as orphans; reinstall with `pacman -S --needed --asdeps`.
   - `makepkg -f` reused the old build dir (Qt 6.11 cache), which gave false errors inside Qt headers (`QMetaType::rawId`). Always build clean: `makepkg -Cf`.
