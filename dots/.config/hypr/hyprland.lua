@@ -17,6 +17,7 @@ require("hyprland.general")
 require("hyprland.rules")
 require("hyprland.colors")
 require("hyprland.keybinds")
+require("hyprland.resizer") -- caelestia4: Caelestia's window resizer (PiP, Bitwarden, size tags)
 require("hyprland.session") -- caelestia4: reopen apps on their workspaces at login
 
 -- Custom configurations --
