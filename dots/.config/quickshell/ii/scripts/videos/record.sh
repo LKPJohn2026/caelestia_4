@@ -4,6 +4,7 @@
 # Same flags as end-4's script, so every caller keeps working:
 #   record.sh [--fullscreen] [--sound] [--region "X,Y WxH"]   start; or stop if a recording is running
 #   record.sh --pause                                           pause / resume the running recording
+# Stopping puts the recording on the clipboard as a file (text/uri-list), like `caelestia record -c`.
 # Without --fullscreen or --region a region is picked with slurp. Coordinates are logical (layout) pixels, like
 # slurp's; gpu-screen-recorder scales them itself. The recorder runs as its own unit (uwsm-app), so restarting the
 # shell doesn't cut a recording. gpu-screen-recorder can't report whether it's paused, so the pause state is kept
@@ -50,10 +51,14 @@ if running; then
     for _ in $(seq 1 100); do running || break; sleep 0.1; done
     rm -f -- "$PAUSED_FILE"
     last=$(ls -t "$RECORDING_DIR"/recording_*.mp4 2>/dev/null | head -1)
+    # As `caelestia record -c`: the file on the clipboard (as a file, so it pastes into chats and file managers)
+    if [[ -n "$last" ]]; then
+        python3 -c 'import pathlib, sys; print(pathlib.Path(sys.argv[1]).resolve().as_uri())' "$last" | wl-copy --type text/uri-list
+    fi
     # The notification waits for a click, so it lives in its own process
     (
         action=$(notify-send -a Recorder -A watch="Xem" -A open="Mở thư mục" \
-            "Đã dừng ghi màn hình" "Đã lưu ${last:-vào $RECORDING_DIR}") || exit 0
+            "Đã dừng ghi màn hình" "Đã lưu ${last:-vào $RECORDING_DIR}${last:+ (đã chép vào bộ nhớ tạm)}") || exit 0
         case "$action" in
             watch) [[ -n "$last" ]] && exec xdg-open "$last" ;;
             open) exec xdg-open "$RECORDING_DIR" ;;

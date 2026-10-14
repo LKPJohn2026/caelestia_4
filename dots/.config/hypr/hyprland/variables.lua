@@ -7,7 +7,8 @@ hl.env("qsConfig", "ii")
 -- Apps
 -- PULL REQUESTS ADDING MORE WILL NOT BE ACCEPTED, CONFIG FOR YOURSELF
 terminal = "uwsm-app -T" -- caelestia4: default terminal from ~/.config/xdg-terminals.list (Settings > Apps > Terminal)
-fileManager = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'dolphin' 'nautilus' 'nemo' 'thunar' '@term yazi'"
+-- caelestia4: Thunar first (Caelestia's file manager, themed by apptheme.py); Dolphin stays Plasma's
+fileManager = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'thunar' 'dolphin' 'nautilus' 'nemo' '@term yazi'"
 browser = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'google-chrome-stable' 'zen-browser' 'firefox' 'brave' 'chromium' 'microsoft-edge-stable' 'opera' 'librewolf'"
 codeEditor = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'windsurf' 'antigravity' 'code' 'codium' 'cursor' 'zed' 'zedit' 'zeditor' 'kate' 'gnome-text-editor' 'emacs' '@term nvim' '@term micro'"
 officeSoftware = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'wps' 'onlyoffice-desktopeditors' 'libreoffice'"

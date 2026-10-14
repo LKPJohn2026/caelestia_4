@@ -9,8 +9,15 @@ schemes reach) and reads that change's palette from material_colors.scss:
   - Zed     ~/.config/zed/themes/caelestia.json (Zed watches it)
   - Zen     <profile>/chrome/caelestia.css, imported by a userChrome.css we created (read when Zen starts)
   - Brave   /etc/brave/policies/managed/caelestia.json BrowserThemeColor, if that directory is writable for us
+  - Thunar  ~/.config/gtk-3.0/thunar.css (only .thunar selectors), imported from gtk.css (the import is re-added
+            if Plasma rewrites gtk.css); read when Thunar starts
+  - Spotify ~/.config/spicetify/Themes/caelestia/color.ini; `spicetify watch -s` (the music special workspace starts
+            Spotify that way) applies it live
+  - nvim    nothing to write: its caelestia colorscheme watches scheme.json itself
+  - micro   nothing to write: the "simple" colorscheme uses the terminal colours end-4 already sets
 `setup` adds the one-time parts, never replacing a file that isn't ours: btop.conf, fastfetch config, cava config,
-Zen userChrome.css + user.js pref, the Caelestia extension in Cursor / VS Code. Then it runs `apply`.
+Zen userChrome.css + user.js pref, the Caelestia extension in Cursor / VS Code, Thunar's custom actions, the
+spicetify theme, the nvim colorscheme (+ an init.lua if there is none), micro's "simple" colorscheme. Then `apply`.
 
 Wallpaper colours have no Catppuccin-style accents (red, blue, lavender...) that Caelestia's templates use; they are
 derived from the wallpaper-harmonised terminal colours and surface roles, as Caelestia's presets map them.
@@ -135,6 +142,15 @@ def apply():
         if ours(os.path.join(profile, "chrome/userChrome.css")):
             atomic_write(os.path.join(profile, "chrome/caelestia.css"), fill("zen.css", colours, mode))
 
+    if shutil.which("thunar"):
+        gtk = os.path.join(CONFIG, "gtk-3.0")
+        atomic_write(os.path.join(gtk, "thunar.css"), fill("thunar.css", colours, mode))
+        ensure_gtk_import(gtk)
+
+    if shutil.which("spicetify"):
+        atomic_write(os.path.join(CONFIG, "spicetify/Themes/caelestia/color.ini"),
+                     fill(f"spicetify-{mode}.ini", colours, mode, hash_=False))
+
     policy_dir = "/etc/brave/policies/managed"
     if shutil.which("brave") and os.access(policy_dir, os.W_OK):
         atomic_write(os.path.join(policy_dir, "caelestia.json"),
@@ -143,6 +159,15 @@ def apply():
         if subprocess.run(["pidof", "brave"], stdout=subprocess.DEVNULL).returncode == 0:
             subprocess.Popen(["brave", "--refresh-platform-policy", "--no-startup-window"],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+
+
+def ensure_gtk_import(gtk):
+    """gtk.css imports thunar.css (GTK 3 only reads gtk.css); added back when Plasma's colour sync rewrites the file"""
+    path = os.path.join(gtk, "gtk.css")
+    line = '@import "thunar.css"; /* caelestia4: Thunar colours, apptheme.py */'
+    text = open(path).read() if os.path.exists(path) else ""
+    if "thunar.css" not in text:
+        atomic_write(path, text + ("" if text.endswith("\n") or not text else "\n") + line + "\n")
 
 
 # ---------------------------------------------------------------- setup (once; never replaces a file that isn't ours)
@@ -176,6 +201,38 @@ def setup():
             with open(userjs, "a") as f:
                 f.write(f"// {MARKER}: let Zen load chrome/userChrome.css\n{pref}\n")
             print(f"added the userChrome pref to {userjs}")
+
+    # Thunar: custom actions (open a terminal here...) and removable-media settings, as Caelestia
+    install_if_missing("thunar/uca.xml", os.path.join(CONFIG, "Thunar/uca.xml"))
+    install_if_missing("thunar/thunar-volman.xml", os.path.join(CONFIG, "xfce4/xfconf/xfce-perchannel-xml/thunar-volman.xml"))
+
+    # nvim: Caelestia's colorscheme (follows scheme.json live); a minimal init.lua only when there is no config
+    install_if_missing("nvim/caelestia.lua", os.path.join(CONFIG, "nvim/colors/caelestia.lua"))
+    nvim = os.path.join(CONFIG, "nvim")
+    if not any(os.path.exists(os.path.join(nvim, f)) for f in ("init.lua", "init.vim")):
+        atomic_write(os.path.join(nvim, "init.lua"),
+                     f"-- {MARKER} by apptheme.py: Caelestia's colorscheme, which follows the desktop colours\n"
+                     "vim.opt.termguicolors = true\npcall(vim.cmd.colorscheme, \"caelestia\")\n")
+        print(f"installed {nvim}/init.lua")
+
+    # micro: Caelestia uses "simple", which draws with the terminal palette (so it follows the desktop colours)
+    micro = os.path.join(CONFIG, "micro/settings.json")
+    if shutil.which("micro"):
+        try:
+            conf = json.load(open(micro)) if os.path.exists(micro) else {}
+        except Exception:
+            conf = None  # not valid JSON: leave it alone
+        if conf is not None and conf.get("colorscheme") != "simple":
+            print(f"micro colorscheme: {conf.get('colorscheme', 'default')} -> simple")
+            conf["colorscheme"] = "simple"
+            atomic_write(micro, json.dumps(conf, indent=4) + "\n")
+
+    # Spotify: the caelestia spicetify theme (colours from apply)
+    if shutil.which("spicetify"):
+        install_if_missing("spicetify/user.css", os.path.join(CONFIG, "spicetify/Themes/caelestia/user.css"))
+        r = subprocess.run(["spicetify", "config", "current_theme", "caelestia", "color_scheme", "caelestia"],
+                           capture_output=True, text=True)
+        print("spicetify theme:", "set" if r.returncode == 0 else (r.stderr or r.stdout).strip()[-200:])
 
     vsix = next((os.path.join(ASSETS, "vscode", f) for f in os.listdir(os.path.join(ASSETS, "vscode")) if f.endswith(".vsix")), None)
     for editor in ("cursor", "code", "codium"):
