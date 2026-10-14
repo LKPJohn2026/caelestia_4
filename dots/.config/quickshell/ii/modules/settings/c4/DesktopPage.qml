@@ -29,11 +29,37 @@ ContentPage {
         icon: "schedule"
         title: Translation.tr("Desktop clock & weather")
 
-        SwitchRow {
+        // caelestia4: one clock on the desktop: Caelestia's, or end-4's cookie / digital clock (background widgets)
+        ChoiceRow {
             icon: "nest_clock_farsight_analog"
-            title: Translation.tr("Show the clock on the desktop")
-            checked: CC.GlobalConfig.background.desktopClock.enabled
-            onToggled: v => CC.GlobalConfig.background.desktopClock.enabled = v
+            title: Translation.tr("Desktop clock")
+            options: [
+                {
+                    label: "Caelestia",
+                    value: "caelestia"
+                },
+                {
+                    label: Translation.tr("Cookie"),
+                    value: "cookie"
+                },
+                {
+                    label: Translation.tr("Digital"),
+                    value: "digital"
+                },
+                {
+                    label: Translation.tr("Off"),
+                    value: "none"
+                }
+            ]
+            value: Config.options.background.widgets.clock.enable ? Config.options.background.widgets.clock.style : (CC.GlobalConfig.background.desktopClock.enabled ? "caelestia" : "none")
+            onSelected: v => {
+                CC.GlobalConfig.background.desktopClock.enabled = v === "caelestia";
+                Config.options.background.widgets.clock.enable = v === "cookie" || v === "digital";
+                if (v === "cookie" || v === "digital") {
+                    Config.options.background.widgets.clock.style = v;
+                    Config.options.background.widgets.clock.styleLocked = v;
+                }
+            }
         }
 
         SwitchRow {
@@ -109,6 +135,122 @@ ContentPage {
             description: Translation.tr("A blurred plate, for busy wallpapers")
             checked: CC.GlobalConfig.background.desktopClock.background.enabled
             onToggled: v => CC.GlobalConfig.background.desktopClock.background.enabled = v
+        }
+
+        // caelestia4: end-4's background widgets (cookie / digital clock, quote, weather) and their placement
+        ChoiceRow {
+            enabled: Config.options.background.widgets.clock.enable
+            icon: "drag_pan"
+            title: Translation.tr("Clock placement")
+            description: Translation.tr("Free: drag it on the desktop. Otherwise it moves to the calmest (or busiest) part of the wallpaper")
+            options: [
+                {
+                    label: Translation.tr("Free"),
+                    value: "free"
+                },
+                {
+                    label: Translation.tr("Least busy"),
+                    value: "leastBusy"
+                },
+                {
+                    label: Translation.tr("Most busy"),
+                    value: "mostBusy"
+                }
+            ]
+            value: Config.options.background.widgets.clock.placementStrategy
+            onSelected: v => Config.options.background.widgets.clock.placementStrategy = v
+        }
+
+        SwitchRow {
+            enabled: Config.options.background.widgets.clock.enable && Config.options.background.widgets.clock.style === "cookie"
+            icon: "format_quote"
+            title: Translation.tr("Quote under the cookie clock")
+            checked: Config.options.background.widgets.clock.quote.enable
+            onToggled: v => Config.options.background.widgets.clock.quote.enable = v
+        }
+
+        TextRow {
+            enabled: Config.options.background.widgets.clock.quote.enable
+            icon: "edit_note"
+            title: Translation.tr("Quote")
+            placeholder: Translation.tr("Your quote")
+            value: Config.options.background.widgets.clock.quote.text
+            onEdited: v => Config.options.background.widgets.clock.quote.text = v
+        }
+
+        SwitchRow {
+            icon: "cloud"
+            title: Translation.tr("Weather widget")
+            description: Translation.tr("end-4's weather card, separate from the clock; drag it when its placement is free")
+            checked: Config.options.background.widgets.weather.enable
+            onToggled: v => Config.options.background.widgets.weather.enable = v
+        }
+
+        ChoiceRow {
+            enabled: Config.options.background.widgets.weather.enable
+            icon: "drag_pan"
+            title: Translation.tr("Weather placement")
+            options: [
+                {
+                    label: Translation.tr("Free"),
+                    value: "free"
+                },
+                {
+                    label: Translation.tr("Least busy"),
+                    value: "leastBusy"
+                },
+                {
+                    label: Translation.tr("Most busy"),
+                    value: "mostBusy"
+                }
+            ]
+            value: Config.options.background.widgets.weather.placementStrategy
+            onSelected: v => Config.options.background.widgets.weather.placementStrategy = v
+        }
+    }
+
+    // caelestia4: end-4's wallpaper parallax
+    ContentSection {
+        icon: "wallpaper"
+        title: Translation.tr("Wallpaper parallax")
+
+        SwitchRow {
+            icon: "swap_horiz"
+            title: Translation.tr("Move the wallpaper with workspaces")
+            description: Translation.tr("The wallpaper is zoomed in a little and slides as you switch workspaces")
+            checked: Config.options.background.parallax.enableWorkspace
+            onToggled: v => Config.options.background.parallax.enableWorkspace = v
+        }
+
+        SwitchRow {
+            enabled: Config.options.background.parallax.enableWorkspace
+            icon: "swap_vert"
+            title: Translation.tr("Slide vertically")
+            checked: Config.options.background.parallax.vertical
+            onToggled: v => Config.options.background.parallax.vertical = v
+        }
+
+        SliderRow {
+            enabled: Config.options.background.parallax.enableWorkspace
+            icon: "zoom_in"
+            title: Translation.tr("Zoom")
+            from: 1.01
+            to: 1.5
+            format: v => `${Math.round(v * 100)} %`
+            value: Config.options.background.parallax.workspaceZoom
+            onMoved: v => Config.options.background.parallax.workspaceZoom = v
+        }
+
+        SliderRow {
+            enabled: Config.options.background.parallax.enableWorkspace
+            icon: "layers"
+            title: Translation.tr("Widget movement")
+            description: Translation.tr("How far the desktop widgets move compared with the wallpaper")
+            from: 0
+            to: 2
+            format: v => `${Math.round(v * 100)} %`
+            value: Config.options.background.parallax.widgetsFactor
+            onMoved: v => Config.options.background.parallax.widgetsFactor = v
         }
     }
 

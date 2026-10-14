@@ -1052,5 +1052,22 @@
   "with vertical offset": "có lệch dọc",
   "yande.re (anime)": "yande.re (anime)",
   "~/.config/hypr/custom: keybinds, rules, startup apps": "~/.config/hypr/custom: phím tắt, quy tắc, ứng dụng khởi động",
-  "⌘ ⌥ ⇧ instead of Super, Alt, Shift": "⌘ ⌥ ⇧ thay cho Super, Alt, Shift"
+  "⌘ ⌥ ⇧ instead of Super, Alt, Shift": "⌘ ⌥ ⇧ thay cho Super, Alt, Shift",
+  "Clock placement": "Vị trí đồng hồ",
+  "Desktop clock": "Đồng hồ nền",
+  "Free": "Tự do",
+  "Free: drag it on the desktop. Otherwise it moves to the calmest (or busiest) part of the wallpaper": "Tự do: kéo trên màn hình nền. Còn lại: tự chuyển tới vùng ít (hoặc nhiều) chi tiết nhất của hình nền",
+  "How far the desktop widgets move compared with the wallpaper": "Các widget nền di chuyển bao xa so với hình nền",
+  "Locked": "Đã khoá",
+  "Move the wallpaper with workspaces": "Hình nền trượt theo không gian làm việc",
+  "Quote under the cookie clock": "Câu trích dẫn dưới đồng hồ cookie",
+  "Slide vertically": "Trượt theo chiều dọc",
+  "The wallpaper is zoomed in a little and slides as you switch workspaces": "Hình nền được phóng to một chút và trượt khi chuyển không gian làm việc",
+  "Wallpaper safety enforced": "Đã bật chế độ an toàn cho hình nền",
+  "Weather placement": "Vị trí thời tiết",
+  "Weather widget": "Widget thời tiết",
+  "Widget movement": "Độ di chuyển của widget",
+  "Your quote": "Câu trích dẫn của bạn",
+  "Zoom": "Phóng to",
+  "end-4's weather card, separate from the clock; drag it when its placement is free": "Thẻ thời tiết của end-4, tách khỏi đồng hồ; kéo được khi vị trí là Tự do"
 }
