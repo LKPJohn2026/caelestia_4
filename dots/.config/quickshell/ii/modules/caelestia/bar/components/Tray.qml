@@ -6,6 +6,7 @@ import Quickshell.Services.SystemTray
 import Caelestia.Config
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
+import qs.services as E4 // caelestia4: keep (end-4 TrayService: pinned items)
 
 StyledRect {
     id: root
@@ -19,13 +20,25 @@ StyledRect {
 
     property bool expanded
 
+    // caelestia4: end-4's tray pinning (Config tray.pinnedItems / invertPinnedItems, TrayService). Pinned items are
+    // always on the bar; the others sit behind the expand arrow, as in end-4's overflow (compact mode or not).
+    // Middle-click an icon, or use the pin row on top of its menu, to pin / unpin it.
+    readonly property var pinnedItems: E4.TrayService.pinnedItems.filter(i => root.shownInBar(i))
+    readonly property var unpinnedItems: E4.TrayService.unpinnedItems.filter(i => root.shownInBar(i))
+    readonly property var shownItems: expanded ? pinnedItems.concat(unpinnedItems) : pinnedItems
+
+    function shownInBar(item: var): bool {
+        return item.status !== Status.Passive && !GlobalConfig.bar.tray.hiddenIcons.includes(item.id);
+    }
+
     readonly property real nonAnimHeight: {
-        if (!Config.bar.tray.compact)
+        if (!Config.bar.tray.compact && !expandIcon.active)
             return layout.implicitHeight + padding * 2;
         const pad = (Config.bar.tray.background ? Tokens.padding.extraSmall : 0) + padding;
-        if (expanded)
-            return expandIcon.implicitHeight + layout.implicitHeight + spacing + pad;
-        return Math.max(Config.bar.tray.background ? width : 0, expandIcon.implicitHeight + pad);
+        const icon = expandIcon.active ? expandIcon.implicitHeight : 0;
+        if (items.count > 0) // caelestia4: pinned items stay visible while collapsed
+            return icon + layout.implicitHeight + (icon > 0 ? spacing : 0) + pad;
+        return Math.max(Config.bar.tray.background ? width : 0, icon + pad);
     }
 
     clip: true
@@ -45,7 +58,6 @@ StyledRect {
         anchors.topMargin: root.padding
         spacing: Tokens.spacing.small
 
-        opacity: root.expanded || !Config.bar.tray.compact ? 1 : 0
 
         add: Transition {
             Anim {
@@ -71,16 +83,10 @@ StyledRect {
             id: items
 
             model: ScriptModel {
-                values: SystemTray.items.values.filter(i => i.status !== Status.Passive && !GlobalConfig.bar.tray.hiddenIcons.includes(i.id))
+                values: root.shownItems
             }
 
             TrayItem {}
-        }
-
-        Behavior on opacity {
-            Anim {
-                type: Anim.DefaultEffects
-            }
         }
     }
 
@@ -92,7 +98,7 @@ StyledRect {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
 
-        active: Config.bar.tray.compact && items.count > 0
+        active: root.unpinnedItems.length > 0
 
         sourceComponent: Item {
             implicitWidth: expandIconInner.implicitWidth

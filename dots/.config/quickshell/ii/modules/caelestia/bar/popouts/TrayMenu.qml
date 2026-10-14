@@ -8,12 +8,14 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
+import qs.services as E4 // caelestia4: keep (TrayService pinning)
 
 StackView {
     id: root
 
     required property PopoutState popouts
     required property QsMenuHandle trayItem
+    property string itemId // caelestia4: for the pin row
 
     implicitWidth: (currentItem as SubMenu)?.hasChildren ? currentItem.implicitWidth : -Tokens.padding.large * 2
     implicitHeight: (currentItem as SubMenu)?.hasChildren ? currentItem.implicitHeight : -Tokens.padding.large * 2
@@ -72,6 +74,60 @@ StackView {
             id: menuOpener
 
             menu: menu.handle
+        }
+
+        // caelestia4: end-4's tray pinning: pinned icons stay on the bar when the tray is collapsed
+        Loader {
+            asynchronous: true
+            active: !menu.isSubMenu && root.itemId !== ""
+
+            sourceComponent: Column {
+                spacing: Tokens.spacing.small
+
+                Item {
+                    readonly property bool pinned: E4.TrayService.pinnedItems.some(i => i.id === root.itemId)
+
+                    implicitWidth: Tokens.sizes.bar.trayMenuWidth
+                    implicitHeight: pinLabel.implicitHeight
+
+                    StateLayer {
+                        anchors.margins: -Tokens.padding.extraSmall / 2
+                        anchors.leftMargin: -Tokens.padding.small
+                        anchors.rightMargin: -Tokens.padding.small
+                        radius: Tokens.rounding.full
+
+                        onClicked: {
+                            E4.TrayService.togglePin(root.itemId);
+                            root.popouts.hasCurrent = false;
+                        }
+                    }
+
+                    MaterialIcon {
+                        id: pinIcon
+
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "keep"
+                        fill: parent.pinned ? 1 : 0
+                        color: Colours.palette.m3primary
+                    }
+
+                    StyledText {
+                        id: pinLabel
+
+                        anchors.left: pinIcon.right
+                        anchors.leftMargin: Tokens.spacing.medium
+                        text: parent.pinned ? Tr.tr("Unpin from the bar") : Tr.tr("Pin to the bar")
+                        color: Colours.palette.m3onSurface
+                    }
+                }
+
+                StyledRect {
+                    implicitWidth: Tokens.sizes.bar.trayMenuWidth
+                    implicitHeight: 1
+                    color: Colours.palette.m3outlineVariant
+                }
+            }
         }
 
         Repeater {
