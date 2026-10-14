@@ -133,7 +133,7 @@ Status legend:
 | `caelestia clipboard` (pick / delete entries) | ✅ C | launcher `;` |
 | `caelestia emoji` (+ fetch glyph data) | ✅ C | launcher `:` |
 | `caelestia wallpaper` (set / random / size filter / preview) | 🔁 Equivalent | switchwall.sh, random wallpaper fetch with size + shape filters |
-| `caelestia resizer`: auto-resize / float / centre / PiP rules per window | ❌ Missing | |
+| `caelestia resizer`: auto-resize / float / centre / PiP rules per window | ✅ | hyprland/resizer.lua (upstream's Lua listeners): picture-in-picture floated, pinned, ¼ screen height, bottom-right (also when the title comes late); Bitwarden popups; float_50_60/60_70/70_80 tags; Super+Alt+Backslash PiP, Ctrl+Super+Alt+Backslash reset size |
 | `caelestia install` / `update` | 🔁 Equivalent | tools/install-main.sh, tools/sync-end4.sh |
 | Hyprland config: animations, decoration, gestures, groups, input, rules | 🔁 Equivalent | end-4's Hyprland config + Settings > Windows / Input |
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
@@ -200,8 +200,7 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **Window resizer** (`caelestia resizer`): auto-float, centre, resize or PiP chosen windows.
-2. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
-3. **Recording pause / resume** and copying the recording path.
-4. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-5. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Lock screen extras** (notifications, media, weather, resources on the lock screen): would mean switching from hyprlock to Caelestia's lock.
+2. **Recording pause / resume** and copying the recording path.
+3. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
+4. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
