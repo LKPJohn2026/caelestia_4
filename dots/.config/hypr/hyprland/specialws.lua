@@ -24,7 +24,9 @@ local function default_config()
                 match   = { { class = "Spotify" }, { initial_title = "Spotify" }, { initial_title = "Spotify Free" } },
                 -- As upstream: `spicetify watch -s` starts Spotify and re-applies the theme when its colours change;
                 -- without spicetify, plain spotify-launcher (or the AUR spotify)
-                command = { "sh", "-c", "command -v spicetify >/dev/null && exec spicetify watch -s; command -v spotify-launcher >/dev/null && exec spotify-launcher; exec spotify" },
+                -- (no exec on spicetify: before the first login it exits with "Can't find offline.bnk", then the
+                -- plain launcher still opens Spotify; the theme is patched into Spotify's files either way)
+                command = { "sh", "-c", "command -v spicetify >/dev/null && spicetify watch -s && exit; command -v spotify-launcher >/dev/null && exec spotify-launcher; exec spotify" },
                 move    = true,
             },
             feishin = { enable = true, match = { { class = "feishin" } }, move = true },
