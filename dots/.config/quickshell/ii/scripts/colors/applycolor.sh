@@ -91,3 +91,7 @@ else
 fi
 
 # apply_qt & # Qt theming is already handled by kde-material-colors
+
+# caelestia4: Caelestia's app themes (btop, cava, Zed, Zen, Brave, the Cursor / VS Code extension via
+# ~/.local/state/caelestia/scheme.json) from the palette just written; runs for wallpaper colours and preset schemes
+python3 "$SCRIPT_DIR/../../modules/caelestia/utils/scripts/apptheme.py" apply &

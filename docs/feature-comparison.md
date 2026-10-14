@@ -138,8 +138,8 @@ Status legend:
 | Hyprland config: animations, decoration, gestures, groups, input, rules | 🔁 Equivalent | end-4's Hyprland config + Settings > Windows / Input |
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
-| App themes: foot, fish, starship, fastfetch, btop | ⚠️ Partial | foot, fish, starship themed here; btop / fastfetch not |
-| App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ❌ Missing | end-4 themes kitty, KDE/Qt apps (Darkly, Kvantum), GTK, Chrome flags instead |
+| App themes: foot, fish, starship, fastfetch, btop | ✅ | foot, fish, starship themed; btop + fastfetch now too (apptheme.py) |
+| App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ✅ partly | utils/scripts/apptheme.py after every colour change: btop, cava, Zed, Zen (userChrome, own fix: upstream's Zen theme doesn't work), Brave frame colour (policy dir must be writable), Cursor/VS Code/VSCodium extension via ~/.local/state/caelestia/scheme.json. Not here: Firefox (no profile), spicetify (no Spotify), Thunar, micro, nvim |
 
 ---
 
@@ -200,5 +200,4 @@ Status legend:
 
 ## Gaps, most useful first
 
-1. **App themes** Caelestia ships: Firefox / Zen, Spotify (spicetify), VS Code, Zed, btop, fastfetch.
-2. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
+1. **Tray item pinning** (end-4), cookie clock / quote / parallax (end-4 background).
