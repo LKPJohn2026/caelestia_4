@@ -1069,5 +1069,7 @@
   "Widget movement": "Độ di chuyển của widget",
   "Your quote": "Câu trích dẫn của bạn",
   "Zoom": "Phóng to",
-  "end-4's weather card, separate from the clock; drag it when its placement is free": "Thẻ thời tiết của end-4, tách khỏi đồng hồ; kéo được khi vị trí là Tự do"
+  "end-4's weather card, separate from the clock; drag it when its placement is free": "Thẻ thời tiết của end-4, tách khỏi đồng hồ; kéo được khi vị trí là Tự do",
+  "Hibernate at (%)": "Ngủ đông khi còn (%)",
+  "Saves the session to disk before the battery runs out (needs hibernation set up). 0 = never": "Lưu phiên làm việc ra đĩa trước khi hết pin (cần thiết lập ngủ đông). 0 = không bao giờ"
 }
