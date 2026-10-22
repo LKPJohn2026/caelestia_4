@@ -170,7 +170,7 @@ Searcher {
         onTriggered: {
             previewProc.running = false;
             // caelestia-cli prints the scheme it would make (current mode and variant); without it, matugen dry run
-            previewProc.command = Colours.cliAvailable ? ["caelestia", "wallpaper", "-p", root.previewPath, "--no-smart"] : [Quickshell.shellPath("modules/caelestia/utils/scripts/wallpreview.sh"), root.previewPath, Colours.currentLight ? "light" : "dark"];
+            previewProc.command = Colours.cliAvailable ? ["caelestia", "wallpaper", "-p", root.previewPath, ...(GlobalConfig.services.smartScheme ? [] : ["--no-smart"])] : [Quickshell.shellPath("modules/caelestia/utils/scripts/wallpreview.sh"), root.previewPath, Colours.currentLight ? "light" : "dark"];
             previewProc.running = true;
         }
     }

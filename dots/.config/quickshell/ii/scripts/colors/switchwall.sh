@@ -321,7 +321,12 @@ switch() {
     # Without --mode the scheme keeps its mode (gsettings may hold another desktop's preference).
     if [[ "$color_flag" != "1" ]] && command -v caelestia &>/dev/null && [[ -x "$SCHEME_SCRIPT" ]]; then
         [[ -n "$colour_img" ]] && "$SCHEME_SCRIPT" wall "$colour_img"
-        "$SCHEME_SCRIPT" mode $explicit_mode --variant "$type_flag" ${caelestia4_dynamic:+--dynamic}
+        # A new wallpaper with Caelestia's smart scheme on: caelestia-cli just picked light/dark and the variant from it
+        # (end-4 passes the current --mode with every wallpaper, so that would undo it). The light/dark switch
+        # (--noswitch) and picking a colour style (--type) still decide.
+        if [[ -n "$noswitch_flag" || -n "$caelestia4_dynamic" ]] || ! "$SCHEME_SCRIPT" smart; then
+            "$SCHEME_SCRIPT" mode $explicit_mode --variant "$type_flag" ${caelestia4_dynamic:+--dynamic}
+        fi
         post_process "" "" "$imgpath"
         return
     fi
