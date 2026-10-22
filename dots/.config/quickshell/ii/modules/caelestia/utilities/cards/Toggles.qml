@@ -49,6 +49,8 @@ StyledRect {
                 continue;
             if (item.id === "vpn" && GlobalConfig.utilities.vpn.selectedProvider.length === 0)
                 continue;
+            if (item.id === "wallpaperPlaying" && !Wallpapers.isVideo) // in Caelestia's own list since 29fcf69a
+                continue;
             ids.push(item.id);
         }
         // caelestia4: no "idleInhibitor" here: keep awake is the Keep Awake card (one control, same Idle service)

@@ -2616,3 +2616,94 @@ msgstr "Hình nền video đang dừng"
 
 msgid "Video wallpaper playing"
 msgstr "Hình nền video đang phát"
+
+msgctxt "button"
+msgid "Apply"
+msgstr "Áp dụng"
+
+msgid "Transition: %1"
+msgstr "Hiệu ứng chuyển: %1"
+
+msgid "Wallpaper transition"
+msgstr "Hiệu ứng chuyển hình nền"
+
+msgid "Chromatic bloom"
+msgstr "Loang sắc"
+
+msgid "Colour distance"
+msgstr "Theo khoảng cách màu"
+
+msgid "Crossfade"
+msgstr "Hoà mờ"
+
+msgid "Crosshatch"
+msgstr "Gạch chéo"
+
+msgid "Crosswarp"
+msgstr "Uốn chéo"
+
+msgid "Slide"
+msgstr "Trượt"
+
+msgid "Wipe"
+msgstr "Quét"
+
+msgid "Fade through colour"
+msgstr "Mờ qua màu"
+
+msgid "Glitch"
+msgstr "Nhiễu"
+
+msgid "Glitch displace"
+msgstr "Nhiễu lệch"
+
+msgid "Heat melt"
+msgstr "Tan chảy"
+
+msgid "Ink splash"
+msgstr "Mực bắn"
+
+msgid "Ink drop"
+msgstr "Giọt mực"
+
+msgid "Iris"
+msgstr "Mở tròn"
+
+msgid "Morph"
+msgstr "Biến hình"
+
+msgid "Parametric glitch"
+msgstr "Nhiễu tham số"
+
+msgid "Perlin noise"
+msgstr "Nhiễu Perlin"
+
+msgid "Pixelate"
+msgstr "Vỡ điểm ảnh"
+
+msgid "Pixel wave"
+msgstr "Sóng điểm ảnh"
+
+msgid "Plasma flow"
+msgstr "Dòng plasma"
+
+msgid "Polka-dot curtain"
+msgstr "Màn chấm bi"
+
+msgid "Puzzle"
+msgstr "Ghép hình"
+
+msgid "Random squares"
+msgstr "Ô vuông ngẫu nhiên"
+
+msgid "Smoke"
+msgstr "Khói"
+
+msgid "Soft warp"
+msgstr "Uốn mềm"
+
+msgid "Shatter"
+msgstr "Vỡ mảnh"
+
+msgid "Zoom blur"
+msgstr "Phóng mờ"

@@ -2,8 +2,8 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Caelestia.Config
+import Caelestia.Multimedia
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
@@ -28,7 +28,7 @@ Item {
         anchors.fill: parent
         spacing: Tokens.spacing.small
 
-        StyledClippingRect {
+        ClipRect {
             id: imgWrapper
 
             Layout.fillWidth: true
@@ -39,7 +39,7 @@ Item {
             Loader {
                 anchors.centerIn: parent
 
-                opacity: img.status === Image.Ready ? 0 : 1
+                opacity: img.ready ? 0 : 1
                 active: opacity > 0
 
                 sourceComponent: StyledRect {
@@ -65,21 +65,11 @@ Item {
                 }
             }
 
-            Image {
+            Visual {
                 id: img
 
                 anchors.fill: parent
-                asynchronous: true
                 fillMode: Image.PreserveAspectCrop
-                sourceSize: Qt.size(width, height) // caelestia4: Qt applies the devicePixelRatio itself
-                retainWhileLoading: true
-                opacity: status === Image.Ready ? 1 : 0
-
-                Behavior on opacity {
-                    Anim {
-                        type: Anim.SlowEffects
-                    }
-                }
             }
         }
 

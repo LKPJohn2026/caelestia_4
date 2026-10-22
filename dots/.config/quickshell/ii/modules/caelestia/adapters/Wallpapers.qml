@@ -219,6 +219,6 @@ Searcher {
 
         recursive: true
         path: Paths.wallsdir
-        filter: FileSystemModel.Images
+        filter: FileSystemModel.Images | FileSystemModel.Videos // videos too (upstream d6cc0d5d); applying one goes to mpvpaper
     }
 }
