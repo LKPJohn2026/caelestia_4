@@ -45,6 +45,14 @@ VARIANTS = {
 }
 
 
+# (scheme, mode) -> the flavour the light/dark switch goes to when the current flavour lacks that mode
+COUNTERPARTS = {
+    ("catppuccin", "light"): "latte", ("catppuccin", "dark"): "mocha",
+    ("rosepine", "light"): "dawn", ("rosepine", "dark"): "main",
+    ("everforest", "light"): "medium", ("everforest", "dark"): "medium",
+}
+
+
 def schemes_dir():
     """caelestia-cli's preset schemes (data/schemes in its package); our copy if it isn't installed"""
     spec = importlib.util.find_spec("caelestia")
@@ -85,8 +93,16 @@ def counterpart(name, flavour, mode):
     """When the light/dark switch asks for a mode this flavour doesn't have, the flavour of the same scheme to
     switch to (e.g. catppuccin mocha -> latte for light), or None to keep the current flavour in its own mode.
     Flavours per scheme and their modes: see SCHEMES/<name>/<flavour>/{dark,light}.txt (modes_of())."""
-    # TODO(human)
-    return None
+    # The usual pairs first: they pick the flavour people mean (mocha, not frappe, when going back to dark)
+    if (paired := COUNTERPARTS.get((name, mode))) and mode in modes_of(name, paired):
+        return paired
+    # Any other flavour of this scheme with that mode (new schemes in caelestia-cli), the middle one if there is one
+    candidates = [f for f in sorted(os.listdir(os.path.join(SCHEMES, name)))
+                  if f != flavour and mode in modes_of(name, f)]
+    for preferred in ("medium", "default"):
+        if preferred in candidates:
+            return preferred
+    return candidates[0] if candidates else None
 
 
 def load_scheme():
