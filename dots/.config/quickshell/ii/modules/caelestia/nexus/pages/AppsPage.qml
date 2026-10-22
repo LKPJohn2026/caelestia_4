@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import Quickshell.Widgets
 import Caelestia
 import Caelestia.Config
@@ -17,6 +18,18 @@ PageBase {
     id: root
 
     title: Tr.tr("Apps")
+
+    // caelestia4: ~/.config/xdg-terminals.list, first entry = the default terminal (a property: PageBase's default
+    // property takes the page's one content item)
+    readonly property FileView terminalList: FileView {
+        property string current
+
+        path: `${Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config"}/xdg-terminals.list`
+        watchChanges: true
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: root.terminalList.current = text().split("\n").map(l => l.trim()).find(l => l && !l.startsWith("#")) ?? ""
+    }
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -34,8 +47,13 @@ PageBase {
             first: true
             icon: "terminal"
             label: Tr.trCtx("Terminal", "default app category")
-            status: GlobalConfig.general.apps.terminal.join(" ")
-            onSelected: app => GlobalConfig.general.apps.terminal = app.command
+            // caelestia4: the terminal the session uses is ~/.config/xdg-terminals.list (uwsm -T: Super+Return, terminal
+            // apps, $ commands), as in Settings > Apps; Caelestia's own setting is kept in step
+            status: DesktopEntries.applications.values.find(e => `${e.id}.desktop` === root.terminalList.current)?.name ?? (root.terminalList.current || GlobalConfig.general.apps.terminal.join(" "))
+            onSelected: app => {
+                root.terminalList.setText(`# caelestia4: default terminal (uwsm -T / xdg-terminal-exec). Settings > Apps > Terminal\n${app.id}.desktop\n`);
+                GlobalConfig.general.apps.terminal = app.command;
+            }
         }
 
         DefaultRow {

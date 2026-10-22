@@ -226,17 +226,17 @@ features (assistant, overlay, region tools, dock, todo / timer, settings app…)
 
 Still open (review 2026-10-22):
 
-1. **Clipping fix not taken everywhere**: upstream #2168 replaced Quickshell's ClippingRectangle (`StyledClippingRect`)
-   with the C++ `ClipRect`; here only the wallpaper views use it, 11 files still use `StyledClippingRect` (bar
-   workspaces, popout wrapper, notifications, sidebar groups, dashboard, window preview, overview, dock preview...).
-2. **Smaller upstream fixes not in the ported QML**: session GIF hidden when its path is empty (#2166); the rest of the
-   unapplied 21a75375..29fcf69a module diffs are lint clean-ups only.
+1. ✅ 2026-10-22: **ClipRect everywhere** (upstream #2168; `StyledClippingRect` removed), session GIF only when set
+   (#2166), and the clean upstream lint diffs since 21a75375 taken.
+2. ✅ (merged into 1)
 3. **caelestia-cli 1.1.3 lacks 858ecff**: a near-black wallpaper makes `caelestia wallpaper` fail (recursion in
    score), so its colours wouldn't change. cli main also has video wallpapers (#183), unused here (thumbnails are passed).
-4. **Settings still split between the two halves**: workspaces shown (Caelestia 5, end-4 10); transparency (Caelestia
-   off, end-4 on); the end-4 desktop weather widget uses end-4's disabled weather service (Houston) while Caelestia's
-   dashboard uses its own; Nexus `general.apps.terminal`, `nexus.networkRescanInterval`, `services.smartScheme` are read
-   by nothing.
+4. ✅ 2026-10-22, **settings unified**: transparency is one switch (Nexus and Settings write both halves; on); the
+   end-4 desktop weather widget reads Caelestia's weather (Settings > Apps > Weather); Nexus > Apps > Terminal sets
+   ~/.config/xdg-terminals.list like Settings; Nexus > Services > Smart colour scheme works (on: a new wallpaper picks
+   light/dark and the variant; the light/dark switch and colour style still override). Workspaces shown stays
+   Caelestia's 5 (end-4's 10 is only read by an unused model and unlisted settings pages); `nexus.networkRescanInterval`
+   was live all along (the Nexus network pages' rescan timers).
 5. **App themes not covered**: Firefox (a profile exists now; Caelestia's theme is userChrome.css + user.js + an
    extension with a fish native host), Discord (installed as the plain client; needs Vencord / Vesktop / Equibop).
 6. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.

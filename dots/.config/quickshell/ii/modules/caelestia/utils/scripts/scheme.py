@@ -14,7 +14,9 @@ Usage:
   scheme.py get                       JSON {"name", "flavour", "mode", "variant"} (name "dynamic" = wallpaper colours)
   scheme.py set dynamic [--mode M]    wallpaper colours
   scheme.py set NAME FLAVOUR [--mode M]
-  scheme.py wall IMAGE                tell caelestia-cli the wallpaper (an image; a video's first frame)
+  scheme.py wall IMAGE                tell caelestia-cli the wallpaper (an image; a video's first frame); with Caelestia's
+                                      smart scheme on, it also picks light/dark and the variant from it
+  scheme.py smart                     exit 0 when the smart scheme is on (shell.json services.smartScheme, default on)
   scheme.py mode [M] [--variant V] [--dynamic]
                                       light/dark (a preset without that mode switches flavour, see counterpart()),
                                       the Material variant, and --dynamic to leave a preset for wallpaper colours
@@ -33,6 +35,7 @@ WALL_PATH = os.path.join(STATE, "caelestia/wallpaper/path.txt")  # caelestia-cli
 GENERATED = os.path.join(STATE, "quickshell/user/generated")
 SHELL_CONFIG = os.path.join(CONFIG, "illogical-impulse/config.json")
 SHARED_DESKTOP = os.path.join(CONFIG, "caelestia4/shared-desktop")
+CAELESTIA_SHELL = os.path.join(CONFIG, "caelestia/shell.json")
 
 PREVIEW = ["primary", "secondary", "tertiary", "surface", "surfaceContainer", "onSurface", "outline", "primaryContainer"]
 # matugen roles that have no camelCase twin in caelestia's colours
@@ -111,6 +114,15 @@ def load_scheme():
             return json.load(f)
     except Exception:
         return {"name": "dynamic", "flavour": "default", "mode": "dark", "variant": "tonalspot", "colours": {}}
+
+
+def smart():
+    """Caelestia's "Smart colour scheme" (Nexus > Services): mode and variant follow each new wallpaper"""
+    try:
+        with open(CAELESTIA_SHELL) as f:
+            return json.load(f).get("services", {}).get("smartScheme", True) is not False
+    except Exception:
+        return True
 
 
 def caelestia(*args):
@@ -222,7 +234,9 @@ def main():
         except OSError:
             same = False
         if not same:  # the same path again would only re-run every theme
-            caelestia("wallpaper", "-f", args[1], "--no-smart")
+            caelestia("wallpaper", "-f", args[1], *([] if smart() else ["--no-smart"]))
+    elif cmd == "smart":
+        sys.exit(0 if smart() else 1)
     elif cmd == "mode":
         variant = VARIANTS.get(take(args, "--variant") or "", None)
         dynamic = take(args, "--dynamic", valued=False) or scheme.get("name") == "dynamic"
