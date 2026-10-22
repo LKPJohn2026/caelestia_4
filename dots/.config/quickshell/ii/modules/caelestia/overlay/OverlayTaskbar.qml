@@ -7,7 +7,7 @@ import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
 import qs as E4G // caelestia4: keep (GlobalStates)
-import qs.services as E4 // caelestia4: keep (Battery)
+import Quickshell.Services.UPower
 import qs.modules.common as E4C // caelestia4: keep (Persistent)
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
@@ -15,6 +15,11 @@ import qs.modules.caelestia.adapters
 
 StyledRect {
     id: root
+    // caelestia4: battery straight from UPower (as Caelestia does); "low" = Caelestia's highest warning level
+    readonly property var battery: UPower.displayDevice
+    readonly property bool batteryCharging: battery.state === UPowerDeviceState.Charging
+    readonly property bool batteryLow: !batteryCharging && battery.percentage * 100 <= Math.max(...GlobalConfig.general.battery.warnLevels.values.map(l => l.level), 0)
+
 
     opacity: E4G.GlobalStates.overlayOpen ? 1 : 0
     implicitWidth: row.implicitWidth + Tokens.padding.medium * 2
@@ -89,20 +94,20 @@ StyledRect {
         }
 
         RowLayout {
-            visible: E4.Battery.available
+            visible: root.battery.isLaptopBattery
             Layout.rightMargin: Tokens.padding.medium
             spacing: Tokens.spacing.extraSmall
 
             MaterialIcon {
-                text: E4.Battery.isCharging ? "bolt" : "battery_android_full"
+                text: root.batteryCharging ? "bolt" : "battery_android_full"
                 fill: 1
-                color: E4.Battery.isLowAndNotCharging ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                color: root.batteryLow ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
             }
 
             StyledText {
-                text: `${Math.round(E4.Battery.percentage * 100)}%`
+                text: `${Math.round(root.battery.percentage * 100)}%`
                 font: Tokens.font.title.small
-                color: E4.Battery.isLowAndNotCharging ? Colours.palette.m3error : Colours.palette.m3onSurface
+                color: root.batteryLow ? Colours.palette.m3error : Colours.palette.m3onSurface
             }
         }
     }
