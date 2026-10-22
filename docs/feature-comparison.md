@@ -213,6 +213,10 @@ cli `c5f478d`; the vendored shell `21a75375` is 19 commits behind):
 - Smaller: session GIF hidden when its path is empty; settings can skip watching the config file; the Discord theme uses
   the Caelestia logo (no Discord theming here at all: it needs a client mod such as Vencord / Vesktop).
 
+Backend (2026-10-22): notifications, network, brightness and battery now run on Caelestia's own services (step 1 of
+moving the backend to Caelestia; colours / wallpapers / recorder / idle inhibitor still go through end-4). end-4-only
+features (assistant, overlay, region tools, dock, todo / timer, settings app…) keep their end-4 services.
+
 Still partial (review 2026-10-14):
 
 1. **App themes not covered**: Firefox (installed, no profile yet), Discord (needs Vencord / Vesktop / Equibop).
