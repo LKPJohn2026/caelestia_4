@@ -52,11 +52,13 @@ StyledRect {
             ids.push(item.id);
         }
         // caelestia4: no "idleInhibitor" here: keep awake is the Keep Awake card (one control, same Idle service)
-        const extras = ["audio", "nightLight", "easyEffects", "darkMode", "powerProfile", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
+        const extras = ["wallpaperPlaying", "audio", "nightLight", "easyEffects", "darkMode", "powerProfile", "antiFlashbang", "musicRecognition", "onScreenKeyboard", "screenSnip", "colorPicker", "backgroundMute", "cloudflareWarp"];
         for (const id of extras) {
             if (id === "easyEffects" && !E4.EasyEffects.available)
                 continue;
             if (id === "cloudflareWarp" && !root.warpAvailable)
+                continue;
+            if (id === "wallpaperPlaying" && !Wallpapers.isVideo) // only a video wallpaper has anything to pause
                 continue;
             if (!ids.includes(id))
                 ids.push(id);
@@ -212,6 +214,16 @@ StyledRect {
                     delegate: Toggle {
                         disabled: true
                         icon: "check_box_outline_blank"
+                    }
+                }
+                // caelestia4: Caelestia's "wallpaper playing" toggle (upstream b7959294), for mpvpaper video wallpapers
+                DelegateChoice {
+                    roleValue: "wallpaperPlaying"
+                    delegate: Toggle {
+                        icon: "smart_display"
+                        tip: Wallpapers.videoPaused ? Tr.tr("Video wallpaper paused") : Tr.tr("Video wallpaper playing")
+                        checked: !Wallpapers.videoPaused
+                        onActivated: Wallpapers.setVideoPaused(!Wallpapers.videoPaused)
                     }
                 }
                 DelegateChoice {
