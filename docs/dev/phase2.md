@@ -11,6 +11,9 @@ service **owns**, the rule became:
 > Caelestia's own thin wrapper over Quickshell / NetworkManager / PipeWire / Hyprland.
 
 ### Backed by end-4 (hand-written adapters in `modules/caelestia/adapters/`)
+> **2026-10-22, backend step 1:** `Notifs`/`NotifData`, `Nmcli` and `Brightness` are now upstream Caelestia's own
+> services again (end-4's Notifications, Network and Brightness are no longer instantiated), and battery warnings come
+> only from Caelestia's BatteryMonitor. Still backed by end-4: `Colours`, `Wallpapers`, `Recorder`, `IdleInhibitor`.
 | Adapter | end-4 source | Why it must be end-4 | Not supported (yet) |
 |---|---|---|---|
 | `Colours` | `Appearance.m3colors` (58 of 74 roles bound live; key colours mapped; term0-15 = Caelestia defaults) | one colour pipeline (end-4 matugen); Caelestia reads `caelestia-cli` scheme files | colour **preview** while browsing wallpapers |
