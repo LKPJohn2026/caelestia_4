@@ -200,9 +200,23 @@ Status legend:
 
 ## Gaps, most useful first
 
+New upstream Caelestia work since this comparison (checked 2026-10-22: shell `29fcf69a`, dotfiles `4f7407c`,
+cli `c5f478d`; the vendored shell `21a75375` is 19 commits behind):
+
+- **Wallpaper transitions**: shader transitions between wallpapers (new Multimedia + Shaders plugin modules, shaders from
+  skwd-paper). Here: Caelestia's plain crossfade only.
+- **Video wallpapers inside the shell** (Visual component, KTX image cache), shown in Nexus too. Here: mpvpaper via
+  end-4 (works; no shell-side preview of video wallpapers, no transition).
+- **Pause-wallpaper quick toggle** (utilities). Missing.
+- **Picture-in-picture match anchored** (`^Picture…Picture$`): the resizer here also catches windows whose title only
+  contains "picture in picture" (e.g. a browser tab about it). Missing fix.
+- **Caps Lock state from the key code** (works with `caps:escape_shifted_capslock`-style options). Missing fix.
+- Smaller: session GIF hidden when its path is empty; settings can skip watching the config file; the Discord theme uses
+  the Caelestia logo (no Discord theming here at all: it needs a client mod such as Vencord / Vesktop).
+
 Still partial (review 2026-10-14):
 
-1. **App themes not covered**: Firefox (installed, no profile yet).
+1. **App themes not covered**: Firefox (installed, no profile yet), Discord (needs Vencord / Vesktop / Equibop).
 2. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
 3. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
 
