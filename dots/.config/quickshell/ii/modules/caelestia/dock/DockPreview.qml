@@ -178,7 +178,7 @@ PopupWindow {
                             }
                         }
 
-                        StyledClippingRect {
+                        ClipRect {
                             Layout.fillWidth: true
                             implicitHeight: root.previewHeight
                             radius: Tokens.rounding.small

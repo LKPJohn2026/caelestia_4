@@ -8,7 +8,7 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 
-StyledClippingRect {
+ClipRect {
     id: root
 
     property real animPerc: UPower.displayDevice.percentage

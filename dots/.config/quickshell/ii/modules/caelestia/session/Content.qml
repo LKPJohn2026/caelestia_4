@@ -128,16 +128,20 @@ Column {
         KeyNavigation.down: hibernate
     }
 
-    AnimatedImage {
-        width: Tokens.sizes.session.button
-        height: Tokens.sizes.session.button
-        sourceSize.width: width // caelestia4: Qt applies the devicePixelRatio itself
+    Loader {
+        active: Config.paths.sessionGif.trim() !== "" // no GIF configured: no empty slot (upstream 588562ea)
 
-        playing: visible
-        asynchronous: true
-        speed: Config.general.sessionGifSpeed
-        source: Paths.absolutePath(Config.paths.sessionGif)
-        fillMode: AnimatedImage.PreserveAspectFit
+        sourceComponent: AnimatedImage {
+            width: Tokens.sizes.session.button
+            height: Tokens.sizes.session.button
+            sourceSize.width: width // caelestia4: Qt applies the devicePixelRatio itself
+
+            playing: visible
+            asynchronous: true
+            speed: Config.general.sessionGifSpeed
+            source: Paths.absolutePath(Config.paths.sessionGif)
+            fillMode: AnimatedImage.PreserveAspectFit
+        }
     }
 
     SessionButton {

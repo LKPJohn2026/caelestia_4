@@ -95,7 +95,7 @@ PageBase {
                 anchors.rightMargin: Tokens.padding.largeIncreased
                 spacing: Tokens.spacing.medium
 
-                StyledClippingRect {
+                ClipRect {
                     implicitWidth: 96
                     implicitHeight: 54
                     radius: Tokens.rounding.medium
