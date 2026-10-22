@@ -67,10 +67,10 @@ hl.window_rule({match = {class = ".*" }, suppress_event = "maximize"})
 hl.window_rule({match = {class = "^dev\\.warp\\.Warp$" }, tile = true})
 
 -- Picture-in-Picture (caelestia4: size and corner come from resizer.lua, which also catches the title set late)
-hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$" }, float = true})
-hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$" }, keep_aspect_ratio = true})
-hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$" }, float = true})
-hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)(.*)$" }, pin = true})
+hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)$" }, float = true})
+hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)$" }, keep_aspect_ratio = true})
+hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)$" }, float = true})
+hl.window_rule({match = {title = "^([Pp]icture[-\\s]?[Ii]n[-\\s]?[Pp]icture)$" }, pin = true})
 
 -- Screen sharing
 hl.window_rule({match = {title = ".*is sharing (a window|your screen).*" }, float = true})
