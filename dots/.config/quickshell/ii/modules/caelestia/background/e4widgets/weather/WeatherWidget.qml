@@ -6,6 +6,7 @@ import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.modules.common.widgets.widgetCanvas
 import qs.modules.caelestia.background.e4widgets // caelestia4: keep
+import qs.modules.caelestia.adapters as CA // caelestia4: keep (Caelestia's weather: auto location, Nexus units)
 
 AbstractBackgroundWidget {
     id: root
@@ -33,7 +34,7 @@ AbstractBackgroundWidget {
                 weight: Font.Medium
             }
             color: Appearance.colors.colPrimary
-            text: Weather.data?.temp.substring(0,Weather.data?.temp.length - 1) ?? "--°"
+            text: CA.Weather.cc ? CA.Weather.formatTemp(CA.Weather.cc.tempC, true) : "--°" // caelestia4: one weather source
             anchors {
                 right: parent.right
                 top: parent.top
@@ -45,7 +46,7 @@ AbstractBackgroundWidget {
         MaterialSymbol {
             iconSize: 80
             color: Appearance.colors.colOnPrimaryContainer
-            text: Icons.getWeatherIcon(Weather.data.wCode) ?? "cloud"
+            text: CA.Weather.cc ? CA.Weather.icon : "cloud"
             anchors {
                 left: parent.left
                 bottom: parent.bottom

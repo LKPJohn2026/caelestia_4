@@ -11,6 +11,7 @@ import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.components.widgets
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4's transparency follows this toggle)
 
 PageBase {
     id: root
@@ -257,7 +258,10 @@ PageBase {
             // TRANSLATORS: %1/%2 = opacity values from 0 to 1 for the base surface and layered surfaces
             subtext: Tr.tr("Base %1, layers %2").arg(Colours.transparency.base).arg(Colours.transparency.layers)
             checked: Colours.transparency.enabled
-            onToggled: GlobalConfig.appearance.transparency.enabled = checked
+            onToggled: {
+                GlobalConfig.appearance.transparency.enabled = checked;
+                E4C.Config.options.appearance.transparency.enable = checked; // caelestia4: end-4 parts (AI chat, settings app, overlay) too
+            }
         }
 
         ToggleRow {
