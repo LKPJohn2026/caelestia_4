@@ -1,30 +1,23 @@
 pragma ComponentBehavior: Bound
-
-// caelestia4 ADAPTER: NotifData
-// A Caelestia-shaped view of ONE end-4 notification (end-4's Notifications.Notif in `source`).
-// end-4 owns the notification server, history, persistence and popup timeouts; this object only maps fields.
-// Contract used by Caelestia UI: popup (read/write), closed, time, timeStr, ageMins, notification, notificationId,
-// summary, body, appIcon, appName, image, hints, expireTimeout, urgency (NotificationUrgency), resident,
-// hasActionIcons, actions[{identifier,text,invoke}], hasFullscreen, timer.start()/stop(), lock/unlock/close.
+// caelestia4: upstream services/NotifData.qml (vendored 21a75375), see Notifs.qml.
 
 import QtQuick
 import Quickshell
 import Quickshell.Services.Notifications
+import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
-import qs.services as E4 // caelestia4: keep
 import qs.modules.caelestia.adapters
+import qs.modules.caelestia.utils
 
 QtObject {
     id: notif
 
-    property var source // end-4 Notifications.Notif
-
-    property bool popup: source?.popup ?? false
+    property bool popup
     property bool closed
     property var locks: new Set()
 
-    readonly property date time: new Date(source?.time ?? Date.now())
+    property date time: new Date()
     property int ageMins: 0
     readonly property string timeStr: {
         if (ageMins < 1)
@@ -47,32 +40,19 @@ QtObject {
         onTriggered: notif.updateTimeStr()
     }
 
-    readonly property Notification notification: source?.notification ?? null
-    readonly property string notificationId: String(source?.notificationId ?? "")
-    readonly property string summary: source?.summary ?? ""
-    readonly property string body: source?.body ?? ""
-    readonly property string appIcon: source?.appIcon ?? ""
-    readonly property string appName: source?.appName ?? ""
-    readonly property string image: source?.image ?? ""
-    readonly property var hints: notification?.hints ?? ({})
-    readonly property real expireTimeout: notification?.expireTimeout ?? GlobalConfig.notifs.defaultExpireTimeout
-    readonly property int urgency: {
-        if (notification)
-            return notification.urgency;
-        const u = String(source?.urgency ?? "normal").toLowerCase();
-        if (u === "0" || u === "low")
-            return NotificationUrgency.Low;
-        if (u === "2" || u === "critical")
-            return NotificationUrgency.Critical;
-        return NotificationUrgency.Normal;
-    }
-    readonly property bool resident: notification?.resident ?? false
-    readonly property bool hasActionIcons: notification?.hasActionIcons ?? false
-    readonly property list<var> actions: (source?.actions ?? []).map(a => ({
-                identifier: a.identifier,
-                text: a.text,
-                invoke: () => E4.Notifications.attemptInvokeAction(notif.source.notificationId, a.identifier)
-            }))
+    property Notification notification
+    property string notificationId
+    property string summary
+    property string body
+    property string appIcon
+    property string appName
+    property string image
+    property var hints // Hints are not persisted across restarts
+    property real expireTimeout: GlobalConfig.notifs.defaultExpireTimeout
+    property int urgency: NotificationUrgency.Normal
+    property bool resident
+    property bool hasActionIcons
+    property list<var> actions
 
     readonly property bool hasFullscreen: {
         const monitor = Hypr.focusedMonitor;
@@ -84,31 +64,123 @@ QtObject {
         return monitor?.activeWorkspace?.toplevels.values.some(t => t.lastIpcObject.fullscreen > 1) ?? false;
     }
 
-    // Hover pauses the popup timeout. end-4 owns the timer (it may not exist, e.g. expireTimeout == 0).
-    readonly property QtObject timer: QtObject {
-        function start(): void {
-            notif.source?.timer?.start();
-        }
-
-        function stop(): void {
-            notif.source?.timer?.stop();
+    readonly property Timer timer: Timer {
+        running: true
+        interval: notif.expireTimeout > 0 ? notif.expireTimeout : notif.hasFullscreen ? GlobalConfig.notifs.fullscreenExpireTimeout : GlobalConfig.notifs.defaultExpireTimeout
+        onTriggered: {
+            // Always expire if the active workspace has a fullscreen window
+            if (GlobalConfig.notifs.expire || notif.hasFullscreen)
+                notif.popup = false;
         }
     }
 
-    // UI hides a popup (swipe / click): tell end-4 so both families agree
-    onPopupChanged: {
-        if (!popup && source?.popup)
-            E4.Notifications.timeoutNotification(source.notificationId);
+    readonly property LazyLoader dummyImageLoader: LazyLoader {
+        active: false
+
+        // qmllint disable uncreatable-type
+        PanelWindow {
+            // qmllint enable uncreatable-type
+            implicitWidth: TokenConfig.sizes.notifs.image
+            implicitHeight: TokenConfig.sizes.notifs.image
+            color: "transparent"
+            mask: Region {}
+
+            Image {
+                function tryCache(): void {
+                    if (status !== Image.Ready || width != TokenConfig.sizes.notifs.image || height != TokenConfig.sizes.notifs.image)
+                        return;
+
+                    const cacheKey = notif.appName + notif.summary + notif.notificationId + notif.image;
+                    let h1 = 0xdeadbeef, h2 = 0x41c6ce57, ch;
+                    for (let i = 0; i < cacheKey.length; i++) {
+                        ch = cacheKey.charCodeAt(i);
+                        h1 = Math.imul(h1 ^ ch, 2654435761);
+                        h2 = Math.imul(h2 ^ ch, 1597334677);
+                    }
+                    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+                    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+                    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+                    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+                    const hash = (h2 >>> 0).toString(16).padStart(8, 0) + (h1 >>> 0).toString(16).padStart(8, 0);
+
+                    const cache = `${Paths.notifimagecache}/${hash}.png`;
+                    CUtils.saveItem(this, Qt.resolvedUrl(cache), () => {
+                        notif.image = cache;
+                        notif.dummyImageLoader.active = false;
+                    });
+                }
+
+                anchors.fill: parent
+                source: Qt.resolvedUrl(notif.image)
+                fillMode: Image.PreserveAspectCrop
+                cache: false
+                asynchronous: true
+                opacity: 0
+
+                onStatusChanged: tryCache()
+                onWidthChanged: tryCache()
+                onHeightChanged: tryCache()
+            }
+        }
     }
 
-    readonly property Connections sourceConn: Connections {
-        function onPopupChanged(): void {
-            if (notif.popup !== notif.source.popup)
-                notif.popup = notif.source.popup;
+    readonly property Connections conn: Connections {
+        function onClosed(): void {
+            notif.close();
         }
 
-        target: notif.source
-        ignoreUnknownSignals: true
+        function onSummaryChanged(): void {
+            notif.summary = notif.notification.summary;
+        }
+
+        function onBodyChanged(): void {
+            notif.body = notif.notification.body;
+        }
+
+        function onAppIconChanged(): void {
+            notif.appIcon = notif.notification.appIcon;
+        }
+
+        function onAppNameChanged(): void {
+            notif.appName = notif.notification.appName;
+        }
+
+        function onImageChanged(): void {
+            notif.image = notif.notification.image;
+            notif.maybeTriggerDummyImageLoader();
+        }
+
+        function onExpireTimeoutChanged(): void {
+            notif.expireTimeout = notif.notification.expireTimeout;
+        }
+
+        function onUrgencyChanged(): void {
+            notif.urgency = notif.notification.urgency;
+        }
+
+        function onResidentChanged(): void {
+            notif.resident = notif.notification.resident;
+        }
+
+        function onHasActionIconsChanged(): void {
+            notif.hasActionIcons = notif.notification.hasActionIcons;
+        }
+
+        function onActionsChanged(): void {
+            // qmllint disable unresolved-type
+            notif.actions = notif.notification.actions.map(a => ({
+                        // qmllint enable unresolved-type
+                        identifier: a.identifier,
+                        text: a.text,
+                        invoke: () => a.invoke()
+                    }));
+        }
+
+        function onHintsChanged(): void {
+            notif.hints = notif.notification.hints;
+        }
+
+        target: notif.notification
     }
 
     function updateTimeStr(): void {
@@ -131,6 +203,11 @@ QtObject {
         }
     }
 
+    function maybeTriggerDummyImageLoader(): void {
+        if (image && !image.startsWith("image://icon/") && !image.startsWith(Paths.notifimagecache))
+            dummyImageLoader.active = true;
+    }
+
     function lock(item: Item): void {
         locks.add(item);
     }
@@ -141,12 +218,37 @@ QtObject {
             close();
     }
 
-    // Caelestia UI calls close(); the item is removed by end-4 and Notifs.sync() then drops this wrapper.
     function close(): void {
         closed = true;
-        if (locks.size === 0 && source)
-            E4.Notifications.discardNotification(source.notificationId);
+        if (locks.size === 0 && Notifs.list.includes(this)) {
+            Notifs.list = Notifs.list.filter(n => n !== this);
+            notification?.dismiss();
+            destroy();
+        }
     }
 
-    Component.onCompleted: updateTimeStr()
+    Component.onCompleted: {
+        if (!notification)
+            return;
+
+        notificationId = notification.id;
+        summary = notification.summary;
+        body = notification.body;
+        appIcon = notification.appIcon;
+        appName = notification.appName;
+        image = notification.image;
+        maybeTriggerDummyImageLoader();
+        expireTimeout = notification.expireTimeout;
+        hints = notification.hints;
+        urgency = notification.urgency;
+        resident = notification.resident;
+        hasActionIcons = notification.hasActionIcons;
+        // qmllint disable unresolved-type
+        actions = notification.actions.map(a => ({
+                    // qmllint enable unresolved-type
+                    identifier: a.identifier,
+                    text: a.text,
+                    invoke: () => a.invoke()
+                }));
+    }
 }
