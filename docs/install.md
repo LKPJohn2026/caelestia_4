@@ -27,7 +27,9 @@ and leaves Plasma's settings alone). Nothing here needs root except installing p
    Quickshell and the Caelestia plugin use Qt's private API: **rebuild both after every Qt minor update**
    (`makepkg -Cf` here, then `tools/build-caelestia-plugin.sh`).
 4. **qt6-m3shapes-git** (AUR), used by Caelestia's shapes: `yay -S qt6-m3shapes-git`
-5. Optional, enables the matching features:
+5. **caelestia-cli** (AUR), which makes the colour scheme (wallpaper colours and preset schemes) and themes btop,
+   nvtop, Zed and Spotify: `yay -S caelestia-cli`. Without it, colours fall back to end-4's matugen.
+6. Optional, enables the matching features:
    - `gpu-screen-recorder` — screen recording with pause
    - `mpvpaper` — video wallpapers
    - `thunar thunar-volman tumbler gvfs` — the file manager the session uses

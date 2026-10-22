@@ -1,0 +1,20 @@
+{
+    "theme": {
+        "enableTerm": false,
+        "enableHypr": false,
+        "enableDiscord": false,
+        "enableSpicetify": true,
+        "enablePandora": false,
+        "enableFuzzel": false,
+        "enableBtop": true,
+        "enableNvtop": true,
+        "enableHtop": false,
+        "enableGtk": false,
+        "enableQt": false,
+        "enableWarp": false,
+        "enableChromium": false,
+        "enableZed": true,
+        "enableCava": false,
+        "postHook": "\"$HOME/.config/quickshell/ii/modules/caelestia/utils/scripts/scheme.py\" bridge"
+    }
+}

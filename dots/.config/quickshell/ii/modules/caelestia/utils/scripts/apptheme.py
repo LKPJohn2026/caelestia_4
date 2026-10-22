@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """caelestia4: Caelestia's app themes (caelestia-dots/cli utils/theme.py, ff8cae3) on top of end-4's colour pipeline.
 
-`apply` runs after every colour change (end of scripts/colors/applycolor.sh, which both wallpaper colours and preset
-schemes reach) and reads that change's palette from material_colors.scss:
+`apply` runs after every colour change (end of scripts/colors/applycolor.sh, which scheme.py bridge reaches after each
+caelestia-cli change) and reads that change's palette from material_colors.scss. With caelestia-cli installed, it
+writes scheme.json, btop, Zed and Spotify itself (cli.json), so those four are only done here without it:
   - ~/.local/state/caelestia/scheme.json  the file Caelestia's own integrations watch (the VS Code / Cursor extension)
   - btop    ~/.config/btop/themes/caelestia.theme (btop reloads on SIGUSR2)
   - cava    ~/.config/cava/config, only while it is ours (first line marker), cava reloads on SIGUSR2
@@ -30,8 +31,8 @@ HOME = os.path.expanduser("~")
 CONFIG = os.environ.get("XDG_CONFIG_HOME") or os.path.join(HOME, ".config")
 STATE = os.environ.get("XDG_STATE_HOME") or os.path.join(HOME, ".local/state")
 SCSS = os.path.join(STATE, "quickshell/user/generated/material_colors.scss")
-SCHEME_STATE = os.path.join(STATE, "caelestia4/scheme.json")  # preset choice (scheme.py)
 MARKER = "caelestia4: generated"
+CLI = shutil.which("caelestia")  # caelestia-cli: colours and some app themes are its own (backend step 3)
 
 # Catppuccin-style names -> where they come from when the scheme doesn't have them (wallpaper colours)
 DERIVED = {
@@ -114,29 +115,13 @@ def zen_profiles():
 
 def apply():
     colours, mode = read_palette()
-    try:
-        preset = json.load(open(SCHEME_STATE))
-    except Exception:
-        preset = {}
-    name = preset.get("name") or "dynamic"
-    atomic_write(os.path.join(STATE, "caelestia/scheme.json"), json.dumps({
-        "name": name,
-        "flavour": preset.get("flavour") or "default",
-        "mode": mode,
-        "variant": "tonalspot",
-        "colours": colours,
-    }))
-
-    atomic_write(os.path.join(CONFIG, "btop/themes/caelestia.theme"), fill("btop.theme", colours, mode))
-    signal("btop")
+    if not CLI:
+        apply_cli_part(colours, mode)
 
     cava = os.path.join(CONFIG, "cava/config")
     if ours(cava):
         atomic_write(cava, f"# {MARKER} by apptheme.py, edits are overwritten\n" + fill("cava.conf", colours, mode))
         signal("cava")
-
-    if shutil.which("zeditor") or shutil.which("zed") or os.path.isdir(os.path.join(CONFIG, "zed")):
-        atomic_write(os.path.join(CONFIG, "zed/themes/caelestia.json"), fill("zed.json", colours, mode, hash_=False))
 
     for profile in zen_profiles():
         if ours(os.path.join(profile, "chrome/userChrome.css")):
@@ -147,10 +132,6 @@ def apply():
         atomic_write(os.path.join(gtk, "thunar.css"), fill("thunar.css", colours, mode))
         ensure_gtk_import(gtk)
 
-    if shutil.which("spicetify"):
-        atomic_write(os.path.join(CONFIG, "spicetify/Themes/caelestia/color.ini"),
-                     fill(f"spicetify-{mode}.ini", colours, mode, hash_=False))
-
     policy_dir = "/etc/brave/policies/managed"
     if shutil.which("brave") and os.access(policy_dir, os.W_OK):
         atomic_write(os.path.join(policy_dir, "caelestia.json"),
@@ -159,6 +140,28 @@ def apply():
         if subprocess.run(["pidof", "brave"], stdout=subprocess.DEVNULL).returncode == 0:
             subprocess.Popen(["brave", "--refresh-platform-policy", "--no-startup-window"],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+
+
+def apply_cli_part(colours, mode):
+    """What caelestia-cli does itself when it is installed (its scheme.json, and cli.json enableBtop / enableZed /
+    enableSpicetify): only done here without it, from end-4's matugen colours"""
+    atomic_write(os.path.join(STATE, "caelestia/scheme.json"), json.dumps({
+        "name": "dynamic",
+        "flavour": "default",
+        "mode": mode,
+        "variant": "tonalspot",
+        "colours": colours,
+    }))
+
+    atomic_write(os.path.join(CONFIG, "btop/themes/caelestia.theme"), fill("btop.theme", colours, mode))
+    signal("btop")
+
+    if shutil.which("zeditor") or shutil.which("zed") or os.path.isdir(os.path.join(CONFIG, "zed")):
+        atomic_write(os.path.join(CONFIG, "zed/themes/caelestia.json"), fill("zed.json", colours, mode, hash_=False))
+
+    if shutil.which("spicetify"):
+        atomic_write(os.path.join(CONFIG, "spicetify/Themes/caelestia/color.ini"),
+                     fill(f"spicetify-{mode}.ini", colours, mode, hash_=False))
 
 
 def ensure_gtk_import(gtk):
