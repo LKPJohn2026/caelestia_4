@@ -109,7 +109,7 @@ StyledOverlayWidget {
             }
         }
 
-        StyledClippingRect {
+        ClipRect {
             Layout.fillWidth: true
             Layout.fillHeight: true
             radius: Tokens.rounding.medium

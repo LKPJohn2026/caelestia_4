@@ -12,7 +12,7 @@ import qs.modules.caelestia.adapters
 import qs // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep
 
-StyledClippingRect {
+ClipRect {
     id: root
 
     // caelestia4: end-4's "hold Super to see workspace numbers": GlobalStates.superDown comes from the SUPER_L/R
