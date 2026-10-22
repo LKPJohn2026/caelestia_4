@@ -186,6 +186,7 @@ switch() {
     type_flag="$3"
     color_flag="$4"
     color="$5"
+    local explicit_mode="$mode_flag" colour_img="" # caelestia4: for caelestia-cli (below)
 
     # Start Gemini auto-categorization if enabled
     aiStylingEnabled=$(jq -r '.background.widgets.clock.cookie.aiStyling' "$SHELL_CONFIG_FILE")
@@ -263,6 +264,7 @@ switch() {
             if [ -f "$thumbnail" ]; then
                 matugen_args+=(image "$thumbnail")
                 generate_colors_material_args=(--path "$thumbnail")
+                colour_img="$thumbnail"
                 create_restore_script "$video_path"
             else
                 echo "Cannot create image to colorgen"
@@ -272,6 +274,7 @@ switch() {
         else
             matugen_args+=(image "$imgpath")
             generate_colors_material_args=(--path "$imgpath")
+            colour_img="$imgpath"
             # Update wallpaper path in config
             set_wallpaper_path "$imgpath"
             remove_restore
@@ -312,9 +315,14 @@ switch() {
         fi
     fi
 
-    # caelestia4: while a preset scheme is active it stays: re-apply it (in the requested mode) instead of
-    # generating colours from the wallpaper. `scheme.py apply` exits 1 when the scheme is "dynamic" (wallpaper).
-    if [[ -x "$SCHEME_SCRIPT" ]] && "$SCHEME_SCRIPT" apply --mode "$mode_flag"; then
+    # caelestia4 (backend step 3): caelestia-cli makes the colours, from the wallpaper (with the colour style as its
+    # variant) or a preset scheme it keeps across wallpaper changes; its postHook (scheme.py bridge) writes end-4's
+    # outputs (colours.json, Hyprland, hyprlock, terminals). Only an accent colour (--color) still uses matugen below.
+    # Without --mode the scheme keeps its mode (gsettings may hold another desktop's preference).
+    if [[ "$color_flag" != "1" ]] && command -v caelestia &>/dev/null && [[ -x "$SCHEME_SCRIPT" ]]; then
+        [[ -n "$colour_img" ]] && "$SCHEME_SCRIPT" wall "$colour_img"
+        "$SCHEME_SCRIPT" mode $explicit_mode --variant "$type_flag" ${caelestia4_dynamic:+--dynamic}
+        post_process "" "" "$imgpath"
         return
     fi
 
@@ -409,10 +417,7 @@ main() {
         esac
     done
 
-    # caelestia4: leave the preset scheme for generated colours
-    if [[ -n "$caelestia4_dynamic" && -x "$SCHEME_SCRIPT" ]]; then
-        "$SCHEME_SCRIPT" clear
-    fi
+    # caelestia4: --type / --color leave a preset scheme for generated colours (scheme.py mode --dynamic, in switch())
 
     # If accentColor is set in config, use it
     config_color="$(get_accent_color_from_config)"

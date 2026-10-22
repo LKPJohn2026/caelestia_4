@@ -7,8 +7,8 @@ pragma Singleton
 // and the current wallpaper is read from end-4's config, not caelestia-cli's path.txt.
 // Contract used by Caelestia UI: list, query(search), current, actualCurrent, setWallpaper(path),
 // preview(path), stopPreview(), previewColourLock, getCategoryFor(entry), setRandom().
-// Colour preview while browsing (Caelestia's `caelestia wallpaper -p`): utils/scripts/wallpreview.sh runs matugen
-// dry, with end-4's colour style, and Colours shows the result until the preview stops (not for videos).
+// Colour preview while browsing: `caelestia wallpaper -p` (utils/scripts/wallpreview.sh's matugen dry run without
+// caelestia-cli), and Colours shows the result until the preview stops (not for videos).
 // Keep Caelestia's wallpaper dir (shell.json paths.wallpaperDir) and end-4's wallpaper folder the same.
 
 import QtQuick
@@ -169,7 +169,8 @@ Searcher {
         interval: 120 // scrolling through the list only computes the one it stops on
         onTriggered: {
             previewProc.running = false;
-            previewProc.command = [Quickshell.shellPath("modules/caelestia/utils/scripts/wallpreview.sh"), root.previewPath, Colours.currentLight ? "light" : "dark"];
+            // caelestia-cli prints the scheme it would make (current mode and variant); without it, matugen dry run
+            previewProc.command = Colours.cliAvailable ? ["caelestia", "wallpaper", "-p", root.previewPath, "--no-smart"] : [Quickshell.shellPath("modules/caelestia/utils/scripts/wallpreview.sh"), root.previewPath, Colours.currentLight ? "light" : "dark"];
             previewProc.running = true;
         }
     }
@@ -182,7 +183,10 @@ Searcher {
                 if (!root.showPreview || !text)
                     return;
                 try {
-                    Colours.loadPreview(text, Colours.currentLight);
+                    if (Colours.cliAvailable)
+                        Colours.load(text, true);
+                    else
+                        Colours.loadPreview(text, Colours.currentLight);
                     Colours.showPreview = true;
                 } catch (e) {
                     // cut off by a newer preview (fast scrolling): its own result follows
