@@ -8,6 +8,7 @@ import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import qs.modules.caelestia.adapters as CNet // caelestia4: keep (Nmcli)
 
 Singleton {
     id: root
@@ -126,7 +127,8 @@ Singleton {
     property string mathResult: ""
     property bool clipboardWorkSafetyActive: {
         const enabled = Config.options.workSafety.enable.clipboard;
-        const sensitiveNetwork = (StringUtils.stringListContainsSubstring(Network.networkName.toLowerCase(), Config.options.workSafety.triggerCondition.networkNameKeywords));
+        // caelestia4: SSID from Caelestia's Nmcli (end-4's Network would start a second nmcli monitor)
+        const sensitiveNetwork = (StringUtils.stringListContainsSubstring((CNet.Nmcli.active?.ssid ?? "").toLowerCase(), Config.options.workSafety.triggerCondition.networkNameKeywords));
         return enabled && sensitiveNetwork;
     }
 
