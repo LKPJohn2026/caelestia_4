@@ -111,7 +111,8 @@ local function apply_rules(win)
     -- Picture in picture. Float and pin now: window rules' float / pin only apply when a window opens, and browsers
     -- can set the "Picture-in-Picture" title after that (resizing a tiled window would just move the split).
     -- Shrink and move a moment later: on open the window doesn't have its own size (the video's aspect) yet.
-    if match_title("Picture[- ]in[- ][Pp]icture", false)(win) then
+    -- Whole title only (upstream 4f7407c): a tab about picture-in-picture is not a PiP window
+    if match_title("^Picture[- ]in[- ][Pp]icture$", false)(win) then
         if not win.floating then
             hl.dispatch(hl.dsp.window.float({ action = "on", window = win }))
         end
