@@ -34,6 +34,25 @@ Searcher {
     readonly property string end4Thumbnail: E4C.Config.options.background.thumbnailPath ?? ""
     property bool videoPlaying: false
 
+    // caelestia4: pause / play the video wallpaper (Caelestia's "wallpaper playing" toggle). The state is a marker file
+    // kept by scripts/caelestia4/wallpaper-pause.sh, which also tells each mpvpaper over its mpv IPC socket
+    property bool videoPaused: false
+    readonly property string pauseScript: Quickshell.shellPath("scripts/caelestia4/wallpaper-pause.sh")
+
+    function setVideoPaused(paused: bool): void {
+        videoPaused = paused; // optimistic; the marker file confirms
+        Quickshell.execDetached([pauseScript, paused ? "pause" : "play"]);
+    }
+
+    FileView {
+        path: `${Quickshell.env("XDG_STATE_HOME") || `${Quickshell.env("HOME")}/.local/state`}/caelestia4/wallpaper-paused`
+        watchChanges: true
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: root.videoPaused = true
+        onLoadFailed: root.videoPaused = false
+    }
+
     property bool showPreview: false
     readonly property string current: showPreview ? previewPath : actualCurrent
     property string previewPath

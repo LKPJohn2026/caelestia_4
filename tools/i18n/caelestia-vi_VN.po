@@ -2610,3 +2610,9 @@ msgstr "Ghim lên thanh"
 
 msgid "Unpin from the bar"
 msgstr "Bỏ ghim khỏi thanh"
+
+msgid "Video wallpaper paused"
+msgstr "Hình nền video đang dừng"
+
+msgid "Video wallpaper playing"
+msgstr "Hình nền video đang phát"

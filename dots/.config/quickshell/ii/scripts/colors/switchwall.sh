@@ -115,6 +115,13 @@ RESTORE_SCRIPT_DIR="$CUSTOM_DIR/scripts"
 RESTORE_SCRIPT="$RESTORE_SCRIPT_DIR/__restore_video_wallpaper.sh"
 THUMBNAIL_DIR="$RESTORE_SCRIPT_DIR/mpvpaper_thumbnails"
 VIDEO_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 video-align-x=0.5 video-align-y=0.5 load-scripts=no"
+# caelestia4: an mpv IPC socket per monitor (pause / play: scripts/caelestia4/wallpaper-pause.sh, the utilities' "wallpaper
+# playing" toggle) and start paused when that toggle is off
+video_opts_for() { # video_opts_for <monitor>
+    local o="$VIDEO_OPTS input-ipc-server=${XDG_RUNTIME_DIR:-/run/user/$UID}/caelestia4-mpvpaper-$1.sock"
+    [[ -e "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4/wallpaper-paused" ]] && o+=" pause=yes"
+    printf '%s' "$o"
+}
 
 is_video() {
     local extension="${1##*.}"
@@ -135,7 +142,9 @@ create_restore_script() {
 pkill -f -9 mpvpaper
 
 for monitor in \$(hyprctl monitors -j | jq -r '.[] | .name'); do
-    uwsm-app -s b -- mpvpaper -o "$VIDEO_OPTS" "\$monitor" "$video_path" & # caelestia4: own unit
+    opts="$VIDEO_OPTS input-ipc-server=\${XDG_RUNTIME_DIR:-/run/user/\$UID}/caelestia4-mpvpaper-\$monitor.sock"
+    [[ -e "\${XDG_STATE_HOME:-\$HOME/.local/state}/caelestia4/wallpaper-paused" ]] && opts+=" pause=yes"
+    uwsm-app -s b -- mpvpaper -o "\$opts" "\$monitor" "$video_path" & # caelestia4: own unit, IPC socket, remembered pause
     sleep 0.1
 done
 EOF
@@ -240,7 +249,7 @@ switch() {
             local video_path="$imgpath"
             monitors=$(hyprctl monitors -j | jq -r '.[] | .name')
             for monitor in $monitors; do
-                uwsm-app -s b -- mpvpaper -o "$VIDEO_OPTS" "$monitor" "$video_path" & # caelestia4: own unit (survives a shell restart)
+                uwsm-app -s b -- mpvpaper -o "$(video_opts_for "$monitor")" "$monitor" "$video_path" & # caelestia4: own unit (survives a shell restart), IPC socket
                 sleep 0.1
             done
 
