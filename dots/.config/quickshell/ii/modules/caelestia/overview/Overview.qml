@@ -318,7 +318,7 @@ Scope {
 
                             model: root.shownCount
 
-                            StyledClippingRect {
+                            ClipRect {
                                 id: tile
 
                                 required property int index

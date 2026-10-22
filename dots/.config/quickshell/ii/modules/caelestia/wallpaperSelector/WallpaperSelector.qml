@@ -442,7 +442,7 @@ Scope {
                                     anchors.margins: Tokens.padding.small
                                     spacing: Tokens.spacing.extraSmall
 
-                                    StyledClippingRect {
+                                    ClipRect {
                                         Layout.fillWidth: true
                                         Layout.fillHeight: true
                                         radius: Tokens.rounding.small
