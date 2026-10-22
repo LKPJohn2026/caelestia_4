@@ -20,6 +20,15 @@ service **owns**, the rule became:
 > still applies through end-4 and lists videos too; a video wallpaper stays on mpvpaper (`WallpaperImpl` never plays,
 > see the measurements in docs/feature-comparison.md). Transition ShaderEffects log "no GLSL ES version in common" once
 > (Qt's default vertex shader vs the 300es/330 fragment shaders); harmless on desktop GL, checked by rendering.
+> **2026-10-22, backend step 3:** colours come from caelestia-cli (AUR `caelestia-cli`, config
+> `~/.config/caelestia/cli.json`): wallpaper colours with end-4's colour style as the Material variant, or its preset
+> schemes, kept in `~/.local/state/caelestia/scheme.json`, which `Colours` reads directly again (all roles + term0-15).
+> Its postHook `scheme.py bridge` renders end-4's outputs from that scheme (matugen json → colours.json, Hyprland,
+> hyprlock, fuzzel theme; material_colors.scss → applycolor.sh → terminals, kitty, apptheme.py). switchwall.sh stays the
+> entry point (`scheme.py wall` / `scheme.py mode`); only an accent colour (`--color`) still uses matugen, and then the
+> Caelestia half keeps the scheme colours. cli.json leaves GTK, Qt, htop, fuzzel, Discord, Chromium, Hyprland and
+> terminals off (end-4 / apptheme.py do those without overwriting user files). Without caelestia-cli everything falls
+> back to the old matugen path. `services.smartScheme` stays unused (always `--no-smart`: light/dark is end-4's switch).
 | Adapter | end-4 source | Why it must be end-4 | Not supported (yet) |
 |---|---|---|---|
 | `Colours` | `Appearance.m3colors` (58 of 74 roles bound live; key colours mapped; term0-15 = Caelestia defaults) | one colour pipeline (end-4 matugen); Caelestia reads `caelestia-cli` scheme files | colour **preview** while browsing wallpapers |

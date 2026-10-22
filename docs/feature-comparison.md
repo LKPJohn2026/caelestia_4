@@ -219,7 +219,8 @@ cli `c5f478d`; the vendored shell was `21a75375`, 19 commits behind; **vendored 
 Backend (2026-10-22): notifications, network, brightness and battery now run on Caelestia's own services (step 1 of
 moving the backend to Caelestia; colours / wallpapers / recorder / idle inhibitor still go through end-4). Step 2:
 the vendored plugin is at 29fcf69a and the wallpaper is drawn by Caelestia's renderer (applying still goes through
-end-4's switchwall.sh, videos through mpvpaper). end-4-only
+end-4's switchwall.sh, videos through mpvpaper). Step 3: caelestia-cli makes the colours (wallpaper or preset), end-4 gets them
+through its postHook (`scheme.py bridge`); btop / nvtop / Zed / Spotify are themed by caelestia-cli itself. end-4-only
 features (assistant, overlay, region tools, dock, todo / timer, settings app…) keep their end-4 services.
 
 Still partial (review 2026-10-14):

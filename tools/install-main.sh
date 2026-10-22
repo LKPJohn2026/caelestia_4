@@ -29,6 +29,9 @@ backup() { # backup <path>
   local p="$1"; [[ -e "$p" ]] || return 0
   local rel="${p#$HOME/}"; mkdir -p "$BK/$(dirname "$rel")"; cp -a "$p" "$BK/$rel"
 }
+copy_file_if_missing() { # copy_file_if_missing <src> <dst>: one file, only if dst doesn't exist
+  if [[ -e "$2" ]]; then say "kept existing $2"; else mkdir -p "$(dirname "$2")"; cp "$1" "$2"; say "installed $2"; fi
+}
 copy_if_missing() { # copy_if_missing <src> <dst>: only if dst missing or an empty dir
   local src="$1" dst="$2"
   if [[ ! -e "$dst" ]] || { [[ -d "$dst" ]] && [[ -z "$(ls -A "$dst")" ]]; }; then
@@ -137,7 +140,7 @@ say "installed $CFG/matugen (no GTK templates)"
 
 # ---- small app configs: only if the user has none ----
 for d in fuzzel kitty foot wlogout; do copy_if_missing "$DOTS/$d" "$CFG/$d"; done
-copy_if_missing "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf"
+copy_file_if_missing "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf"
 # caelestia4: Hyprland-session file associations (Thunar for folders); merged so the user's other entries stay
 python3 - "$DOTS/hyprland-mimeapps.list" "$CFG/hyprland-mimeapps.list" <<'PY'
 import sys, os
@@ -153,7 +156,11 @@ for entry in want:
         lines.insert(i, entry)
 open(dst, "w").write("\n".join(lines) + "\n")
 PY
-copy_if_missing "$DOTS/caelestia/shell.json" "$CFG/caelestia/shell.json" # caelestia4: bar speaker icon on (opens the audio popout / per-app mixer)
+copy_file_if_missing "$DOTS/caelestia/shell.json" "$CFG/caelestia/shell.json" # caelestia4: bar speaker icon on (opens the audio popout / per-app mixer)
+# caelestia-cli makes the colours (wallpaper or preset scheme); its postHook (scheme.py bridge) passes them to end-4.
+# Only themes that write their own files are on (no GTK / Qt / htop / fuzzel / browser policy)
+copy_file_if_missing "$DOTS/caelestia/cli.json" "$CFG/caelestia/cli.json"
+command -v caelestia >/dev/null || warn "caelestia-cli is not installed (yay -S caelestia-cli): colours fall back to end-4's matugen"
 mkdir -p "$HOME/.local/share/icons"; cp -n "$REPO/dots/.local/share/icons/illogical-impulse.svg" "$HOME/.local/share/icons/" 2>/dev/null || true
 
 # ---- end-4 shell config: start in the caelestia family; never auto-kill KDE daemons ----

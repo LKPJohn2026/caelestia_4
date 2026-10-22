@@ -3,16 +3,13 @@ pragma ComponentBehavior: Bound
 
 // caelestia4 ADAPTER: Colours
 // Caelestia's colour logic is kept (transparency layers, tPalette, blur layer rules, wallpaper luminance).
-// Data source changed: the palette is bound live to end-4's Appearance.m3colors, so end-4's matugen
-// pipeline is the only colour source (Caelestia normally reads caelestia-cli's generated scheme file).
+// Backend step 3: the palette is caelestia-cli's scheme.json again (all roles + term0-15), as upstream; caelestia-cli
+// makes it from the wallpaper or a preset and its postHook (utils/scripts/scheme.py bridge) passes it to end-4, so both
+// halves of the shell show the same colours. Without caelestia-cli, apptheme.py writes scheme.json from end-4's colours.
 // Contract used by Caelestia UI: palette, tPalette, layer(), on(), light, transparency{enabled,base,layers},
-// scheme, setMode(), showPreview, wallLuminance.
-// Colour preview: while browsing wallpapers, Wallpapers.preview() fills `preview` from utils/scripts/wallpreview.sh
-// (matugen dry run, same colour style as end-4) and sets showPreview; nothing is applied until a wallpaper is picked.
-// Colour source: `scheme` is "dynamic" (wallpaper colours, end-4's matugen) or one of Caelestia's preset schemes
-// (catppuccin, gruvbox, ...), applied by utils/scripts/scheme.py through the same end-4 outputs. The choice lives in
-// $XDG_STATE_HOME/caelestia4/scheme.json (watched here, so switchwall.sh --color / --type resetting it shows up).
-// term0..15 keep Caelestia's defaults (end-4 has no terminal palette here).
+// scheme, flavour, schemes, setScheme(), setMode(), showPreview, load(), loadPreview(), wallLuminance.
+// Colour preview while browsing wallpapers: Wallpapers.preview() runs `caelestia wallpaper -p` (or wallpreview.sh's
+// matugen dry run without caelestia-cli) and fills `preview`; nothing is applied until a wallpaper is picked.
 
 import QtQuick
 import Quickshell
@@ -46,73 +43,34 @@ Singleton {
         schemeListProc.running = true;
     }
     readonly property bool light: showPreview ? previewLight : currentLight
-    readonly property bool currentLight: !E4C.Appearance.m3colors.darkmode
+    property bool currentLight
     property bool previewLight
     readonly property M3Palette palette: showPreview ? preview : current
     readonly property M3TPalette tPalette: M3TPalette {}
-    readonly property M3Palette current: M3Palette {
-        m3primary_paletteKeyColor: E4C.Appearance.m3colors.m3primary // caelestia4: end-4 has no palette key colors
-        m3secondary_paletteKeyColor: E4C.Appearance.m3colors.m3secondary // caelestia4: end-4 has no palette key colors
-        m3tertiary_paletteKeyColor: E4C.Appearance.m3colors.m3tertiary // caelestia4: end-4 has no palette key colors
-        m3neutral_paletteKeyColor: E4C.Appearance.m3colors.m3outline // caelestia4: end-4 has no palette key colors
-        m3neutral_variant_paletteKeyColor: E4C.Appearance.m3colors.m3outlineVariant // caelestia4: end-4 has no palette key colors
-        m3background: E4C.Appearance.m3colors.m3background
-        m3onBackground: E4C.Appearance.m3colors.m3onBackground
-        m3surface: E4C.Appearance.m3colors.m3surface
-        m3surfaceDim: E4C.Appearance.m3colors.m3surfaceDim
-        m3surfaceBright: E4C.Appearance.m3colors.m3surfaceBright
-        m3surfaceContainerLowest: E4C.Appearance.m3colors.m3surfaceContainerLowest
-        m3surfaceContainerLow: E4C.Appearance.m3colors.m3surfaceContainerLow
-        m3surfaceContainer: E4C.Appearance.m3colors.m3surfaceContainer
-        m3surfaceContainerHigh: E4C.Appearance.m3colors.m3surfaceContainerHigh
-        m3surfaceContainerHighest: E4C.Appearance.m3colors.m3surfaceContainerHighest
-        m3onSurface: E4C.Appearance.m3colors.m3onSurface
-        m3surfaceVariant: E4C.Appearance.m3colors.m3surfaceVariant
-        m3onSurfaceVariant: E4C.Appearance.m3colors.m3onSurfaceVariant
-        m3inverseSurface: E4C.Appearance.m3colors.m3inverseSurface
-        m3inverseOnSurface: E4C.Appearance.m3colors.m3inverseOnSurface
-        m3outline: E4C.Appearance.m3colors.m3outline
-        m3outlineVariant: E4C.Appearance.m3colors.m3outlineVariant
-        m3shadow: E4C.Appearance.m3colors.m3shadow
-        m3scrim: E4C.Appearance.m3colors.m3scrim
-        m3surfaceTint: E4C.Appearance.m3colors.m3surfaceTint
-        m3primary: E4C.Appearance.m3colors.m3primary
-        m3onPrimary: E4C.Appearance.m3colors.m3onPrimary
-        m3primaryContainer: E4C.Appearance.m3colors.m3primaryContainer
-        m3onPrimaryContainer: E4C.Appearance.m3colors.m3onPrimaryContainer
-        m3inversePrimary: E4C.Appearance.m3colors.m3inversePrimary
-        m3secondary: E4C.Appearance.m3colors.m3secondary
-        m3onSecondary: E4C.Appearance.m3colors.m3onSecondary
-        m3secondaryContainer: E4C.Appearance.m3colors.m3secondaryContainer
-        m3onSecondaryContainer: E4C.Appearance.m3colors.m3onSecondaryContainer
-        m3tertiary: E4C.Appearance.m3colors.m3tertiary
-        m3onTertiary: E4C.Appearance.m3colors.m3onTertiary
-        m3tertiaryContainer: E4C.Appearance.m3colors.m3tertiaryContainer
-        m3onTertiaryContainer: E4C.Appearance.m3colors.m3onTertiaryContainer
-        m3error: E4C.Appearance.m3colors.m3error
-        m3onError: E4C.Appearance.m3colors.m3onError
-        m3errorContainer: E4C.Appearance.m3colors.m3errorContainer
-        m3onErrorContainer: E4C.Appearance.m3colors.m3onErrorContainer
-        m3success: E4C.Appearance.m3colors.m3success
-        m3onSuccess: E4C.Appearance.m3colors.m3onSuccess
-        m3successContainer: E4C.Appearance.m3colors.m3successContainer
-        m3onSuccessContainer: E4C.Appearance.m3colors.m3onSuccessContainer
-        m3primaryFixed: E4C.Appearance.m3colors.m3primaryFixed
-        m3primaryFixedDim: E4C.Appearance.m3colors.m3primaryFixedDim
-        m3onPrimaryFixed: E4C.Appearance.m3colors.m3onPrimaryFixed
-        m3onPrimaryFixedVariant: E4C.Appearance.m3colors.m3onPrimaryFixedVariant
-        m3secondaryFixed: E4C.Appearance.m3colors.m3secondaryFixed
-        m3secondaryFixedDim: E4C.Appearance.m3colors.m3secondaryFixedDim
-        m3onSecondaryFixed: E4C.Appearance.m3colors.m3onSecondaryFixed
-        m3onSecondaryFixedVariant: E4C.Appearance.m3colors.m3onSecondaryFixedVariant
-        m3tertiaryFixed: E4C.Appearance.m3colors.m3tertiaryFixed
-        m3tertiaryFixedDim: E4C.Appearance.m3colors.m3tertiaryFixedDim
-        m3onTertiaryFixed: E4C.Appearance.m3colors.m3onTertiaryFixed
-        m3onTertiaryFixedVariant: E4C.Appearance.m3colors.m3onTertiaryFixedVariant
-    }
+    readonly property M3Palette current: M3Palette {}
     readonly property M3Palette preview: M3Palette {}
 
-    // Fill `preview` from matugen's JSON (colors.<snake_case role>.default.color). Roles matugen doesn't make
+    // caelestia-cli's scheme JSON (scheme.json, `caelestia wallpaper -p`), upstream's Colours.load()
+    function load(data: string, isPreview: bool): void {
+        const colours = isPreview ? preview : current;
+        const scheme = JSON.parse(data);
+
+        if (!isPreview) {
+            root.scheme = scheme.name;
+            flavour = scheme.flavour;
+            currentLight = scheme.mode === "light";
+        } else {
+            previewLight = scheme.mode === "light";
+        }
+
+        for (const [name, colour] of Object.entries(scheme.colours)) {
+            const propName = name.startsWith("term") ? name : `m3${name}`;
+            if (colours.hasOwnProperty(propName))
+                colours[propName] = `#${colour}`;
+        }
+    }
+
+    // Without caelestia-cli: fill `preview` from wallpreview.sh's matugen JSON (colors.<snake_case role>.default.color). Roles matugen doesn't make
     // (success, terminal colours) come from the current palette; key colours follow their roles, as in `current`.
     function loadPreview(json: string, light: bool): void {
         const roles = JSON.parse(json).colors ?? {};
@@ -168,8 +126,19 @@ Singleton {
     }
 
     function setMode(mode: string): void {
-        // caelestia4: regenerate end-4's scheme from the current wallpaper in the requested mode
-        E4.Wallpapers.apply(E4C.Config.options.background.wallpaperPath, mode === "dark");
+        if (root.cliAvailable) // caelestia-cli: same scheme in the other mode (a preset may switch flavour)
+            Quickshell.execDetached([root.schemeScript, "mode", mode]);
+        else // end-4: regenerate its scheme from the current wallpaper in the requested mode
+            E4.Wallpapers.apply(E4C.Config.options.background.wallpaperPath, mode === "dark");
+    }
+
+    // caelestia-cli installed (backend step 3); without it colours come from end-4's matugen pipeline
+    property bool cliAvailable: true
+
+    Process {
+        running: true
+        command: ["sh", "-c", "command -v caelestia"]
+        onExited: code => root.cliAvailable = code === 0
     }
 
     function reloadHyprRules(): void {
@@ -217,24 +186,10 @@ Singleton {
     }
 
     FileView {
-        path: `${Quickshell.env("XDG_STATE_HOME") || `${Quickshell.env("HOME")}/.local/state`}/caelestia4/scheme.json`
+        path: `${Paths.state}/scheme.json`
         watchChanges: true
-        printErrors: false
         onFileChanged: reload()
-        onLoaded: {
-            try {
-                const state = JSON.parse(text());
-                root.scheme = state.name || "dynamic";
-                root.flavour = state.flavour ?? "";
-            } catch (e) {
-                root.scheme = "dynamic";
-                root.flavour = "";
-            }
-        }
-        onLoadFailed: {
-            root.scheme = "dynamic";
-            root.flavour = "";
-        }
+        onLoaded: root.load(text(), false)
     }
 
     Connections {
