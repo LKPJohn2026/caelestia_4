@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Services.UPower
+import Caelestia.Config as CC
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
@@ -89,53 +91,45 @@ ContentPage {
         }
     }
 
+    // caelestia4: battery warnings come from Caelestia's BatteryMonitor (end-4's Battery service isn't loaded any more),
+    // so these rows edit Caelestia's general.battery (shell.json): one row per warning level, and the hibernate level
     ContentSection {
         icon: "battery_full"
         title: Translation.tr("Battery")
 
         SettingRow {
-            visible: !Battery.available
+            visible: !UPower.displayDevice.isLaptopBattery
             icon: "power"
             title: Translation.tr("No battery detected")
             description: Translation.tr("These only apply to laptops")
         }
 
-        SpinRow {
-            icon: "battery_3_bar"
-            enabled: Battery.available
-            title: Translation.tr("Low battery warning at (%)")
-            from: 5
-            to: 50
-            value: Config.options.battery.low
-            onMoved: v => Config.options.battery.low = v
+        Repeater {
+            model: CC.GlobalConfig.general.battery.warnLevels.values
+
+            SpinRow {
+                required property var modelData
+                required property int index
+
+                enabled: UPower.displayDevice.isLaptopBattery
+                icon: modelData.critical ? "battery_alert" : "battery_3_bar"
+                title: modelData.critical ? Translation.tr("Critical warning at (%)") : Translation.tr("Low battery warning at (%)")
+                from: 1
+                to: 50
+                value: modelData.level
+                onMoved: v => CC.GlobalConfig.general.battery.warnLevels.at(index).level = v
+            }
         }
 
         SpinRow {
-            icon: "battery_alert"
-            enabled: Battery.available
-            title: Translation.tr("Critical warning at (%)")
-            from: 1
-            to: 20
-            value: Config.options.battery.critical
-            onMoved: v => Config.options.battery.critical = v
-        }
-
-        SwitchRow {
-            icon: "power_settings_new"
-            enabled: Battery.available
-            title: Translation.tr("Sleep when almost empty")
-            checked: Config.options.battery.automaticSuspend
-            onToggled: v => Config.options.battery.automaticSuspend = v
-        }
-
-        SpinRow {
-            enabled: Battery.available && Config.options.battery.automaticSuspend
+            enabled: UPower.displayDevice.isLaptopBattery
             icon: "battery_0_bar"
-            title: Translation.tr("Sleep at (%)")
-            from: 1
+            title: Translation.tr("Hibernate at (%)")
+            description: Translation.tr("Saves the session to disk before the battery runs out (needs hibernation set up). 0 = never")
+            from: 0
             to: 15
-            value: Config.options.battery.suspend
-            onMoved: v => Config.options.battery.suspend = v
+            value: CC.GlobalConfig.general.battery.criticalLevel
+            onMoved: v => CC.GlobalConfig.general.battery.criticalLevel = v
         }
     }
 }
