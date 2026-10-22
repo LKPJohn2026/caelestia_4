@@ -32,12 +32,8 @@ Singleton {
     property bool wallpaperSelectorOpen: false
     property bool workspaceShowNumbers: false
 
-    onSidebarRightOpenChanged: {
-        if (GlobalStates.sidebarRightOpen) {
-            Notifications.timeoutAll();
-            Notifications.markAllRead();
-        }
-    }
+    // caelestia4: end-4's Notifications service is not used any more (Caelestia's Notifs owns the notification server);
+    // touching it here would start a second server the first time the sidebar opened
 
     GlobalShortcut {
         name: "workspaceNumber"
