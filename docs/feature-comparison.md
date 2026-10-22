@@ -207,10 +207,9 @@ cli `c5f478d`; the vendored shell `21a75375` is 19 commits behind):
   skwd-paper). Here: Caelestia's plain crossfade only.
 - **Video wallpapers inside the shell** (Visual component, KTX image cache), shown in Nexus too. Here: mpvpaper via
   end-4 (works; no shell-side preview of video wallpapers, no transition).
-- **Pause-wallpaper quick toggle** (utilities). Missing.
-- **Picture-in-picture match anchored** (`^Picture…Picture$`): the resizer here also catches windows whose title only
-  contains "picture in picture" (e.g. a browser tab about it). Missing fix.
-- **Caps Lock state from the key code** (works with `caps:escape_shifted_capslock`-style options). Missing fix.
+- **Pause-wallpaper quick toggle** (utilities). ✅ Added 2026-10-22 for mpvpaper video wallpapers (mpv IPC; remembered across logins).
+- **Picture-in-picture match anchored** (`^Picture…Picture$`). ✅ Applied 2026-10-22 (resizer and end-4's PiP rules).
+- **Caps Lock state from the key code** (works with `caps:escape_shifted_capslock`-style options). ✅ Applied 2026-10-22.
 - Smaller: session GIF hidden when its path is empty; settings can skip watching the config file; the Discord theme uses
   the Caelestia logo (no Discord theming here at all: it needs a client mod such as Vencord / Vesktop).
 
