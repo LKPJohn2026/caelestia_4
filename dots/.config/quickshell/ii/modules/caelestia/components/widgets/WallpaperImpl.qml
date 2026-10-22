@@ -1,0 +1,115 @@
+// caelestia4: Caelestia's wallpaper renderer (upstream 1c406e4e): Caelestia.Multimedia's Visual (stills cached as
+// compressed KTX textures sized to the screen) and a transition shader from Caelestia.Shaders, picked by
+// shell.json background.wallpaperTransition (Nexus → Wallpaper & style).
+// Hybrid: only stills play here. A video wallpaper stays on mpvpaper (end-4's switchwall.sh; ~2% of a core instead of
+// ~18% for QtMultimedia at 7680x2160), so `source` is its first-frame thumbnail and the background goes see-through
+// while mpvpaper runs (Background.qml videoShowing). A video previewed from the launcher shows its first frame.
+import QtQuick
+import Caelestia
+import Caelestia.Config
+import Caelestia.Multimedia
+import Caelestia.Shaders
+import qs.modules.caelestia.adapters
+
+Item {
+    id: root
+
+    readonly property transitionShader shader: {
+        CUtils.dependency(Config.background.wallpaperTransition);
+        let transition = CUtils.enumToString(Config.background, "wallpaperTransition");
+        if (!transition)
+            return Shaders.crossfade;
+
+        transition = transition[0].toLowerCase() + transition.slice(1);
+        return Shaders[transition] ?? Shaders.crossfade;
+    }
+
+    property string source: Wallpapers.current
+    property ShaderEffectSource currentCapture: capture1
+    property real transitionProgress: 1
+
+    onSourceChanged: {
+        transitionAnim.stop();
+
+        if (transitionProgress < 1) {
+            currentCapture = currentCapture === capture1 ? capture2 : capture1;
+            currentCapture.sourceItem = transition;
+        } else {
+            currentCapture.sourceItem = live;
+        }
+
+        currentCapture.visible = true;
+        currentCapture.scheduleUpdate();
+    }
+
+    Component.onCompleted: live.source = source
+
+    NumberAnimation on transitionProgress {
+        id: transitionAnim
+
+        running: false
+        duration: root.shader.duration * Tokens.anim.durations.scale
+        easing: root.shader.easing
+        to: 1
+    }
+
+    ShaderEffectSource {
+        id: capture1
+
+        anchors.fill: parent
+        live: false
+        visible: false
+
+        onScheduledUpdateCompleted: {
+            visible = false;
+            transition.from = this;
+            root.transitionProgress = 0;
+            live.source = root.source;
+            if (live.ready)
+                transitionAnim.start();
+        }
+    }
+
+    ShaderEffectSource {
+        id: capture2
+
+        anchors.fill: parent
+        live: false
+        visible: false
+
+        onScheduledUpdateCompleted: {
+            visible = false;
+            transition.from = this;
+            root.transitionProgress = 0;
+            live.source = root.source;
+            if (live.ready)
+                transitionAnim.start();
+        }
+    }
+
+    Visual {
+        id: live
+
+        anchors.fill: parent
+        playing: false // caelestia4: videos are mpvpaper's (see top)
+        animate: false
+        layer.enabled: true
+
+        onReadyChanged: {
+            if (ready && source === root.source)
+                transitionAnim.start();
+        }
+    }
+
+    ShaderEffect {
+        id: transition
+
+        property Item from
+        property Item to: live
+        property real progress: root.transitionProgress
+
+        anchors.fill: parent
+        visible: root.transitionProgress < 1
+        fragmentShader: root.shader.url
+    }
+}

@@ -1,10 +1,9 @@
 import QtQuick
-import Quickshell
 import Caelestia.Config
 import Caelestia.Models
+import Caelestia.Multimedia
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.effects
-import qs.modules.caelestia.components.images
 import qs.modules.caelestia.adapters
 
 Item {
@@ -46,7 +45,7 @@ Item {
         }
     }
 
-    StyledClippingRect {
+    ClipRect {
         id: image
 
         anchors.horizontalCenter: parent.horizontalCenter
@@ -64,11 +63,10 @@ Item {
             fontStyle: Tokens.font.icon.builders.extraLarge.scale(2).weight(Font.DemiBold).build()
         }
 
-        CachingImage {
+        Visual {
             anchors.fill: parent
-            path: root.modelData.path
-            smooth: !root.PathView.view.moving
-            sourceSize: Qt.size(image.implicitWidth, image.implicitHeight) // caelestia4: Qt applies the devicePixelRatio itself
+            source: root.modelData.path
+            playing: root.PathView.isCurrentItem
         }
     }
 
