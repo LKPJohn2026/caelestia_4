@@ -6,7 +6,8 @@ Upstreams checked (fresh clones, not the local copies):
 - caelestia-dots/caelestia `f4bb062` (2026-10-13): dotfiles (Hyprland, app themes, uwsm)
 - caelestia-dots/cli `289e208` (2026-10-13): the `caelestia` command
 
-caelestia_4 is in sync with end-4 (0 upstream commits not merged). Caelestia shell is vendored at `21a75375` (2026-10-11).
+caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-22). Caelestia shell is vendored at
+`29fcf69a` (2026-10-22, upstream main: 0 commits ahead); caelestia-cli is the AUR 1.1.3 release.
 
 Status legend:
 - ✅ **C**: Caelestia feature, working here as in Caelestia
@@ -223,10 +224,24 @@ end-4's switchwall.sh, videos through mpvpaper). Step 3: caelestia-cli makes the
 through its postHook (`scheme.py bridge`); btop / nvtop / Zed / Spotify are themed by caelestia-cli itself. end-4-only
 features (assistant, overlay, region tools, dock, todo / timer, settings app…) keep their end-4 services.
 
-Still partial (review 2026-10-14):
+Still open (review 2026-10-22):
 
-1. **App themes not covered**: Firefox (installed, no profile yet), Discord (needs Vencord / Vesktop / Equibop).
-2. **Preset schemes with one mode** keep it when switching light/dark (no flavour pairing yet: `counterpart()` in scheme.py).
-3. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
+1. **Clipping fix not taken everywhere**: upstream #2168 replaced Quickshell's ClippingRectangle (`StyledClippingRect`)
+   with the C++ `ClipRect`; here only the wallpaper views use it, 11 files still use `StyledClippingRect` (bar
+   workspaces, popout wrapper, notifications, sidebar groups, dashboard, window preview, overview, dock preview...).
+2. **Smaller upstream fixes not in the ported QML**: session GIF hidden when its path is empty (#2166); the rest of the
+   unapplied 21a75375..29fcf69a module diffs are lint clean-ups only.
+3. **caelestia-cli 1.1.3 lacks 858ecff**: a near-black wallpaper makes `caelestia wallpaper` fail (recursion in
+   score), so its colours wouldn't change. cli main also has video wallpapers (#183), unused here (thumbnails are passed).
+4. **Settings still split between the two halves**: workspaces shown (Caelestia 5, end-4 10); transparency (Caelestia
+   off, end-4 on); the end-4 desktop weather widget uses end-4's disabled weather service (Houston) while Caelestia's
+   dashboard uses its own; Nexus `general.apps.terminal`, `nexus.networkRescanInterval`, `services.smartScheme` are read
+   by nothing.
+5. **App themes not covered**: Firefox (a profile exists now; Caelestia's theme is userChrome.css + user.js + an
+   extension with a fish native host), Discord (installed as the plain client; needs Vencord / Vesktop / Equibop).
+6. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
+
+Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
+(`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
 
 Waiting on a one-time step: Brave's frame colour needs `sudo install -d -o "$USER" /etc/brave/policies/managed`; Zen and Cursor/Zed need their theme picked once (see install notes).
