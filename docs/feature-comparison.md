@@ -201,12 +201,15 @@ Status legend:
 ## Gaps, most useful first
 
 New upstream Caelestia work since this comparison (checked 2026-10-22: shell `29fcf69a`, dotfiles `4f7407c`,
-cli `c5f478d`; the vendored shell `21a75375` is 19 commits behind):
+cli `c5f478d`; the vendored shell was `21a75375`, 19 commits behind; **vendored `29fcf69a` since 2026-10-22, backend step 2**):
 
 - **Wallpaper transitions**: shader transitions between wallpapers (new Multimedia + Shaders plugin modules, shaders from
-  skwd-paper). Here: Caelestia's plain crossfade only.
-- **Video wallpapers inside the shell** (Visual component, KTX image cache), shown in Nexus too. Here: mpvpaper via
-  end-4 (works; no shell-side preview of video wallpapers, no transition).
+  skwd-paper). ✅ 2026-10-22: the background uses Caelestia's WallpaperImpl (27 transitions, picked in Nexus → Wallpaper
+  & style; stills cached as compressed KTX, 16.6 MB instead of ~66 MB at 7680×2160).
+- **Video wallpapers inside the shell** (Visual component), shown in Nexus too. 🔁 Hybrid by choice: videos are listed
+  and previewed (first frame / launcher) by Caelestia's Visual, but play on mpvpaper. Measured on 7680×2160 H.264:
+  mpvpaper 2.4 % of a core, QtMultimedia 18 % (CUDA) / 24 % (VAAPI) and +0.5 GB in the shell, since Qt copies every
+  decoded frame through system memory.
 - **Pause-wallpaper quick toggle** (utilities). ✅ Added 2026-10-22 for mpvpaper video wallpapers (mpv IPC; remembered across logins).
 - **Picture-in-picture match anchored** (`^Picture…Picture$`). ✅ Applied 2026-10-22 (resizer and end-4's PiP rules).
 - **Caps Lock state from the key code** (works with `caps:escape_shifted_capslock`-style options). ✅ Applied 2026-10-22.
@@ -214,7 +217,9 @@ cli `c5f478d`; the vendored shell `21a75375` is 19 commits behind):
   the Caelestia logo (no Discord theming here at all: it needs a client mod such as Vencord / Vesktop).
 
 Backend (2026-10-22): notifications, network, brightness and battery now run on Caelestia's own services (step 1 of
-moving the backend to Caelestia; colours / wallpapers / recorder / idle inhibitor still go through end-4). end-4-only
+moving the backend to Caelestia; colours / wallpapers / recorder / idle inhibitor still go through end-4). Step 2:
+the vendored plugin is at 29fcf69a and the wallpaper is drawn by Caelestia's renderer (applying still goes through
+end-4's switchwall.sh, videos through mpvpaper). end-4-only
 features (assistant, overlay, region tools, dock, todo / timer, settings app…) keep their end-4 services.
 
 Still partial (review 2026-10-14):

@@ -14,6 +14,12 @@ service **owns**, the rule became:
 > **2026-10-22, backend step 1:** `Notifs`/`NotifData`, `Nmcli` and `Brightness` are now upstream Caelestia's own
 > services again (end-4's Notifications, Network and Brightness are no longer instantiated), and battery warnings come
 > only from Caelestia's BatteryMonitor. Still backed by end-4: `Colours`, `Wallpapers`, `Recorder`, `IdleInhibitor`.
+> **2026-10-22, backend step 2:** plugin at 29fcf69a (Multimedia, Shaders, State modules). The background, Nexus
+> preview, Nexus wall grid and launcher items draw through Caelestia.Multimedia's `Visual` / `WallpaperImpl`
+> (`components/widgets/WallpaperImpl.qml`, transition from shell.json `background.wallpaperTransition`). `Wallpapers`
+> still applies through end-4 and lists videos too; a video wallpaper stays on mpvpaper (`WallpaperImpl` never plays,
+> see the measurements in docs/feature-comparison.md). Transition ShaderEffects log "no GLSL ES version in common" once
+> (Qt's default vertex shader vs the 300es/330 fragment shaders); harmless on desktop GL, checked by rendering.
 | Adapter | end-4 source | Why it must be end-4 | Not supported (yet) |
 |---|---|---|---|
 | `Colours` | `Appearance.m3colors` (58 of 74 roles bound live; key colours mapped; term0-15 = Caelestia defaults) | one colour pipeline (end-4 matugen); Caelestia reads `caelestia-cli` scheme files | colour **preview** while browsing wallpapers |
