@@ -20,7 +20,8 @@ case "${1:-}" in
     ;;
   caelestia)
     tag="${2:?Caelestia tag required, e.g. v2.6.0}"
-    git subtree pull --prefix third_party/caelestia-shell https://github.com/caelestia-dots/shell.git "$tag" --squash \
+    # -S: the squash commit must be signed too (ruleset secure-main rejects unsigned commits)
+    git subtree pull -S --prefix third_party/caelestia-shell https://github.com/caelestia-dots/shell.git "$tag" --squash \
       -m "Update vendored caelestia-dots/shell to $tag"
     echo ">> Update VERSION/GIT_REVISION in tools/build-caelestia-plugin.sh for $tag"
     ;;
