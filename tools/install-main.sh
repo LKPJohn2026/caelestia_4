@@ -73,13 +73,22 @@ say "installed $CFG/quickshell/ii"
 # ---- Hyprland config (end-4 + caelestia4 patches); keep user files on re-runs ----
 backup "$CFG/hypr"
 mkdir -p "$CFG/hypr"
-rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'workspaces.lua' --exclude 'hyprland/shellOverrides/main.lua' \
+# caelestia4: hypridle-timeouts.conf is generated from the settings app (Power & idle); --delete removed it, and then
+# hypridle ran with no rules at all: never locked, never turned the screen off, never slept
+rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'workspaces.lua' --exclude 'hyprland/shellOverrides/main.lua' --exclude 'hypridle-timeouts.conf' \
       --exclude 'hyprland/colors.lua' --exclude 'hyprlock/colors.conf' "$DOTS/hypr/" "$CFG/hypr/"
 [[ -f "$CFG/hypr/hyprland/colors.lua" ]] || cp "$DOTS/hypr/hyprland/colors.lua" "$CFG/hypr/hyprland/colors.lua"
 # caelestia4: settings-app Hyprland options live here (written by the shell); never overwrite them
 [[ -f "$CFG/hypr/hyprland/shellOverrides/main.lua" ]] || { mkdir -p "$CFG/hypr/hyprland/shellOverrides"; cp "$DOTS/hypr/hyprland/shellOverrides/main.lua" "$CFG/hypr/hyprland/shellOverrides/main.lua"; }
 [[ -f "$CFG/hypr/hyprlock/colors.conf" ]] || cp "$DOTS/hypr/hyprlock/colors.conf" "$CFG/hypr/hyprlock/colors.conf"
 [[ -d "$CFG/hypr/custom" ]] || cp -a "$DOTS/hypr/custom" "$CFG/hypr/custom"
+# hypridle's timers: (re)create them from the saved settings when missing (5 / 10 / 15 min and lock before sleep by default)
+if [[ ! -f "$CFG/hypr/hypridle-timeouts.conf" ]]; then
+  read -r lockm offm sleepm lockb < <(jq -r '.caelestia.idle // {} | "\(.lockMinutes // 5) \(.screenOffMinutes // 10) \(.suspendMinutes // 15) \(.lockBeforeSleep // true)"' \
+    "$CFG/illogical-impulse/config.json" 2>/dev/null || echo "5 10 15 true")
+  "$CFG/quickshell/ii/scripts/caelestia4/hypridle-timeouts.sh" "${lockm:-5}" "${offm:-10}" "${sleepm:-15}" "${lockb:-true}" \
+    && say "created $CFG/hypr/hypridle-timeouts.conf (idle: lock ${lockm}m, screen off ${offm}m, suspend ${sleepm}m)"
+fi
 ENV="$CFG/hypr/custom/env.lua"
 if ! grep -q 'QML_IMPORT_PATH' "$ENV" 2>/dev/null; then
   cat >> "$ENV" <<'LUA'
