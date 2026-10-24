@@ -37,5 +37,17 @@
                 "kitty"
             ]
         }
+    },
+    "session": {
+        "commands": {
+            "logout": [
+                "uwsm",
+                "stop"
+            ],
+            "hibernate": [
+                "systemctl",
+                "hibernate"
+            ]
+        }
     }
 }

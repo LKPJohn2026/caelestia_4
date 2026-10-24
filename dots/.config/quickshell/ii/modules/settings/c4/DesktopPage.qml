@@ -13,6 +13,17 @@ import qs.modules.settings.c4 // caelestia4: explicit, so Quickshell's scanner r
 ContentPage {
     forceWidth: true
 
+    readonly property var barEntryNames: ({
+            logo: [Translation.tr("Logo"), "deployed_code"],
+            workspaces: [Translation.tr("Workspaces"), "view_week"],
+            spacer: [Translation.tr("Spacer (pushes the next items apart)"), "space_bar"],
+            activeWindow: [Translation.tr("Active window title"), "select_window"],
+            tray: [Translation.tr("System tray"), "apps"],
+            clock: [Translation.tr("Clock"), "schedule"],
+            statusIcons: [Translation.tr("Status icons"), "widgets"],
+            power: [Translation.tr("Power button"), "power_settings_new"]
+        })
+
     readonly property var statusIconNames: ({
             lockStatus: [Translation.tr("Caps Lock / Num Lock"), "keyboard_capslock"],
             audio: [Translation.tr("Volume"), "volume_up"],
@@ -209,6 +220,59 @@ ContentPage {
         }
     }
 
+    // caelestia4: Caelestia's audio visualiser on the desktop (background.visualiser)
+    ContentSection {
+        icon: "graphic_eq"
+        title: Translation.tr("Audio visualiser")
+
+        SwitchRow {
+            icon: "graphic_eq"
+            title: Translation.tr("Visualiser on the desktop")
+            description: Translation.tr("Bars along the bottom of the wallpaper that move with the sound")
+            checked: CC.GlobalConfig.background.visualiser.enabled
+            onToggled: v => CC.GlobalConfig.background.visualiser.enabled = v
+        }
+
+        SwitchRow {
+            enabled: CC.GlobalConfig.background.visualiser.enabled
+            icon: "visibility_off"
+            title: Translation.tr("Only on empty desktops")
+            description: Translation.tr("Hidden while tiled windows cover the workspace")
+            checked: CC.GlobalConfig.background.visualiser.autoHide
+            onToggled: v => CC.GlobalConfig.background.visualiser.autoHide = v
+        }
+
+        SwitchRow {
+            enabled: CC.GlobalConfig.background.visualiser.enabled
+            icon: "blur_on"
+            title: Translation.tr("Blur behind the bars")
+            checked: CC.GlobalConfig.background.visualiser.blur
+            onToggled: v => CC.GlobalConfig.background.visualiser.blur = v
+        }
+
+        SliderRow {
+            enabled: CC.GlobalConfig.background.visualiser.enabled
+            icon: "rounded_corner"
+            title: Translation.tr("Bar roundness")
+            from: 0
+            to: 3
+            stepSize: 0.1
+            value: CC.GlobalConfig.background.visualiser.rounding
+            onMoved: v => CC.GlobalConfig.background.visualiser.rounding = v
+        }
+
+        SliderRow {
+            enabled: CC.GlobalConfig.background.visualiser.enabled
+            icon: "space_bar"
+            title: Translation.tr("Gap between bars")
+            from: 0
+            to: 4
+            stepSize: 0.1
+            value: CC.GlobalConfig.background.visualiser.spacing
+            onMoved: v => CC.GlobalConfig.background.visualiser.spacing = v
+        }
+    }
+
     // caelestia4: end-4's wallpaper parallax
     ContentSection {
         icon: "wallpaper"
@@ -384,6 +448,29 @@ ContentPage {
             stepSize: 50
             value: Config.options.bar.workspaces.showNumberDelay
             onMoved: v => Config.options.bar.workspaces.showNumberDelay = v
+        }
+    }
+
+    // caelestia4: Caelestia's bar.entries: order (top to bottom) and on/off of each bar item
+    ContentSection {
+        icon: "view_agenda"
+        title: Translation.tr("Bar: layout")
+
+        Repeater {
+            model: CC.GlobalConfig.bar.entries.values
+
+            OrderRow {
+                required property var modelData
+                required property int index
+
+                icon: (barEntryNames[modelData.id] ?? [modelData.id, "circle"])[1]
+                title: (barEntryNames[modelData.id] ?? [modelData.id])[0]
+                checked: modelData.enabled
+                canMoveUp: index > 0
+                canMoveDown: index < CC.GlobalConfig.bar.entries.values.length - 1
+                onToggled: v => CC.GlobalConfig.bar.entries.at(index).enabled = v
+                onMoveRequested: d => CC.GlobalConfig.bar.entries.move(index, index + d)
+            }
         }
     }
 
@@ -792,6 +879,64 @@ ContentPage {
             description: Translation.tr("Hold Alt, press Tab to step through workspaces, release Alt to switch")
             checked: Config.options.caelestia.overview.altTabSkipEmpty
             onToggled: v => Config.options.caelestia.overview.altTabSkipEmpty = v
+        }
+    }
+
+    // caelestia4: Caelestia's session menu (power options); the commands run as given, without a shell
+    ContentSection {
+        icon: "power_settings_new"
+        title: Translation.tr("Session menu")
+
+        SwitchRow {
+            icon: "power_settings_new"
+            title: Translation.tr("Session menu")
+            description: Translation.tr("Lock, sleep, log out, restart and shut down from the screen edge")
+            checked: CC.GlobalConfig.session.enabled
+            onToggled: v => CC.GlobalConfig.session.enabled = v
+        }
+
+        SwitchRow {
+            enabled: CC.GlobalConfig.session.enabled
+            icon: "keyboard"
+            title: Translation.tr("Vim keys (h j k l)")
+            checked: CC.GlobalConfig.session.vimKeybinds
+            onToggled: v => CC.GlobalConfig.session.vimKeybinds = v
+        }
+
+        TextRow {
+            enabled: CC.GlobalConfig.session.enabled
+            icon: "logout"
+            title: Translation.tr("Log out command")
+            fieldWidth: 260
+            value: CC.GlobalConfig.session.commands.logout.join(" ")
+            onEdited: v => CC.GlobalConfig.session.commands.logout = v.trim().split(/\s+/)
+        }
+
+        TextRow {
+            enabled: CC.GlobalConfig.session.enabled
+            icon: "downloading"
+            title: Translation.tr("Hibernate command")
+            fieldWidth: 260
+            value: CC.GlobalConfig.session.commands.hibernate.join(" ")
+            onEdited: v => CC.GlobalConfig.session.commands.hibernate = v.trim().split(/\s+/)
+        }
+
+        TextRow {
+            enabled: CC.GlobalConfig.session.enabled
+            icon: "restart_alt"
+            title: Translation.tr("Restart command")
+            fieldWidth: 260
+            value: CC.GlobalConfig.session.commands.reboot.join(" ")
+            onEdited: v => CC.GlobalConfig.session.commands.reboot = v.trim().split(/\s+/)
+        }
+
+        TextRow {
+            enabled: CC.GlobalConfig.session.enabled
+            icon: "power_settings_new"
+            title: Translation.tr("Shut down command")
+            fieldWidth: 260
+            value: CC.GlobalConfig.session.commands.shutdown.join(" ")
+            onEdited: v => CC.GlobalConfig.session.commands.shutdown = v.trim().split(/\s+/)
         }
     }
 

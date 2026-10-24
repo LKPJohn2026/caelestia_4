@@ -5,6 +5,7 @@ import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
+import Caelestia.Config as CC // caelestia4: one wallpaper folder (Caelestia's paths.wallpaperDir)
 pragma Singleton
 pragma ComponentBehavior: Bound
 
@@ -19,7 +20,9 @@ Singleton {
     property string generateThumbnailsMagickScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/generate-thumbnails-magick.sh`
     property alias directory: folderModel.folder
     readonly property string effectiveDirectory: FileUtils.trimFileProtocol(folderModel.folder.toString())
-    property url defaultFolder: Qt.resolvedUrl(`${Directories.pictures}/Wallpapers`)
+    // caelestia4: the folder Caelestia's launcher / Nexus list (shell.json paths.wallpaperDir, Settings > Appearance >
+    // Wallpaper folder; default ~/Pictures/Wallpapers), so both wallpaper pickers start in the same place
+    property url defaultFolder: Qt.resolvedUrl(CC.GlobalConfig.paths.wallpaperDir.replace(/^~(?=\/|$)/, FileUtils.trimFileProtocol(Directories.home)) || `${Directories.pictures}/Wallpapers`)
     property alias folderModel: folderModel // Expose for direct binding when needed
     property string searchQuery: ""
     readonly property list<string> extensions: [ // caelestia4: + videos (switchwall.sh plays them with mpvpaper)

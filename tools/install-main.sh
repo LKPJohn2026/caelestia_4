@@ -157,6 +157,19 @@ for entry in want:
 open(dst, "w").write("\n".join(lines) + "\n")
 PY
 copy_file_if_missing "$DOTS/caelestia/shell.json" "$CFG/caelestia/shell.json" # caelestia4: bar speaker icon on (opens the audio popout / per-app mixer)
+# Session menu: Caelestia's defaults are `logout` (a shell builtin, nothing to run) and `hibernate` (no such program):
+# log out through uwsm and hibernate through systemd, unless the user set these
+python3 - "$CFG/caelestia/shell.json" <<'PY'
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p))
+cmds = d.setdefault("session", {}).setdefault("commands", {})
+want = {"logout": ["uwsm", "stop"], "hibernate": ["systemctl", "hibernate"]}
+if any(k not in cmds for k in want):
+    for k, v in want.items():
+        cmds.setdefault(k, v)
+    json.dump(d, open(p, "w"), indent=4)
+PY
 # caelestia-cli makes the colours (wallpaper or preset scheme); its postHook (scheme.py bridge) passes them to end-4.
 # Only themes that write their own files are on (no GTK / Qt / htop / fuzzel / browser policy)
 copy_file_if_missing "$DOTS/caelestia/cli.json" "$CFG/caelestia/cli.json"
