@@ -2871,3 +2871,116 @@ msgstr "Thứ tự và việc hiện các mục trên thanh"
 
 msgid "Cursor, mouse, rendering"
 msgstr "Con trỏ, chuột, kết xuất"
+
+# caelestia4: Nexus > Updates, Nexus > Plugins (2026-10-24)
+
+msgid "Done. Press Enter to close."
+msgstr "Xong. Nhấn Enter để đóng."
+
+msgid "Never checked"
+msgstr "Chưa kiểm tra lần nào"
+
+msgid "Checked just now"
+msgstr "Vừa kiểm tra"
+
+msgid "Checked %1 min ago"
+msgstr "Đã kiểm tra %1 phút trước"
+
+msgid "Checked %1"
+msgstr "Đã kiểm tra lúc %1"
+
+msgid "Up to date"
+msgstr "Đã cập nhật mới nhất"
+
+msgid "Check now"
+msgstr "Kiểm tra ngay"
+
+msgid "Update everything"
+msgstr "Cập nhật tất cả"
+
+msgid "Runs %1 in a terminal (repo and AUR packages)"
+msgstr "Chạy %1 trong terminal (gói repo và AUR)"
+
+msgid "Runs pacman -Syu in a terminal"
+msgstr "Chạy pacman -Syu trong terminal"
+
+msgid "Arch packages (%1)"
+msgstr "Gói Arch (%1)"
+
+msgid "AUR packages (%1)"
+msgstr "Gói AUR (%1)"
+
+msgid "Not checked yet"
+msgstr "Chưa kiểm tra"
+
+msgid "uncommitted changes"
+msgstr "có thay đổi chưa commit"
+
+msgid "Update caelestia_4"
+msgstr "Cập nhật caelestia_4"
+
+msgid "Commit or stash the uncommitted changes first"
+msgstr "Hãy commit hoặc stash các thay đổi trước"
+
+msgid "git pull, then tools/install-main.sh, in a terminal"
+msgstr "git pull, rồi tools/install-main.sh, trong terminal"
+
+msgid "Rebuild needed: built with Qt %1, Qt %2 is installed"
+msgstr "Cần build lại: build với Qt %1, máy đang cài Qt %2"
+
+msgid "Built with Qt %1"
+msgstr "Build với Qt %1"
+
+msgid "Built with an unknown Qt version (rebuild once to record it)"
+msgstr "Không rõ build với bản Qt nào (build lại một lần để ghi nhận)"
+
+msgid "Qt"
+msgstr "Qt"
+
+msgid "Installed"
+msgstr "Đã cài"
+
+msgid "Running in the shell"
+msgstr "Shell đang chạy"
+
+msgid "Qt was updated: restart the shell (Ctrl+Super+R) after rebuilding"
+msgstr "Qt vừa được cập nhật: khởi động lại shell (Ctrl+Super+R) sau khi build lại"
+
+msgid "Shell components"
+msgstr "Thành phần của shell"
+
+msgid "QML modules"
+msgstr "Module QML"
+
+msgid "Rebuild"
+msgstr "Build lại"
+
+msgid "makepkg in packaging/caelestia4-quickshell, in a terminal (asks for sudo)"
+msgstr "makepkg trong packaging/caelestia4-quickshell, trong terminal (sẽ hỏi sudo)"
+
+msgid "tools/build-caelestia-plugin.sh, then reinstalls it with the shell stopped"
+msgstr "tools/build-caelestia-plugin.sh, rồi cài lại khi shell đã dừng"
+
+msgid "Hyprland plugins"
+msgstr "Plugin Hyprland"
+
+msgid "No Hyprland plugins loaded"
+msgstr "Không có plugin Hyprland nào được nạp"
+
+msgid "Arch, AUR and caelestia_4 updates"
+msgstr "Cập nhật Arch, AUR và caelestia_4"
+
+msgid "Shell components, Qt, rebuilds"
+msgstr "Thành phần shell, Qt, build lại"
+
+msgid "%n update available"
+msgid_plural "%n updates available"
+msgstr[0] "%n bản cập nhật"
+
+msgid "%n new commit"
+msgid_plural "%n new commits"
+msgstr[0] "%n commit mới"
+
+msgid "%n local commit not pushed"
+msgid_plural "%n local commits not pushed"
+msgstr[0] "%n commit cục bộ chưa push"

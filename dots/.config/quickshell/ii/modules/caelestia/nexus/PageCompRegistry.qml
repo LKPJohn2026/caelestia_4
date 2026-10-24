@@ -93,12 +93,22 @@ QtObject {
             }
         },
 
-        // System
+        // System (caelestia4: upstream has placeholders for both)
         Component {
-            PlaceholderComp {}
+            // Updates
+            StackPage {
+                Component {
+                    UpdatesPage {}
+                }
+            }
         },
         Component {
-            PlaceholderComp {}
+            // Plugins: shell components here (upstream's plugin system is unmerged)
+            StackPage {
+                Component {
+                    PluginsPage {}
+                }
+            }
         },
         Component {
             // Hyprland (caelestia4)

@@ -47,13 +47,13 @@ QtObject {
         {
             label: Tr.tr("Updates"),
             icon: "update",
-            description: Tr.tr("System updates"),
+            description: Tr.tr("Arch, AUR and caelestia_4 updates"),
             category: "system"
         },
         {
             label: Tr.tr("Plugins"),
             icon: "extension",
-            description: Tr.tr("Manage plugins"),
+            description: Tr.tr("Shell components, Qt, rebuilds"),
             category: "system"
         },
         // caelestia4: Hyprland options (cursor, input, rendering); PageCompRegistry has its page at the same index

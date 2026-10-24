@@ -47,6 +47,7 @@ copy_if_missing() { # copy_if_missing <src> <dst>: only if dst missing or an emp
 
 # ---- marker: shared Plasma account ----
 mkdir -p "$CFG/caelestia4"; touch "$CFG/caelestia4/shared-desktop"
+printf '%s\n' "$REPO" > "$CFG/caelestia4/repo" # caelestia4: where this clone is (Nexus > Updates checks it for new commits)
 
 # ---- Quickshell config (ours) ----
 backup "$CFG/quickshell/ii"
