@@ -56,6 +56,13 @@ QtObject {
             description: Tr.tr("Manage plugins"),
             category: "system"
         },
+        // caelestia4: Hyprland options (cursor, input, rendering); PageCompRegistry has its page at the same index
+        {
+            label: Tr.tr("Hyprland"),
+            icon: "desktop_windows",
+            description: Tr.tr("Cursor, mouse, rendering"),
+            category: "system"
+        },
 
         // Shell
         {
