@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Caelestia
+import Caelestia.Config
 import qs.modules.caelestia.components.misc
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus
@@ -88,7 +89,7 @@ Scope {
         name: "sidebar"
         description: "Toggle sidebar"
         onPressed: {
-            if (root.hasFullscreen)
+            if (root.hasFullscreen || !Config.sidebar.enabled)
                 return;
             const screenState = ShellState.forActive();
             screenState.sidebar = !screenState.sidebar;
