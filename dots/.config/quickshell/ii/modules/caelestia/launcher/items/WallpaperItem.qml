@@ -25,6 +25,8 @@ Item {
     implicitHeight: image.height + label.height + Tokens.spacing.extraSmall + Tokens.padding.large + Tokens.padding.medium
 
     StateLayer {
+        id: stateLayer
+
         radius: Tokens.rounding.large
         onClicked: {
             Wallpapers.setWallpaper(root.modelData.path);
@@ -66,7 +68,8 @@ Item {
         Visual {
             anchors.fill: parent
             source: root.modelData.path
-            playing: root.PathView.isCurrentItem
+            // upstream 28fcf7d3; the pause toggle is Wallpapers.videoPaused here (PersistentState upstream)
+            playing: (root.PathView.isCurrentItem && !Wallpapers.videoPaused) || stateLayer.containsMouse
         }
     }
 

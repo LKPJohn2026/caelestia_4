@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Widgets
 import Caelestia.Config
 import Caelestia.I18n
 import Caelestia.Models
@@ -10,7 +11,7 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.components.effects
 import qs.modules.caelestia.components.filedialog
-import qs.modules.caelestia.components.images
+import Caelestia.Multimedia
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 
@@ -180,25 +181,45 @@ Item {
             }
         }
 
-        CachingIconImage {
+        // caelestia4: pictures through Caelestia.Multimedia's Visual (cached, sized to the tile), as upstream 35f3d210;
+        // file / folder icons through Quickshell's IconImage: Visual hands image:// URLs to an asynchronous Image, which
+        // runs Quickshell's icon provider off the GUI thread ("Cannot create children for a parent ... different thread")
+        Item {
             id: icon
+
+            readonly property string iconSource: {
+                const file = item.modelData;
+                if (file.isImage)
+                    return "";
+                if (!file.isDir)
+                    return Quickshell.iconPath(file.mimeType.replace("/", "-"), "application-x-zerosize");
+                if (root.dialog.cwd.length === 1 && ["Desktop", "Documents", "Downloads", "Music", "Pictures", "Public", "Templates", "Videos"].includes(file.name))
+                    return Quickshell.iconPath(`folder-${file.name.toLowerCase()}`);
+                return Quickshell.iconPath("inode-directory");
+            }
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: Tokens.padding.medium
 
-            implicitSize: Sizes.itemWidth - Tokens.padding.medium * 2
+            implicitWidth: Sizes.itemWidth - Tokens.padding.medium * 2
+            implicitHeight: implicitWidth
 
-            Component.onCompleted: {
-                const file = item.modelData;
-                if (file.isImage)
-                    source = Qt.resolvedUrl(file.path);
-                else if (!file.isDir)
-                    source = Quickshell.iconPath(file.mimeType.replace("/", "-"), "application-x-zerosize");
-                else if (root.dialog.cwd.length === 1 && ["Desktop", "Documents", "Downloads", "Music", "Pictures", "Public", "Templates", "Videos"].includes(file.name))
-                    source = Quickshell.iconPath(`folder-${file.name.toLowerCase()}`);
-                else
-                    source = Quickshell.iconPath("inode-directory");
+            Loader {
+                anchors.fill: parent
+                active: item.modelData.isImage
+
+                sourceComponent: Visual {
+                    source: Qt.resolvedUrl(item.modelData.path)
+                    fillMode: VisualSource.PreserveAspectFit
+                }
+            }
+
+            IconImage {
+                anchors.fill: parent
+                visible: !item.modelData.isImage
+                source: icon.iconSource
+                asynchronous: false
             }
         }
 

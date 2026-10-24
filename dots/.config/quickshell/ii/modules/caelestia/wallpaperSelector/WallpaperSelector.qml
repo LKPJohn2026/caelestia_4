@@ -1,6 +1,6 @@
 // caelestia4: end-4's wallpaper selector (Ctrl+Super+T) in Caelestia style. Same service (end-4 Wallpapers: folder
 // model with history, search, apply through switchwall.sh), same IPC / shortcuts / keys; Caelestia's cached thumbnails
-// (CachingImage) instead of end-4's thumbnail script. Videos are listed too (mpvpaper plays them).
+// (Caelestia.Multimedia's Visual: cached, sized to the tile) instead of end-4's thumbnail script. Videos are listed too (mpvpaper plays them).
 // Keys: type to search (/ focuses it), arrows move, Enter applies or opens a folder, Alt+Left/Right/Up back/forward/up,
 // Ctrl+L edits the path, Ctrl+V with a copied file/folder goes there, Esc closes. Mouse back/forward buttons work.
 pragma ComponentBehavior: Bound
@@ -12,6 +12,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import Caelestia.Config
+import Caelestia.Multimedia
 import Caelestia.I18n
 import qs as E4G // caelestia4: keep (GlobalStates)
 import qs.services as E4 // caelestia4: keep
@@ -453,8 +454,9 @@ Scope {
                                             active: !tile.fileIsDir && !tile.isVideo
                                             asynchronous: true
 
-                                            sourceComponent: CachingImage {
-                                                path: tile.filePath
+                                            sourceComponent: Visual {
+                                                source: tile.filePath
+                                                fillMode: VisualSource.PreserveAspectCrop
                                             }
                                         }
 
