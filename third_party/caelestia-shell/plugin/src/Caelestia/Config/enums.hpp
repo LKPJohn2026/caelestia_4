@@ -3,7 +3,7 @@
 #include <qobject.h>
 #include <qqmlintegration.h>
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 #define ENUM(Name, ...)                                                                                                \
     namespace Name {                                                                                                   \
@@ -61,4 +61,4 @@ ENUM(WallpaperTransition,
 
 #undef ENUM
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config
