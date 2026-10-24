@@ -56,12 +56,7 @@ PageBase {
             }
         }
 
-        DefaultRow {
-            icon: "volume_up"
-            label: Tr.trCtx("Audio", "default app category")
-            status: GlobalConfig.general.apps.audio.join(" ")
-            onSelected: app => GlobalConfig.general.apps.audio = app.command
-        }
+        // caelestia4: no Audio row: general.apps.audio is read by nothing (upstream too)
 
         DefaultRow {
             icon: "play_circle"
