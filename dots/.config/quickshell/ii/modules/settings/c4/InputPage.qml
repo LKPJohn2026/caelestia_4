@@ -46,12 +46,6 @@ ContentPage {
             from: 5
             to: 80
         }
-
-        HyprSwitchRow {
-            key: "input:numlock_by_default"
-            icon: "dialpad"
-            title: Translation.tr("Num Lock on at login")
-        }
     }
 
     ContentSection {
@@ -120,64 +114,6 @@ ContentPage {
                 {
                     label: Translation.tr("Only on click"),
                     value: 3
-                }
-            ]
-        }
-
-        HyprSliderRow {
-            key: "input:scroll_factor"
-            icon: "swap_vert"
-            title: Translation.tr("Scroll speed (mouse)")
-            description: Translation.tr("Multiplier for external mice; 1 = unchanged")
-            from: 0.2
-            to: 2
-            stepSize: 0.1
-        }
-
-        HyprSwitchRow {
-            key: "input:left_handed"
-            icon: "back_hand"
-            title: Translation.tr("Left-handed (swap buttons)")
-        }
-    }
-
-    ContentSection {
-        icon: "arrow_selector_tool"
-        title: Translation.tr("Cursor")
-
-        HyprSpinRow {
-            key: "cursor:inactive_timeout"
-            icon: "visibility_off"
-            title: Translation.tr("Hide after inactivity (s)")
-            description: Translation.tr("0 = never")
-            from: 0
-            to: 20
-        }
-
-        HyprSwitchRow {
-            key: "cursor:hide_on_key_press"
-            icon: "keyboard"
-            title: Translation.tr("Hide while typing")
-            description: Translation.tr("Comes back when the mouse moves")
-        }
-
-        HyprChoiceRow {
-            key: "cursor:no_hardware_cursors"
-            icon: "memory"
-            title: Translation.tr("Software cursor")
-            description: Translation.tr("Draw the cursor in software; Auto turns it on where hardware cursors misbehave (NVIDIA)")
-            options: [
-                {
-                    label: Translation.tr("Automatic"),
-                    value: 2
-                },
-                {
-                    label: Translation.tr("Hardware cursor"),
-                    value: 0
-                },
-                {
-                    label: Translation.tr("Software cursor"),
-                    value: 1
                 }
             ]
         }

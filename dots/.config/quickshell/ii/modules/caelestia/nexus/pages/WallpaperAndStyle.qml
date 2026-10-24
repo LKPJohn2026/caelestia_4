@@ -272,5 +272,71 @@ PageBase {
             checked: !Colours.light
             onToggled: Colours.setMode(checked ? "dark" : "light")
         }
+
+        // caelestia4: the folder the launcher, this page and end-4's wallpaper selector list (paths.wallpaperDir)
+        SectionHeader {
+            text: Tr.tr("Wallpaper folder")
+        }
+
+        TextFieldRow {
+            first: true
+            last: true
+            label: Tr.tr("Folder")
+            subtext: Tr.tr("~ = your home folder")
+            value: GlobalConfig.paths.wallpaperDir
+            onEditingFinished: v => {
+                if (v.trim())
+                    GlobalConfig.paths.wallpaperDir = v.trim();
+            }
+        }
+
+        // caelestia4: Caelestia's audio visualiser on the desktop (background.visualiser)
+        SectionHeader {
+            text: Tr.tr("Audio visualiser")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Visualiser on the desktop")
+            subtext: Tr.tr("Bars along the bottom of the wallpaper that move with the sound")
+            checked: Config.background.visualiser.enabled
+            onToggled: GlobalConfig.background.visualiser.enabled = checked
+        }
+
+        ToggleRow {
+            disabled: !Config.background.visualiser.enabled
+            text: Tr.tr("Only on empty desktops")
+            subtext: Tr.tr("Hidden while tiled windows cover the workspace")
+            checked: Config.background.visualiser.autoHide
+            onToggled: GlobalConfig.background.visualiser.autoHide = checked
+        }
+
+        ToggleRow {
+            disabled: !Config.background.visualiser.enabled
+            text: Tr.tr("Blur behind the bars")
+            checked: Config.background.visualiser.blur
+            onToggled: GlobalConfig.background.visualiser.blur = checked
+        }
+
+        StepperRow {
+            enabled: Config.background.visualiser.enabled
+            label: Tr.tr("Bar roundness")
+            value: Config.background.visualiser.rounding
+            from: 0
+            to: 3
+            stepSize: 0.1
+            onMoved: v => GlobalConfig.background.visualiser.rounding = v
+        }
+
+        StepperRow {
+            last: true
+            enabled: Config.background.visualiser.enabled
+            label: Tr.tr("Gap between bars")
+            value: Config.background.visualiser.spacing
+            from: 0
+            to: 4
+            stepSize: 0.1
+            onMoved: v => GlobalConfig.background.visualiser.spacing = v
+        }
     }
 }
