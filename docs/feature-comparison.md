@@ -6,8 +6,11 @@ Upstreams checked (fresh clones, not the local copies):
 - caelestia-dots/caelestia `f4bb062` (2026-10-13): dotfiles (Hyprland, app themes, uwsm)
 - caelestia-dots/cli `289e208` (2026-10-13): the `caelestia` command
 
-caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-22). Caelestia shell is vendored at
-`29fcf69a` (2026-10-22, upstream main: 0 commits ahead); caelestia-cli is the AUR 1.1.3 release.
+caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-24). Caelestia shell is vendored at
+`2e1c51fa` (2026-10-24, upstream main: 0 commits ahead); caelestia-cli is the AUR 1.1.3 release. Since 29fcf69a: sidebar
+hover fixes + Nexus "Show on hover", `caelestia:toggleDnd`, CachingImage → Visual (file dialog icons stay on
+Quickshell's IconImage), video previews play on hover, the plugin unloads idle media players. Equivalent: upstream's
+Super+Shift+number silent move is Super+Alt+number here.
 
 Status legend:
 - ✅ **C**: Caelestia feature, working here as in Caelestia
