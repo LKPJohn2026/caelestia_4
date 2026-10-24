@@ -138,6 +138,13 @@ ContentPage {
         }
 
         HyprSwitchRow {
+            key: "misc:middle_click_paste"
+            icon: "content_paste"
+            title: Translation.tr("Middle-click paste")
+            description: Translation.tr("Paste the last selected text with the middle mouse button")
+        }
+
+        HyprSwitchRow {
             key: "misc:focus_on_activate"
             icon: "ads_click"
             title: Translation.tr("Focus apps that ask for attention")

@@ -52,13 +52,8 @@ ContentPage {
             onEdited: v => CC.GlobalConfig.general.apps.explorer = v.trim().split(/\s+/)
         }
 
-        TextRow {
-            icon: "tune"
-            title: Translation.tr("Volume mixer")
-            fieldWidth: 260
-            value: CC.GlobalConfig.general.apps.audio.join(" ")
-            onEdited: v => CC.GlobalConfig.general.apps.audio = v.trim().split(/\s+/)
-        }
+        // caelestia4: no "Volume mixer" row: general.apps.audio is read by nothing (upstream too); the bar's audio
+        // popout has the per-app mixer
 
         TextRow {
             icon: "monitoring"
