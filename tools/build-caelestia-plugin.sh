@@ -34,4 +34,10 @@ cmake -S "$SRC" -B "$BUILD" -G Ninja \
 cmake --build "$BUILD"
 cmake --install "$BUILD"
 
+# caelestia4: what this build was made from, for Nexus > Plugins (the plugin uses Qt's private API: a Qt minor update
+# needs a rebuild, and the .so files don't say which Qt they were built with)
+printf '{"qt": "%s", "revision": "%s", "version": "%s", "built": "%s"}\n' \
+  "$(/usr/lib/qt6/bin/qtpaths6 --qt-version 2>/dev/null || pacman -Q qt6-base | cut -d' ' -f2 | cut -d- -f1)" "$GIT_REVISION" "$VERSION" \
+  "$(date -Iseconds)" > "$PREFIX/lib/qt6/qml/Caelestia/caelestia4-build.json"
+
 echo "Installed Caelestia QML plugin to $PREFIX/lib/qt6/qml/Caelestia"
