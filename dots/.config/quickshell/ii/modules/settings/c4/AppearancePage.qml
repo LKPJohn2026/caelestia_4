@@ -150,15 +150,6 @@ ContentPage {
             onClicked: Quickshell.execDetached(["qs", "-c", "ii", "ipc", "call", "wallpaperSelector", "toggle"])
         }
 
-        TextRow {
-            icon: "folder_special"
-            title: Translation.tr("Wallpaper folder")
-            description: Translation.tr("Listed by the launcher, Nexus and the wallpaper selector; ~ = your home folder")
-            fieldWidth: 300
-            value: CC.GlobalConfig.paths.wallpaperDir
-            onEdited: v => CC.GlobalConfig.paths.wallpaperDir = v.trim()
-        }
-
         ButtonRow {
             icon: "add_photo_alternate"
             title: Translation.tr("Use an image file")

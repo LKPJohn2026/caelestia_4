@@ -100,6 +100,14 @@ QtObject {
         Component {
             PlaceholderComp {}
         },
+        Component {
+            // Hyprland (caelestia4)
+            StackPage {
+                Component {
+                    HyprlandPage {}
+                }
+            }
+        },
 
         // Shell
         Component {
@@ -139,6 +147,13 @@ QtObject {
                 }
                 Component {
                     BarClock {}
+                }
+                // caelestia4: 11 bar layout (Taskbar > Layout), 12 session menu (Panels > Session menu)
+                Component {
+                    BarLayout {}
+                }
+                Component {
+                    SessionPanel {}
                 }
             }
         },

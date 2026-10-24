@@ -2707,3 +2707,167 @@ msgstr "Vỡ mảnh"
 
 msgid "Zoom blur"
 msgstr "Phóng mờ"
+
+# caelestia4: Nexus > Hyprland, Panels > Session menu, Taskbar > Layout, Wallpaper & style (2026-10-24)
+
+msgid "Automatic"
+msgstr "Tự động"
+
+msgid "Hardware cursor"
+msgstr "Con trỏ phần cứng"
+
+msgid "Software cursor"
+msgstr "Con trỏ phần mềm"
+
+msgid "Games only"
+msgstr "Chỉ với game"
+
+msgid "Hyprland"
+msgstr "Hyprland"
+
+msgid "Keyboard & mouse"
+msgstr "Bàn phím & chuột"
+
+msgid "Num Lock on at login"
+msgstr "Bật Num Lock khi đăng nhập"
+
+msgid "Scroll speed (mouse)"
+msgstr "Tốc độ cuộn (chuột)"
+
+msgid "Multiplier for external mice; 1 = unchanged"
+msgstr "Hệ số cho chuột rời; 1 = giữ nguyên"
+
+msgid "Left-handed (swap buttons)"
+msgstr "Thuận tay trái (đổi nút chuột)"
+
+msgid "Cursor"
+msgstr "Con trỏ"
+
+msgid "Hide after inactivity (s)"
+msgstr "Ẩn khi không dùng (giây)"
+
+msgid "0 = never"
+msgstr "0 = không bao giờ"
+
+msgid "Hide while typing"
+msgstr "Ẩn khi gõ phím"
+
+msgid "Comes back when the mouse moves"
+msgstr "Hiện lại khi di chuột"
+
+msgid "Automatic turns it on where hardware cursors misbehave (NVIDIA)"
+msgstr "Tự động bật khi con trỏ phần cứng bị lỗi (NVIDIA)"
+
+msgid "Rendering"
+msgstr "Kết xuất"
+
+msgid "Direct scanout"
+msgstr "Quét trực tiếp (direct scanout)"
+
+msgid "Fullscreen windows go straight to the display: less latency; may flicker on some GPUs"
+msgstr "Cửa sổ toàn màn hình được đưa thẳng ra màn hình: giảm độ trễ; có thể nhấp nháy trên một số GPU"
+
+msgid "Allow tearing"
+msgstr "Cho phép xé hình"
+
+msgid "Games marked \"immediate\" skip vsync for the lowest latency"
+msgstr "Game được đánh dấu \"immediate\" bỏ qua vsync để có độ trễ thấp nhất"
+
+msgid "Sharp X11 apps on scaled displays"
+msgstr "Ứng dụng X11 sắc nét khi màn hình có tỷ lệ"
+
+msgid "X11 apps draw at scale 1 instead of being stretched (they may look smaller)"
+msgstr "Ứng dụng X11 vẽ ở tỷ lệ 1 thay vì bị kéo giãn (có thể trông nhỏ hơn)"
+
+msgid "Windows"
+msgstr "Cửa sổ"
+
+msgid "Middle-click paste"
+msgstr "Dán bằng chuột giữa"
+
+msgid "Paste the last selected text with the middle mouse button"
+msgstr "Dán đoạn chữ vừa chọn bằng nút chuột giữa"
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Spacer"
+msgstr "Khoảng trống"
+
+msgid "Power button"
+msgstr "Nút nguồn"
+
+msgid "Layout"
+msgstr "Bố cục"
+
+msgid "Bar items"
+msgstr "Các mục trên thanh"
+
+msgid "Add item"
+msgstr "Thêm mục"
+
+msgid "Add a bar item"
+msgstr "Thêm một mục vào thanh"
+
+msgid "Session menu"
+msgstr "Menu phiên"
+
+msgid "Lock, sleep, log out, restart and shut down from the screen edge"
+msgstr "Khoá, ngủ, đăng xuất, khởi động lại và tắt máy từ mép màn hình"
+
+msgid "Vim keys (h j k l)"
+msgstr "Phím kiểu Vim (h j k l)"
+
+msgid "Commands"
+msgstr "Lệnh"
+
+msgid "Log out"
+msgstr "Đăng xuất"
+
+msgid "Hibernate"
+msgstr "Ngủ đông"
+
+msgid "Restart"
+msgstr "Khởi động lại"
+
+msgid "Shut down"
+msgstr "Tắt máy"
+
+msgid "Wallpaper folder"
+msgstr "Thư mục hình nền"
+
+msgid "Folder"
+msgstr "Thư mục"
+
+msgid "~ = your home folder"
+msgstr "~ = thư mục nhà"
+
+msgid "Audio visualiser"
+msgstr "Hiệu ứng âm thanh"
+
+msgid "Visualiser on the desktop"
+msgstr "Hiệu ứng âm thanh trên màn nền"
+
+msgid "Bars along the bottom of the wallpaper that move with the sound"
+msgstr "Các cột dọc mép dưới hình nền chuyển động theo âm thanh"
+
+msgid "Only on empty desktops"
+msgstr "Chỉ khi màn nền trống"
+
+msgid "Hidden while tiled windows cover the workspace"
+msgstr "Ẩn khi có cửa sổ xếp ô trên không gian làm việc"
+
+msgid "Blur behind the bars"
+msgstr "Làm mờ phía sau các cột"
+
+msgid "Bar roundness"
+msgstr "Độ bo của cột"
+
+msgid "Gap between bars"
+msgstr "Khoảng cách giữa các cột"
+
+msgid "Order and visibility of the bar's items"
+msgstr "Thứ tự và việc hiện các mục trên thanh"
+
+msgid "Cursor, mouse, rendering"
+msgstr "Con trỏ, chuột, kết xuất"

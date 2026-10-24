@@ -56,6 +56,13 @@ PageBase {
 
         NavRow {
             first: true
+            icon: "view_agenda"
+            text: Tr.tr("Layout")
+            subtext: Tr.tr("Order and visibility of the bar's items")
+            onClicked: root.nState.openSubPage(11)
+        }
+
+        NavRow {
             icon: "workspaces"
             text: Tr.tr("Workspaces")
             subtext: Tr.tr("Indicators, window icons")
