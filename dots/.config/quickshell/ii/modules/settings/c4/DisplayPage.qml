@@ -227,4 +227,44 @@ ContentPage {
             ]
         }
     }
+
+    ContentSection {
+        icon: "memory"
+        title: Translation.tr("Rendering")
+
+        HyprChoiceRow {
+            key: "render:direct_scanout"
+            icon: "bolt"
+            title: Translation.tr("Direct scanout")
+            description: Translation.tr("A fullscreen window goes straight to the display: less latency in games; may flicker on some GPUs")
+            options: [
+                {
+                    label: Translation.tr("Off"),
+                    value: 0
+                },
+                {
+                    label: Translation.tr("On"),
+                    value: 1
+                },
+                {
+                    label: Translation.tr("Games only"),
+                    value: 2
+                }
+            ]
+        }
+
+        HyprSwitchRow {
+            key: "general:allow_tearing"
+            icon: "splitscreen"
+            title: Translation.tr("Allow tearing")
+            description: Translation.tr("Games marked \"immediate\" skip vsync for the lowest latency")
+        }
+
+        HyprSwitchRow {
+            key: "xwayland:force_zero_scaling"
+            icon: "aspect_ratio"
+            title: Translation.tr("Sharp X11 apps on scaled displays")
+            description: Translation.tr("X11 apps draw at scale 1 instead of being stretched (they may look smaller)")
+        }
+    }
 }
