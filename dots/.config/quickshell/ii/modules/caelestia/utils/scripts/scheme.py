@@ -22,7 +22,7 @@ Usage:
                                       the Material variant, and --dynamic to leave a preset for wallpaper colours
   scheme.py bridge                    caelestia-cli's postHook: pass the current scheme to end-4
 """
-import importlib.util, json, os, re, subprocess, sys, tempfile
+import importlib.util, json, os, re, shutil, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 II = os.path.abspath(os.path.join(HERE, "../../../.."))  # ~/.config/quickshell/ii
@@ -182,6 +182,27 @@ def apply_to_end4(colours, mode):
                         "prefer-dark" if mode == "dark" else "prefer-light"], check=False)
 
 
+# caelestia-cli's Discord theme (cli.json enableDiscord) is written for every client it knows, installed or not.
+# client config dir -> programs that mean it's installed (Vencord / Equicord / BetterDiscord patch the official app)
+DISCORD_CLIENTS = {
+    "vesktop": ("vesktop",), "equibop": ("equibop",), "legcord": ("legcord",),
+    "Vencord": ("discord", "discord-canary", "discord-ptb"), "Equicord": ("discord", "discord-canary", "discord-ptb"),
+    "BetterDiscord": ("discord", "discord-canary", "discord-ptb"),
+}
+
+
+def tidy_discord_dirs():
+    """Remove the config dirs caelestia-cli made for Discord clients that aren't installed, but only while they hold
+    nothing except its theme file (never a dir with the user's own settings)"""
+    for name, programs in DISCORD_CLIENTS.items():
+        d = os.path.join(CONFIG, name)
+        if any(shutil.which(p) for p in programs) or not os.path.isdir(d):
+            continue
+        files = [os.path.relpath(os.path.join(r, f), d) for r, _, fs in os.walk(d) for f in fs]
+        if files == [os.path.join("themes", "caelestia.theme.css")]:
+            shutil.rmtree(d)
+
+
 def snake(camel):
     return re.sub(r"(?<=[a-z0-9])([A-Z])", r"_\1", camel).lower()
 
@@ -264,6 +285,7 @@ def main():
     elif cmd == "bridge":
         colours = json.loads(os.environ["SCHEME_COLOURS"]) if os.environ.get("SCHEME_COLOURS") else scheme["colours"]
         apply_to_end4(colours, os.environ.get("SCHEME_MODE") or scheme.get("mode", "dark"))
+        tidy_discord_dirs()
     else:
         print(__doc__, file=sys.stderr)
         sys.exit(2)

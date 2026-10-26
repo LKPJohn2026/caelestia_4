@@ -57,8 +57,10 @@ configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when 
 - **Colours**: Nexus → Wallpaper & style → Colours: follow the wallpaper, or a preset scheme.
 - **Editors / apps themed by Caelestia's integrations**: pick the theme named **Caelestia** once in VS Code / Cursor /
   VSCodium and Zed; restart Zen once.
-- **Brave's frame colour** follows the scheme through a browser policy; allow it once:
+- **Brave's frame colour** (Brave and Brave Origin) follows the scheme through a browser policy; allow it once:
   `sudo install -d -o "$USER" /etc/brave/policies/managed`
+- **Discord**: with Vesktop (or Vencord / Equicord / Equibop / BetterDiscord / Legcord), enable the theme
+  **Midnight (Caelestia)** once in its Settings > Themes; caelestia-cli keeps its colours in step (it needs `dart-sass`).
 - **Spotify**: open it once and log in, then `spicetify config spotify_path ~/.local/share/spotify-launcher/install/usr/share/spotify prefs_path ~/.config/spotify/prefs`
   and `tools/install-main.sh` again (it sets the theme); after Spotify updates itself, run `spicetify backup apply`.
 - **NVIDIA with an iGPU** (optional): `system/udev/99-caelestia4-dgpu.rules` gives the discrete GPU a stable name.
