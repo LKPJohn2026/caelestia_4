@@ -132,13 +132,15 @@ def apply():
         atomic_write(os.path.join(gtk, "thunar.css"), fill("thunar.css", colours, mode))
         ensure_gtk_import(gtk)
 
+    # Brave and its variants (Brave Origin: brave-origin) all read /etc/brave/policies
     policy_dir = "/etc/brave/policies/managed"
-    if shutil.which("brave") and os.access(policy_dir, os.W_OK):
+    brave = next((b for b in ("brave", "brave-origin", "brave-browser", "brave-beta", "brave-nightly") if shutil.which(b)), None)
+    if brave and os.access(policy_dir, os.W_OK):
         atomic_write(os.path.join(policy_dir, "caelestia.json"),
                      json.dumps({"BrowserThemeColor": f"#{colours['surface']}", "BrowserColorScheme": "device"}))
         # Only a running Brave: with no window open this would start one in the background
         if subprocess.run(["pidof", "brave"], stdout=subprocess.DEVNULL).returncode == 0:
-            subprocess.Popen(["brave", "--refresh-platform-policy", "--no-startup-window"],
+            subprocess.Popen([brave, "--refresh-platform-policy", "--no-startup-window"],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
 
 

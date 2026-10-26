@@ -240,11 +240,11 @@ Still open (review 2026-10-22):
    light/dark and the variant; the light/dark switch and colour style still override). Workspaces shown stays
    Caelestia's 5 (end-4's 10 is only read by an unused model and unlisted settings pages); `nexus.networkRescanInterval`
    was live all along (the Nexus network pages' rescan timers).
-5. **App themes not covered**: Firefox (a profile exists now; Caelestia's theme is userChrome.css + user.js + an
-   extension with a fish native host), Discord (installed as the plain client; needs Vencord / Vesktop / Equibop).
+5. **App themes**: ✅ 2026-10-26 Discord (Vesktop) via caelestia-cli's Midnight theme (cli.json enableDiscord; enable it once
+   in Vesktop > Settings > Themes) and Brave / Brave Origin's frame colour. Firefox still not themed.
 6. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
 
-Waiting on a one-time step: Brave's frame colour needs `sudo install -d -o "$USER" /etc/brave/policies/managed`; Zen and Cursor/Zed need their theme picked once (see install notes).
+Waiting on a one-time step: Zen and Cursor/Zed need their theme picked once, Vesktop its Caelestia theme (see install notes).
