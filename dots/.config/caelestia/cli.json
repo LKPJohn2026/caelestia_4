@@ -2,7 +2,7 @@
     "theme": {
         "enableTerm": false,
         "enableHypr": false,
-        "enableDiscord": false,
+        "enableDiscord": true,
         "enableSpicetify": true,
         "enablePandora": false,
         "enableFuzzel": false,
