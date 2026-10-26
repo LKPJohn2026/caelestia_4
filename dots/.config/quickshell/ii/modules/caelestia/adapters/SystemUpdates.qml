@@ -58,7 +58,7 @@ Singleton {
             return Tr.tr("Checked just now");
         if (mins < 60)
             return Tr.tr("Checked %1 min ago").arg(mins);
-        return Tr.tr("Checked %1").arg(Qt.formatDateTime(new Date(checked), "ddd hh:mm"));
+        return Tr.tr("Checked %1").arg(Tr.formatDateTime(new Date(checked), "ddd hh:mm"));
     }
 
     // The last result right away; a fresh check when it's older than the check interval

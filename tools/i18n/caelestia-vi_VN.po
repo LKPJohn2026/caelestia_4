@@ -2984,3 +2984,17 @@ msgstr[0] "%n commit mới"
 msgid "%n local commit not pushed"
 msgid_plural "%n local commits not pushed"
 msgstr[0] "%n commit cục bộ chưa push"
+
+# caelestia4: upstream 4b1dae84
+# TRANSLATORS: %1 = date, %2 = time
+msgid "Recording at %1 %2"
+msgstr "Ghi lúc %2 %1"
+
+# caelestia4: date formats (Qt format strings), so each language can order day and month
+msgctxt "date format"
+msgid "dddd, MMMM d"
+msgstr "dddd, d MMMM"
+
+msgctxt "date format"
+msgid "MMM d"
+msgstr "d MMM"

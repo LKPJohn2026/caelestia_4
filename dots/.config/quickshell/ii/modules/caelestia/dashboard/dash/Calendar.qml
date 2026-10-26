@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import M3Shapes
 import Caelestia.Config
+import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.components.effects
@@ -190,7 +191,7 @@ CustomMouseArea {
                 anchors.fill: parent
 
                 spacing: 3
-                locale: Qt.locale()
+                locale: Tr.locale // upstream 4b1dae84: the shell's language, not the process locale
 
                 delegate: Item {
                     id: dayItem
