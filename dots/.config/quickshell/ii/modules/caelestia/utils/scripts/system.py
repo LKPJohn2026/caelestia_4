@@ -99,8 +99,14 @@ def needs_rebuild(built, installed):
     """Whether a component built against Qt `built` (e.g. "6.12.0") must be rebuilt to run on the installed Qt
     `installed`. Quickshell and the Caelestia plugin use Qt's private API, which is only stable within one Qt minor
     release. Return True / False, or None when it can't be told (a version is unknown)."""
-    # TODO(human)
-    return None
+    def minor(v):
+        m = re.match(r"^(\d+)\.(\d+)(?:\.\d+)?$", (v or "").strip())
+        return (int(m.group(1)), int(m.group(2))) if m else None
+
+    b, i = minor(built), minor(installed)
+    if b is None or i is None:
+        return None
+    return b != i  # patch releases keep the private API; any minor change (up or down) breaks it
 
 
 def quickshell_info(qt):
