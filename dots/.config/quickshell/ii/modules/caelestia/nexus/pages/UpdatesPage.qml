@@ -133,7 +133,7 @@ PageBase {
 
                 label: modelData.subject
                 value: modelData.hash
-                subtext: Qt.formatDateTime(new Date(modelData.date), "ddd dd/MM hh:mm")
+                subtext: Tr.formatDateTime(new Date(modelData.date), "ddd dd/MM hh:mm")
             }
         }
 
