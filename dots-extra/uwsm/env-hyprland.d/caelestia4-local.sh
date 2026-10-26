@@ -16,3 +16,7 @@ export SDL_IM_MODULE=fcitx
 # match, which is why tools/uwsm-setup.sh masks XDG autostart for this compositor.
 export XDG_CURRENT_DESKTOP=Hyprland:KDE
 export KDE_SESSION_VERSION=6
+
+# Dates and times in Vietnamese (weekday / month names in the shell, end-4 widgets and apps of this session).
+# /etc/locale.conf sets every LC_* except LANG to en_US; only the time format changes here, numbers etc. stay en_US.
+export LC_TIME=vi_VN.UTF-8

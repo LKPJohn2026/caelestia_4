@@ -9,9 +9,9 @@ SRC="$REPO_ROOT/third_party/caelestia-shell"
 BUILD="$REPO_ROOT/build/caelestia-plugin"
 PREFIX="${PREFIX:-$HOME/.local}"
 
-# Vendored: caelestia-dots/shell main 2e1c51fa (v2.5.0+48, 2026-10-24); before that 29fcf69a (v2.5.0+39), 21a75375 (v2.5.0+20); originally v2.5.0 -> d999d487 (docs/dev/phase1.md)
+# Vendored: caelestia-dots/shell main 4b1dae84 (v2.5.0+50, 2026-10-25); before that 2e1c51fa (v2.5.0+48), 29fcf69a (v2.5.0+39), 21a75375 (v2.5.0+20); originally v2.5.0 -> d999d487 (docs/dev/phase1.md)
 VERSION="2.5.0"
-GIT_REVISION="2e1c51fa7"
+GIT_REVISION="4b1dae84b"
 
 # caelestia4: our translations (tools/i18n/caelestia-<lang>.po) go into the plugin's catalogs (trs/<lang>.po)
 TRS="$SRC/plugin/src/Caelestia/I18n/trs"
