@@ -9,7 +9,6 @@ import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.caelestia.bar.components.status
 import Quickshell.Services.Pipewire
-import qs.services as E4 // caelestia4: keep
 
 StyledRect {
     id: root
@@ -38,7 +37,7 @@ StyledRect {
     // caelestia4: end-4 privacy indicators (computed here: end-4's Privacy service assigns lists to bools)
     readonly property bool micInUse: Pipewire.linkGroups.values.some(g => g.source?.type === PwNodeType.AudioSource && g.target?.type === PwNodeType.AudioInStream)
     readonly property bool screenCaptured: Pipewire.linkGroups.values.some(g => g.source?.type === PwNodeType.VideoSource)
-    readonly property bool updatesPending: E4.Updates.available && E4.Updates.count > 0
+    readonly property bool updatesPending: SystemUpdates.pending // repo + AUR packages, or new caelestia_4 commits
 
     // Entries that can shrink to nothing, spacing included
     function collapsed(entry: var): bool {
@@ -137,13 +136,13 @@ StyledRect {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     animate: true
                                     text: "system_update_alt"
-                                    color: E4.Updates.updateStronglyAdvised ? Colours.palette.m3error : root.colour
+                                    color: SystemUpdates.updateStronglyAdvised ? Colours.palette.m3error : root.colour
                                     fontStyle: Tokens.font.icon.medium
                                 }
 
                                 StyledText {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: E4.Updates.count
+                                    text: SystemUpdates.count > 0 ? SystemUpdates.count : "↑" // only caelestia_4 commits: no package count
                                     color: root.colour
                                     font: Tokens.font.label.small
                                 }
