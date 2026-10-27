@@ -202,6 +202,8 @@ Singleton {
             if (index >= 0) {
                 activeProcesses.splice(index, 1);
             }
+            // caelestia4: parented to this singleton, so it lives until destroyed (upstream #2178)
+            proc.destroy();
         });
 
         Qt.callLater(() => {
