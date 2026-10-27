@@ -37,7 +37,8 @@ Item {
 
     clip: true
     implicitWidth: Math.max(icon.implicitWidth, current.implicitHeight)
-    implicitHeight: icon.implicitHeight + current.implicitWidth + current.anchors.topMargin
+    // caelestia4 (upstream #2097): bar.activeWindow.showTitle off leaves only the app icon
+    implicitHeight: icon.implicitHeight + (Config.bar.activeWindow.showTitle ? current.implicitWidth + current.anchors.topMargin : 0)
 
     Loader {
         asynchronous: true
@@ -112,7 +113,7 @@ Item {
 
         font: metrics.font
         color: root.colour
-        opacity: root.current === this ? 1 : 0
+        opacity: root.Config.bar.activeWindow.showTitle && root.current === this ? 1 : 0
         horizontalAlignment: Text.AlignLeft
 
         transform: [

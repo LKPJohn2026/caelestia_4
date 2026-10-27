@@ -3927,3 +3927,10 @@ msgstr "Mã tâm ngắm"
 
 msgid "In Valorant's format"
 msgstr "Theo định dạng của Valorant"
+
+# caelestia4: upstream #2097 (bar.activeWindow.showTitle)
+msgid "Show title"
+msgstr "Hiện tiêu đề"
+
+msgid "Off: only the app's icon"
+msgstr "Tắt: chỉ hiện biểu tượng ứng dụng"

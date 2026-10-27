@@ -47,6 +47,32 @@ Scope {
         }
     }
 
+    // caelestia4 (upstream #2218): dashboard tabs from the keyboard (the dashboard takes no focus), over the tabs
+    // shown here (Todo / Timer included); stops at the ends like scrolling the tab bar
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "dashNext"
+        description: "Next dashboard tab"
+        onPressed: {
+            const screenState = ShellState.forActive();
+            if (screenState?.dashboard)
+                screenState.dashboardTab = Math.min(screenState.dashboardTab + 1, screenState.dashboardTabCount - 1);
+        }
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "dashPrev"
+        description: "Previous dashboard tab"
+        onPressed: {
+            const screenState = ShellState.forActive();
+            if (screenState?.dashboard)
+                screenState.dashboardTab = Math.max(screenState.dashboardTab - 1, 0);
+        }
+    }
+
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type

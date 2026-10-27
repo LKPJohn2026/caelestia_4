@@ -16,5 +16,6 @@ PersistentProperties {
 
     // Dashboard state
     property int dashboardTab
+    property int dashboardTabCount // caelestia4: set by the dashboard, for the dashNext / dashPrev shortcuts
     property date dashboardDate: new Date()
 }

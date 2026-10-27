@@ -17,8 +17,16 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
+        // caelestia4: upstream #2097
         ToggleRow {
             first: true
+            text: Tr.tr("Show title")
+            subtext: Tr.tr("Off: only the app's icon")
+            checked: Config.bar.activeWindow.showTitle
+            onToggled: GlobalConfig.bar.activeWindow.showTitle = checked
+        }
+
+        ToggleRow {
             text: Tr.trCtx("Compact", "taskbar active window layout")
             checked: Config.bar.activeWindow.compact
             onToggled: GlobalConfig.bar.activeWindow.compact = checked
