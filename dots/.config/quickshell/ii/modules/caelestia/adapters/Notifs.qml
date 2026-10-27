@@ -113,6 +113,7 @@ Singleton {
         path: `${Paths.state}/notifs.json`
         onLoaded: {
             const data = JSON.parse(text());
+            const notifs = [];
             for (const notif of data) {
                 const properties = Object.assign({}, notif);
 
@@ -121,9 +122,11 @@ Singleton {
                     properties.notificationId = properties.id;
 
                 delete properties.id;
-                root.list.push(notifComp.createObject(root, properties));
+                notifs.push(notifComp.createObject(root, properties));
             }
-            root.list.sort((a, b) => b.time - a.time);
+            // caelestia4 (upstream #2131): assign once; pushing onto the list property re-evaluates every binding on
+            // it per item
+            root.list = [...root.list, ...notifs].sort((a, b) => b.time - a.time);
             root.loaded = true;
         }
         onLoadFailed: err => {
