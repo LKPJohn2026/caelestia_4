@@ -18,6 +18,68 @@ PageBase {
 
     title: Tr.tr("Wallpaper & style")
 
+    // caelestia4: one clock on the desktop: Caelestia's (background.desktopClock) or end-4's cookie / digital clock
+    // (background widgets), as in end-4's Settings app (Desktop)
+    readonly property string desktopClock: E4C.Config.options.background.widgets.clock.enable ? E4C.Config.options.background.widgets.clock.style : (Config.background.desktopClock.enabled ? "caelestia" : "none")
+
+    readonly property list<MenuItem> clockItems: [
+        MenuItem {
+            text: "Caelestia"
+            value: "caelestia"
+        },
+        MenuItem {
+            text: Tr.tr("Cookie")
+            value: "cookie"
+        },
+        MenuItem {
+            text: Tr.tr("Digital")
+            value: "digital"
+        },
+        MenuItem {
+            text: Tr.tr("Off")
+            value: "none"
+        }
+    ]
+
+    readonly property list<MenuItem> clockPositionItems: [
+        MenuItem {
+            text: Tr.tr("Top left")
+            value: "top-left"
+        },
+        MenuItem {
+            text: Tr.tr("Top centre")
+            value: "top-center"
+        },
+        MenuItem {
+            text: Tr.tr("Top right")
+            value: "top-right"
+        },
+        MenuItem {
+            text: Tr.tr("Middle left")
+            value: "middle-left"
+        },
+        MenuItem {
+            text: Tr.tr("Centre")
+            value: "middle-center"
+        },
+        MenuItem {
+            text: Tr.tr("Middle right")
+            value: "middle-right"
+        },
+        MenuItem {
+            text: Tr.tr("Bottom left")
+            value: "bottom-left"
+        },
+        MenuItem {
+            text: Tr.tr("Bottom centre")
+            value: "bottom-center"
+        },
+        MenuItem {
+            text: Tr.tr("Bottom right")
+            value: "bottom-right"
+        }
+    ]
+
     // caelestia4: names for Caelestia's wallpaper transitions (enum WallpaperTransition, shell.json
     // background.wallpaperTransition); upstream has no picker for it yet
     readonly property var transitions: [
@@ -273,6 +335,166 @@ PageBase {
             onToggled: Colours.setMode(checked ? "dark" : "light")
         }
 
+        // caelestia4: Caelestia's appearance scales, frame and fonts (shell.json), which upstream's Nexus has no rows
+        // for; the same keys as end-4's Settings app (Appearance), so both stay in step. Percent steppers over 0-2 scales
+        SectionHeader {
+            text: Tr.tr("Transparency")
+        }
+
+        StepperRow {
+            first: true
+            enabled: Colours.transparency.enabled
+            label: Tr.tr("Panel opacity (%)")
+            value: Math.round(Config.appearance.transparency.base * 100)
+            from: 30
+            to: 100
+            stepSize: 5
+            onMoved: v => GlobalConfig.appearance.transparency.base = v / 100
+        }
+
+        StepperRow {
+            last: true
+            enabled: Colours.transparency.enabled
+            label: Tr.tr("Inner layer opacity (%)")
+            subtext: Tr.tr("Cards and buttons inside panels")
+            value: Math.round(Config.appearance.transparency.layers * 100)
+            from: 0
+            to: 100
+            stepSize: 5
+            onMoved: v => GlobalConfig.appearance.transparency.layers = v / 100
+        }
+
+        SectionHeader {
+            text: Tr.tr("Size & shape")
+        }
+
+        StepperRow {
+            first: true
+            label: Tr.tr("Text size (%)")
+            value: Math.round(Config.appearance.font.scale * 100)
+            from: 70
+            to: 150
+            stepSize: 5
+            onMoved: v => GlobalConfig.appearance.font.scale = v / 100
+        }
+
+        StepperRow {
+            label: Tr.tr("Corner roundness (%)")
+            value: Math.round(Config.appearance.rounding.scale * 100)
+            from: 0
+            to: 200
+            stepSize: 10
+            onMoved: v => GlobalConfig.appearance.rounding.scale = v / 100
+        }
+
+        StepperRow {
+            label: Tr.tr("Spacing (%)")
+            subtext: Tr.tr("Space between items")
+            value: Math.round(Config.appearance.spacing.scale * 100)
+            from: 50
+            to: 200
+            stepSize: 10
+            onMoved: v => GlobalConfig.appearance.spacing.scale = v / 100
+        }
+
+        StepperRow {
+            label: Tr.tr("Padding (%)")
+            subtext: Tr.tr("Space inside panels and buttons")
+            value: Math.round(Config.appearance.padding.scale * 100)
+            from: 50
+            to: 200
+            stepSize: 10
+            onMoved: v => GlobalConfig.appearance.padding.scale = v / 100
+        }
+
+        StepperRow {
+            label: Tr.tr("Animation duration (%)")
+            subtext: Tr.tr("Lower is faster; 0 turns panel animations off")
+            value: Math.round(Config.appearance.anim.durations.scale * 100)
+            from: 0
+            to: 200
+            stepSize: 10
+            onMoved: v => GlobalConfig.appearance.anim.durations.scale = v / 100
+        }
+
+        StepperRow {
+            label: Tr.tr("Screen frame thickness (px)")
+            subtext: Tr.tr("The border around the screen that holds the bar and drawers")
+            value: Config.border.thickness
+            from: 0
+            to: 40
+            onMoved: v => GlobalConfig.border.thickness = v
+        }
+
+        StepperRow {
+            last: true
+            label: Tr.tr("Screen frame corner radius (px)")
+            value: Config.border.rounding
+            from: 0
+            to: 80
+            onMoved: v => GlobalConfig.border.rounding = v
+        }
+
+        SectionHeader {
+            text: Tr.tr("Fonts")
+        }
+
+        TextFieldRow {
+            first: true
+            label: Tr.tr("Panel font")
+            subtext: Tr.tr("Bar, drawers, launcher, notifications")
+            value: Config.appearance.font.body.family
+            onEditingFinished: v => {
+                if (!v.trim() || v.trim() === Config.appearance.font.body.family)
+                    return;
+                GlobalConfig.appearance.font.headline.family = v.trim();
+                GlobalConfig.appearance.font.title.family = v.trim();
+                GlobalConfig.appearance.font.body.family = v.trim();
+                GlobalConfig.appearance.font.label.family = v.trim();
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Clock font")
+            value: Config.appearance.font.clock
+            onEditingFinished: v => {
+                if (v.trim() && v.trim() !== Config.appearance.font.clock)
+                    GlobalConfig.appearance.font.clock = v.trim();
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Monospace font")
+            value: Config.appearance.font.mono.family
+            onEditingFinished: v => {
+                if (!v.trim() || v.trim() === Config.appearance.font.mono.family)
+                    return;
+                GlobalConfig.appearance.font.mono.family = v.trim();
+                E4C.Config.options.appearance.fonts.monospace = v.trim(); // caelestia4: end-4 widgets too
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("App font")
+            subtext: Tr.tr("Settings app, AI chat, translator and other end-4 widgets")
+            value: E4C.Config.options.appearance.fonts.main
+            onEditingFinished: v => {
+                if (v.trim() && v.trim() !== E4C.Config.options.appearance.fonts.main)
+                    E4C.Config.options.appearance.fonts.main = v.trim();
+            }
+        }
+
+        TextFieldRow {
+            last: true
+            label: Tr.tr("Reading font")
+            subtext: Tr.tr("Long text such as AI answers")
+            value: E4C.Config.options.appearance.fonts.reading
+            onEditingFinished: v => {
+                if (v.trim() && v.trim() !== E4C.Config.options.appearance.fonts.reading)
+                    E4C.Config.options.appearance.fonts.reading = v.trim();
+            }
+        }
+
         // caelestia4: the folder the launcher, this page and end-4's wallpaper selector list (paths.wallpaperDir)
         SectionHeader {
             text: Tr.tr("Wallpaper folder")
@@ -337,6 +559,61 @@ PageBase {
             to: 4
             stepSize: 0.1
             onMoved: v => GlobalConfig.background.visualiser.spacing = v
+        }
+
+        SectionHeader {
+            text: Tr.tr("Desktop clock")
+        }
+
+        SelectRow {
+            first: true
+            last: root.desktopClock !== "caelestia"
+            label: Tr.tr("Desktop clock")
+            menuItems: root.clockItems
+            active: root.clockItems.find(i => i.value === root.desktopClock) ?? null
+            onSelected: item => {
+                const v = item.value;
+                GlobalConfig.background.desktopClock.enabled = v === "caelestia";
+                E4C.Config.options.background.widgets.clock.enable = v === "cookie" || v === "digital";
+                if (v === "cookie" || v === "digital") {
+                    E4C.Config.options.background.widgets.clock.style = v;
+                    E4C.Config.options.background.widgets.clock.styleLocked = v;
+                }
+            }
+        }
+
+        ToggleRow {
+            visible: root.desktopClock === "caelestia"
+            text: Tr.tr("Show the weather beside it")
+            subtext: Tr.tr("Location: end-4 Settings > Apps & services; units: Language & region")
+            checked: E4C.Config.options.caelestia.desktopWeather
+            onToggled: E4C.Config.options.caelestia.desktopWeather = checked
+        }
+
+        SelectRow {
+            visible: root.desktopClock === "caelestia"
+            label: Tr.tr("Position")
+            menuItems: root.clockPositionItems
+            active: root.clockPositionItems.find(i => i.value === Config.background.desktopClock.position) ?? null
+            onSelected: item => GlobalConfig.background.desktopClock.position = item.value
+        }
+
+        StepperRow {
+            visible: root.desktopClock === "caelestia"
+            label: Tr.tr("Size (%)")
+            value: Math.round(Config.background.desktopClock.scale * 100)
+            from: 50
+            to: 200
+            stepSize: 10
+            onMoved: v => GlobalConfig.background.desktopClock.scale = v / 100
+        }
+
+        ToggleRow {
+            visible: root.desktopClock === "caelestia"
+            last: true
+            text: Tr.tr("Background behind it")
+            checked: Config.background.desktopClock.background.enabled
+            onToggled: GlobalConfig.background.desktopClock.background.enabled = checked
         }
     }
 }

@@ -3004,3 +3004,287 @@ msgstr "Super+S đóng mọi workspace đặc biệt"
 
 msgid "Off: Super+S only shows or hides the scratchpad"
 msgstr "Tắt: Super+S chỉ hiện hoặc ẩn scratchpad"
+
+# caelestia4: Nexus > Hyprland (end-4 Settings' Windows and Input), Wallpaper & style (scales, frame, fonts,
+# desktop clock), Panels > OSD
+msgid "Device default"
+msgstr "Mặc định của thiết bị"
+
+msgid "Adaptive"
+msgstr "Thích ứng"
+
+msgid "Flat (raw, for games)"
+msgstr "Phẳng (thô, cho game)"
+
+msgid "Off (click to focus)"
+msgstr "Tắt (bấm để chọn cửa sổ)"
+
+msgid "Always"
+msgstr "Luôn luôn"
+
+msgid "Loose (keyboard stays)"
+msgstr "Rộng (bàn phím vẫn giữ)"
+
+msgid "Only on click"
+msgstr "Chỉ khi bấm"
+
+msgid "Off"
+msgstr "Tắt"
+
+msgid "On"
+msgstr "Bật"
+
+msgid "Dwindle (split in two)"
+msgstr "Dwindle (chia đôi)"
+
+msgid "Master (one big window)"
+msgstr "Master (một cửa sổ lớn)"
+
+msgid "Keyboard"
+msgstr "Bàn phím"
+
+msgid "Layouts"
+msgstr "Bố cục"
+
+msgid "Comma separated, e.g. us,de. Vietnamese typing is fcitx5 (Super+Space)"
+msgstr "Cách nhau bằng dấu phẩy, vd. us,de. Gõ tiếng Việt dùng fcitx5 (Super+Space)"
+
+msgid "Layout options"
+msgstr "Tùy chọn bố cục"
+
+msgid "XKB options, e.g. grp:alt_shift_toggle, caps:escape"
+msgstr "Tùy chọn XKB, vd. grp:alt_shift_toggle, caps:escape"
+
+msgid "Key repeat delay (ms)"
+msgstr "Độ trễ lặp phím (ms)"
+
+msgid "How long to hold a key before it repeats"
+msgstr "Thời gian giữ phím trước khi lặp lại"
+
+msgid "Key repeat rate (per second)"
+msgstr "Tốc độ lặp phím (lần/giây)"
+
+msgid "Mouse & touchpad"
+msgstr "Chuột & bàn di chuột"
+
+msgid "Pointer speed"
+msgstr "Tốc độ con trỏ"
+
+msgid "-1 to 1; 0 = unchanged"
+msgstr "-1 đến 1; 0 = giữ nguyên"
+
+msgid "Acceleration"
+msgstr "Gia tốc"
+
+msgid "Natural scrolling (mouse)"
+msgstr "Cuộn tự nhiên (chuột)"
+
+msgid "Content moves with the wheel, like a touchscreen"
+msgstr "Nội dung di chuyển theo con lăn, như màn hình cảm ứng"
+
+msgid "Natural scrolling (touchpad)"
+msgstr "Cuộn tự nhiên (bàn di chuột)"
+
+msgid "Focus follows the mouse"
+msgstr "Tiêu điểm theo chuột"
+
+msgid "Spacing & borders"
+msgstr "Khoảng cách & viền"
+
+msgid "Gap between windows (px)"
+msgstr "Khoảng cách giữa cửa sổ (px)"
+
+msgid "Gap to the screen edge (px)"
+msgstr "Khoảng cách tới mép màn hình (px)"
+
+msgid "Window border (px)"
+msgstr "Viền cửa sổ (px)"
+
+msgid "Window corner radius (px)"
+msgstr "Bán kính góc cửa sổ (px)"
+
+msgid "Effects"
+msgstr "Hiệu ứng"
+
+msgid "Focused window opacity"
+msgstr "Độ mờ đục của cửa sổ đang chọn"
+
+msgid "Other windows opacity"
+msgstr "Độ mờ đục cửa sổ khác"
+
+msgid "Dim unfocused windows"
+msgstr "Làm tối cửa sổ không được chọn"
+
+msgid "Blur behind transparent windows"
+msgstr "Làm mờ phía sau cửa sổ trong suốt"
+
+msgid "Blur radius"
+msgstr "Bán kính làm mờ"
+
+msgid "Blur passes"
+msgstr "Số lượt làm mờ"
+
+msgid "More is smoother but uses more GPU"
+msgstr "Càng nhiều càng mượt nhưng tốn GPU hơn"
+
+msgid "Window shadows"
+msgstr "Bóng đổ cửa sổ"
+
+msgid "Window animations"
+msgstr "Hiệu ứng cửa sổ"
+
+msgid "Tiling layout"
+msgstr "Bố cục xếp cửa sổ"
+
+msgid "Keep split direction"
+msgstr "Giữ hướng chia"
+
+msgid "Dwindle layout: splits don't flip when windows move"
+msgstr "Bố cục Dwindle: các phần chia không lật khi cửa sổ di chuyển"
+
+msgid "Resize windows by dragging their border"
+msgstr "Đổi kích thước cửa sổ bằng cách kéo viền"
+
+msgid "Focus apps that ask for attention"
+msgstr "Chuyển đến ứng dụng cần sự chú ý"
+
+msgid "e.g. a browser opened from a link jumps to the front"
+msgstr "vd. trình duyệt mở từ một liên kết sẽ nhảy lên trước"
+
+msgid "Cookie"
+msgstr "Cookie"
+
+msgid "Digital"
+msgstr "Kỹ thuật số"
+
+msgid "Top left"
+msgstr "Trên trái"
+
+msgid "Top centre"
+msgstr "Giữa trên"
+
+msgid "Top right"
+msgstr "Trên phải"
+
+msgid "Middle left"
+msgstr "Giữa trái"
+
+msgid "Centre"
+msgstr "Giữa"
+
+msgid "Middle right"
+msgstr "Giữa phải"
+
+msgid "Bottom left"
+msgstr "Dưới trái"
+
+msgid "Bottom centre"
+msgstr "Giữa dưới"
+
+msgid "Bottom right"
+msgstr "Dưới phải"
+
+msgid "Panel opacity (%)"
+msgstr "Độ đục của bảng (%)"
+
+msgid "Inner layer opacity (%)"
+msgstr "Độ đục lớp bên trong (%)"
+
+msgid "Cards and buttons inside panels"
+msgstr "Thẻ và nút bên trong bảng"
+
+msgid "Size & shape"
+msgstr "Kích thước & hình dạng"
+
+msgid "Text size (%)"
+msgstr "Cỡ chữ (%)"
+
+msgid "Corner roundness (%)"
+msgstr "Độ bo góc (%)"
+
+msgid "Spacing (%)"
+msgstr "Khoảng cách (%)"
+
+msgid "Space between items"
+msgstr "Khoảng cách giữa các mục"
+
+msgid "Padding (%)"
+msgstr "Khoảng đệm (%)"
+
+msgid "Space inside panels and buttons"
+msgstr "Khoảng trống bên trong bảng và nút"
+
+msgid "Animation duration (%)"
+msgstr "Thời lượng hiệu ứng (%)"
+
+msgid "Lower is faster; 0 turns panel animations off"
+msgstr "Càng thấp càng nhanh; 0 tắt hiệu ứng của bảng"
+
+msgid "Screen frame thickness (px)"
+msgstr "Độ dày khung màn hình (px)"
+
+msgid "The border around the screen that holds the bar and drawers"
+msgstr "Viền quanh màn hình chứa thanh và các ngăn kéo"
+
+msgid "Screen frame corner radius (px)"
+msgstr "Bán kính góc khung màn hình (px)"
+
+msgid "Fonts"
+msgstr "Phông chữ"
+
+msgid "Panel font"
+msgstr "Phông chữ bảng"
+
+msgid "Bar, drawers, launcher, notifications"
+msgstr "Thanh, ngăn kéo, trình khởi chạy, thông báo"
+
+msgid "Clock font"
+msgstr "Phông chữ đồng hồ"
+
+msgid "Monospace font"
+msgstr "Phông chữ đơn cách"
+
+msgid "App font"
+msgstr "Phông chữ ứng dụng"
+
+msgid "Settings app, AI chat, translator and other end-4 widgets"
+msgstr "Ứng dụng cài đặt, trò chuyện AI, dịch và các tiện ích end-4 khác"
+
+msgid "Reading font"
+msgstr "Phông chữ đọc"
+
+msgid "Long text such as AI answers"
+msgstr "Văn bản dài như câu trả lời của AI"
+
+msgid "Desktop clock"
+msgstr "Đồng hồ trên màn nền"
+
+msgid "Show the weather beside it"
+msgstr "Hiện thời tiết bên cạnh"
+
+msgid "Location: end-4 Settings > Apps & services; units: Language & region"
+msgstr "Vị trí: Cài đặt end-4 > Ứng dụng & dịch vụ; đơn vị: Ngôn ngữ & vùng"
+
+msgid "Position"
+msgstr "Vị trí"
+
+msgid "Size (%)"
+msgstr "Kích thước (%)"
+
+msgid "Background behind it"
+msgstr "Nền phía sau"
+
+msgid "On-screen display"
+msgstr "Hiển thị trên màn hình (OSD)"
+
+msgid "Show when volume or brightness changes"
+msgstr "Hiện khi âm lượng hoặc độ sáng thay đổi"
+
+msgid "Hide after (ms)"
+msgstr "Ẩn sau (ms)"
+
+msgid "Brightness slider"
+msgstr "Thanh trượt độ sáng"
+
+msgid "Microphone slider"
+msgstr "Thanh trượt micro"

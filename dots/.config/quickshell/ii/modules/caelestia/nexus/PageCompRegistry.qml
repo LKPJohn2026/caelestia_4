@@ -165,6 +165,10 @@ QtObject {
                 Component {
                     SessionPanel {}
                 }
+                // caelestia4: 13 on-screen display (Panels > OSD)
+                Component {
+                    OsdPanel {}
+                }
             }
         },
         Component {
