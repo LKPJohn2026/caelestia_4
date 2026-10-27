@@ -6,8 +6,8 @@ Upstreams checked (fresh clones, not the local copies):
 - caelestia-dots/caelestia `f4bb062` (2026-10-13): dotfiles (Hyprland, app themes, uwsm)
 - caelestia-dots/cli `289e208` (2026-10-13): the `caelestia` command
 
-caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-27). Caelestia shell is vendored at
-`4b1dae84` (2026-10-25, upstream main: 0 commits ahead, rechecked twice 2026-10-27); caelestia-cli is `5e804b1` (packaging/caelestia4-cli). Since 29fcf69a: sidebar
+caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked three times 2026-10-27). Caelestia shell is vendored at
+`4b1dae84` (2026-10-25, upstream main: 0 commits ahead, rechecked three times 2026-10-27); caelestia-cli is `5e804b1` (packaging/caelestia4-cli). Since 29fcf69a: sidebar
 hover fixes + Nexus "Show on hover", `caelestia:toggleDnd`, CachingImage → Visual (file dialog icons stay on
 Quickshell's IconImage), video previews play on hover, the plugin unloads idle media players. Equivalent: upstream's
 Super+Shift+number silent move is Super+Alt+number here.
@@ -292,6 +292,17 @@ Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes
   four shortcuts are added here too (Players adapter, MPRIS `seek()`)
 
 Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
+
+Third review 2026-10-27: no new commits in end-4, the Caelestia shell, dotfiles or cli. end-4's open PRs:
+- Apply here: #3713 (OpenAI-compatible requests send `"tools": []` in the search / no-tools modes, which strict
+  providers reject; same code in services/ai/OpenAiApiStrategy.qml), #3721 (the KDE portal size rule also forces
+  its Rename / New Folder dialogs to 60% x 65%; KDE's picker is the fallback here, Wormhole's comes first)
+- Partly: #3712 (XDG_DATA_DIRS growing on every Hyprland reload). Here it is set once per session in
+  uwsm/env-hyprland, so it doesn't grow, but each system dir is in it twice (also in the default value)
+- Features: #3693 (Alt+Tab between windows; Alt+Tab here moves between workspaces), #3716 (pinned clipboard
+  entries; the launcher's `;` reads end-4's cliphist)
+- Don't apply: #3720 (startup speed: only the Caelestia family loads here, the config is read in under 1 s),
+  #3714 (802.1X Wi-Fi: no Wi-Fi on this machine), #3718 (Super+P projector flyout: one monitor, Nexus > Display)
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
