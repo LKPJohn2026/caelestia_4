@@ -89,6 +89,14 @@ Item {
             ScreencopyView {
                 id: preview
 
+                // caelestia4 (upstream #2129): no size until the first frame, so the popout opened small and jumped;
+                // fit the window's own size into the same box up front
+                readonly property var windowSize: Hypr.activeToplevel?.lastIpcObject.size ?? []
+                readonly property real fitScale: windowSize.length === 2 && windowSize[0] > 0 && windowSize[1] > 0 ? Math.min(constraintSize.width / windowSize[0], constraintSize.height / windowSize[1]) : 0
+
+                implicitWidth: fitScale > 0 ? Math.round(windowSize[0] * fitScale) : constraintSize.width
+                implicitHeight: fitScale > 0 ? Math.round(windowSize[1] * fitScale) : constraintSize.height
+
                 captureSource: Hypr.activeToplevel?.wayland ?? null
                 live: visible
 

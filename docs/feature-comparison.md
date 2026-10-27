@@ -51,7 +51,7 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | Dash tab: user/pfp, date-time, calendar, small weather, resources, media | ✅ C | |
-| Media tab: player controls, cover art, visualiser, lyrics | ✅ C | lyrics: local .lrc → LRCLIB → NetEase → Kugou → QQ Music (all synced), then untimed lyrics (LRCLIB plain, lyrics.ovh) as the last resort; Kugou / QQ Music added here |
+| Media tab: player controls, cover art, visualiser, lyrics | ✅ C | lyrics: local .lrc → LRCLIB (exact match, then search) → NetEase → Kugou → QQ Music (all synced), then untimed lyrics (LRCLIB plain, lyrics.ovh) as the last resort; Kugou / QQ Music added here |
 | Performance tab: CPU, GPU, memory, storage, network | ✅ C | |
 | Weather tab: 7-day forecast, sunrise/sunset, humidity, wind | ✅ C | |
 | Todo tab, Timer tab (pomodoro + stopwatch) | ✅ E→C | end-4 features as dashboard tabs |
@@ -271,9 +271,12 @@ Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes
   Ctrl+Super+Alt+Backslash made windows 1.5x too big (55% x 70% came out as 82% x 105%)
 - shell #2178: finished nmcli commands (Nmcli adapter's CommandProcess) are destroyed instead of living until restart
 - shell #2208: one Nexus window (see §1 Nexus)
+- shell #2211: when LRCLIB `/get` has only plain lyrics (or fails), its `/search` is tried for a synced entry within
+  2 s of the track's length before NetEase; the plain lyrics are still kept as the last resort
+- shell #2129: the active window popout opens at its final size (the preview is sized from the window before its
+  first frame)
 
-Not taken yet: #2211 (LRCLIB `/search` when `/get` has only plain lyrics; NetEase / Kugou / QQ Music cover most of it
-here), #2129 (active window popout opens at its final size). Feature PRs worth a look once merged: #2218 dashboard tab
+Feature PRs worth a look once merged: #2218 dashboard tab
 shortcuts, #2210 a wallpaper per workspace, #2135 folders in the launcher's wallpaper picker, #2097 hide the window
 title, dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
 
