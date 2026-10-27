@@ -7,6 +7,7 @@ import Caelestia.I18n
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -82,6 +83,56 @@ PageBase {
             text: Tr.tr("App volumes")
             subtext: Audio.streams.length === 0 ? Tr.tr("No apps playing audio") : Tr.trN("%n app playing audio", "%n apps playing audio", Audio.streams.length)
             onClicked: root.nState.openSubPage(1)
+        }
+
+        // caelestia4: from end-4's Settings app (Sound)
+        SectionHeader {
+            text: Tr.tr("Hearing protection")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Block sudden loud jumps")
+            subtext: Tr.tr("Undo volume changes that are too big or go over the limit, whoever makes them")
+            checked: E4C.Config.options.audio.protection.enable
+            onToggled: E4C.Config.options.audio.protection.enable = checked
+        }
+
+        StepperRow {
+            enabled: E4C.Config.options.audio.protection.enable
+            label: Tr.tr("Largest allowed jump (%)")
+            value: E4C.Config.options.audio.protection.maxAllowedIncrease
+            from: 1
+            to: 100
+            onMoved: v => E4C.Config.options.audio.protection.maxAllowedIncrease = v
+        }
+
+        StepperRow {
+            last: true
+            enabled: E4C.Config.options.audio.protection.enable
+            label: Tr.tr("Volume limit (%)")
+            value: E4C.Config.options.audio.protection.maxAllowed
+            from: 10
+            to: 150
+            onMoved: v => E4C.Config.options.audio.protection.maxAllowed = v
+        }
+
+        SectionHeader {
+            text: Tr.tr("System sounds")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Battery warnings")
+            checked: E4C.Config.options.sounds.battery
+            onToggled: E4C.Config.options.sounds.battery = checked
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Timer and Pomodoro")
+            checked: E4C.Config.options.sounds.pomodoro
+            onToggled: E4C.Config.options.sounds.pomodoro = checked
         }
     }
 }

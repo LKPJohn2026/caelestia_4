@@ -7,6 +7,8 @@ import Caelestia.Services
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
+import qs.services as E4 // caelestia4: keep (HyprlandConfig.resetMany)
 
 PageBase {
     id: root
@@ -48,6 +50,10 @@ PageBase {
             text: Tr.trCtx("None", "gpu type")
         }
     ]
+
+    readonly property string configDir: Quickshell.env("XDG_CONFIG_HOME") || `${Quickshell.env("HOME")}/.config`
+    // Every option the Hyprland and Display pages set (end-4's Settings Advanced page resets the same)
+    readonly property list<string> hyprKeys: ["general:gaps_in", "general:gaps_out", "general:border_size", "decoration:rounding", "decoration:active_opacity", "decoration:inactive_opacity", "decoration:dim_inactive", "decoration:blur:enabled", "decoration:blur:size", "decoration:blur:passes", "decoration:shadow:enabled", "animations:enabled", "general:layout", "general:resize_on_border", "misc:focus_on_activate", "dwindle:preserve_split", "input:kb_layout", "input:kb_options", "input:repeat_delay", "input:repeat_rate", "input:sensitivity", "input:accel_profile", "input:natural_scroll", "input:touchpad:natural_scroll", "input:follow_mouse", "misc:vrr", "misc:render_unfocused_fps"]
 
     title: Tr.tr("Services")
 
@@ -220,6 +226,128 @@ PageBase {
             menuItems: root.gpuItems
             active: root.gpuItems[GlobalConfig.services.gpuType]
             onSelected: item => GlobalConfig.services.gpuType = root.gpuItems.indexOf(item)
+        }
+
+        // caelestia4: end-4's services, from end-4's Settings app (Apps & services, Advanced)
+        SectionHeader {
+            text: Tr.tr("Screenshots & recording")
+        }
+
+        TextFieldRow {
+            first: true
+            label: Tr.tr("Save screenshots to")
+            subtext: Tr.tr("Empty: copy to the clipboard only")
+            value: E4C.Config.options.screenSnip.savePath
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.screenSnip.savePath = v;
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Save recordings to")
+            value: E4C.Config.options.screenRecord.savePath
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.screenRecord.savePath = v;
+            }
+        }
+
+        ToggleRow {
+            text: Tr.tr("Circle to search")
+            subtext: Tr.tr("Google Lens starts with a freehand circle instead of a rectangle")
+            checked: E4C.Config.options.search.imageSearch.useCircleSelection
+            onToggled: E4C.Config.options.search.imageSearch.useCircleSelection = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Highlight windows to capture")
+            subtext: Tr.tr("Click a highlighted window to select it")
+            checked: E4C.Config.options.regionSelector.targetRegions.windows
+            onToggled: E4C.Config.options.regionSelector.targetRegions.windows = checked
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Aim lines")
+            checked: E4C.Config.options.regionSelector.rect.showAimLines
+            onToggled: E4C.Config.options.regionSelector.rect.showAimLines = checked
+        }
+
+        SectionHeader {
+            text: Tr.tr("Music recognition")
+        }
+
+        StepperRow {
+            first: true
+            label: Tr.tr("Give up after (seconds)")
+            value: E4C.Config.options.musicRecognition.timeout
+            from: 5
+            to: 120
+            onMoved: v => E4C.Config.options.musicRecognition.timeout = v
+        }
+
+        StepperRow {
+            last: true
+            label: Tr.tr("Listen again every (seconds)")
+            value: E4C.Config.options.musicRecognition.interval
+            from: 1
+            to: 30
+            onMoved: v => E4C.Config.options.musicRecognition.interval = v
+        }
+
+        SectionHeader {
+            text: Tr.tr("Advanced")
+        }
+
+        StepperRow {
+            first: true
+            label: Tr.tr("CPU / memory refresh (ms)")
+            subtext: Tr.tr("end-4's resource monitor (overlay, AI tools)")
+            value: E4C.Config.options.resources.updateInterval
+            from: 500
+            to: 10000
+            stepSize: 250
+            onMoved: v => E4C.Config.options.resources.updateInterval = v
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Web user agent")
+            subtext: Tr.tr("Sent to services that require one (image boards, weather)")
+            value: E4C.Config.options.networking.userAgent
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.networking.userAgent = v;
+            }
+        }
+
+        RowButton {
+            icon: "data_object"
+            text: Tr.tr("Shell settings (end-4 part)")
+            subtext: "~/.config/illogical-impulse/config.json"
+            onClicked: Quickshell.execDetached(["xdg-open", `${root.configDir}/illogical-impulse/config.json`])
+        }
+
+        RowButton {
+            icon: "data_object"
+            text: Tr.tr("Panel settings (Caelestia part)")
+            subtext: "~/.config/caelestia/shell.json"
+            onClicked: Quickshell.execDetached(["xdg-open", `${root.configDir}/caelestia/shell.json`])
+        }
+
+        RowButton {
+            icon: "folder_open"
+            text: Tr.tr("Your Hyprland config")
+            subtext: Tr.tr("~/.config/hypr/custom: keybinds, rules, startup apps")
+            onClicked: Quickshell.execDetached(["xdg-open", `${root.configDir}/hypr/custom`])
+        }
+
+        RowButton {
+            last: true
+            icon: "restart_alt"
+            text: Tr.tr("Reset window, input and display options")
+            subtext: Tr.tr("Undo the Hyprland and Display pages' changes (Hyprland's own config applies again)")
+            onClicked: E4.HyprlandConfig.resetMany(root.hyprKeys)
         }
     }
 }

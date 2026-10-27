@@ -7,6 +7,7 @@ import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 // caelestia4: Hyprland options (Caelestia has none): end-4 Settings' Windows and Input pages plus options neither app
 // had. Read live from Hyprland, saved to hypr/hyprland/shellOverrides/main.lua (end-4's HyprlandConfig, loaded last,
@@ -391,6 +392,43 @@ PageBase {
             key: "xwayland:force_zero_scaling"
             text: Tr.tr("Sharp X11 apps on scaled displays")
             subtext: Tr.tr("X11 apps draw at scale 1 instead of being stretched (they may look smaller)")
+        }
+
+        // caelestia4: from end-4's Settings app (Games); VRR is on the Display page
+        SectionHeader {
+            text: Tr.tr("Games in the background")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Mute games while in the background")
+            subtext: Tr.tr("A game's sound stops when you switch away and comes back when you click into it")
+            checked: E4C.Config.options.caelestia.backgroundMute.enable
+            onToggled: E4C.Config.options.caelestia.backgroundMute.enable = checked
+        }
+
+        TextFieldRow {
+            enabled: E4C.Config.options.caelestia.backgroundMute.enable
+            label: Tr.tr("Which windows are games")
+            subtext: Tr.tr("Window class pattern (regex). Steam/Proton games are steam_app_<id>")
+            value: E4C.Config.options.caelestia.backgroundMute.classes
+            onEditingFinished: v => {
+                try {
+                    new RegExp(v);
+                    if (v !== value)
+                        E4C.Config.options.caelestia.backgroundMute.classes = v;
+                } catch (e) {} // invalid pattern: keep the old one
+            }
+        }
+
+        HyprStepperRow {
+            last: true
+            key: "misc:render_unfocused_fps"
+            label: Tr.tr("Frame rate in the background (fps)")
+            subtext: Tr.tr("For games kept running while you use another window")
+            from: 1
+            to: 240
+            stepSize: 5
         }
     }
 }

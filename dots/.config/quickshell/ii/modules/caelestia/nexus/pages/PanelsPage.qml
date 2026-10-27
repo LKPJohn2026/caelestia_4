@@ -2,6 +2,7 @@ import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -51,6 +52,34 @@ PageBase {
         }
 
         NavRow {
+            icon: "neurology"
+            text: Tr.tr("Assistant")
+            subtext: Tr.tr("AI, anime tab, work safety")
+            onClicked: root.nState.openSubPage(14)
+        }
+
+        NavRow {
+            icon: "call_to_action"
+            text: Tr.tr("Dock")
+            subtext: E4C.Config.options.caelestia.dock.enable ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
+            onClicked: root.nState.openSubPage(15)
+        }
+
+        NavRow {
+            icon: "grid_view"
+            text: Tr.tr("Overview & overlay")
+            subtext: Tr.tr("Super+Tab, Alt+Tab, Super+G")
+            onClicked: root.nState.openSubPage(16)
+        }
+
+        NavRow {
+            icon: "keyboard"
+            text: Tr.tr("Keybind cheatsheet")
+            subtext: "Super+/"
+            onClicked: root.nState.openSubPage(17)
+        }
+
+        NavRow {
             icon: "tune"
             text: Tr.tr("On-screen display")
             subtext: Config.osd.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
@@ -64,5 +93,6 @@ PageBase {
             subtext: Config.session.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
             onClicked: root.nState.openSubPage(12)
         }
+
     }
 }

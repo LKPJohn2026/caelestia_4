@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -151,6 +152,63 @@ PageBase {
             text: Tr.tr("Wallpapers")
             checked: GlobalConfig.launcher.useFuzzy.wallpapers
             onToggled: GlobalConfig.launcher.useFuzzy.wallpapers = checked
+        }
+
+        // caelestia4: end-4's search (LauncherSearch, merged into this launcher)
+        SectionHeader {
+            text: Tr.tr("Search")
+        }
+
+        TextFieldRow {
+            first: true
+            smallField: true
+            label: Tr.tr("Run command prefix")
+            value: E4C.Config.options.search.prefix.shellCommand
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.search.prefix.shellCommand = v;
+            }
+        }
+
+        TextFieldRow {
+            smallField: true
+            label: Tr.tr("Clipboard prefix")
+            value: E4C.Config.options.search.prefix.clipboard
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.search.prefix.clipboard = v;
+            }
+        }
+
+        TextFieldRow {
+            smallField: true
+            label: Tr.tr("Emoji prefix")
+            value: E4C.Config.options.search.prefix.emojis
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.search.prefix.emojis = v;
+            }
+        }
+
+        TextFieldRow {
+            smallField: true
+            label: Tr.tr("Calculator prefix")
+            value: E4C.Config.options.search.prefix.math
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.search.prefix.math = v;
+            }
+        }
+
+        TextFieldRow {
+            last: true
+            label: Tr.tr("Web search address")
+            subtext: Tr.tr("Your search text is added at the end")
+            value: E4C.Config.options.search.engineBaseUrl
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.search.engineBaseUrl = v;
+            }
         }
     }
 }

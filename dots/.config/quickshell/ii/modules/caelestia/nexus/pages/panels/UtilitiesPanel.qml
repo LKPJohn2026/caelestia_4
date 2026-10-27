@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -141,6 +142,33 @@ PageBase {
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("vpn")
             onToggled: root.setToggleOn("vpn", checked)
+        }
+
+        // caelestia4: cards added here (end-4's sliders, the system card) and the quick toggles' saved layout
+        SectionHeader {
+            text: Tr.tr("More cards")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("System card")
+            subtext: Tr.tr("Uptime, reload, settings and session buttons")
+            checked: E4C.Config.options.caelestia.utilitiesSystem
+            onToggled: E4C.Config.options.caelestia.utilitiesSystem = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Volume, microphone and brightness sliders")
+            checked: E4C.Config.options.caelestia.utilitiesSliders
+            onToggled: E4C.Config.options.caelestia.utilitiesSliders = checked
+        }
+
+        RowButton {
+            last: true
+            icon: "restart_alt"
+            text: Tr.tr("Reset quick toggles")
+            subtext: Tr.tr("Order and visibility are edited in the drawer (pencil button). %1 saved").arg((E4C.Config.options.caelestia.quickToggles ?? []).length)
+            onClicked: E4C.Config.options.caelestia.quickToggles = []
         }
     }
 }

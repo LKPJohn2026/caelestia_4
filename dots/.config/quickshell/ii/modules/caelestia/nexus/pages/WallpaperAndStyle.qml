@@ -12,11 +12,80 @@ import qs.modules.caelestia.components.widgets
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus.common
 import qs.modules.common as E4C // caelestia4: keep (end-4's transparency follows this toggle)
+import qs.services as E4 // caelestia4: keep (HyprlandData: the largest monitor, for random wallpapers)
+import Quickshell
+import Quickshell.Io
 
 PageBase {
     id: root
 
     title: Tr.tr("Wallpaper & style")
+
+    // caelestia4: random wallpaper from the internet (scripts/caelestia4/random-wallpaper.sh), as end-4's Settings app
+    // (Appearance): a source, and "at least my screen size" / "my screen's shape" from the largest monitor
+    readonly property var rw: E4C.Config.options.caelestia.randomWallpaper
+    readonly property var biggestScreen: (E4.HyprlandData.monitors ?? []).reduce((best, m) => (m.width * m.height > best.w * best.h ? {
+                w: m.width,
+                h: m.height
+            } : best), {
+        w: 0,
+        h: 0
+    })
+    readonly property string screenRatio: {
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        const w = biggestScreen.w, h = biggestScreen.h;
+        return w > 0 ? `${w / gcd(w, h)}:${h / gcd(w, h)}` : "";
+    }
+    // Anime sources only while the Anime tab is shown (Panels > Assistant)
+    readonly property list<MenuItem> randomSourceItems: [
+        MenuItem {
+            text: Tr.tr("Wallhaven (general & anime)")
+            value: "wallhaven"
+        },
+        MenuItem {
+            text: Tr.tr("Konachan (anime)")
+            value: "konachan"
+        },
+        MenuItem {
+            text: Tr.tr("yande.re (anime)")
+            value: "yandere"
+        }
+    ]
+    readonly property list<MenuItem> shownSourceItems: E4C.Config.options.policies.weeb === 1 ? randomSourceItems : [randomSourceItems[0]]
+
+    readonly property list<MenuItem> placementItems: [
+        MenuItem {
+            text: Tr.tr("Free")
+            value: "free"
+        },
+        MenuItem {
+            text: Tr.tr("Least busy")
+            value: "leastBusy"
+        },
+        MenuItem {
+            text: Tr.tr("Most busy")
+            value: "mostBusy"
+        }
+    ]
+
+    function fetchRandom(): void {
+        const source = shownSourceItems.some(i => i.value === rw.source) ? rw.source : "wallhaven";
+        const known = biggestScreen.w > 0;
+        const size = rw.matchScreen && known ? [String(biggestScreen.w), String(biggestScreen.h)] : ["0", "0"];
+        const shape = rw.preferScreenRatio && known ? [String(biggestScreen.w), String(biggestScreen.h)] : [];
+        randomWallProc.command = [Quickshell.shellPath("scripts/caelestia4/random-wallpaper.sh"), source, ...size, ...shape];
+        randomWallProc.status = "";
+        randomWallProc.running = true;
+    }
+
+    // A property: PageBase's default property takes the page's one content item
+    readonly property Process randomWallProc: Process {
+        property string status
+
+        stdout: SplitParser {
+            onRead: data => root.randomWallProc.status = data.trim()
+        }
+    }
 
     // caelestia4: one clock on the desktop: Caelestia's (background.desktopClock) or end-4's cookie / digital clock
     // (background widgets), as in end-4's Settings app (Desktop)
@@ -495,6 +564,60 @@ PageBase {
             }
         }
 
+        // caelestia4: what follows the colours, and the terminal palette (end-4's colour pipeline, fed by scheme.py bridge)
+        SectionHeader {
+            text: Tr.tr("What gets coloured")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Colour the shell")
+            subtext: Tr.tr("Panels, launcher and widgets follow the wallpaper")
+            checked: E4C.Config.options.appearance.wallpaperTheming.enableAppsAndShell
+            onToggled: E4C.Config.options.appearance.wallpaperTheming.enableAppsAndShell = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Colour Qt and KDE apps")
+            checked: E4C.Config.options.appearance.wallpaperTheming.enableQtApps
+            onToggled: E4C.Config.options.appearance.wallpaperTheming.enableQtApps = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Colour terminals")
+            subtext: Tr.tr("kitty and other terminals use the wallpaper colours")
+            checked: E4C.Config.options.appearance.wallpaperTheming.enableTerminal
+            onToggled: E4C.Config.options.appearance.wallpaperTheming.enableTerminal = checked
+        }
+
+        ToggleRow {
+            disabled: !E4C.Config.options.appearance.wallpaperTheming.enableTerminal
+            text: Tr.tr("Always dark terminal")
+            subtext: Tr.tr("Even when the shell is in light mode")
+            checked: E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode
+            onToggled: E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode = checked
+        }
+
+        StepperRow {
+            enabled: E4C.Config.options.appearance.wallpaperTheming.enableTerminal
+            label: Tr.tr("Colour harmony (%)")
+            subtext: Tr.tr("How much terminal colours lean towards the wallpaper colour")
+            value: Math.round(E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.harmony * 100)
+            from: 0
+            to: 100
+            onMoved: v => E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.harmony = v / 100
+        }
+
+        StepperRow {
+            last: true
+            enabled: E4C.Config.options.appearance.wallpaperTheming.enableTerminal
+            label: Tr.tr("Text brightness boost (%)")
+            value: Math.round(E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.termFgBoost * 100)
+            from: 0
+            to: 100
+            onMoved: v => E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.termFgBoost = v / 100
+        }
+
         // caelestia4: the folder the launcher, this page and end-4's wallpaper selector list (paths.wallpaperDir)
         SectionHeader {
             text: Tr.tr("Wallpaper folder")
@@ -502,7 +625,6 @@ PageBase {
 
         TextFieldRow {
             first: true
-            last: true
             label: Tr.tr("Folder")
             subtext: Tr.tr("~ = your home folder")
             value: GlobalConfig.paths.wallpaperDir
@@ -510,6 +632,50 @@ PageBase {
                 if (v.trim())
                     GlobalConfig.paths.wallpaperDir = v.trim();
             }
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Use the system file picker")
+            subtext: Tr.tr("end-4's wallpaper selector (Ctrl+Super+T) opens the desktop's file dialog instead of its own browser")
+            checked: E4C.Config.options.wallpaperSelector.useSystemFileDialog
+            onToggled: E4C.Config.options.wallpaperSelector.useSystemFileDialog = checked
+        }
+
+        SectionHeader {
+            text: Tr.tr("Random wallpaper from the internet")
+        }
+
+        SelectRow {
+            first: true
+            label: Tr.tr("Source")
+            subtext: Tr.tr("Anime sources appear when the Anime tab is shown (Panels > Assistant)")
+            menuItems: root.shownSourceItems
+            active: root.shownSourceItems.find(i => i.value === root.rw.source) ?? root.shownSourceItems[0]
+            onSelected: item => root.rw.source = item.value
+        }
+
+        ToggleRow {
+            text: Tr.tr("Only wallpapers that fill my screen")
+            subtext: root.biggestScreen.w > 0 ? Tr.tr("At least %1 × %2, your largest monitor").arg(root.biggestScreen.w).arg(root.biggestScreen.h) : Tr.tr("At least your monitor's resolution")
+            checked: root.rw.matchScreen
+            onToggled: root.rw.matchScreen = checked
+        }
+
+        ToggleRow {
+            text: root.screenRatio ? Tr.tr("Prefer my screen's shape (%1)").arg(root.screenRatio) : Tr.tr("Prefer my screen's shape")
+            subtext: Tr.tr("Wallpapers with the same aspect ratio as your largest monitor come first, then the closest shape, so less gets cropped")
+            checked: root.rw.preferScreenRatio
+            onToggled: root.rw.preferScreenRatio = checked
+        }
+
+        RowButton {
+            last: true
+            disabled: root.randomWallProc.running
+            icon: root.randomWallProc.running ? "hourglass_top" : "cloud_download"
+            text: root.randomWallProc.running ? Tr.tr("Working…") : Tr.tr("Get one")
+            subtext: root.randomWallProc.status || Tr.tr("Saved to Wallpapers in your Pictures folder; colours follow")
+            onClicked: root.fetchRandom()
         }
 
         // caelestia4: Caelestia's audio visualiser on the desktop (background.visualiser)
@@ -567,7 +733,7 @@ PageBase {
 
         SelectRow {
             first: true
-            last: root.desktopClock !== "caelestia"
+            last: root.desktopClock === "none"
             label: Tr.tr("Desktop clock")
             menuItems: root.clockItems
             active: root.clockItems.find(i => i.value === root.desktopClock) ?? null
@@ -614,6 +780,99 @@ PageBase {
             text: Tr.tr("Background behind it")
             checked: Config.background.desktopClock.background.enabled
             onToggled: GlobalConfig.background.desktopClock.background.enabled = checked
+        }
+
+        // end-4's cookie / digital clock (background widgets)
+        SelectRow {
+            visible: root.desktopClock === "cookie" || root.desktopClock === "digital"
+            last: root.desktopClock === "digital"
+            label: Tr.tr("Clock placement")
+            subtext: Tr.tr("Free: drag it on the desktop. Otherwise it moves to the calmest (or busiest) part of the wallpaper")
+            menuItems: root.placementItems
+            active: root.placementItems.find(i => i.value === E4C.Config.options.background.widgets.clock.placementStrategy) ?? null
+            onSelected: item => E4C.Config.options.background.widgets.clock.placementStrategy = item.value
+        }
+
+        ToggleRow {
+            visible: root.desktopClock === "cookie"
+            text: Tr.tr("Quote under the cookie clock")
+            checked: E4C.Config.options.background.widgets.clock.quote.enable
+            onToggled: E4C.Config.options.background.widgets.clock.quote.enable = checked
+        }
+
+        TextFieldRow {
+            visible: root.desktopClock === "cookie"
+            last: true
+            enabled: E4C.Config.options.background.widgets.clock.quote.enable
+            label: Tr.tr("Quote")
+            placeholderText: Tr.tr("Your quote")
+            value: E4C.Config.options.background.widgets.clock.quote.text
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.background.widgets.clock.quote.text = v;
+            }
+        }
+
+        SectionHeader {
+            text: Tr.tr("Weather widget")
+        }
+
+        ToggleRow {
+            first: true
+            last: !E4C.Config.options.background.widgets.weather.enable
+            text: Tr.tr("Weather widget")
+            subtext: Tr.tr("end-4's weather card, separate from the clock; drag it when its placement is free")
+            checked: E4C.Config.options.background.widgets.weather.enable
+            onToggled: E4C.Config.options.background.widgets.weather.enable = checked
+        }
+
+        SelectRow {
+            visible: E4C.Config.options.background.widgets.weather.enable
+            last: true
+            label: Tr.tr("Weather placement")
+            menuItems: root.placementItems
+            active: root.placementItems.find(i => i.value === E4C.Config.options.background.widgets.weather.placementStrategy) ?? null
+            onSelected: item => E4C.Config.options.background.widgets.weather.placementStrategy = item.value
+        }
+
+        SectionHeader {
+            text: Tr.tr("Wallpaper parallax")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Move the wallpaper with workspaces")
+            subtext: Tr.tr("The wallpaper is zoomed in a little and slides as you switch workspaces")
+            checked: E4C.Config.options.background.parallax.enableWorkspace
+            onToggled: E4C.Config.options.background.parallax.enableWorkspace = checked
+        }
+
+        ToggleRow {
+            disabled: !E4C.Config.options.background.parallax.enableWorkspace
+            text: Tr.tr("Slide vertically")
+            checked: E4C.Config.options.background.parallax.vertical
+            onToggled: E4C.Config.options.background.parallax.vertical = checked
+        }
+
+        StepperRow {
+            enabled: E4C.Config.options.background.parallax.enableWorkspace
+            label: Tr.tr("Zoom (%)")
+            value: Math.round(E4C.Config.options.background.parallax.workspaceZoom * 100)
+            from: 101
+            to: 150
+            onMoved: v => E4C.Config.options.background.parallax.workspaceZoom = v / 100
+        }
+
+        StepperRow {
+            last: true
+            enabled: E4C.Config.options.background.parallax.enableWorkspace
+            label: Tr.tr("Widget movement (%)")
+            subtext: Tr.tr("How far the desktop widgets move compared with the wallpaper")
+            value: Math.round(E4C.Config.options.background.parallax.widgetsFactor * 100)
+            from: 0
+            to: 200
+            stepSize: 10
+            onMoved: v => E4C.Config.options.background.parallax.widgetsFactor = v / 100
         }
     }
 }

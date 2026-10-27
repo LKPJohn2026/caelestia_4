@@ -3418,3 +3418,512 @@ msgstr "Hẹn giờ khi rảnh, màn hình khoá, pin"
 
 msgid "Windows, keyboard, mouse, rendering"
 msgstr "Cửa sổ, bàn phím, chuột, kết xuất"
+
+# caelestia4: Nexus step 4 (the rest of end-4 Settings: assistant, dock, overview, cheatsheet, launcher search,
+# services, sound, games, wallpaper extras)
+msgid "Task manager"
+msgstr "Trình quản lý tác vụ"
+
+msgid "Session menu and Ctrl+Shift+Esc"
+msgstr "Menu phiên và Ctrl+Shift+Esc"
+
+msgid "Hearing protection"
+msgstr "Bảo vệ thính giác"
+
+msgid "Block sudden loud jumps"
+msgstr "Chặn âm lượng tăng đột ngột"
+
+msgid "Undo volume changes that are too big or go over the limit, whoever makes them"
+msgstr "Hoàn tác thay đổi âm lượng quá lớn hoặc vượt giới hạn, dù ai gây ra"
+
+msgid "Largest allowed jump (%)"
+msgstr "Mức tăng lớn nhất cho phép (%)"
+
+msgid "Volume limit (%)"
+msgstr "Giới hạn âm lượng (%)"
+
+msgid "System sounds"
+msgstr "Âm thanh hệ thống"
+
+msgid "Battery warnings"
+msgstr "Cảnh báo pin"
+
+msgid "Timer and Pomodoro"
+msgstr "Hẹn giờ và Pomodoro"
+
+msgid "Games in the background"
+msgstr "Game chạy nền"
+
+msgid "Mute games while in the background"
+msgstr "Tắt tiếng game khi chạy nền"
+
+msgid "A game's sound stops when you switch away and comes back when you click into it"
+msgstr "Âm thanh của game tắt khi bạn chuyển sang cửa sổ khác và bật lại khi bạn bấm vào game"
+
+msgid "Which windows are games"
+msgstr "Cửa sổ nào là game"
+
+msgid "Window class pattern (regex). Steam/Proton games are steam_app_<id>"
+msgstr "Mẫu lớp cửa sổ (regex). Game Steam/Proton là steam_app_<id>"
+
+msgid "Frame rate in the background (fps)"
+msgstr "Tốc độ khung hình khi chạy nền (fps)"
+
+msgid "For games kept running while you use another window"
+msgstr "Cho game vẫn chạy khi bạn dùng cửa sổ khác"
+
+msgid "Automatic (system)"
+msgstr "Tự động (hệ thống)"
+
+msgid "More"
+msgstr "Thêm"
+
+msgid "Weather location"
+msgstr "Vị trí thời tiết"
+
+msgid "City name, or empty to detect it automatically"
+msgstr "Tên thành phố, để trống để tự phát hiện"
+
+msgid "Language of the end-4 parts"
+msgstr "Ngôn ngữ của phần end-4"
+
+msgid "For the settings app, AI chat and other end-4 parts"
+msgstr "Cho ứng dụng cài đặt, trò chuyện AI và các phần khác của end-4"
+
+msgid "Assistant"
+msgstr "Trợ lý"
+
+msgid "AI, anime tab, work safety"
+msgstr "AI, tab anime, an toàn nơi làm việc"
+
+msgid "Dock"
+msgstr "Dock"
+
+msgid "Overview & overlay"
+msgstr "Tổng quan & lớp phủ"
+
+msgid "Super+Tab, Alt+Tab, Super+G"
+msgstr "Super+Tab, Alt+Tab, Super+G"
+
+msgid "Keybind cheatsheet"
+msgstr "Bảng phím tắt"
+
+msgid "Screenshots & recording"
+msgstr "Chụp & ghi màn hình"
+
+msgid "Save screenshots to"
+msgstr "Lưu ảnh chụp vào"
+
+msgid "Empty: copy to the clipboard only"
+msgstr "Để trống: chỉ sao chép vào bộ nhớ tạm"
+
+msgid "Save recordings to"
+msgstr "Lưu bản ghi vào"
+
+msgid "Circle to search"
+msgstr "Khoanh để tìm kiếm"
+
+msgid "Google Lens starts with a freehand circle instead of a rectangle"
+msgstr "Google Lens bắt đầu bằng vòng khoanh tự do thay vì hình chữ nhật"
+
+msgid "Highlight windows to capture"
+msgstr "Tô sáng cửa sổ để chụp"
+
+msgid "Click a highlighted window to select it"
+msgstr "Bấm vào cửa sổ được tô sáng để chọn"
+
+msgid "Aim lines"
+msgstr "Đường ngắm"
+
+msgid "Music recognition"
+msgstr "Nhận diện nhạc"
+
+msgid "Give up after (seconds)"
+msgstr "Bỏ cuộc sau (giây)"
+
+msgid "Listen again every (seconds)"
+msgstr "Nghe lại sau mỗi (giây)"
+
+msgid "Advanced"
+msgstr "Nâng cao"
+
+msgid "CPU / memory refresh (ms)"
+msgstr "Tần suất cập nhật CPU / bộ nhớ (ms)"
+
+msgid "end-4's resource monitor (overlay, AI tools)"
+msgstr "Trình theo dõi tài nguyên của end-4 (lớp phủ, công cụ AI)"
+
+msgid "Web user agent"
+msgstr "User agent web"
+
+msgid "Sent to services that require one (image boards, weather)"
+msgstr "Gửi tới dịch vụ cần nó (bảng ảnh, thời tiết)"
+
+msgid "Shell settings (end-4 part)"
+msgstr "Cài đặt shell (phần end-4)"
+
+msgid "Panel settings (Caelestia part)"
+msgstr "Cài đặt bảng (phần Caelestia)"
+
+msgid "Your Hyprland config"
+msgstr "Cấu hình Hyprland của bạn"
+
+msgid "~/.config/hypr/custom: keybinds, rules, startup apps"
+msgstr "~/.config/hypr/custom: phím tắt, quy tắc, ứng dụng khởi động"
+
+msgid "Reset window, input and display options"
+msgstr "Đặt lại tùy chọn cửa sổ, nhập liệu và hiển thị"
+
+msgid "Undo the Hyprland and Display pages' changes (Hyprland's own config applies again)"
+msgstr "Hoàn tác thay đổi ở trang Hyprland và Màn hình (cấu hình Hyprland của bạn áp dụng lại)"
+
+msgid "Wallhaven (general & anime)"
+msgstr "Wallhaven (chung & anime)"
+
+msgid "Konachan (anime)"
+msgstr "Konachan (anime)"
+
+msgid "yande.re (anime)"
+msgstr "yande.re (anime)"
+
+msgid "Free"
+msgstr "Tự do"
+
+msgid "Least busy"
+msgstr "Ít bận nhất"
+
+msgid "Most busy"
+msgstr "Bận nhất"
+
+msgid "What gets coloured"
+msgstr "Những gì được tô màu"
+
+msgid "Colour the shell"
+msgstr "Tô màu shell"
+
+msgid "Panels, launcher and widgets follow the wallpaper"
+msgstr "Bảng, trình khởi chạy và tiện ích theo màu hình nền"
+
+msgid "Colour Qt and KDE apps"
+msgstr "Tô màu ứng dụng Qt và KDE"
+
+msgid "Colour terminals"
+msgstr "Tô màu terminal"
+
+msgid "kitty and other terminals use the wallpaper colours"
+msgstr "kitty và các terminal khác dùng màu hình nền"
+
+msgid "Always dark terminal"
+msgstr "Terminal luôn tối"
+
+msgid "Even when the shell is in light mode"
+msgstr "Kể cả khi shell ở chế độ sáng"
+
+msgid "Colour harmony (%)"
+msgstr "Độ hài hòa màu (%)"
+
+msgid "How much terminal colours lean towards the wallpaper colour"
+msgstr "Mức màu terminal ngả theo màu hình nền"
+
+msgid "Text brightness boost (%)"
+msgstr "Tăng độ sáng chữ (%)"
+
+msgid "Use the system file picker"
+msgstr "Dùng hộp thoại chọn tệp của hệ thống"
+
+msgid "end-4's wallpaper selector (Ctrl+Super+T) opens the desktop's file dialog instead of its own browser"
+msgstr "Trình chọn hình nền của end-4 (Ctrl+Super+T) mở hộp thoại chọn tệp của hệ thống thay cho trình duyệt riêng"
+
+msgid "Random wallpaper from the internet"
+msgstr "Hình nền ngẫu nhiên từ internet"
+
+msgid "Source"
+msgstr "Nguồn"
+
+msgid "Anime sources appear when the Anime tab is shown (Panels > Assistant)"
+msgstr "Nguồn anime hiện khi tab Anime đang hiện (Bảng > Trợ lý)"
+
+msgid "Only wallpapers that fill my screen"
+msgstr "Chỉ hình nền lấp đầy màn hình của tôi"
+
+msgid "At least %1 × %2, your largest monitor"
+msgstr "Ít nhất %1 × %2, màn hình lớn nhất của bạn"
+
+msgid "At least your monitor's resolution"
+msgstr "Ít nhất bằng độ phân giải màn hình của bạn"
+
+msgid "Prefer my screen's shape (%1)"
+msgstr "Ưu tiên tỉ lệ màn hình của tôi (%1)"
+
+msgid "Prefer my screen's shape"
+msgstr "Ưu tiên tỉ lệ màn hình của tôi"
+
+msgid "Wallpapers with the same aspect ratio as your largest monitor come first, then the closest shape, so less gets cropped"
+msgstr "Hình nền cùng tỉ lệ với màn hình lớn nhất của bạn được ưu tiên trước, rồi đến tỉ lệ gần nhất, để bị cắt ít hơn"
+
+msgid "Working…"
+msgstr "Đang xử lý…"
+
+msgid "Get one"
+msgstr "Lấy một hình"
+
+msgid "Saved to Wallpapers in your Pictures folder; colours follow"
+msgstr "Lưu vào Wallpapers trong thư mục Ảnh; màu sắc đổi theo"
+
+msgid "Clock placement"
+msgstr "Vị trí đồng hồ"
+
+msgid "Free: drag it on the desktop. Otherwise it moves to the calmest (or busiest) part of the wallpaper"
+msgstr "Tự do: kéo trên màn hình nền. Còn lại: tự chuyển tới vùng ít (hoặc nhiều) chi tiết nhất của hình nền"
+
+msgid "Quote under the cookie clock"
+msgstr "Câu trích dẫn dưới đồng hồ cookie"
+
+msgid "Quote"
+msgstr "Trích dẫn"
+
+msgid "Your quote"
+msgstr "Câu trích dẫn của bạn"
+
+msgid "Weather widget"
+msgstr "Widget thời tiết"
+
+msgid "end-4's weather card, separate from the clock; drag it when its placement is free"
+msgstr "Thẻ thời tiết của end-4, tách khỏi đồng hồ; kéo được khi vị trí là Tự do"
+
+msgid "Weather placement"
+msgstr "Vị trí thời tiết"
+
+msgid "Wallpaper parallax"
+msgstr "Hiệu ứng parallax (hình nền)"
+
+msgid "Move the wallpaper with workspaces"
+msgstr "Hình nền trượt theo không gian làm việc"
+
+msgid "The wallpaper is zoomed in a little and slides as you switch workspaces"
+msgstr "Hình nền được phóng to một chút và trượt khi chuyển không gian làm việc"
+
+msgid "Slide vertically"
+msgstr "Trượt theo chiều dọc"
+
+msgid "Zoom (%)"
+msgstr "Thu phóng (%)"
+
+msgid "Widget movement (%)"
+msgstr "Độ di chuyển của tiện ích (%)"
+
+msgid "How far the desktop widgets move compared with the wallpaper"
+msgstr "Các widget nền di chuyển bao xa so với hình nền"
+
+msgid "More tabs"
+msgstr "Thêm tab"
+
+msgid "To-do tab"
+msgstr "Thẻ việc cần làm"
+
+msgid "Timer tab"
+msgstr "Thẻ hẹn giờ"
+
+msgid "Pomodoro and stopwatch"
+msgstr "Pomodoro và bấm giờ"
+
+msgid "Search"
+msgstr "Tìm kiếm"
+
+msgid "Run command prefix"
+msgstr "Tiền tố chạy lệnh"
+
+msgid "Clipboard prefix"
+msgstr "Tiền tố bộ nhớ tạm"
+
+msgid "Emoji prefix"
+msgstr "Tiền tố biểu tượng cảm xúc"
+
+msgid "Calculator prefix"
+msgstr "Tiền tố máy tính"
+
+msgid "Web search address"
+msgstr "Địa chỉ tìm kiếm web"
+
+msgid "Your search text is added at the end"
+msgstr "Từ khóa tìm kiếm được thêm vào cuối"
+
+msgid "More cards"
+msgstr "Thêm thẻ"
+
+msgid "System card"
+msgstr "Thẻ hệ thống"
+
+msgid "Uptime, reload, settings and session buttons"
+msgstr "Nút thời gian chạy, tải lại, cài đặt và phiên"
+
+msgid "Volume, microphone and brightness sliders"
+msgstr "Thanh trượt âm lượng, micro và độ sáng"
+
+msgid "Reset quick toggles"
+msgstr "Đặt lại nút bật nhanh"
+
+msgid "Order and visibility are edited in the drawer (pencil button). %1 saved"
+msgstr "Thứ tự và hiển thị được sửa trong ngăn kéo (nút bút chì). Đã lưu %1"
+
+msgid "Shapes"
+msgstr "Hình dạng"
+
+msgid "Numbers"
+msgstr "Số"
+
+msgid "Icons"
+msgstr "Biểu tượng"
+
+msgid "Style"
+msgstr "Phong cách"
+
+msgid "Workspace style"
+msgstr "Kiểu không gian làm việc"
+
+msgid "Hold Super to show numbers after (ms)"
+msgstr "Giữ Super để hiện số sau (ms)"
+
+msgid "Workspace numbers appear while Super is held"
+msgstr "Số không gian làm việc hiện khi giữ Super"
+
+msgid "Clicking"
+msgstr "Khi bấm"
+
+msgid "Click runs the default action"
+msgstr "Bấm để chạy hành động mặc định"
+
+msgid "Off: clicking only expands the notification"
+msgstr "Tắt: bấm chỉ mở rộng thông báo"
+
+msgid "Yes"
+msgstr "Có"
+
+msgid "Local models only"
+msgstr "Chỉ model cục bộ"
+
+msgid "No"
+msgstr "Không"
+
+msgid "Tools (shell, settings)"
+msgstr "Công cụ (shell, cài đặt)"
+
+msgid "Web search"
+msgstr "Tìm kiếm web"
+
+msgid "Nothing"
+msgstr "Không có gì"
+
+msgid "Shown"
+msgstr "Hiện"
+
+msgid "Hidden tab"
+msgstr "Thẻ ẩn"
+
+msgid "AI assistant"
+msgstr "Trợ lý AI"
+
+msgid "Allow AI"
+msgstr "Cho phép AI"
+
+msgid "What the AI may use"
+msgstr "AI được phép dùng gì"
+
+msgid "Instructions for the AI"
+msgstr "Hướng dẫn cho AI"
+
+msgid "System prompt. {DISTRO}, {DE}, {DATETIME} and {WINDOWCLASS} are filled in"
+msgstr "Lời nhắc hệ thống. {DISTRO}, {DE}, {DATETIME} và {WINDOWCLASS} sẽ được điền vào"
+
+msgid "Content"
+msgstr "Giống gốc"
+
+msgid "Anime tab"
+msgstr "Thẻ Anime"
+
+msgid "Image boards in the assistant panel"
+msgstr "Bảng ảnh trong bảng trợ lý"
+
+msgid "Hide unsafe images in the clipboard"
+msgstr "Ẩn ảnh không an toàn trong bộ nhớ tạm"
+
+msgid "Images copied from adult or anime sites show blurred in clipboard history"
+msgstr "Ảnh sao chép từ trang người lớn hoặc anime hiện mờ trong lịch sử bộ nhớ tạm"
+
+msgid "Hide unsafe wallpapers"
+msgstr "Ẩn hình nền không an toàn"
+
+msgid "Blur wallpapers whose name suggests adult or anime content"
+msgstr "Làm mờ hình nền có tên gợi ý nội dung người lớn hoặc anime"
+
+msgid "Keys"
+msgstr "Phím"
+
+msgid "macOS-style key symbols"
+msgstr "Ký hiệu phím kiểu macOS"
+
+msgid "⌘ ⌥ ⇧ instead of Super, Alt, Shift"
+msgstr "⌘ ⌥ ⇧ thay cho Super, Alt, Shift"
+
+msgid "Symbols for function keys"
+msgstr "Ký hiệu cho phím chức năng"
+
+msgid "Symbols for mouse buttons"
+msgstr "Ký hiệu cho nút chuột"
+
+msgid "One key per box"
+msgstr "Mỗi phím một ô"
+
+msgid "Keep shown after login"
+msgstr "Vẫn hiện sau khi đăng nhập"
+
+msgid "Off: the dock stays hidden until you reveal it"
+msgstr "Tắt: dock ẩn cho đến khi bạn gọi nó ra"
+
+msgid "Reveal at the bottom edge"
+msgstr "Hiện ở mép dưới"
+
+msgid "Show on empty workspaces"
+msgstr "Hiện trên không gian làm việc trống"
+
+msgid "Icon size (px)"
+msgstr "Cỡ biểu tượng (px)"
+
+msgid "Pinned apps"
+msgstr "Ứng dụng đã ghim"
+
+msgid "App IDs, comma separated (e.g. atlas, kitty)"
+msgstr "ID ứng dụng, cách nhau bằng dấu phẩy (vd. atlas, kitty)"
+
+msgid "Workspace overview"
+msgstr "Tổng quan không gian làm việc"
+
+msgid "Rows"
+msgstr "Số hàng"
+
+msgid "Columns"
+msgstr "Số cột"
+
+msgid "Preview size (% of screen)"
+msgstr "Kích thước xem trước (% màn hình)"
+
+msgid "Alt+Tab skips empty workspaces"
+msgstr "Alt+Tab bỏ qua không gian làm việc trống"
+
+msgid "Hold Alt, press Tab to step through workspaces, release Alt to switch"
+msgstr "Giữ Alt, bấm Tab để duyệt qua các không gian làm việc, nhả Alt để chuyển"
+
+msgid "Overlay widgets (Super+G)"
+msgstr "Tiện ích lớp phủ (Super+G)"
+
+msgid "Darken the screen behind"
+msgstr "Làm tối màn hình phía sau"
+
+msgid "Zoom animation when opening"
+msgstr "Hiệu ứng phóng to khi mở"
+
+msgid "Crosshair code"
+msgstr "Mã tâm ngắm"
+
+msgid "In Valorant's format"
+msgstr "Theo định dạng của Valorant"
