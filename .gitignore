@@ -25,6 +25,8 @@ packaging/*/pkg/
 packaging/*/*.pkg.tar.*
 packaging/*/*.log
 packaging/caelestia4-quickshell/quickshell/
+packaging/caelestia4-atlas/atlas/
+packaging/caelestia4-wormhole/wormhole/
 sdata/dist-arch/*/src/
 sdata/dist-arch/*/pkg/
 sdata/dist-arch/*/*.pkg.tar.*
