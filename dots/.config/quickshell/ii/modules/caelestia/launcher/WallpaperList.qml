@@ -4,8 +4,10 @@ import "items"
 import QtQuick
 import Quickshell
 import Caelestia.Config
+import Caelestia.Models
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
+import qs.modules.caelestia.utils
 
 PathView {
     id: root
@@ -15,10 +17,13 @@ PathView {
     required property var panels
     required property var content
 
+    // caelestia4 (upstream #2135): the folder being browsed; a search looks through every folder
+    property string currentDir: Paths.wallsdir
+    readonly property ShellScreen launcherScreen: (QsWindow.window as QsWindow)?.screen ?? null // upstream #2210
     readonly property int itemWidth: Tokens.sizes.launcher.wallpaperWidth * 0.8 + Tokens.padding.medium * 2
 
     readonly property int numItems: {
-        const screen = (QsWindow.window as QsWindow)?.screen;
+        const screen = launcherScreen;
         if (!screen)
             return 0;
 
@@ -44,20 +49,73 @@ PathView {
         return visible;
     }
 
+    function navigateTo(path: string): void {
+        if (path !== Paths.wallsdir && !path.startsWith(`${Paths.wallsdir}/`))
+            return;
+        currentDir = path; // the list's new values pick the card
+    }
+
+    // Enter and clicks: open a folder, or set the wallpaper
+    function activateEntry(entry: var): void {
+        if (entry.isDir) {
+            navigateTo(entry.path);
+            return;
+        }
+        // Hold the colours this card previews until end-4's arrive, so the old scheme doesn't flash in between
+        if (Colours.scheme === "dynamic" && entry.path === Wallpapers.previewPath && entry.path !== Wallpapers.actualCurrent)
+            Wallpapers.previewColourLock = true;
+        Wallpapers.setWallpaper(entry.path);
+        screenState.launcher = false;
+    }
+
+    function activateCurrent(): void {
+        if (currentItem)
+            activateEntry((currentItem as WallpaperItem).modelData);
+    }
+
+    // On the card of what this screen shows (upstream #2210), else the first entry after ".."
+    function resetSelection(): void {
+        const values = scriptModel.values;
+        const wallpaper = Wallpapers.actualForScreen(launcherScreen);
+        const index = scriptModel.search ? -1 : values.findIndex(w => w.path === wallpaper);
+        currentIndex = index >= 0 ? index : (values[0]?.isParent && values.length > 1 ? 1 : 0);
+    }
+
     model: ScriptModel {
         id: scriptModel
 
         readonly property string search: root.search.text.split(" ").slice(1).join(" ")
 
-        values: Wallpapers.query(search)
-        onValuesChanged: root.currentIndex = search ? 0 : values.findIndex(w => w.path === Wallpapers.actualCurrent)
+        values: {
+            if (search)
+                return Wallpapers.query(search);
+
+            const parentEntry = root.currentDir === Paths.wallsdir ? [] : [
+                {
+                    path: root.currentDir.slice(0, root.currentDir.lastIndexOf("/")),
+                    relativePath: "..",
+                    name: "..",
+                    isDir: true,
+                    isParent: true
+                }
+            ];
+            return [...parentEntry, ...folders.entries, ...Wallpapers.list.filter(w => w.parentDir === root.currentDir)];
+        }
+        onValuesChanged: root.resetSelection()
     }
 
-    Component.onCompleted: currentIndex = Wallpapers.list.findIndex(w => w.path === Wallpapers.actualCurrent)
+    // Open in the folder of what this screen shows; completing under an asynchronous Loader resets the index to 0
+    Component.onCompleted: {
+        const wallpaper = Wallpapers.actualForScreen(launcherScreen);
+        const dir = wallpaper.slice(0, wallpaper.lastIndexOf("/"));
+        if (dir.startsWith(`${Paths.wallsdir}/`))
+            currentDir = dir;
+        resetSelection();
+    }
     Component.onDestruction: Wallpapers.stopPreview()
 
     onCurrentItemChanged: {
-        if (currentItem)
+        if (currentItem && !(currentItem as WallpaperItem).modelData.isDir)
             Wallpapers.preview((currentItem as WallpaperItem).modelData.path);
     }
 
@@ -71,7 +129,7 @@ PathView {
     highlightRangeMode: PathView.StrictlyEnforceRange
 
     delegate: WallpaperItem {
-        screenState: root.screenState
+        wallpaperList: root
     }
 
     path: Path {
@@ -104,5 +162,13 @@ PathView {
         }
 
         anchors.fill: parent
+    }
+
+    // Folders of the one being browsed (hidden ones such as .git left out)
+    FileSystemModel {
+        id: folders
+
+        path: root.currentDir
+        filter: FileSystemModel.Dirs
     }
 }

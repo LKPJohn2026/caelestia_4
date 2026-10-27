@@ -25,7 +25,8 @@ Variants {
         name: "background"
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
         // caelestia4: while a video wallpaper plays (mpvpaper, background layer), sit above it and stay transparent
-        readonly property bool videoShowing: Wallpapers.videoPlaying && !Wallpapers.showPreview
+        // (unless this screen's workspace has a still of its own, upstream #2210)
+        readonly property bool videoShowing: Wallpapers.videoShowingOn(modelData)
         WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled && !videoShowing ? WlrLayer.Background : WlrLayer.Bottom
         color: contentItem.Config.background.wallpaperEnabled && !videoShowing ? "black" : "transparent"
         surfaceFormat.opaque: false
