@@ -61,7 +61,7 @@ Status legend:
 |---|---|---|
 | App search with frequency ranking | ✅ C | apps launched as their own uwsm units |
 | Actions (`>`): wallpaper, random, settings, variant… | ✅ C | `>scheme` lists the preset schemes (utils/scripts/scheme.py instead of the CLI) |
-| Calculator (`=`), emoji (`:`), clipboard (`;`) | ✅ C | clipboard from end-4's cliphist |
+| Calculator (`=`), emoji (`:`), clipboard (`;`) | ✅ C | clipboard from end-4's cliphist, with favourites (end-4 PR #3716) |
 | Run commands (`$`) in a terminal | ✅ C | via uwsm -T |
 | Web search (`?`) | ✅ C | |
 | Wallpaper picker with live preview | ✅ C | folders (upstream PR #2135); image and colour preview: utils/scripts/wallpreview.sh (matugen dry run, end-4's colour style incl. auto) fills Colours.preview; picking keeps it until end-4's colours arrive. Not for video wallpapers |
@@ -173,7 +173,7 @@ Status legend:
 | On-screen display | 🔁 Equivalent | Caelestia OSD |
 | On-screen keyboard | ✅ E→C | |
 | Overlay widgets (Super+G): crosshair, FPS limiter, floating image, notes, recorder, resources, volume mixer | ✅ E→C | |
-| Workspace overview | ✅ E→C | + Windows-style Alt+Tab |
+| Workspace overview | ✅ E→C | + Windows-style Alt+Tab; Super+Tab is a window switcher (end-4 PR #3693) |
 | Polkit dialog | ✅ E→C | |
 | Region selector: screenshot, Google Lens, OCR, record, circle-to-search, annotate | ✅ E→C | |
 | Screen translator | ✅ E→C | |
@@ -299,8 +299,13 @@ Third review 2026-10-27: no new commits in end-4, the Caelestia shell, dotfiles 
   dialogs to 60% x 65%; KDE's picker is the fallback here, Wormhole's comes first)
 - #3712 the way it applies here: XDG_DATA_DIRS doesn't grow on reloads (set once per session in
   uwsm/env-hyprland), but each system dir was in it twice; env-hyprland now drops duplicates (from the next login)
-- Features: #3693 (Alt+Tab between windows; Alt+Tab here moves between workspaces), #3716 (pinned clipboard
-  entries; the launcher's `;` reads end-4's cliphist)
+- #3693 as a Super+Tab window switcher in Caelestia style (windowSwitcher/WindowSwitcher.qml): hold Super, Tab /
+  Shift+Tab step through every workspace's windows (live previews, the workspace's name on others), release Super
+  to switch; it opens on the previous window. Alt+Tab stays the workspace switcher; Super+Tab no longer opens the
+  overview (4-finger swipe and `qs ipc call search toggle` still do)
+- #3716: clipboard favourites (end-4's Cliphist, `~/.cache/cliphist/fav.db`): the launcher's `;` rows show their
+  actions as buttons on the selected or hovered row (pin / unpin, copy, delete); favourites stay at the end and
+  `;#fav` lists only them. No error before the first pin (the PR logs one on every refresh)
 - Don't apply: #3720 (startup speed: only the Caelestia family loads here, the config is read in under 1 s),
   #3714 (802.1X Wi-Fi: no Wi-Fi on this machine), #3718 (Super+P projector flyout: one monitor, Nexus > Display)
 

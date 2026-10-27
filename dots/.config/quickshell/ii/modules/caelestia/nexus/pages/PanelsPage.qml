@@ -68,7 +68,7 @@ PageBase {
         NavRow {
             icon: "grid_view"
             text: Tr.tr("Overview & overlay")
-            subtext: Tr.tr("Super+Tab, Alt+Tab, Super+G")
+            subtext: Tr.tr("Alt+Tab, Super+G")
             onClicked: root.nState.openSubPage(16)
         }
 
