@@ -1,4 +1,4 @@
-# Feature comparison: Caelestia vs end-4 vs caelestia_4 (2026-10-13, reviewed 2026-10-14)
+# Feature comparison: Caelestia vs end-4 vs caelestia_4 (2026-10-13, reviewed 2026-10-27)
 
 Upstreams checked (fresh clones, not the local copies):
 - end-4/dots-hyprland `2f2a376` (2026-10-11): ii family + Waffle family, services, Hyprland config, keybinds
@@ -6,8 +6,8 @@ Upstreams checked (fresh clones, not the local copies):
 - caelestia-dots/caelestia `f4bb062` (2026-10-13): dotfiles (Hyprland, app themes, uwsm)
 - caelestia-dots/cli `289e208` (2026-10-13): the `caelestia` command
 
-caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-24). Caelestia shell is vendored at
-`2e1c51fa` (2026-10-24, upstream main: 0 commits ahead); caelestia-cli is the AUR 1.1.3 release. Since 29fcf69a: sidebar
+caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-27). Caelestia shell is vendored at
+`4b1dae84` (2026-10-25, upstream main: 0 commits ahead); caelestia-cli is `5e804b1` (packaging/caelestia4-cli). Since 29fcf69a: sidebar
 hover fixes + Nexus "Show on hover", `caelestia:toggleDnd`, CachingImage → Visual (file dialog icons stay on
 Quickshell's IconImage), video previews play on hover, the plugin unloads idle media players. Equivalent: upstream's
 Super+Shift+number silent move is Super+Alt+number here.
@@ -122,6 +122,9 @@ Status legend:
 | Notifications settings | ✅ C | Caelestia popups / toasts; end-4 settings keep its own options |
 | Language & region | ✅ C | UI language here is the Caelestia part only; end-4 text follows Settings > Apps > Language |
 | About | ✅ C | |
+| Updates (upstream: placeholder) | ✅ added | Arch repo + AUR packages and new caelestia_4 commits (system.py); same data as the bar's updates icon and popout |
+| Plugins (upstream: placeholder) | ✅ added | Quickshell, the Caelestia plugin and Hyprland plugins: versions, the Qt each was built with, rebuild needed |
+| Hyprland (not in upstream) | ✅ added | input, cursor, rendering, window options (end-4's shell overrides); Super+S close-any switch (upstream dots b476a36) |
 
 ---
 
@@ -143,6 +146,8 @@ Status legend:
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
 | App themes: foot, fish, starship, fastfetch, btop | ✅ | foot, fish, starship themed; btop + fastfetch now too (apptheme.py) |
+| File manager: Thunar (manifest component) | ✅ 2026-10-27 | Atlas (AstraSuite, Caelestia's tokens, colours from scheme.json; `packaging/caelestia4-atlas`) opens folders, Super+E, Caelestia `apps.explorer`, dock pins; Thunar stays as the fallback |
+| Open / Save dialogs (Caelestia: whatever portal the desktop has) | ✅ 2026-10-27 | Wormhole's FileChooser (`packaging/caelestia4-wormhole`) in the Hyprland session, KDE's as the fallback. Only that interface: Wormhole's Inhibit / GlobalShortcuts are stubs and its Camera grants access without asking; Background / Clipboard / Usb / Wallpaper are pinned to kde so its UseIn key doesn't pick them |
 | App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ✅ partly | apptheme.py after every colour change: btop, cava, Zed, Zen, Brave, Cursor/VS Code/VSCodium (scheme.json), Thunar (gtk-3.0/thunar.css), Spotify (spicetify color.ini, live via `spicetify watch -s`), nvim (colorscheme watches scheme.json), micro ("simple" = terminal palette). Not here: Firefox (no profile yet) |
 
 ---
@@ -232,8 +237,9 @@ Still open (review 2026-10-22):
 1. ✅ 2026-10-22: **ClipRect everywhere** (upstream #2168; `StyledClippingRect` removed), session GIF only when set
    (#2166), and the clean upstream lint diffs since 21a75375 taken.
 2. ✅ (merged into 1)
-3. **caelestia-cli 1.1.3 lacks 858ecff**: a near-black wallpaper makes `caelestia wallpaper` fail (recursion in
-   score), so its colours wouldn't change. cli main also has video wallpapers (#183), unused here (thumbnails are passed).
+3. ✅ 2026-10-27, **caelestia-cli pinned at 5e804b1** (`packaging/caelestia4-cli`, 1.1.3 + 41): 858ecff (black
+   wallpapers), 679af94 (Hyprland socket replies decoded after joining chunks: multi-byte titles split across chunks
+   failed), the Discord theme's logo. Video wallpapers (#183) stay unused here (thumbnails are passed).
 4. ✅ 2026-10-22, **settings unified**: transparency is one switch (Nexus and Settings write both halves; on); the
    end-4 desktop weather widget reads Caelestia's weather (Settings > Apps > Weather); Nexus > Apps > Terminal sets
    ~/.config/xdg-terminals.list like Settings; Nexus > Services > Smart colour scheme works (on: a new wallpaper picks
@@ -243,6 +249,16 @@ Still open (review 2026-10-22):
 5. **App themes**: ✅ 2026-10-26 Discord (Vesktop) via caelestia-cli's Midnight theme (cli.json enableDiscord; enable it once
    in Vesktop > Settings > Themes) and Brave / Brave Origin's frame colour. Firefox still not themed.
 6. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
+7. **Upstream `refactor/adopt-lib`** (shell, 37 commits, not merged as of 2026-10-27): `Caelestia.Scheme` (C++ Colours
+   and Wallpapers, smart scheme in the shell, random wallpaper), a blur controller (`appearance.transparency.blurEnabled`
+   + Nexus switch), launcher wallpaper search, and `Caelestia.Images` removed for `VisualAnalyser`. When it merges the
+   Colours adapter's ImageAnalyser has to move to VisualAnalyser, and the colours could come from the shell instead of
+   the cli. Waiting for the merge: the branch's API still changes daily.
+
+Review 2026-10-27: end-4 main `2f2a376` (nothing new since 2026-10-11, merged), Caelestia shell `4b1dae84` (vendored,
+0 ahead), dotfiles `b476a36` (only specialWsCloseAny was new: ported), cli `5e804b1` (packaged). Every end-4 ii module
+has a Caelestia-style place here except ScreenCorners, covered by Caelestia's frame (rounded border; the sidebars open
+on hover; scrolling the bar sets volume / brightness).
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
