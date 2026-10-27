@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
@@ -40,6 +42,17 @@ PageBase {
             value: 2
         }
     ]
+
+    // caelestia4: while this file exists Super+S only toggles the scratchpad (hypr/hyprland/specialws.lua, upstream's
+    // specialWsCloseAny = false). A property: PageBase's default property takes the page's one content item
+    readonly property FileView scratchpadOnly: FileView {
+        property bool exists
+
+        path: `${Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config"}/caelestia4/special-ws-scratchpad-only`
+        printErrors: false
+        onLoaded: exists = true
+        onLoadFailed: exists = false
+    }
 
     title: Tr.tr("Hyprland")
 
@@ -133,10 +146,23 @@ PageBase {
 
         HyprToggleRow {
             first: true
-            last: true
             key: "misc:middle_click_paste"
             text: Tr.tr("Middle-click paste")
             subtext: Tr.tr("Paste the last selected text with the middle mouse button")
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Super+S closes any special workspace")
+            subtext: Tr.tr("Off: Super+S only shows or hides the scratchpad")
+            checked: !root.scratchpadOnly.exists
+            onToggled: {
+                if (checked)
+                    Quickshell.execDetached(["rm", "-f", root.scratchpadOnly.path]);
+                else
+                    Quickshell.execDetached(["sh", "-c", "mkdir -p \"$(dirname \"$1\")\" && touch \"$1\"", "sh", root.scratchpadOnly.path]);
+                root.scratchpadOnly.exists = !checked;
+            }
         }
     }
 }
