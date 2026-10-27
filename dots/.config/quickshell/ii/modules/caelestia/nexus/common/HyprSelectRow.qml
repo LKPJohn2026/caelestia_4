@@ -9,7 +9,10 @@ SelectRow {
 
     required property string key
 
-    active: menuItems.find(i => i.value == opt.value) ?? null // == : Hyprland reports ints, items may hold either
+    // == : Hyprland reports ints, items may hold either. An empty string option comes back as "[[EMPTY]]"
+    readonly property var current: opt.value === "[[EMPTY]]" ? "" : opt.value
+
+    active: menuItems.find(i => i.value == current) ?? null
     onSelected: item => E4.HyprlandConfig.set(root.key, item.value)
 
     E4H.HyprlandConfigOption {

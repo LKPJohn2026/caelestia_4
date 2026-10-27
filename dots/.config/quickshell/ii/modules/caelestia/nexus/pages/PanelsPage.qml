@@ -51,6 +51,13 @@ PageBase {
         }
 
         NavRow {
+            icon: "tune"
+            text: Tr.tr("On-screen display")
+            subtext: Config.osd.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
+            onClicked: root.nState.openSubPage(13)
+        }
+
+        NavRow {
             last: true
             icon: "power_settings_new"
             text: Tr.tr("Session menu")
