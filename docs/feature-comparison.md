@@ -287,7 +287,11 @@ Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes
 - shell #2135: folders in the launcher's wallpaper list (folders first, `..` back, hidden ones such as `.git` left
   out); it opens in the folder of what the screen shows. Unlike the PR, a search still looks through every folder
 
-Feature PR worth a look once merged: dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
+- dots #484: media seek keys, Super+Shift+, / . (5 s) and Ctrl+Super+Shift+, / . (10 s), locked and repeating. The
+  PR only binds `caelestia:mediaSeek*` (its key variables are undefined and the shell has no such shortcuts), so the
+  four shortcuts are added here too (Players adapter, MPRIS `seek()`)
+
+Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
