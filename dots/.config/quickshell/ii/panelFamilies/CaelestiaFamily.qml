@@ -2,7 +2,7 @@
 //  - Caelestia design: frame + bar + all drawers (dashboard, launcher, notifications, OSD, session,
 //    sidebar, utilities, popouts, toasts) and the background, running on end-4 services via adapters.
 //  - Launcher = Caelestia launcher + end-4 LauncherSearch (Phase 5 merge); Overview (modules/caelestia/overview) = end-4's
-//    workspace grid in Caelestia style, Super+Tab and Windows-style Alt+Tab.
+//    workspace grid in Caelestia style on Windows-style Alt+Tab; Super+Tab is the window switcher (windowSwitcher).
 //  - Assistant drawer (assistant/Wrapper.qml) hosts end-4's left-sidebar content (AI, translator) in the frame.
 //  - end-4 modules reused as-is (re-skinned in Phase 7): overlay, wallpaper selector, lock.
 //  - Dock (modules/caelestia/dock): Caelestia-style dock with end-4's dock features (caelestia.dock.enable).
@@ -18,6 +18,7 @@ import qs.modules.caelestia.dock as CDock
 import qs.modules.caelestia.osk as COsk
 import qs.modules.caelestia.cheatsheet as CCheatsheet
 import qs.modules.caelestia.overview as COverview
+import qs.modules.caelestia.windowSwitcher as CWindowSwitcher
 import qs.modules.caelestia.polkit as CPolkit
 import qs.modules.caelestia.regionSelector as CRegion
 import qs.modules.caelestia.screenTranslator as CTranslator
@@ -36,7 +37,8 @@ Scope {
     PanelLoader { component: BatteryMonitor {} }
     PanelLoader { component: KeybindBridge {} }
     PanelLoader { component: BackgroundMute {} } // mute games while unfocused (caelestia.backgroundMute)
-    PanelLoader { component: COverview.Overview {} } // workspaces grid, Super+Tab / Alt+Tab (end-4 data, Caelestia style)
+    PanelLoader { component: COverview.Overview {} } // workspaces grid on Alt+Tab (end-4 data, Caelestia style)
+    PanelLoader { component: CWindowSwitcher.WindowSwitcher {} } // Super+Tab window switcher (end-4 PR #3693, Caelestia style)
     PanelLoader { extraCondition: Config.options.caelestia.dock.enable; component: CDock.Dock {} }
     PanelLoader { component: COsk.Osk {} } // on-screen keyboard (end-4 logic, Caelestia style)
     PanelLoader { component: CRegion.RegionSelector {} } // screenshot / Lens / OCR / record (end-4 logic, Caelestia style)

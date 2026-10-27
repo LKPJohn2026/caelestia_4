@@ -23,8 +23,8 @@ import qs.modules.caelestia.adapters
 // middle-click a window to close it.
 //
 // Two ways in:
-//  - Super+Tab (overviewWorkspacesToggle): opens/closes it. Arrows move the selection, Tab/Shift+Tab cycle,
-//    Enter switches, Esc closes.
+//  - overviewWorkspacesToggle (4-finger swipe up / down, `qs ipc call search toggle`; Super+Tab is the window
+//    switcher now): opens/closes it. Arrows move the selection, Tab/Shift+Tab cycle, Enter switches, Esc closes.
 //  - Alt+Tab, Windows-style (overviewAltTabNext / overviewAltTabPrev / overviewAltTabCommit): the first Alt+Tab
 //    opens it with the next workspace selected; each further Tab (Alt still held) moves to the next workspace in
 //    order (Shift+Tab: previous); releasing Alt switches to the selected one. Esc while holding Alt cancels.
