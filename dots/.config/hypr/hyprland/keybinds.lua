@@ -47,6 +47,9 @@ hl.bind("SUPER + J", hl.dsp.global("quickshell:barToggle"), { description = "She
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd(qsIsAlive .. " || pkill wlogout || wlogout -p layer-shell"))
 hl.bind("SHIFT + SUPER + ALT + Slash", hl.dsp.exec_cmd(app("qs -p $HOME/.config/quickshell/$qsConfig/welcome.qml")))
 
+-- caelestia4 (upstream #2218): next / previous dashboard tab while the dashboard (Super+M) is open
+hl.bind("SUPER + ALT + Right", hl.dsp.global("caelestia:dashNext"), { repeating = true, description = "Shell: Next dashboard tab" })
+hl.bind("SUPER + ALT + Left", hl.dsp.global("caelestia:dashPrev"), { repeating = true, description = "Shell: Previous dashboard tab" })
 hl.bind("XF86MonBrightnessUp", hl.dsp.global("caelestia:brightnessUp"),
     { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.global("caelestia:brightnessDown"),

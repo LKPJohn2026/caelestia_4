@@ -82,6 +82,12 @@ Item {
         tabs: root.dashboardTabs
     }
 
+    Binding {
+        target: root.screenState
+        property: "dashboardTabCount"
+        value: root.dashboardTabs.length
+    }
+
     ClippingRectangle {
         id: viewWrapper
 

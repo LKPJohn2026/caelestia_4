@@ -31,7 +31,7 @@ Status legend:
 | Vertical bar with OS icon, clock, power button | ✅ C | |
 | Workspaces with window glyphs, active-workspace pill, occupied background | ✅ C | Super held shows workspace numbers (end-4 behaviour added) |
 | Special workspace indicator | ✅ C | |
-| Active window title + window-info popout | ✅ C | |
+| Active window title + window-info popout | ✅ C | the title can be hidden (upstream PR #2097) |
 | Status icons: audio, mic, keyboard layout, network, Bluetooth, battery, Caps/Num lock | ✅ C | Volume icon enabled by default here |
 | Privacy (mic / screen in use) and updates icons | ✅ E→C | end-4 features added to Caelestia's status icons |
 | Popouts: audio (devices + per-app mixer), network (+ Wi-Fi password), Bluetooth, battery, keyboard layout, lock status, tray menus | ✅ C | per-app mixer is end-4's, in the audio popout |
@@ -50,7 +50,7 @@ Status legend:
 ### Dashboard (top)
 | Feature | Status | Notes |
 |---|---|---|
-| Dash tab: user/pfp, date-time, calendar, small weather, resources, media | ✅ C | |
+| Dash tab: user/pfp, date-time, calendar, small weather, resources, media | ✅ C | Super+Alt+←/→ change tabs while open (upstream PR #2218) |
 | Media tab: player controls, cover art, visualiser, lyrics | ✅ C | lyrics: local .lrc → LRCLIB (exact match, then search) → NetEase → Kugou → QQ Music (all synced), then untimed lyrics (LRCLIB plain, lyrics.ovh) as the last resort; Kugou / QQ Music added here |
 | Performance tab: CPU, GPU, memory, storage, network | ✅ C | |
 | Weather tab: 7-day forecast, sunrise/sunset, humidity, wind | ✅ C | |
@@ -275,10 +275,13 @@ Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes
   2 s of the track's length before NetEase; the plain lyrics are still kept as the last resort
 - shell #2129: the active window popout opens at its final size (the preview is sized from the window before its
   first frame)
+- shell #2218: Super+Alt+←/→ change the dashboard tab while it is open (`caelestia:dashNext` / `dashPrev`), over
+  the tabs shown here including Todo / Timer (upstream stops at tab 4)
+- shell #2097: `bar.activeWindow.showTitle` (Nexus > Panels > Taskbar > Active window > Show title); off leaves the
+  app icon only
 
-Feature PRs worth a look once merged: #2218 dashboard tab
-shortcuts, #2210 a wallpaper per workspace, #2135 folders in the launcher's wallpaper picker, #2097 hide the window
-title, dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
+Feature PRs worth a look once merged: #2210 a wallpaper per workspace, #2135 folders in the launcher's wallpaper
+picker, dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
