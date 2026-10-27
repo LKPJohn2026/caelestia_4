@@ -7,6 +7,8 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
+import qs.services as E4 // caelestia4: keep (Translation: end-4 languages)
 
 PageBase {
     id: root
@@ -58,6 +60,14 @@ PageBase {
             value: ClockFormat.TwentyFourHour
         }
     ]
+
+    readonly property Component e4LangComp: Component {
+        MenuItem {}
+    }
+    readonly property list<MenuItem> e4LangItems: ["auto", ...E4.Translation.allAvailableLanguages].map(l => e4LangComp.createObject(root, {
+            text: l === "auto" ? Tr.tr("Automatic (system)") : l,
+            value: l
+        }))
 
     title: Tr.tr("Language & region")
 
@@ -196,6 +206,32 @@ PageBase {
             menuItems: root.clockItems
             active: root.clockItems.find(i => i.value === GlobalConfig.services.clockFormat)
             onSelected: item => GlobalConfig.services.clockFormat = item.value
+        }
+
+        // caelestia4: the weather location (Caelestia's, shared with end-4's weather widget) and the language of the
+        // end-4 parts (settings app, AI chat), from end-4's Settings app (Apps & services)
+        SectionHeader {
+            text: Tr.tr("More")
+        }
+
+        TextFieldRow {
+            first: true
+            label: Tr.tr("Weather location")
+            subtext: Tr.tr("City name, or empty to detect it automatically")
+            value: Config.services.weatherLocation
+            onEditingFinished: v => {
+                if (v !== value)
+                    GlobalConfig.services.weatherLocation = v.trim();
+            }
+        }
+
+        SelectRow {
+            last: true
+            label: Tr.tr("Language of the end-4 parts")
+            subtext: Tr.tr("For the settings app, AI chat and other end-4 parts")
+            menuItems: root.e4LangItems
+            active: root.e4LangItems.find(i => i.value === E4C.Config.options.language.ui) ?? null
+            onSelected: item => E4C.Config.options.language.ui = item.value
         }
     }
 }

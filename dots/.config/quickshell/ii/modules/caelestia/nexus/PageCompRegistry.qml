@@ -185,6 +185,19 @@ QtObject {
                 Component {
                     OsdPanel {}
                 }
+                // caelestia4: 14 assistant, 15 dock, 16 overview & overlay, 17 keybind cheatsheet (Panels)
+                Component {
+                    AssistantPanel {}
+                }
+                Component {
+                    DockPanel {}
+                }
+                Component {
+                    OverviewPanel {}
+                }
+                Component {
+                    CheatsheetPanel {}
+                }
             }
         },
         Component {

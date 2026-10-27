@@ -13,6 +13,7 @@ import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -85,6 +86,23 @@ PageBase {
             text: Tr.tr("All apps")
             subtext: Tr.tr("Browse installed apps, set favourites and hidden")
             onClicked: root.nState.openSubPage(1)
+        }
+
+        // caelestia4: end-4's task manager command (session menu, Ctrl+Shift+Esc), from end-4's Settings app
+        SectionHeader {
+            text: Tr.tr("Task manager")
+        }
+
+        TextFieldRow {
+            first: true
+            last: true
+            label: Tr.tr("Task manager")
+            subtext: Tr.tr("Session menu and Ctrl+Shift+Esc")
+            value: E4C.Config.options.apps.taskManager
+            onEditingFinished: v => {
+                if (v !== value)
+                    E4C.Config.options.apps.taskManager = v;
+            }
         }
     }
 

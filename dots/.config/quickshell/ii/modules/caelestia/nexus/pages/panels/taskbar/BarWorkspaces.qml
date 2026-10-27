@@ -4,9 +4,26 @@ import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
+import qs.modules.caelestia.components.controls
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
+
+    readonly property list<MenuItem> displayItems: [
+        MenuItem {
+            text: Tr.tr("Shapes")
+            value: BarWorkspaceDisplay.Shapes
+        },
+        MenuItem {
+            text: Tr.tr("Numbers")
+            value: BarWorkspaceDisplay.Text
+        },
+        MenuItem {
+            text: Tr.tr("Icons")
+            value: BarWorkspaceDisplay.Icons
+        }
+    ]
 
     title: Tr.tr("Workspaces")
     isSubPage: true
@@ -83,6 +100,30 @@ PageBase {
             to: 20
             stepSize: 1
             onMoved: v => GlobalConfig.bar.workspaces.maxWindowIcons = v
+        }
+
+        // caelestia4: from end-4's Settings app (Desktop > Bar: workspaces)
+        SectionHeader {
+            text: Tr.tr("Style")
+        }
+
+        SelectRow {
+            first: true
+            label: Tr.tr("Workspace style")
+            menuItems: root.displayItems
+            active: root.displayItems.find(i => i.value === Config.bar.workspaces.displayType) ?? null
+            onSelected: item => GlobalConfig.bar.workspaces.displayType = item.value
+        }
+
+        StepperRow {
+            last: true
+            label: Tr.tr("Hold Super to show numbers after (ms)")
+            subtext: Tr.tr("Workspace numbers appear while Super is held")
+            value: E4C.Config.options.bar.workspaces.showNumberDelay
+            from: 0
+            to: 2000
+            stepSize: 50
+            onMoved: v => E4C.Config.options.bar.workspaces.showNumberDelay = v
         }
     }
 }
