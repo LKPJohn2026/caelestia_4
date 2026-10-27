@@ -7,7 +7,7 @@ Upstreams checked (fresh clones, not the local copies):
 - caelestia-dots/cli `289e208` (2026-10-13): the `caelestia` command
 
 caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked 2026-10-27). Caelestia shell is vendored at
-`4b1dae84` (2026-10-25, upstream main: 0 commits ahead); caelestia-cli is `5e804b1` (packaging/caelestia4-cli). Since 29fcf69a: sidebar
+`4b1dae84` (2026-10-25, upstream main: 0 commits ahead, rechecked twice 2026-10-27); caelestia-cli is `5e804b1` (packaging/caelestia4-cli). Since 29fcf69a: sidebar
 hover fixes + Nexus "Show on hover", `caelestia:toggleDnd`, CachingImage → Visual (file dialog icons stay on
 Quickshell's IconImage), video previews play on hover, the plugin unloads idle media players. Equivalent: upstream's
 Super+Shift+number silent move is Super+Alt+number here.
@@ -128,6 +128,9 @@ Status legend:
 | Display (upstream: commented-out TODO) | ✅ added 2026-10-27 | per monitor resolution / refresh rate, scale, rotation with a 15 s keep-or-revert, saved to monitors.lua; VRR |
 | Power & idle (not in upstream) | ✅ added 2026-10-27 | hypridle lock / screen off / sleep timers, lock before sleep, hyprlock, battery warning and hibernate levels (as end-4 Settings) |
 | Wallpaper & style extras | ✅ added 2026-10-27 | panel / layer opacity, Caelestia's size scales (text, roundness, spacing, padding, animation), screen frame, fonts, desktop clock (Caelestia's or end-4's); Panels > On-screen display (osd.*). Upstream's Nexus has no rows for these keys |
+| The rest of end-4 Settings | ✅ added 2026-10-27 | Panels > Assistant, Dock, Overview & overlay, Keybind cheatsheet; rows on the Taskbar, Dashboard, Launcher, Utilities, Notifications, Audio, Hyprland, Apps, Language & region, Services and Wallpaper & style pages. Every end-4 Settings row has a Nexus place (same keys); only "Use an image file" (switchwall.sh's picker) is left out |
+| Plugin config coverage | ✅ | 136 of the plugin's 200 config keys have a Nexus row (upstream's Nexus: 101), none that upstream has is missing. Without rows: `lock.*` and `general.idle.*` (hyprlock / hypridle instead) and hand-edited lists (workspace icons, `launcher.actions`, tray `iconSubs`) |
+| One Nexus window | ✅ 2026-10-27 | opening it again focuses the open window (upstream PR #2208 only blocks the second one) |
 
 ---
 
@@ -262,6 +265,17 @@ Review 2026-10-27: end-4 main `2f2a376` (nothing new since 2026-10-11, merged), 
 0 ahead), dotfiles `b476a36` (only specialWsCloseAny was new: ported), cli `5e804b1` (packaged). Every end-4 ii module
 has a Caelestia-style place here except ScreenCorners, covered by Caelestia's frame (rounded border; the sidebars open
 on hover; scrolling the bar sets volume / brightness).
+
+Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes still in review, taken here:
+- dots #531: `resize_by_screen` (resizer.lua) used physical pixels, so at scale 1.5 the float_* tags and
+  Ctrl+Super+Alt+Backslash made windows 1.5x too big (55% x 70% came out as 82% x 105%)
+- shell #2178: finished nmcli commands (Nmcli adapter's CommandProcess) are destroyed instead of living until restart
+- shell #2208: one Nexus window (see §1 Nexus)
+
+Not taken yet: #2211 (LRCLIB `/search` when `/get` has only plain lyrics; NetEase / Kugou / QQ Music cover most of it
+here), #2129 (active window popout opens at its final size). Feature PRs worth a look once merged: #2218 dashboard tab
+shortcuts, #2210 a wallpaper per workspace, #2135 folders in the launcher's wallpaper picker, #2097 hide the window
+title, dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
