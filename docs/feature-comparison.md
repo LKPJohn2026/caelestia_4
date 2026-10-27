@@ -124,7 +124,10 @@ Status legend:
 | About | ✅ C | |
 | Updates (upstream: placeholder) | ✅ added | Arch repo + AUR packages and new caelestia_4 commits (system.py); same data as the bar's updates icon and popout |
 | Plugins (upstream: placeholder) | ✅ added | Quickshell, the Caelestia plugin and Hyprland plugins: versions, the Qt each was built with, rebuild needed |
-| Hyprland (not in upstream) | ✅ added | input, cursor, rendering, window options (end-4's shell overrides); Super+S close-any switch (upstream dots b476a36) |
+| Hyprland (not in upstream) | ✅ added | end-4 Settings' Windows and Input pages (keyboard layouts, repeat, pointer, scrolling, focus, gaps, borders, opacity, blur, shadows, animations, layout) + cursor, rendering, middle-click paste (end-4's shell overrides, same keys as Settings); Super+S close-any switch (upstream dots b476a36) |
+| Display (upstream: commented-out TODO) | ✅ added 2026-10-27 | per monitor resolution / refresh rate, scale, rotation with a 15 s keep-or-revert, saved to monitors.lua; VRR |
+| Power & idle (not in upstream) | ✅ added 2026-10-27 | hypridle lock / screen off / sleep timers, lock before sleep, hyprlock, battery warning and hibernate levels (as end-4 Settings) |
+| Wallpaper & style extras | ✅ added 2026-10-27 | panel / layer opacity, Caelestia's size scales (text, roundness, spacing, padding, animation), screen frame, fonts, desktop clock (Caelestia's or end-4's); Panels > On-screen display (osd.*). Upstream's Nexus has no rows for these keys |
 
 ---
 

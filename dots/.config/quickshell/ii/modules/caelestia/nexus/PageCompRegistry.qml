@@ -42,6 +42,14 @@ QtObject {
 
         // Connectivity
         Component {
+            // Display (caelestia4)
+            StackPage {
+                Component {
+                    DisplayPage {}
+                }
+            }
+        },
+        Component {
             // Network
             StackPage {
                 Component {
@@ -93,7 +101,15 @@ QtObject {
             }
         },
 
-        // System (caelestia4: upstream has placeholders for both)
+        // System (caelestia4: upstream has placeholders for Updates and Plugins)
+        Component {
+            // Power & idle (caelestia4)
+            StackPage {
+                Component {
+                    PowerPage {}
+                }
+            }
+        },
         Component {
             // Updates
             StackPage {
