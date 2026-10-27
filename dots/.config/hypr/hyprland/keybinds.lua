@@ -149,6 +149,15 @@ hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd("playerctl previous"),
     { locked = true, description = "Media: Previous track" })
 hl.bind("SUPER + SHIFT + P", hl.dsp.exec_cmd("playerctl play-pause"),
     { locked = true, description = "Media: Play/pause media" })
+-- caelestia4 (caelestia-dots/caelestia#484): seek the active player 5 s / 10 s (the shell's Players picks it)
+hl.bind("SUPER + SHIFT + Period", hl.dsp.global("caelestia:mediaSeekForward"),
+    { locked = true, repeating = true, description = "Media: Seek forward 5 s" })
+hl.bind("SUPER + SHIFT + Comma", hl.dsp.global("caelestia:mediaSeekBackward"),
+    { locked = true, repeating = true, description = "Media: Seek backward 5 s" })
+hl.bind("CTRL + SUPER + SHIFT + Period", hl.dsp.global("caelestia:mediaSeekForwardLong"),
+    { locked = true, repeating = true, description = "Media: Seek forward 10 s" })
+hl.bind("CTRL + SUPER + SHIFT + Comma", hl.dsp.global("caelestia:mediaSeekBackwardLong"),
+    { locked = true, repeating = true, description = "Media: Seek backward 10 s" })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_SINK@ toggle"), { locked = true })

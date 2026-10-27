@@ -127,6 +127,45 @@ Singleton {
         }
     }
 
+    // caelestia4: seek the active player (the names caelestia-dots/caelestia#484 binds; the shell has none yet)
+    function seekActive(offset: real): void {
+        const active = root.active;
+        if (active?.canSeek)
+            active.seek(offset);
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "mediaSeekForward"
+        description: "Seek forward 5 seconds"
+        onPressed: root.seekActive(5)
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "mediaSeekBackward"
+        description: "Seek backward 5 seconds"
+        onPressed: root.seekActive(-5)
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "mediaSeekForwardLong"
+        description: "Seek forward 10 seconds"
+        onPressed: root.seekActive(10)
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "mediaSeekBackwardLong"
+        description: "Seek backward 10 seconds"
+        onPressed: root.seekActive(-10)
+    }
+
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
