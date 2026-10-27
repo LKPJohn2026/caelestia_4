@@ -10,7 +10,21 @@ export CAELESTIA4_UWSM=1
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 
 # Applications (flatpak exports first)
-export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+# Duplicates and empty entries dropped, order kept: the default value already has the system dirs (end-4 PR #3712)
+_c4_dirs=
+_c4_ifs=$IFS
+IFS=:
+for _c4_dir in "$HOME/.local/share/flatpak/exports/share" /var/lib/flatpak/exports/share /usr/local/share /usr/share $XDG_DATA_DIRS; do
+    if [ -n "$_c4_dir" ]; then
+        case ":$_c4_dirs:" in
+            *":$_c4_dir:"*) ;;
+            *) _c4_dirs="${_c4_dirs:+$_c4_dirs:}$_c4_dir" ;;
+        esac
+    fi
+done
+IFS=$_c4_ifs
+export XDG_DATA_DIRS="$_c4_dirs"
+unset _c4_dirs _c4_ifs _c4_dir
 
 # Themes
 export QT_QPA_PLATFORM="wayland;xcb"
