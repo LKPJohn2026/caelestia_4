@@ -9,8 +9,14 @@ import qs.modules.caelestia.adapters
 Item {
     id: root
 
-    required property FileSystemEntry modelData
-    required property ScreenState screenState
+    // caelestia4 (upstream #2135): a wallpaper, a folder, or ".." back to the folder above
+    required property var modelData
+    required property var wallpaperList
+
+    readonly property bool isDir: modelData.isDir
+    readonly property bool isParent: modelData.isParent ?? false
+    // A folder shows its first wallpaper (from any subfolder) behind its icon
+    readonly property string folderThumbnail: isDir && !isParent ? (Wallpapers.list.find(w => w.path.startsWith(`${modelData.path}/`))?.path ?? "") : ""
 
     scale: 0.5
     opacity: 0
@@ -28,10 +34,7 @@ Item {
         id: stateLayer
 
         radius: Tokens.rounding.large
-        onClicked: {
-            Wallpapers.setWallpaper(root.modelData.path);
-            root.screenState.launcher = false;
-        }
+        onClicked: root.wallpaperList.activateEntry(root.modelData)
     }
 
     Elevation {
@@ -60,6 +63,7 @@ Item {
 
         MaterialIcon {
             anchors.centerIn: parent
+            visible: !root.isDir
             text: "image"
             color: Colours.tPalette.m3outline
             fontStyle: Tokens.font.icon.builders.extraLarge.scale(2).weight(Font.DemiBold).build()
@@ -67,9 +71,25 @@ Item {
 
         Visual {
             anchors.fill: parent
-            source: root.modelData.path
+            visible: source !== ""
+            source: root.isDir ? root.folderThumbnail : root.modelData.path
             // upstream 28fcf7d3; the pause toggle is Wallpapers.videoPaused here (PersistentState upstream)
-            playing: (root.PathView.isCurrentItem && !Wallpapers.videoPaused) || stateLayer.containsMouse
+            playing: !root.isDir && ((root.PathView.isCurrentItem && !Wallpapers.videoPaused) || stateLayer.containsMouse)
+        }
+
+        // caelestia4 (upstream #2135): folders and ".." are an icon over a dimmed thumbnail
+        StyledRect {
+            anchors.fill: parent
+            visible: root.isDir && root.folderThumbnail !== ""
+            color: Qt.alpha(Colours.palette.m3scrim, 0.5)
+        }
+
+        MaterialIcon {
+            anchors.centerIn: parent
+            visible: root.isDir
+            text: root.isParent ? "arrow_back" : "folder"
+            color: root.folderThumbnail ? Colours.palette.m3onSurface : Colours.tPalette.m3outline
+            fontStyle: Tokens.font.icon.builders.extraLarge.scale(2).weight(Font.DemiBold).build()
         }
     }
 
@@ -84,7 +104,8 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
         renderType: Text.QtRendering
-        text: root.modelData.relativePath
+        // A folder's name; a wallpaper's name, or its path in search results from other folders
+        text: root.isDir || root.modelData.parentDir === root.wallpaperList.currentDir ? root.modelData.name : root.modelData.relativePath
         font: Tokens.font.label.medium
     }
 

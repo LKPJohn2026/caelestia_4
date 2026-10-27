@@ -3934,3 +3934,10 @@ msgstr "Hiện tiêu đề"
 
 msgid "Off: only the app's icon"
 msgstr "Tắt: chỉ hiện biểu tượng ứng dụng"
+
+# caelestia4: upstream #2210 (background.workspaceWallpapers)
+msgid "Workspace wallpapers"
+msgstr "Hình nền theo không gian làm việc"
+
+msgid "Remember the wallpaper set on each workspace (videos stay on every workspace)"
+msgstr "Nhớ hình nền đặt cho từng không gian làm việc (video vẫn dùng chung cho mọi không gian)"
