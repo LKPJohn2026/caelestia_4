@@ -309,6 +309,17 @@ Third review 2026-10-27: no new commits in end-4, the Caelestia shell, dotfiles 
 - Don't apply: #3720 (startup speed: only the Caelestia family loads here, the config is read in under 1 s),
   #3714 (802.1X Wi-Fi: no Wi-Fi on this machine), #3718 (Super+P projector flyout: one monitor, Nexus > Display)
 
+Fourth review 2026-10-27: still no new commits anywhere, no PR updated since. Open PRs looked at again:
+- Apply here, not taken yet: shell #2100 (the file dialog's sidebar pins use English folder names; this machine's
+  XDG dirs are Vietnamese, ~/Ảnh, ~/Bản tải về..., so every pin opens a missing folder: profile picture, Nexus
+  wallpaper and "Wallpaper missing?" pickers), shell #2131 (saved notifications restored with one push each; the
+  Notifs adapter here does the same), dots #482 (btop's GPU pane; btop.conf here shows cpu mem net proc only)
+- Optional: shell #2095 (no title cross-fade flicker on rapid title changes), #2214 (app icons in the bar's
+  workspaces), #2090 (splash text on the desktop)
+- Not here: #2149 (popout redesign, 975 lines, still in review), #2099 (drawer collision manager, 620 lines),
+  #2110 (weather off switch), dots #507 (browsers opaque: windows are opaque here), #509 / #506 / #503 (keybind
+  layout and descriptions: the keybinds here are end-4's)
+
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.
 
