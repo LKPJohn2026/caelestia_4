@@ -49,7 +49,8 @@ hl.window_rule({match = {class = "^(org.quickshell)$", title = "^(Nexus — .*)$
 hl.window_rule({match = {class = "^(org.quickshell)$", title = "^(Nexus — .*)$" }, center = true})
 hl.window_rule({match = {title = ".*Shell conflicts.*" },                    float = true})
 hl.window_rule({match = {class = "org.freedesktop.impl.portal.desktop.kde" }, float = true})
-hl.window_rule({match = {class = "org.freedesktop.impl.portal.desktop.kde" }, size = {"(monitor_w*0.60)", "(monitor_h*0.65)"} })
+-- caelestia4 (end-4 PR #3721): no size rule; it hit the picker's Rename / New Folder dialogs too, and the picker
+-- restores its own size
 hl.window_rule({match = {class = "^(Zotero)$" },                             float = true})
 hl.window_rule({match = {class = "^(Zotero)$" },                             size = {"(monitor_w*0.45)", "(monitor_h*0.45)"} })
 

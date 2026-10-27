@@ -21,9 +21,10 @@ ApiStrategy {
                 }),
             ],
             "stream": true,
-            "tools": tools,
             "temperature": temperature,
         };
+        // Strict OpenAI-compatible providers reject an empty tools array (end-4 PR #3713)
+        if (tools?.length > 0) baseData.tools = tools;
         return model.extraParams ? Object.assign({}, baseData, model.extraParams) : baseData;
     }
 

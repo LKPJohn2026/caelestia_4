@@ -294,11 +294,11 @@ Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes
 Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
 
 Third review 2026-10-27: no new commits in end-4, the Caelestia shell, dotfiles or cli. end-4's open PRs:
-- Apply here: #3713 (OpenAI-compatible requests send `"tools": []` in the search / no-tools modes, which strict
-  providers reject; same code in services/ai/OpenAiApiStrategy.qml), #3721 (the KDE portal size rule also forces
-  its Rename / New Folder dialogs to 60% x 65%; KDE's picker is the fallback here, Wormhole's comes first)
-- Partly: #3712 (XDG_DATA_DIRS growing on every Hyprland reload). Here it is set once per session in
-  uwsm/env-hyprland, so it doesn't grow, but each system dir is in it twice (also in the default value)
+- Taken: #3713 (OpenAI-compatible requests no longer send `"tools": []` in the search / no-tools modes, which
+  strict providers reject), #3721 (no size rule for the KDE portal: it forced the picker's Rename / New Folder
+  dialogs to 60% x 65%; KDE's picker is the fallback here, Wormhole's comes first)
+- #3712 the way it applies here: XDG_DATA_DIRS doesn't grow on reloads (set once per session in
+  uwsm/env-hyprland), but each system dir was in it twice; env-hyprland now drops duplicates (from the next login)
 - Features: #3693 (Alt+Tab between windows; Alt+Tab here moves between workspaces), #3716 (pinned clipboard
   entries; the launcher's `;` reads end-4's cliphist)
 - Don't apply: #3720 (startup speed: only the Caelestia family loads here, the config is read in under 1 s),
