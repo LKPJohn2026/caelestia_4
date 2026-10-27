@@ -8,12 +8,15 @@
 -- Keys: Super+Alt+Backslash makes the focused window a picture-in-picture; Ctrl+Super+Alt+Backslash resets it
 -- to 55% x 70% of the screen, centred.
 
--- {x, y} in pixels for x% / y% of the focused monitor (0 = full size on that axis), or nil for 0 x 0
+-- {x, y} in logical pixels for x% / y% of the focused monitor (0 = full size on that axis), or nil for 0 x 0.
+-- The monitor's width / height are physical pixels and resize takes logical ones (upstream dots #531)
 local function resize_by_screen(x, y)
     local screen = hl.get_active_monitor()
     if screen and type(screen.width) == "number" and type(screen.height) == "number" and not (x == 0 and y == 0) then
-        local w = (x and x > 0) and math.floor(screen.width * x / 100) or screen.width
-        local h = (y and y > 0) and math.floor(screen.height * y / 100) or screen.height
+        local scale = (type(screen.scale) == "number" and screen.scale > 0) and screen.scale or 1
+        local sw, sh = screen.width / scale, screen.height / scale
+        local w = (x and x > 0) and math.floor(sw * x / 100) or math.floor(sw)
+        local h = (y and y > 0) and math.floor(sh * y / 100) or math.floor(sh)
         return { x = w, y = h, relative = false }
     end
 end
