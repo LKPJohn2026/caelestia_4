@@ -188,5 +188,19 @@ PageBase {
             checked: GlobalConfig.utilities.toasts.nowPlaying
             onToggled: GlobalConfig.utilities.toasts.nowPlaying = checked
         }
+
+        // caelestia4: from end-4's Settings app (Desktop > Notifications)
+        SectionHeader {
+            text: Tr.tr("Clicking")
+        }
+
+        ToggleRow {
+            first: true
+            last: true
+            text: Tr.tr("Click runs the default action")
+            subtext: Tr.tr("Off: clicking only expands the notification")
+            checked: Config.notifs.actionOnClick
+            onToggled: GlobalConfig.notifs.actionOnClick = checked
+        }
     }
 }

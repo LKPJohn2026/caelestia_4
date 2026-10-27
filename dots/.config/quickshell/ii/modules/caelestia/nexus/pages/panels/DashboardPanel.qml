@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
+import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -135,6 +136,26 @@ PageBase {
             to: 200
             stepSize: 5
             onMoved: v => GlobalConfig.dashboard.dragThreshold = v
+        }
+
+        // caelestia4: end-4's to-do and timer as dashboard tabs
+        SectionHeader {
+            text: Tr.tr("More tabs")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("To-do tab")
+            checked: E4C.Config.options.caelestia.dashboardTodo
+            onToggled: E4C.Config.options.caelestia.dashboardTodo = checked
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Timer tab")
+            subtext: Tr.tr("Pomodoro and stopwatch")
+            checked: E4C.Config.options.caelestia.dashboardTimer
+            onToggled: E4C.Config.options.caelestia.dashboardTimer = checked
         }
     }
 }
