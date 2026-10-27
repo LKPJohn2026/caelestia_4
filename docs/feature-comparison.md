@@ -310,10 +310,10 @@ Third review 2026-10-27: no new commits in end-4, the Caelestia shell, dotfiles 
   #3714 (802.1X Wi-Fi: no Wi-Fi on this machine), #3718 (Super+P projector flyout: one monitor, Nexus > Display)
 
 Fourth review 2026-10-27: still no new commits anywhere, no PR updated since. Open PRs looked at again:
-- Apply here, not taken yet: shell #2100 (the file dialog's sidebar pins use English folder names; this machine's
-  XDG dirs are Vietnamese, ~/Ảnh, ~/Bản tải về..., so every pin opens a missing folder: profile picture, Nexus
-  wallpaper and "Wallpaper missing?" pickers), shell #2131 (saved notifications restored with one push each; the
-  Notifs adapter here does the same), dots #482 (btop's GPU pane; btop.conf here shows cpu mem net proc only)
+- Taken: shell #2100 (the file dialog's sidebar pins and folder icons follow the XDG user dirs: this machine's are
+  Vietnamese, ~/Ảnh, ~/Bản tải về..., and every English-named pin opened a missing folder), shell #2131 (saved
+  notifications restored in one assignment), dots #482 (btop's GPU pane: shipped btop.conf, and `apptheme.py setup`
+  adds gpu0 to a btop.conf whose boxes are still the old default)
 - Optional: shell #2095 (no title cross-fade flicker on rapid title changes), #2214 (app icons in the bar's
   workspaces), #2090 (splash text on the desktop)
 - Not here: #2149 (popout redesign, 975 lines, still in review), #2099 (drawer collision manager, 620 lines),

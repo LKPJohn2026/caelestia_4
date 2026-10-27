@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtCore
 import Quickshell
 import Quickshell.Widgets
 import Caelestia.Config
@@ -19,6 +20,28 @@ Item {
     id: root
 
     required property var dialog
+
+    // caelestia4 (upstream #2100): home folder name -> freedesktop folder icon, the English names and the XDG user
+    // dirs' (localised) names
+    readonly property var userDirIcons: {
+        const icons = {
+            Desktop: "desktop",
+            Documents: "documents",
+            Downloads: "downloads",
+            Music: "music",
+            Pictures: "pictures",
+            Public: "public",
+            Templates: "templates",
+            Videos: "videos"
+        };
+        const xdg = [[StandardPaths.DesktopLocation, "desktop"], [StandardPaths.DocumentsLocation, "documents"], [StandardPaths.DownloadLocation, "downloads"], [StandardPaths.MusicLocation, "music"], [StandardPaths.PicturesLocation, "pictures"], [StandardPaths.MoviesLocation, "videos"]];
+        for (const [location, icon] of xdg) {
+            const name = Paths.toLocalFile(StandardPaths.writableLocation(location)).split("/").pop();
+            if (name && !(name in icons))
+                icons[name] = icon;
+        }
+        return icons;
+    }
     readonly property FileEntry currentItem: view.currentItem as FileEntry
 
     StyledRect {
@@ -193,8 +216,12 @@ Item {
                     return "";
                 if (!file.isDir)
                     return Quickshell.iconPath(file.mimeType.replace("/", "-"), "application-x-zerosize");
-                if (root.dialog.cwd.length === 1 && ["Desktop", "Documents", "Downloads", "Music", "Pictures", "Public", "Templates", "Videos"].includes(file.name))
-                    return Quickshell.iconPath(`folder-${file.name.toLowerCase()}`);
+                // caelestia4 (upstream #2100): the XDG user dirs' own names (~/Ảnh here) get their folder icons too
+                if (root.dialog.cwd.length === 1) {
+                    const icon = root.userDirIcons[file.name];
+                    if (icon)
+                        return Quickshell.iconPath(`folder-${icon}`);
+                }
                 return Quickshell.iconPath("inode-directory");
             }
 
