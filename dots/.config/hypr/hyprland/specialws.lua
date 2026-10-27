@@ -156,14 +156,20 @@ local function place_apps(apps, special_workspace)
     end
 end
 
+-- Upstream's specialWsCloseAny = false (b476a36): Super+S only toggles the scratchpad. Set with this file
+-- (Nexus > Hyprland > "Super+S closes any special workspace"), read on every press
+local SCRATCHPAD_ONLY = config_dir .. "/caelestia4/special-ws-scratchpad-only"
+
 -- toggle("music"): show the music workspace (starting its apps), or hide it if it's the one shown.
--- toggle("specialws"): hide whichever special workspace is shown, else show the plain scratchpad ("special").
+-- toggle("specialws"): hide whichever special workspace is shown, else show the plain scratchpad ("special");
+-- with SCRATCHPAD_ONLY, toggle the scratchpad whatever is shown.
 local function toggle(special_workspace)
     return function()
         local active = hl.get_active_special_workspace()
 
         if special_workspace == "specialws" then
-            local target = active and active.name:gsub("^special:", "") or "special"
+            local close_any = not is_file_exists(SCRATCHPAD_ONLY)
+            local target = close_any and active and active.name:gsub("^special:", "") or "special"
             return hl.dispatch(hl.dsp.workspace.toggle_special(target))
         end
 

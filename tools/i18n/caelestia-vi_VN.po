@@ -2998,3 +2998,9 @@ msgstr "dddd, d MMMM"
 msgctxt "date format"
 msgid "MMM d"
 msgstr "d MMM"
+
+msgid "Super+S closes any special workspace"
+msgstr "Super+S đóng mọi workspace đặc biệt"
+
+msgid "Off: Super+S only shows or hides the scratchpad"
+msgstr "Tắt: Super+S chỉ hiện hoặc ẩn scratchpad"

@@ -1,0 +1,35 @@
+# caelestia_4: caelestia-cli pinned to one verified revision, ahead of the last release (1.1.3) for fixes this system
+# hits: the Hyprland socket reply decoded only after all chunks arrive (679af94; multi-byte window titles split
+# across chunks broke it), no infinite recursion on black wallpapers (858ecff), the Discord theme's new logo (287802b).
+# The AUR caelestia-cli-git stops at 40fb35b, before 679af94.
+# Based on the AUR caelestia-cli-git PKGBUILD (maintainer: Soramane).
+# It makes the colours here (dots/.config/caelestia/cli.json); videos still reach it as their first frame
+# (switchwall.sh), as mpvpaper plays them.
+
+_pkgname=caelestia-cli
+_commit=5e804b10c146c9f3278b2da37c8e4b5d8e9708d9
+pkgname=caelestia4-cli
+pkgver=1.1.3.r41.g5e804b1
+pkgrel=1
+pkgdesc='The Caelestia cli (colour schemes and app themes) pinned for caelestia_4'
+arch=('any')
+url='https://github.com/caelestia-dots/cli'
+license=('GPL-3.0-only')
+depends=('python' 'python-pillow' 'python-materialyoucolor' 'libnotify' 'swappy' 'grim' 'dart-sass'
+         'wl-clipboard' 'slurp' 'gpu-screen-recorder' 'dconf' 'cliphist' 'fuzzel' 'git' 'ffmpeg')
+makedepends=('python-build' 'python-installer' 'python-hatch' 'python-hatch-vcs')
+provides=("$_pkgname")
+conflicts=("$_pkgname" "$_pkgname-git")
+source=("$_pkgname::git+$url.git#commit=$_commit")
+sha256sums=('SKIP')
+
+build() {
+  cd "$_pkgname"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$_pkgname"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 completions/caelestia.fish "$pkgdir/usr/share/fish/vendor_completions.d/caelestia.fish"
+}
