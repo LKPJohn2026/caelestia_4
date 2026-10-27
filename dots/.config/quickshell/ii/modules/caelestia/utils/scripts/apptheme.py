@@ -186,8 +186,24 @@ def install_if_missing(src, dest):
     print(f"installed {dest}")
 
 
+# btop's GPU pane (caelestia-dots/caelestia#482): only when the boxes are still the old default, so a layout someone
+# picked stays. btop writes its config back when it quits, so a running one undoes it: quit it, then run setup again
+def btop_gpu_pane(conf):
+    old, new = 'shown_boxes = "cpu mem net proc"', 'shown_boxes = "cpu mem net proc gpu0"'
+    try:
+        lines = open(conf).read().split("\n")
+    except OSError:
+        return
+    if old not in lines:
+        return
+    atomic_write(conf, "\n".join(new if l == old else l for l in lines))
+    running = subprocess.run(["pgrep", "-x", "btop"], capture_output=True).returncode == 0
+    print(f"added the GPU pane to {conf}" + (" (btop is running and writes its settings back when it quits: quit it, run `apptheme.py setup` again, then start it)" if running else ""))
+
+
 def setup():
     install_if_missing("btop/btop.conf", os.path.join(CONFIG, "btop/btop.conf"))
+    btop_gpu_pane(os.path.join(CONFIG, "btop/btop.conf"))
     install_if_missing("fastfetch/config.jsonc", os.path.join(CONFIG, "fastfetch/config.jsonc"))
 
     cava = os.path.join(CONFIG, "cava/config")
