@@ -3288,3 +3288,133 @@ msgstr "Thanh trượt độ sáng"
 
 msgid "Microphone slider"
 msgstr "Thanh trượt micro"
+
+# caelestia4: Nexus > Display and Power & idle (end-4 Settings' Display and Power pages)
+msgid "Normal"
+msgstr "Bình thường"
+
+msgid "90°"
+msgstr "90°"
+
+msgid "180°"
+msgstr "180°"
+
+msgid "270°"
+msgstr "270°"
+
+msgid "Always on"
+msgstr "Luôn bật"
+
+msgid "Fullscreen only"
+msgstr "Chỉ khi toàn màn hình"
+
+msgid "Fullscreen games and video"
+msgstr "Game và video toàn màn hình"
+
+msgid "Keep these display settings?"
+msgstr "Giữ cài đặt hiển thị này?"
+
+msgid "Reverting in %1 s"
+msgstr "Hoàn tác sau %1 giây"
+
+msgid "If the screen looks wrong, wait and it goes back by itself"
+msgstr "Nếu màn hình trông không ổn, cứ đợi và nó sẽ tự trở lại"
+
+msgid "Keep"
+msgstr "Giữ"
+
+msgid "Revert"
+msgstr "Hoàn tác"
+
+msgid "Resolution & refresh rate"
+msgstr "Độ phân giải & tần số quét"
+
+msgid "Scale"
+msgstr "Tỉ lệ"
+
+msgid "Size of everything on this screen"
+msgstr "Kích thước mọi thứ trên màn hình này"
+
+msgid "Rotation"
+msgstr "Xoay"
+
+msgid "Apply changes"
+msgstr "Áp dụng thay đổi"
+
+msgid "No changes"
+msgstr "Không có thay đổi"
+
+msgid "You'll have 15 seconds to keep or revert them"
+msgstr "Bạn có 15 giây để giữ hoặc hoàn tác"
+
+msgid "Adaptive sync"
+msgstr "Đồng bộ thích ứng"
+
+msgid "Variable refresh rate (VRR / FreeSync / G-Sync)"
+msgstr "Tần số quét thay đổi (VRR / FreeSync / G-Sync)"
+
+msgid "Matches the refresh rate to the game's frame rate to avoid tearing"
+msgstr "Khớp tần số quét với tốc độ khung hình của game để tránh xé hình"
+
+msgid "Never"
+msgstr "Không bao giờ"
+
+msgid "%1 min"
+msgstr "%1 phút"
+
+msgid "%1 h"
+msgstr "%1 giờ"
+
+msgid "Power & idle"
+msgstr "Nguồn & chờ"
+
+msgid "When idle"
+msgstr "Khi rảnh"
+
+msgid "Lock the screen after"
+msgstr "Khóa màn hình sau"
+
+msgid "Turn off the screen after"
+msgstr "Tắt màn hình sau"
+
+msgid "Sleep after"
+msgstr "Ngủ sau"
+
+msgid "Lock before sleeping"
+msgstr "Khóa trước khi ngủ"
+
+msgid "The Keep awake card in the utilities drawer pauses all of the above while it is on"
+msgstr "Thẻ Giữ máy thức trong ngăn tiện ích tạm dừng tất cả các mục trên khi được bật"
+
+msgid "Lock screen"
+msgstr "Màn hình khóa"
+
+msgid "Use hyprlock"
+msgstr "Dùng hyprlock"
+
+msgid "Recommended: survives the monitor dropping off on wake. Off: the shell's own lock screen"
+msgstr "Khuyên dùng: vẫn chạy ổn khi màn hình mất kết nối lúc thức dậy. Tắt: dùng màn hình khóa của shell"
+
+msgid "These only apply to laptops"
+msgstr "Chỉ áp dụng cho laptop"
+
+msgid "Critical warning at (%)"
+msgstr "Cảnh báo nghiêm trọng ở (%)"
+
+msgid "Low battery warning at (%)"
+msgstr "Cảnh báo pin yếu ở (%)"
+
+msgid "Hibernate at (%)"
+msgstr "Ngủ đông khi còn (%)"
+
+msgid "Saves the session to disk before the battery runs out (needs hibernation set up). 0 = never"
+msgstr "Lưu phiên làm việc ra đĩa trước khi hết pin (cần thiết lập ngủ đông). 0 = không bao giờ"
+
+msgid "Resolution, scale, refresh rate"
+msgstr "Độ phân giải, tỉ lệ, tần số quét"
+
+msgid "Idle timers, lock screen, battery"
+msgstr "Hẹn giờ khi rảnh, màn hình khoá, pin"
+
+msgid "Windows, keyboard, mouse, rendering"
+msgstr "Cửa sổ, bàn phím, chuột, kết xuất"

@@ -144,7 +144,7 @@ Item {
                 anchors.fill: parent
                 nState.screen: root.screen
                 nState.animatingContainer: nexus.opacity < 1
-                nState.currentPageIdx: ["appearance", "network", "bluetooth", "audio", "updates"].indexOf(root.queuedMode) // caelestia4: + updates (index 4 = Nexus > Updates)
+                nState.currentPageIdx: Math.max(0, PageRegistry.indexOf(root.queuedMode)) // caelestia4: by page id (+ updates), not position
                 onClose: root.close()
             }
         }
