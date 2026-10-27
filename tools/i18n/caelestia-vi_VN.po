@@ -3502,8 +3502,8 @@ msgstr "Dock"
 msgid "Overview & overlay"
 msgstr "Tổng quan & lớp phủ"
 
-msgid "Super+Tab, Alt+Tab, Super+G"
-msgstr "Super+Tab, Alt+Tab, Super+G"
+msgid "Alt+Tab, Super+G"
+msgstr "Alt+Tab, Super+G"
 
 msgid "Keybind cheatsheet"
 msgstr "Bảng phím tắt"
@@ -3941,3 +3941,7 @@ msgstr "Hình nền theo không gian làm việc"
 
 msgid "Remember the wallpaper set on each workspace (videos stay on every workspace)"
 msgstr "Nhớ hình nền đặt cho từng không gian làm việc (video vẫn dùng chung cho mọi không gian)"
+
+# caelestia4: window switcher (end-4 PR #3693)
+msgid "Tab  next   •   Shift+Tab  previous   •   release Super  switch   •   Esc  cancel"
+msgstr "Tab  tiếp   •   Shift+Tab  trước   •   nhả Super  chuyển   •   Esc  hủy"

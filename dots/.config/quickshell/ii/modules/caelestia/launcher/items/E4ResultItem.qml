@@ -6,6 +6,7 @@ import Quickshell
 import Quickshell.Widgets
 import Caelestia.Config
 import qs.modules.caelestia.components
+import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.common.models as E4M // caelestia4: keep
 
@@ -19,6 +20,10 @@ Item {
     readonly property string iconName: modelData?.iconName ?? ""
     readonly property bool mono: modelData?.fontType === E4M.LauncherSearchResult.FontType.Monospace
     readonly property string subtitle: [modelData?.type, modelData?.comment].filter(s => s && s.length).join(" · ")
+    // caelestia4: the result's own actions (clipboard: pin to favourites / copy / delete, end-4 PR #3716) as buttons on
+    // the right, shown on the selected or hovered row
+    readonly property var actions: (modelData?.actions ?? []).filter(a => a?.iconType === E4M.LauncherSearchResult.IconType.Material)
+    readonly property bool showActions: actions.length > 0 && (hover.hovered || (ListView.isCurrentItem ?? false))
 
     function activate(): void {
         const result = root.modelData;
@@ -30,6 +35,10 @@ Item {
 
     anchors.left: parent?.left
     anchors.right: parent?.right
+
+    HoverHandler {
+        id: hover
+    }
 
     StateLayer {
         radius: Tokens.rounding.large
@@ -108,11 +117,39 @@ Item {
         StyledText {
             id: verb
 
-            anchors.right: parent.right
+            anchors.right: actionRow.left
+            anchors.rightMargin: actionRow.width > 0 ? Tokens.spacing.small : 0
             anchors.verticalCenter: parent.verticalCenter
             text: root.modelData?.verb ?? ""
             font: Tokens.font.label.medium
             color: Colours.palette.m3primary
+        }
+
+        Row {
+            id: actionRow
+
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: Tokens.spacing.extraSmall
+            visible: root.showActions
+            width: visible ? implicitWidth : 0
+
+            Repeater {
+                model: root.actions
+
+                IconButton {
+                    required property var modelData
+
+                    icon: modelData.iconName
+                    type: IconButton.Text
+                    onClicked: {
+                        // Pin / unpin / delete keep the launcher open (the list refreshes itself); others close it
+                        if (!["keep", "keep_off", "delete"].includes(modelData.iconName))
+                            root.screenState.launcher = false;
+                        modelData.execute?.();
+                    }
+                }
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
 import qs.modules.common as E4C // caelestia4: keep (overview, overlay and crosshair live in end-4's config)
 
-// caelestia4: Panels > Overview & overlay: the workspace overview (Super+Tab / Alt+Tab), the overlay widgets (Super+G)
+// caelestia4: Panels > Overview & overlay: the workspace overview (Alt+Tab), the overlay widgets (Super+G)
 // and its crosshair. The same keys as end-4's Settings app (Desktop)
 PageBase {
     id: root

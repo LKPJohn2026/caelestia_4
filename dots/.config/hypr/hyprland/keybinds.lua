@@ -20,7 +20,12 @@ hl.bind("SUPER_L", hl.dsp.global("quickshell:workspaceNumber"),
     { ignore_mods = true, transparent = true, release = true })
 hl.bind("SUPER_R", hl.dsp.global("quickshell:workspaceNumber"),
     { ignore_mods = true, transparent = true, release = true })
-hl.bind("SUPER + Tab", hl.dsp.global("quickshell:overviewWorkspacesToggle"), { description = "Shell: Toggle overview" })
+-- caelestia4: window switcher (windowSwitcher/WindowSwitcher.qml, end-4 PR #3693): hold Super, Tab = next window,
+-- Shift+Tab = previous, release Super = switch. The release comes from the transparent Super binds below
+hl.bind("SUPER + Tab", hl.dsp.global("quickshell:windowSwitcherNext"), { description = "Shell: Window switcher" })
+hl.bind("SUPER + SHIFT + Tab", hl.dsp.global("quickshell:windowSwitcherPrev"), { description = "Shell: Window switcher (back)" })
+hl.bind("SUPER_L", hl.dsp.global("quickshell:windowSwitcherSuper"), { ignore_mods = true, transparent = true })
+hl.bind("SUPER_R", hl.dsp.global("quickshell:windowSwitcherSuper"), { ignore_mods = true, transparent = true })
 -- caelestia4: Windows-style Alt+Tab over workspaces (overview/Overview.qml): hold Alt, Tab = next workspace,
 -- Shift+Tab = previous, release Alt = switch. The release binds only act while Alt+Tabbing.
 -- Hyprland only fires a key's release bind if a press bind of that key saw the press, hence the no-op press
