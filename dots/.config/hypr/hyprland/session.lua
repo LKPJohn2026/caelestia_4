@@ -39,6 +39,7 @@ local MULTI_INSTANCE = {
     ["org.kde.dolphin"] = true,
     ["org.gnome.Nautilus"] = true,
     ["thunar"] = true,
+    ["atlas"] = true,
 }
 
 local APP_DIRS = {

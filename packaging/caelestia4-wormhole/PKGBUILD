@@ -1,0 +1,36 @@
+# caelestia_4: Wormhole (AstraSuite), a Material 3 xdg-desktop-portal backend. Pinned to one verified revision.
+# Only its FileChooser is used (dots/.config/xdg-desktop-portal/hyprland-portals.conf): many of its other interfaces
+# are still stubs that answer "success" without doing anything (Inhibit, GlobalShortcuts; Camera grants access
+# without asking), so it must never be the default backend. It starts on demand through D-Bus activation.
+
+_pkgname=wormhole
+_commit=f9687c1038df6b567abbb9e0d1be2ec4307e5d9e # v1.0.2-4
+pkgname=caelestia4-wormhole
+pkgver=1.0.2.r4.gf9687c1
+pkgrel=1
+pkgdesc='Wormhole xdg-desktop-portal backend pinned for caelestia_4 (FileChooser)'
+arch=(x86_64)
+url='https://github.com/AstraSuite/Wormhole'
+license=('GPL-3.0-only')
+depends=(qt6-base qt6-declarative qt6-svg qt6-multimedia glib2 libpipewire wayland xdg-desktop-portal)
+makedepends=(cmake ninja git wayland-protocols)
+provides=("$_pkgname" xdg-desktop-portal-wormhole xdg-desktop-portal-impl)
+conflicts=("$_pkgname" "$_pkgname-git" xdg-desktop-portal-wormhole)
+source=("$_pkgname::git+$url.git#commit=$_commit")
+sha256sums=('SKIP')
+
+build() {
+  cd "$_pkgname"
+  cmake -GNinja -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DWORMHOLE_VERSION=1.0.2 \
+    -DINIT_SYSTEM=systemd
+  cmake --build build
+}
+
+package() {
+  cd "$_pkgname"
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+}

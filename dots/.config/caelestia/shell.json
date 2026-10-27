@@ -35,6 +35,9 @@
         "apps": {
             "terminal": [
                 "kitty"
+            ],
+            "explorer": [
+                "atlas"
             ]
         }
     },

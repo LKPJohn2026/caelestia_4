@@ -142,12 +142,28 @@ say "installed $CFG/matugen (no GTK templates)"
 # ---- small app configs: only if the user has none ----
 for d in fuzzel kitty foot wlogout; do copy_if_missing "$DOTS/$d" "$CFG/$d"; done
 copy_file_if_missing "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf"
+# caelestia4: Open/Save dialogs moved from KDE to Wormhole (with KDE as the fallback); only the old default is changed
+sed -i 's/^org\.freedesktop\.impl\.portal\.FileChooser = kde$/org.freedesktop.impl.portal.FileChooser = wormhole;kde/' \
+    "$CFG/xdg-desktop-portal/hyprland-portals.conf"
+# and the KDE pins (Background, Clipboard, Usb, Wallpaper) added to an existing file, so Wormhole stays FileChooser-only
+python3 - "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf" <<'PY'
+import sys
+src, dst = sys.argv[1:]
+have = {l.split("=")[0].strip() for l in open(dst) if "=" in l and not l.startswith("#")}
+new = [l for l in open(src) if "=" in l and not l.startswith("#") and l.split("=")[0].strip() not in have]
+if new:
+    with open(dst, "a") as f:
+        f.writelines(new)
+PY
 # caelestia4: Hyprland-session file associations (Thunar for folders); merged so the user's other entries stay
 python3 - "$DOTS/hyprland-mimeapps.list" "$CFG/hyprland-mimeapps.list" <<'PY'
 import sys, os
 src, dst = sys.argv[1:]
 want = [l.strip() for l in open(src) if "=" in l and not l.startswith("#")]
 lines = open(dst).read().splitlines() if os.path.exists(dst) else []
+# Earlier defaults of this file, replaced by the current ones (a value the user picked stays)
+old = {"inode/directory=thunar.desktop"}
+lines = [next((w for w in want if w.split("=")[0] == l.split("=")[0]), l) if l in old else l for l in lines]
 if "[Default Applications]" not in lines:
     lines += ["[Default Applications]"]
 i = lines.index("[Default Applications]") + 1
@@ -164,9 +180,12 @@ python3 - "$CFG/caelestia/shell.json" <<'PY'
 import json, sys
 p = sys.argv[1]
 d = json.load(open(p))
+# caelestia4: Atlas as the shell's file manager (Caelestia's default is Thunar), unless the user picked one
+changed = "explorer" not in d.setdefault("general", {}).setdefault("apps", {})
+d["general"]["apps"].setdefault("explorer", ["atlas"])
 cmds = d.setdefault("session", {}).setdefault("commands", {})
 want = {"logout": ["uwsm", "stop"], "hibernate": ["systemctl", "hibernate"]}
-if any(k not in cmds for k in want):
+if changed or any(k not in cmds for k in want):
     for k, v in want.items():
         cmds.setdefault(k, v)
     json.dump(d, open(p, "w"), indent=4)
