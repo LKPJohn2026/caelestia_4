@@ -64,7 +64,7 @@ Status legend:
 | Calculator (`=`), emoji (`:`), clipboard (`;`) | ✅ C | clipboard from end-4's cliphist |
 | Run commands (`$`) in a terminal | ✅ C | via uwsm -T |
 | Web search (`?`) | ✅ C | |
-| Wallpaper picker with live preview | ✅ C | image and colour preview: utils/scripts/wallpreview.sh (matugen dry run, end-4's colour style incl. auto) fills Colours.preview; picking keeps it until end-4's colours arrive. Not for video wallpapers |
+| Wallpaper picker with live preview | ✅ C | folders (upstream PR #2135); image and colour preview: utils/scripts/wallpreview.sh (matugen dry run, end-4's colour style incl. auto) fills Colours.preview; picking keeps it until end-4's colours arrive. Not for video wallpapers |
 | Colour scheme picker (preset schemes: catppuccin, gruvbox, nord, rosepine, tokyonight… 14 schemes) | ✅ C | Nexus > Wallpaper & style > Colours and launcher `>scheme`; 29 presets from the CLI repo, applied through end-4's matugen templates + terminal colours; "Follow the wallpaper" keeps end-4's colour styles |
 | Variant picker (tonal spot, fruit salad…) | ✅ E→C | mapped to end-4's palette type |
 
@@ -113,7 +113,7 @@ Status legend:
 ### Nexus control centre (modules/nexus, 65 files, ported 2026-10-12)
 | Page | Status | Notes |
 |---|---|---|
-| Wallpaper & style (wallpapers, colours) | ✅ C | wallpapers apply through end-4 (colours regenerate); end-4 Settings > Appearance still has more |
+| Wallpaper & style (wallpapers, colours) | ✅ C | a wallpaper per workspace (upstream PR #2210, stills only); wallpapers apply through end-4 (colours regenerate); end-4 Settings > Appearance still has more |
 | Panels (bar: workspaces, clock, status icons, tray, active window; dashboard; launcher; sidebar; utilities) | ✅ C | writes ~/.config/caelestia/shell.json |
 | Network: networks, saved networks, add network, add VPN, Ethernet details | ✅ C | Nmcli adapter extended with one-off nmcli calls (still one `nmcli monitor`, end-4's) |
 | Bluetooth: pairing, device info | ✅ C | |
@@ -280,8 +280,14 @@ Second review 2026-10-27 (same upstream heads; open PRs checked). Upstream fixes
 - shell #2097: `bar.activeWindow.showTitle` (Nexus > Panels > Taskbar > Active window > Show title); off leaves the
   app icon only
 
-Feature PRs worth a look once merged: #2210 a wallpaper per workspace, #2135 folders in the launcher's wallpaper
-picker, dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
+- shell #2210: a wallpaper per workspace (Nexus > Wallpaper & style > Workspace wallpapers, off by default; state in
+  ~/.local/state/caelestia/state.json, IPC `wallpaper clearWorkspace NAME` / `clearWorkspaces`). Picks from the
+  launcher, Nexus, end-4's selector or random go to the focused workspace; the overview's tiles show each
+  workspace's own. Videos stay global (one mpvpaper): picking one clears the workspace's still so it shows the video
+- shell #2135: folders in the launcher's wallpaper list (folders first, `..` back, hidden ones such as `.git` left
+  out); it opens in the folder of what the screen shows. Unlike the PR, a search still looks through every folder
+
+Feature PR worth a look once merged: dots #484 media seek keys. Lock, lid, UPS, iGPU and multi-GPU PRs don't apply here.
 
 Done since the last review: wallpaper transitions, colours from caelestia-cli with presets paired for light/dark
 (`counterpart()`), pause-wallpaper toggle, PiP / Caps Lock fixes, backend steps 1-3.

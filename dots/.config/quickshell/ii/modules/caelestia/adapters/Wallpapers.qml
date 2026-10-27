@@ -16,6 +16,7 @@ import Quickshell
 import Quickshell.Io
 import Caelestia.Config
 import Caelestia.Models
+import Caelestia.State
 import qs.services as E4 // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep
 import qs.modules.caelestia.adapters
@@ -60,7 +61,10 @@ Searcher {
 
     // mpvpaper starts a moment after switchwall.sh / the login restore script: check now and twice more
     onIsVideoChanged: videoCheck.recheck()
-    Component.onCompleted: videoCheck.recheck()
+    Component.onCompleted: {
+        videoCheck.recheck();
+        checkWorkspaceWallpapers();
+    }
 
     Timer {
         id: videoCheck
@@ -111,7 +115,90 @@ Searcher {
 
     function setWallpaper(path: string): void {
         actualCurrent = path;
+        assignToFocusedWorkspace(path);
         E4.Wallpapers.apply(path);
+    }
+
+    // caelestia4 (upstream #2210): a wallpaper per workspace (Nexus > Wallpaper & style > Workspace wallpapers).
+    // Picking a wallpaper (launcher, Nexus, end-4's selector, random) also gives it to the focused workspace, and each
+    // screen shows its workspace's wallpaper, else the global one. Colours follow the last pick, not the workspace.
+    // Videos stay global (one mpvpaper for every screen): picking one clears the workspace's own wallpaper, so it
+    // shows the video like every workspace without one
+    readonly property bool workspaceWallsEnabled: GlobalConfig.background.workspaceWallpapers.enabled
+    property list<string> missingWorkspaceWallpapers
+    property string seenEnd4Current
+
+    // The workspace's own wallpaper on that screen, or "" (none, option off, or the file is gone)
+    function workspaceWallFor(screen: ShellScreen): string {
+        if (!workspaceWallsEnabled)
+            return "";
+        const wall = PersistentState.workspaceWallpapers[Hypr.monitorFor(screen)?.activeWorkspace?.name];
+        return wall && !missingWorkspaceWallpapers.includes(wall) ? wall : "";
+    }
+
+    // What a workspace shows (the overview's tiles), by name
+    function forWorkspace(name: string): string {
+        const wall = workspaceWallsEnabled ? PersistentState.workspaceWallpapers[name] : "";
+        return wall && !missingWorkspaceWallpapers.includes(wall) ? wall : actualCurrent;
+    }
+
+    // The preview while one shows, otherwise what the screen shows
+    function forScreen(screen: ShellScreen): string {
+        return showPreview ? previewPath : actualForScreen(screen);
+    }
+
+    // What the screen shows, ignoring any preview
+    function actualForScreen(screen: ShellScreen): string {
+        return workspaceWallFor(screen) || actualCurrent;
+    }
+
+    // The video wallpaper shows through on that screen (its workspace has no still of its own)
+    function videoShowingOn(screen: ShellScreen): bool {
+        return videoPlaying && !showPreview && !workspaceWallFor(screen);
+    }
+
+    function assignToFocusedWorkspace(path: string): void {
+        const name = Hypr.focusedMonitor?.activeWorkspace?.name;
+        if (!workspaceWallsEnabled || !name || !path)
+            return;
+        const walls = Object.assign({}, PersistentState.workspaceWallpapers);
+        if (/\.(mp4|webm|mkv|avi|mov)$/i.test(path))
+            delete walls[name];
+        else
+            walls[name] = path;
+        PersistentState.workspaceWallpapers = walls;
+    }
+
+    function checkWorkspaceWallpapers(): void {
+        if (!workspaceWallsEnabled)
+            return;
+        missingCheckProc.exec(["sh", "-c", 'for p; do [ -e "$p" ] || printf "%s\\n" "$p"; done', "sh", ...Object.values(PersistentState.workspaceWallpapers)]);
+    }
+
+    onWorkspaceWallsEnabledChanged: checkWorkspaceWallpapers()
+
+    Connections {
+        function onWorkspaceWallpapersChanged(): void {
+            root.checkWorkspaceWallpapers();
+        }
+
+        target: PersistentState
+    }
+
+    Connections {
+        function onEntriesChanged(): void {
+            root.checkWorkspaceWallpapers();
+        }
+
+        target: wallpapers
+    }
+
+    Process {
+        id: missingCheckProc
+
+        stdout: StdioCollector {
+            onStreamFinished: root.missingWorkspaceWallpapers = text.split("\n").filter(p => p)
+        }
     }
 
     function preview(path: string): void {
@@ -142,7 +229,14 @@ Searcher {
     }
 
     // end-4 wrote the new wallpaper path (colours are generated after this): follow it
-    onEnd4CurrentChanged: actualCurrent = end4Current || fallback
+    onEnd4CurrentChanged: {
+        actualCurrent = end4Current || fallback;
+        // caelestia4: a wallpaper set elsewhere (end-4's selector, random, switchwall.sh) goes to the focused
+        // workspace too; the first load at startup is not a change
+        if (seenEnd4Current && end4Current && end4Current !== seenEnd4Current)
+            assignToFocusedWorkspace(end4Current);
+        seenEnd4Current = end4Current;
+    }
 
     // end-4's colours changed: the applied wallpaper's palette is in, the preview can go
     Connections {
@@ -213,6 +307,19 @@ Searcher {
 
         function list(): string {
             return root.list.map(w => w.path).join("\n");
+        }
+
+        // caelestia4 (upstream #2210): forget one workspace's wallpaper, or all of them
+        function clearWorkspace(name: string): void {
+            if (!PersistentState.workspaceWallpapers.hasOwnProperty(name))
+                return;
+            const walls = Object.assign({}, PersistentState.workspaceWallpapers);
+            delete walls[name];
+            PersistentState.workspaceWallpapers = walls;
+        }
+
+        function clearWorkspaces(): void {
+            PersistentState.workspaceWallpapers = {};
         }
 
         target: "wallpaper" // end-4 uses "wallpapers"/"wallpaperSelector"; no clash

@@ -321,6 +321,7 @@ PageBase {
 
             WallpaperImpl {
                 anchors.fill: parent
+                source: Wallpapers.forScreen(root.nState.screen) // caelestia4: upstream #2210
                 opacity: Config.background.wallpaperEnabled ? 1 : 0
 
                 Behavior on opacity {
@@ -380,6 +381,16 @@ PageBase {
             text: Tr.tr("Display wallpaper")
             checked: Config.background.wallpaperEnabled
             onToggled: GlobalConfig.background.wallpaperEnabled = checked
+        }
+
+        // caelestia4: upstream #2210
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+
+            text: Tr.tr("Workspace wallpapers")
+            subtext: Tr.tr("Remember the wallpaper set on each workspace (videos stay on every workspace)")
+            checked: GlobalConfig.background.workspaceWallpapers.enabled
+            onToggled: GlobalConfig.background.workspaceWallpapers.enabled = checked
         }
 
         ToggleRow {

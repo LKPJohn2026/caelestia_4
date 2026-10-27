@@ -344,7 +344,7 @@ Scope {
                                 // Wallpaper, dimmed (less on the selected workspace)
                                 Image {
                                     anchors.fill: parent
-                                    source: Wallpapers.current
+                                    source: Wallpapers.forWorkspace(String(parent.ws)) // caelestia4: upstream #2210
                                     sourceSize.width: win.tileW
                                     sourceSize.height: win.tileH
                                     fillMode: Image.PreserveAspectCrop
