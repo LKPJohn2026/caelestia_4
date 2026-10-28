@@ -46,11 +46,12 @@ Settings > Apps > Terminal; installed with `kitty.desktop` if missing). Quickshe
 `Terminal=true`, which is why launches don't use it.
 
 ## System tray
-kded6 (KDE daemon, `plasma-kded6.service`) is started before the shell (`Wants=`/`After=` in `caelestia4-shell`) and
-owns `org.kde.StatusNotifierWatcher`; the shell is only the tray host. Registrations live in kded6, so they survive
-shell restarts (Electron apps such as Claude never re-register). Before, kded6 was D-Bus-activated later by a KDE app,
-took the watcher over mid-session and the tray lost whatever had registered with the shell (KDE Connect, Fcitx).
-(KF6's kded6 still reads `kded5rc`.)
+`caelestia4-sni-watcher` (scripts/caelestia4/sni-watcher.py) is started before the shell (`Wants=`/`After=` in
+`caelestia4-shell`) and owns `org.kde.StatusNotifierWatcher`; the shell is only the tray host. Registrations live in
+the watcher, so they survive shell restarts (Electron apps such as Claude never re-register). It must start first:
+with no watcher, Quickshell takes the name itself, and a watcher started later fails (exit 1). It replaced kded6's
+watcher module (2026-10-27, plasma-workspace goes with Plasma: docs/dev/kde-removal.md). Before that, kded6 had to
+start first for the same reason: D-Bus-activated later by a KDE app, it took the watcher over mid-session.
 
 ## Login screen
 Only **Hyprland (uwsm-managed)** is shown. Plasma Login Manager lists every file in `/usr/share/wayland-sessions` and

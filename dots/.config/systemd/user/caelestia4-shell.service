@@ -5,11 +5,11 @@
 Description=Caelestia 4 shell (Quickshell)
 PartOf=graphical-session.target
 ConditionEnvironment=CAELESTIA4_UWSM=1
-# caelestia4: kded6 (KDE daemon) first. Its status-notifier watcher holds the system tray registrations, and it
-# outlives shell restarts, so tray icons survive them (Electron apps like Claude never re-register). Started late
-# (by a KDE app) it used to take the watcher over mid-session and drop the icons registered with the shell.
-Wants=plasma-kded6.service
-After=graphical-session.target plasma-kded6.service
+# caelestia4: the tray watcher (caelestia4-sni-watcher) first. It holds the system tray registrations and outlives
+# shell restarts, so tray icons survive them (Electron apps like Claude never re-register). It replaced kded6's
+# watcher module (plasma-workspace).
+Wants=caelestia4-sni-watcher.service
+After=graphical-session.target caelestia4-sni-watcher.service
 
 [Service]
 Type=exec

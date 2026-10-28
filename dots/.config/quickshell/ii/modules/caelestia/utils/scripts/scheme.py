@@ -34,7 +34,7 @@ SCHEME_JSON = os.path.join(STATE, "caelestia/scheme.json")  # caelestia-cli's
 WALL_PATH = os.path.join(STATE, "caelestia/wallpaper/path.txt")  # caelestia-cli's
 GENERATED = os.path.join(STATE, "quickshell/user/generated")
 SHELL_CONFIG = os.path.join(CONFIG, "illogical-impulse/config.json")
-SHARED_DESKTOP = os.path.join(CONFIG, "caelestia4/shared-desktop")
+CLI_CONFIG = os.path.join(CONFIG, "caelestia/cli.json")
 CAELESTIA_SHELL = os.path.join(CONFIG, "caelestia/shell.json")
 
 PREVIEW = ["primary", "secondary", "tertiary", "surface", "surfaceContainer", "onSurface", "outline", "primaryContainer"]
@@ -176,10 +176,17 @@ def apply_to_end4(colours, mode):
         f.write("\n".join(lines) + "\n")
     subprocess.run([os.path.join(SCRIPTS, "applycolor.sh")], check=False)
 
-    # 3. GTK light/dark preference, as switchwall.sh does (skipped on an account shared with Plasma)
-    if not os.path.exists(SHARED_DESKTOP):
+    # 3. GTK light/dark preference, as switchwall.sh does (caelestia-cli sets it itself when it themes GTK)
+    if not cli_themes_gtk():
         subprocess.run(["gsettings", "set", "org.gnome.desktop.interface", "color-scheme",
                         "prefer-dark" if mode == "dark" else "prefer-light"], check=False)
+
+
+def cli_themes_gtk():
+    try:
+        return bool(json.load(open(CLI_CONFIG)).get("theme", {}).get("enableGtk"))
+    except (OSError, ValueError):
+        return False
 
 
 # caelestia-cli's Discord theme (cli.json enableDiscord) is written for every client it knows, installed or not.

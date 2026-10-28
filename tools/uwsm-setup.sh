@@ -50,7 +50,7 @@ for d in "$REPO"/dots/.config/systemd/user/*.slice.d; do
 done
 systemctl --user daemon-reload
 
-enable=(caelestia4-shell.service caelestia4-cliphist@text.service caelestia4-cliphist@image.service caelestia4-geoclue-agent.service)
+enable=(caelestia4-sni-watcher.service caelestia4-shell.service caelestia4-cliphist@text.service caelestia4-cliphist@image.service caelestia4-geoclue-agent.service)
 command -v fcitx5 >/dev/null && enable+=(caelestia4-fcitx5.service)
 command -v easyeffects >/dev/null && enable+=(caelestia4-easyeffects.service)
 command -v kdeconnectd >/dev/null && enable+=(caelestia4-kdeconnectd.service caelestia4-kdeconnect-indicator.service)

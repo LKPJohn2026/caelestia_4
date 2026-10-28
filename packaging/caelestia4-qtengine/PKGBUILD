@@ -1,0 +1,38 @@
+# caelestia_4: qtengine, the Qt platform theme Caelestia uses (QT_QPA_PLATFORMTHEME=qtengine): Qt apps take their
+# colours from ~/.config/qtengine/caelestia.colors and their style / icons / fonts from ~/.config/qtengine/config.json,
+# both written by caelestia-cli (cli.json enableQt). Replaces Plasma's platform theme (plasma-integration). Pinned to
+# one verified revision; Qt 6 only (nothing here uses Qt 5).
+
+_pkgname=qtengine
+_commit=c6b3f922c8c106d3264024be15054a3117250d6b # 0.2.3
+pkgname=caelestia4-qtengine
+pkgver=0.2.3
+pkgrel=1
+pkgdesc='qtengine Qt platform theme pinned for caelestia_4'
+arch=(x86_64)
+url='https://github.com/kossLAN/qtengine'
+license=('BSD-2-Clause')
+depends=(qt6-base kcolorscheme kconfig kconfigwidgets kiconthemes)
+makedepends=(cmake ninja git extra-cmake-modules)
+optdepends=('darkly: the widget style Caelestia picks'
+            'caelestia-cli: writes the colours and config')
+provides=("$_pkgname")
+conflicts=("$_pkgname" "$_pkgname-git" "$_pkgname-bin")
+source=("$_pkgname::git+$url.git#commit=$_commit")
+sha256sums=('SKIP')
+
+build() {
+  cd "$_pkgname"
+  cmake -GNinja -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_QT5=OFF \
+    -Wno-dev
+  cmake --build build
+}
+
+package() {
+  cd "$_pkgname"
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}
