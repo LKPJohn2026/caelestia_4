@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
-"""caelestia4: copy every KWallet entry into gnome-keyring's login keyring (docs/dev/kde-removal.md, phase 3).
+"""caelestia4: copy every KWallet secret into gnome-keyring's login keyring (docs/dev/kde-removal.md, phase 3).
 
-  tools/kwallet-to-keyring.py --dry-run   read KWallet and print what would be written (never the values)
-  tools/kwallet-to-keyring.py --write     write it; only when gnome-keyring owns org.freedesktop.secrets and the
-                                          default (login) keyring is unlocked
+  tools/kwallet-to-keyring.py --dry-run   list what would be written (never the values)
+  tools/kwallet-to-keyring.py --write     write it, each item read back and compared; only when gnome-keyring owns
+                                          org.freedesktop.secrets and its default (login) keyring is unlocked
 
-KWallet is read through kwalletd6's own D-Bus API (KWallet asks once to let this script open the wallet); values stay
-in memory. Entries made through the Secret Service (gh, Zed, Python keyring, the Assistant's keys...) are copied with
-their label, attributes and content type (~/.local/share/kwalletd/<wallet>_attributes.json). Chromium / Electron keys
-KWallet holds natively ("Brave Keys/Brave Safe Storage"...: what Brave and Claude decrypt their data with today) are
-also written the way they look them up through libsecret (chrome_libsecret_os_crypt_password_v2, application=...), so
-they keep working after the switch to --password-store=gnome-libsecret / XDG_CURRENT_DESKTOP=Hyprland. Where a
-libsecret copy of such a key already exists in KWallet, the native one wins (it is the one in use); whether the two
-match is printed. Other KWallet-only entries are kept as items with xdg:schema org.kde.kwallet.entry (folder, key).
+KWallet is read through its Secret Service daemon under its own name (ksecretd, org.kde.secretservicecompat): it shows
+every item there, KWallet's native entries included, and keeps that name when its org.freedesktop.secrets side is off
+(kwalletrc apiEnabled=false). kwalletd6's own API misses the items made through the Secret Service (gh, Zed, Python
+keyring, the Assistant's keys) and lists each folder several times. Values stay in memory.
+
+Items are copied with their label, attributes and content type. KWallet's native Chromium / Electron keys ("Brave
+Keys/Brave Safe Storage"...: what Brave and Claude decrypt their data with today) are also written the way libsecret
+looks them up (chrome_libsecret_os_crypt_password_v2, application=...), so they keep working with
+--password-store=gnome-libsecret; that copy replaces an older libsecret one, and whether the two matched is printed.
 """
-import json
-import os
 import sys
 
 import gi
@@ -23,144 +22,146 @@ import gi
 gi.require_version("Gio", "2.0")
 from gi.repository import Gio, GLib  # noqa: E402
 
-WALLET = "kdewallet"
-APPID = "caelestia4 kwallet-to-keyring"
-TYPES = {0: "unknown", 1: "password", 2: "stream", 3: "map"}
+KWALLET = "org.kde.secretservicecompat"
+KEYRING = "org.freedesktop.secrets"
+ROOT = "/org/freedesktop/secrets"
 V2 = "chrome_libsecret_os_crypt_password_v2"
 
 bus = Gio.bus_get_sync(Gio.BusType.SESSION)
 
 
-def kwallet(method, sig, args, ret):
-    return bus.call_sync("org.kde.kwalletd6", "/modules/kwalletd6", "org.kde.KWallet", method,
-                         GLib.Variant(sig, args), GLib.VariantType(ret), Gio.DBusCallFlags.NONE,
-                         120000, None).unpack()[0]  # 2 min: the access prompt waits for you
+def call(name, path, iface, method, sig, args, ret):
+    return bus.call_sync(name, path, iface, method, GLib.Variant(sig, args) if sig else None,
+                         GLib.VariantType(ret), Gio.DBusCallFlags.NONE, 60000, None).unpack()
+
+
+def prop(name, path, iface, key):
+    return call(name, path, "org.freedesktop.DBus.Properties", "Get", "(ss)", (iface, key), "(v)")[0]
 
 
 def owner(name):
     try:
-        pid = bus.call_sync("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
-                            "GetConnectionUnixProcessID", GLib.Variant("(s)", (name,)), GLib.VariantType("(u)"),
-                            Gio.DBusCallFlags.NONE, -1, None).unpack()[0]
+        pid = call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
+                   "GetConnectionUnixProcessID", "(s)", (name,), "(u)")[0]
         return open(f"/proc/{pid}/comm").read().strip()
     except (GLib.Error, OSError):
         return None
 
 
+def session(name):
+    """A "plain" session: the way libsecret talks to a keyring daemon on the session bus"""
+    return call(name, ROOT, "org.freedesktop.Secret.Service", "OpenSession", "(sv)",
+                ("plain", GLib.Variant("s", "")), "(vo)")[1]
+
+
+def unlock(name, coll):
+    """Unlock a collection; when the daemon wants a prompt (KWallet asks for the wallet password in its own dialog,
+    which never passes through here), show it and wait for the answer"""
+    _, prompt = call(name, ROOT, "org.freedesktop.Secret.Service", "Unlock", "(ao)", ([coll],), "(aoo)")
+    if prompt != "/":
+        loop, result = GLib.MainLoop(), {}
+
+        def done(_c, _s, _p, _i, _sig, params):
+            result["dismissed"] = params.unpack()[0]
+            loop.quit()
+
+        sub = bus.signal_subscribe(name, "org.freedesktop.Secret.Prompt", "Completed", prompt, None,
+                                   Gio.DBusSignalFlags.NONE, done)
+        print("KWallet is locked: enter the wallet password (your login password) in its dialog")
+        call(name, prompt, "org.freedesktop.Secret.Prompt", "Prompt", "(s)", ("",), "()")
+        loop.run()
+        bus.signal_unsubscribe(sub)
+        if result.get("dismissed"):
+            sys.exit("the unlock prompt was dismissed")
+    if prop(name, coll, "org.freedesktop.Secret.Collection", "Locked"):
+        sys.exit(f"{coll} is still locked")
+
+
 def read_kwallet():
-    """[(folder, key, type, bytes)] for every entry of the wallet"""
-    handle = kwallet("open", "(sxs)", (WALLET, 0, APPID), "(i)")
-    if handle < 0:
-        sys.exit("KWallet didn't open the wallet (access refused?)")
-    entries = []
-    try:
-        for folder in kwallet("folderList", "(is)", (handle, APPID), "(as)"):
-            for key in kwallet("entryList", "(iss)", (handle, folder, APPID), "(as)"):
-                kind = kwallet("entryType", "(isss)", (handle, folder, key, APPID), "(i)")
-                if kind == 1:
-                    data = kwallet("readPassword", "(isss)", (handle, folder, key, APPID), "(s)").encode()
-                else:
-                    data = bytes(kwallet("readEntry", "(isss)", (handle, folder, key, APPID), "(ay)"))
-                entries.append((folder, key, TYPES.get(kind, str(kind)), data))
-    finally:
-        kwallet("close", "(ibs)", (handle, False, APPID), "(i)")
-    return entries
-
-
-def plan(entries):
-    """[(label, attributes, content_type, value, note)] to write"""
-    path = os.path.expanduser(f"~/.local/share/kwalletd/{WALLET}_attributes.json")
-    meta = json.load(open(path)) if os.path.exists(path) else {}
-    items, notes = [], []
-    by_folder_key = {(f, k): v for f, k, _, v in entries}
-    # Electron / Chromium apps' libsecret names, from the libsecret copies KWallet already has (else lowercase)
-    v2_apps = {k: m["attributes"]["application"] for k, m in meta.get("Secret Service", {}).items()
-               if isinstance(m, dict) and m.get("attributes", {}).get("xdg:schema") == V2}
-    for folder, key, kind, value in entries:
-        m = meta.get(folder, {}).get(key) if isinstance(meta.get(folder), dict) else None
-        attrs = dict(m.get("attributes", {})) if isinstance(m, dict) else {}
-        ctype = (m or {}).get("$fdo_mime_type") or ("text/plain" if kind == "password" else "application/octet-stream")
-        if folder == "Secret Service" and attrs.get("xdg:schema") == V2:
-            continue  # written from the native key below
-        if not attrs:
-            attrs = {"xdg:schema": "org.kde.kwallet.entry", "folder": folder, "key": key}
-        items.append((key, attrs, ctype, value, f"{folder}/{key}"))
-        # A native "<App> Keys/<App> Safe Storage": also as libsecret looks it up
-        if folder.endswith(" Keys") and key.endswith(" Safe Storage"):
-            # The libsecret name: as the existing copy has it; else both the Electron form (the KWallet folder's
-            # name as is, e.g. Claude) and the browser form (lowercase, e.g. brave)
-            name = folder[:-len(" Keys")]
-            apps = [v2_apps[key]] if key in v2_apps else sorted({name, name.lower()})
-            old = by_folder_key.get(("Secret Service", key))
-            same = "no libsecret copy before" if old is None else ("same as the libsecret copy" if old == value
-                                                                  else "DIFFERENT from the libsecret copy (native kept)")
-            for app in apps:
-                items.append((key, {"xdg:schema": V2, "application": app}, "text/plain", value,
-                              f"{folder}/{key} -> libsecret application={app} ({same})"))
-    # libsecret-only keys with no native twin: keep them as they were
-    for key, m in meta.get("Secret Service", {}).items():
-        if isinstance(m, dict) and m.get("attributes", {}).get("xdg:schema") == V2 \
-                and not any(f.endswith(" Keys") and k == key for f, k, _, _ in entries):
-            value = by_folder_key.get(("Secret Service", key))
-            if value is not None:
-                items.append((key, dict(m["attributes"]), "text/plain", value, f"Secret Service/{key} (libsecret only)"))
+    """[(label, attributes, content_type, bytes)] of every item of KWallet's collections"""
+    if owner(KWALLET) is None:  # D-Bus starts ksecretd (org.kde.secretservicecompat.service)
+        call("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "StartServiceByName", "(su)",
+             (KWALLET, 0), "(u)")
+    sess = session(KWALLET)
+    items = []
+    for coll in prop(KWALLET, ROOT, "org.freedesktop.Secret.Service", "Collections"):
+        if prop(KWALLET, coll, "org.freedesktop.Secret.Collection", "Locked"):
+            unlock(KWALLET, coll)
+        for path in prop(KWALLET, coll, "org.freedesktop.Secret.Collection", "Items"):
+            label = prop(KWALLET, path, "org.freedesktop.Secret.Item", "Label")
+            attrs = dict(prop(KWALLET, path, "org.freedesktop.Secret.Item", "Attributes"))
+            _, _, value, ctype = call(KWALLET, path, "org.freedesktop.Secret.Item", "GetSecret", "(o)", (sess,),
+                                      "((oayays))")[0]
+            items.append((label, attrs, ctype or "text/plain", bytes(value)))
+    call(KWALLET, sess, "org.freedesktop.Secret.Session", "Close", None, None, "()")
     return items
 
 
-def secrets(path, iface, method, sig, args, ret):
-    return bus.call_sync("org.freedesktop.secrets", path, f"org.freedesktop.Secret.{iface}", method,
-                         GLib.Variant(sig, args) if sig else None, GLib.VariantType(ret), Gio.DBusCallFlags.NONE,
-                         -1, None).unpack()
+def plan(items):
+    """[(label, attributes, content_type, value, note)] to write"""
+    out = []
+    v2 = {(a.get("application") or ""): (label, value) for label, a, _, value in items if a.get("xdg:schema") == V2}
+    native_v2 = set()
+    for label, attrs, ctype, value in items:
+        if attrs.get("xdg:schema") == "org.qt.keychain" and attrs.get("server", "").endswith(" Keys") \
+                and attrs.get("user", "").endswith(" Safe Storage"):
+            # libsecret's name: as the existing libsecret copy has it, else both the Electron form (the KWallet
+            # folder's name as is, e.g. Claude) and the browser form (lowercase, e.g. brave)
+            name = attrs["server"][:-len(" Keys")]
+            known = [a for a in v2 if a.lower() == name.lower()]
+            for app in known or sorted({name, name.lower()}):
+                old = v2.get(app)
+                same = "no libsecret copy before" if old is None else (
+                    "same as the libsecret copy" if old[1] == value else "DIFFERENT from the libsecret copy: native kept")
+                out.append((attrs["user"], {"xdg:schema": V2, "application": app}, "text/plain", value,
+                            f"{label} -> libsecret application={app} ({same})"))
+                native_v2.add(app)
+    for label, attrs, ctype, value in items:
+        if attrs.get("xdg:schema") == V2 and attrs.get("application") in native_v2:
+            continue  # replaced by the native key above
+        out.append((label, attrs, ctype, value, label))
+    return out
 
 
 def write(items):
-    """Through the Secret Service D-Bus API itself (libsecret's Python binding only takes text values): a "plain"
-    session on the session bus, the way libsecret talks to a local keyring daemon"""
-    who = owner("org.freedesktop.secrets")
+    who = owner(KEYRING)
     if who != "gnome-keyring-d":
-        sys.exit(f"org.freedesktop.secrets is served by {who or 'nobody'}, not gnome-keyring: not writing")
-    root = "/org/freedesktop/secrets"
-    _, session = secrets(root, "Service", "OpenSession", "(sv)", ("plain", GLib.Variant("s", "")), "(vo)")
-    (coll,) = secrets(root, "Service", "ReadAlias", "(s)", ("default",), "(o)")
+        sys.exit(f"{KEYRING} is served by {who or 'nobody'}, not gnome-keyring: not writing")
+    sess = session(KEYRING)
+    (coll,) = call(KEYRING, ROOT, "org.freedesktop.Secret.Service", "ReadAlias", "(s)", ("default",), "(o)")
     if coll == "/":
-        sys.exit("gnome-keyring has no default keyring (log in again with pam_gnome_keyring)")
-    props = lambda name: bus.call_sync("org.freedesktop.secrets", coll, "org.freedesktop.DBus.Properties", "Get",
-                                       GLib.Variant("(ss)", ("org.freedesktop.Secret.Collection", name)),
-                                       GLib.VariantType("(v)"), Gio.DBusCallFlags.NONE, -1, None).unpack()[0]
-    if props("Locked"):
-        sys.exit("gnome-keyring's default keyring is locked (log in again with pam_gnome_keyring)")
-    print(f"writing to the \"{props('Label')}\" keyring ({coll})")
+        sys.exit("gnome-keyring has no default keyring (log in again: pam_gnome_keyring creates it)")
+    if prop(KEYRING, coll, "org.freedesktop.Secret.Collection", "Locked"):
+        sys.exit("gnome-keyring's default keyring is locked (log in again: pam_gnome_keyring unlocks it)")
+    print(f"writing to the \"{prop(KEYRING, coll, 'org.freedesktop.Secret.Collection', 'Label')}\" keyring ({coll})")
     for label, attrs, ctype, value, note in items:
         properties = {"org.freedesktop.Secret.Item.Label": GLib.Variant("s", label),
                       "org.freedesktop.Secret.Item.Attributes": GLib.Variant("a{ss}", attrs)}
-        item, prompt = secrets(coll, "Collection", "CreateItem", "(a{sv}(oayays)b)",
-                            (properties, (session, b"", value, ctype), True), "(oo)")
+        item, prompt = call(KEYRING, coll, "org.freedesktop.Secret.Collection", "CreateItem", "(a{sv}(oayays)b)",
+                            (properties, (sess, b"", value, ctype), True), "(oo)")
         if prompt != "/":
             sys.exit(f"gnome-keyring wants a prompt for {note}: unlock the keyring and run again")
         # Read it back and compare byte for byte
-        (secret,) = secrets(item, "Item", "GetSecret", "(o)", (session,), "((oayays))")
-        if bytes(secret[2]) != value:
+        if bytes(call(KEYRING, item, "org.freedesktop.Secret.Item", "GetSecret", "(o)", (sess,),
+                      "((oayays))")[0][2]) != value:
             sys.exit(f"read-back mismatch for {note}: stopped (KWallet is untouched)")
         print(f"  ok  {note} (read back, identical)")
-    secrets(session, "Session", "Close", None, None, "()")
+    call(KEYRING, sess, "org.freedesktop.Secret.Session", "Close", None, None, "()")
 
 
 def main():
     if len(sys.argv) != 2 or sys.argv[1] not in ("--dry-run", "--write"):
         sys.exit(__doc__)
-    entries = read_kwallet()
-    print(f"KWallet \"{WALLET}\": {len(entries)} entries in {len({f for f, *_ in entries})} folders "
-          f"(Secret Service now: {owner('org.freedesktop.secrets') or 'nobody'})")
-    for folder, key, kind, value in entries:
-        print(f"  {kind:8} {len(value):5d} B  {folder}/{key}")
-    items = plan(entries)
-    print(f"\n{len(items)} items for gnome-keyring:")
-    for label, attrs, ctype, value, note in items:
-        shown = ", ".join(f"{k}={v}" for k, v in attrs.items())
-        print(f"  {note}\n      label \"{label}\", {ctype}, {len(value)} B, {shown}")
+    items = read_kwallet()
+    print(f"KWallet: {len(items)} items ({KEYRING} now: {owner(KEYRING) or 'nobody'})")
+    out = plan(items)
+    print(f"\n{len(out)} items for gnome-keyring:")
+    for label, attrs, ctype, value, note in out:
+        shown = ", ".join(f"{k}={v}" for k, v in attrs.items()) or "(no attributes)"
+        print(f"  {note}\n      \"{label}\", {ctype}, {len(value)} B, {shown}")
     if sys.argv[1] == "--write":
         print()
-        write(items)
+        write(out)
 
 
 main()
