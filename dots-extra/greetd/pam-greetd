@@ -1,0 +1,16 @@
+#%PAM-1.0
+# caelestia4: greetd's PAM stack (/etc/pam.d/greetd, by tools/greetd-setup.sh): greetd's own + the wallet unlocks
+# Plasma's login manager had. KWallet opens with the login password until its keys are in gnome-keyring
+# (docs/dev/kde-removal.md, phase 3); the gnome-keyring lines do nothing until it is installed ("-": optional module).
+auth       required     pam_securetty.so
+auth       requisite    pam_nologin.so
+auth       include      system-local-login
+-auth      optional     pam_gnome_keyring.so
+-auth      optional     pam_kwallet5.so
+account    include      system-local-login
+password   include      system-local-login
+-password  optional     pam_gnome_keyring.so    use_authtok
+session    optional     pam_keyinit.so          force revoke
+session    include      system-local-login
+-session   optional     pam_gnome_keyring.so    auto_start
+-session   optional     pam_kwallet5.so         auto_start

@@ -1,0 +1,9 @@
+# caelestia4: greetd (login), installed to /etc/greetd/config.toml by tools/greetd-setup.sh. The greeter is ReGreet
+# running in a Hyprland of its own (hyprland.lua, as the "greeter" user): it keeps the monitor's 1.5 scale, which
+# cage can't set. greetd starts the picked session (Hyprland (uwsm-managed)) once that Hyprland exits.
+[terminal]
+vt = 1
+
+[default_session]
+command = "env AQ_DRM_DEVICES=@AQ_DRM_DEVICES@ Hyprland -c /etc/greetd/hyprland.lua"
+user = "greeter"
