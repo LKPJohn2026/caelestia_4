@@ -14,7 +14,7 @@
   schemes, special workspaces and window resizer, ported from upstream with their own components.
 - **On top of end-4's illogical-impulse** (by end-4, clsty and contributors): its services (AI chat, translator,
   booru browser, todo / timer, clipboard, emoji, music recognition, screen tools, region selector with OCR / Lens /
-  recording…), its matugen colour pipeline and terminal theming, its Hyprland (Lua) config and settings app, restyled
+  recording…), its matugen colour pipeline and terminal theming, its Hyprland (Lua) config, restyled
   where they show in the Caelestia UI.
 - **Glue**: adapters so Caelestia's UI reads end-4's services (one network monitor, one notification server, one
   colour pipeline), Caelestia's app themes fed from end-4's colours, a uwsm-managed session where the shell and every
