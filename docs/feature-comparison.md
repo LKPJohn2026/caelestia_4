@@ -36,7 +36,7 @@ Status legend:
 | Status icons: audio, mic, keyboard layout, network, Bluetooth, battery, Caps/Num lock | ✅ C | Volume icon enabled by default here |
 | Privacy (mic / screen in use) and updates icons | ✅ E→C | end-4 features added to Caelestia's status icons |
 | Popouts: audio (devices + per-app mixer), network (+ Wi-Fi password), Bluetooth, battery, keyboard layout, lock status, tray menus | ✅ C | per-app mixer is end-4's, in the audio popout |
-| System tray (compact mode, recolour, icon substitutions) | ✅ C | kded6 owns the tray watcher so icons survive shell restarts |
+| System tray (compact mode, recolour, icon substitutions) | ✅ C | caelestia4-sni-watcher owns the tray watcher so icons survive shell restarts (was kded6's, Plasma) |
 | Scroll actions on the bar (workspaces, volume, brightness) | ✅ C | |
 | Hide / show bar (Super+J), persistent or edge-reveal | ✅ C | |
 | "Open settings" from popouts → Nexus control centre | ✅ C | real Nexus, ported 2026-10-12 (see §1 Nexus) |

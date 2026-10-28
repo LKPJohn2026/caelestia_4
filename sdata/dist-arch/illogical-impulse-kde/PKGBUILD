@@ -1,16 +1,14 @@
 groups=(illogical-impulse)
 pkgname=illogical-impulse-kde
 pkgver=1.0
-pkgrel=4 # caelestia4: gnome-keyring dropped (KWallet provides org.freedesktop.secrets)
-pkgdesc='Illogical Impulse KDE Dependencies'
+pkgrel=5 # caelestia4: no Plasma (2026-10-27); gnome-keyring back as the Secret Service (KWallet's keys moved to it)
+pkgdesc='Illogical Impulse desktop services (was: KDE dependencies)'
 arch=(any)
 license=(None)
+# caelestia4: Bluetooth / network / polkit / settings are Caelestia's (Nexus, the bar, the Quickshell polkit agent), so
+# bluedevil, plasma-nm, polkit-kde-agent, dolphin and systemsettings are gone with Plasma. Install this only once
+# KWallet's keys are in gnome-keyring (docs/dev/kde-removal.md, phase 3): both claim org.freedesktop.secrets
 depends=(
-  bluedevil
-  # gnome-keyring  # caelestia4: removed; on a Plasma account KWallet owns the Secret Service
+  gnome-keyring
   networkmanager
-  plasma-nm
-  polkit-kde-agent
-  dolphin
-  systemsettings
 )

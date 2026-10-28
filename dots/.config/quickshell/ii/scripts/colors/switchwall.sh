@@ -14,37 +14,18 @@ terminalscheme="$SCRIPT_DIR/terminal/scheme-base.json"
 # caelestia4: preset colour schemes (Nexus > Wallpaper & style > Colours)
 SCHEME_SCRIPT="$CONFIG_DIR/modules/caelestia/utils/scripts/scheme.py"
 
-handle_kde_material_you_colors() {
-    # Check if Qt app theming is enabled in config
-    if [ -f "$SHELL_CONFIG_FILE" ]; then
-        enable_qt_apps=$(jq -r '.appearance.wallpaperTheming.enableQtApps' "$SHELL_CONFIG_FILE")
-        if [ "$enable_qt_apps" == "false" ]; then
-            return
-        fi
-    fi
-
-    # Map $type_flag to allowed scheme variants for kde-material-you-colors-wrapper.sh
-    local kde_scheme_variant=""
-    case "$type_flag" in
-        scheme-content|scheme-expressive|scheme-fidelity|scheme-fruit-salad|scheme-monochrome|scheme-neutral|scheme-rainbow|scheme-tonal-spot)
-            kde_scheme_variant="$type_flag"
-            ;;
-        *)
-            kde_scheme_variant="scheme-tonal-spot" # default
-            ;;
-    esac
-    "$XDG_CONFIG_HOME"/matugen/templates/kde/kde-material-you-colors-wrapper.sh --scheme-variant "$kde_scheme_variant"
+# caelestia4: GTK and Qt are themed by caelestia-cli (cli.json enableGtk / enableQt: gtk.css + dconf, qtengine), so
+# end-4's GTK settings stay out of its way. Qt no longer goes through Plasma (kde-material-you-colors, removed).
+caelestia4_cli_gtk() {
+    command -v caelestia >/dev/null &&
+        jq -e '.theme.enableGtk == true' "${XDG_CONFIG_HOME:-$HOME/.config}/caelestia/cli.json" >/dev/null 2>&1
 }
-
-# caelestia4: on an account shared with Plasma (marker file), don't touch settings Plasma also reads:
-# gsettings gtk-theme/color-scheme, kdeglobals (kde-material-you-colors), VS Code settings.json.
-caelestia4_shared_desktop() { [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/caelestia4/shared-desktop" ]]; }
 
 pre_process() {
     local mode_flag="$1"
     # Set GNOME color-scheme if mode_flag is dark or light
-    if caelestia4_shared_desktop; then
-        : # caelestia4: skip shared gsettings
+    if caelestia4_cli_gtk; then
+        : # caelestia4: caelestia-cli sets the GTK theme and colour scheme
     elif [[ "$mode_flag" == "dark" ]]; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
         gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
@@ -63,8 +44,8 @@ post_process() {
     local screen_height="$2"
     local wallpaper_path="$3"
 
-    if ! caelestia4_shared_desktop; then
-        handle_kde_material_you_colors &
+    # caelestia4: VS Code / Cursor follow Caelestia's extension (apptheme.py) when caelestia-cli is installed
+    if ! command -v caelestia >/dev/null; then
         "$SCRIPT_DIR/code/material-code-set-color.sh" &
     fi
 }

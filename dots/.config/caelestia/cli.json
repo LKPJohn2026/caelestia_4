@@ -9,12 +9,14 @@
         "enableBtop": true,
         "enableNvtop": true,
         "enableHtop": false,
-        "enableGtk": false,
-        "enableQt": false,
+        "enableGtk": true,
+        "enableQt": true,
         "enableWarp": false,
         "enableChromium": false,
         "enableZed": true,
         "enableCava": false,
-        "postHook": "\"$HOME/.config/quickshell/ii/modules/caelestia/utils/scripts/scheme.py\" bridge"
+        "postHook": "\"$HOME/.config/quickshell/ii/modules/caelestia/utils/scripts/scheme.py\" bridge",
+        "iconThemeDark": "breeze-dark",
+        "iconThemeLight": "breeze"
     }
 }

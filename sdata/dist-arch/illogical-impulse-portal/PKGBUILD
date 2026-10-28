@@ -1,13 +1,12 @@
 groups=(illogical-impulse)
 pkgname=illogical-impulse-portal
 pkgver=1.0
-pkgrel=3
+pkgrel=4 # caelestia4: KDE's portal goes with Plasma; Wormhole's FileChooser with GTK's as the fallback
 pkgdesc='Illogical Impulse XDG Desktop Portals'
 arch=(any)
 license=(None)
 depends=(
   xdg-desktop-portal
-  xdg-desktop-portal-kde
   xdg-desktop-portal-gtk
   xdg-desktop-portal-hyprland
 )
