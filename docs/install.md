@@ -53,7 +53,8 @@ configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when 
 
 ## 3. One-time choices after the first login
 
-- **Settings app** (Super+I): appearance, desktop widgets, bar, dock, idle times, apps.
+- **Settings** (Super+I): Nexus, Caelestia's control centre; it has every row end-4's settings app had (that app
+  was removed 2026-10-27).
 - **Colours**: Nexus → Wallpaper & style → Colours: follow the wallpaper, or a preset scheme.
 - **Editors / apps themed by Caelestia's integrations**: pick the theme named **Caelestia** once in VS Code / Cursor /
   VSCodium and Zed; restart Zen once.
@@ -72,7 +73,9 @@ git pull
 tools/install-main.sh
 ```
 
-Maintainers merge upstream with `tools/sync-end4.sh` (end-4) and `tools/sync-upstreams.sh` (Caelestia).
+Maintainers: Caelestia is merged with `tools/sync-upstreams.sh`. end-4 is a vendored library since 2026-10-27, not an
+upstream to merge: `tools/sync-end4.sh` lists its new commits (and open PRs) since `tools/end4-reviewed`, `pick SHA`
+applies the chosen ones (changes to files removed here stay removed), `mark` records the review.
 
 ## Undo
 
