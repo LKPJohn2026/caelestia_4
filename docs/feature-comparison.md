@@ -6,7 +6,8 @@ Upstreams checked (fresh clones, not the local copies):
 - caelestia-dots/caelestia `f4bb062` (2026-10-13): dotfiles (Hyprland, app themes, uwsm)
 - caelestia-dots/cli `289e208` (2026-10-13): the `caelestia` command
 
-caelestia_4 is in sync with end-4 (0 upstream commits not merged, rechecked three times 2026-10-27). Caelestia shell is vendored at
+end-4 is a vendored library since 2026-10-27 (reviewed up to 2f2a376, nothing newer; new commits are picked one by
+one with tools/sync-end4.sh, not merged). Caelestia shell is vendored at
 `4b1dae84` (2026-10-25, upstream main: 0 commits ahead, rechecked three times 2026-10-27); caelestia-cli is `5e804b1` (packaging/caelestia4-cli). Since 29fcf69a: sidebar
 hover fixes + Nexus "Show on hover", `caelestia:toggleDnd`, CachingImage → Visual (file dialog icons stay on
 Quickshell's IconImage), video previews play on hover, the plugin unloads idle media players. Equivalent: upstream's
@@ -147,7 +148,7 @@ Status legend:
 | `caelestia emoji` (+ fetch glyph data) | ✅ C | launcher `:` |
 | `caelestia wallpaper` (set / random / size filter / preview) | 🔁 Equivalent | switchwall.sh, random wallpaper fetch with size + shape filters |
 | `caelestia resizer`: auto-resize / float / centre / PiP rules per window | ✅ | hyprland/resizer.lua (upstream's Lua listeners): picture-in-picture floated, pinned, ¼ screen height, bottom-right (also when the title comes late); Bitwarden popups; float_50_60/60_70/70_80 tags; Super+Alt+Backslash PiP, Ctrl+Super+Alt+Backslash reset size |
-| `caelestia install` / `update` | 🔁 Equivalent | tools/install-main.sh, tools/sync-end4.sh |
+| `caelestia install` / `update` | 🔁 Equivalent | tools/install-main.sh; tools/sync-upstreams.sh (Caelestia), tools/sync-end4.sh (picks end-4 commits) |
 | Hyprland config: animations, decoration, gestures, groups, input, rules | 🔁 Equivalent | end-4's Hyprland config + Settings > Windows / Input |
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
