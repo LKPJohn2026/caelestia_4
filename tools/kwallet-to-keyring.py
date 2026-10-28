@@ -116,6 +116,13 @@ def plan(items):
                 out.append((attrs["user"], {"xdg:schema": V2, "application": app}, "text/plain", value,
                             f"{label} -> libsecret application={app} ({same})"))
                 native_v2.add(app)
+                # A different older libsecret key encrypted what the app wrote while it used libsecret: kept under
+                # another schema (no app looks it up), in case that data is wanted back
+                if old is not None and old[1] != value:
+                    out.append((f"{old[0]} (replaced libsecret key)",
+                                {"xdg:schema": "org.caelestia4.replaced", "application": app,
+                                 "replaced-schema": V2}, "text/plain", old[1],
+                                f"the older libsecret {old[0]} (application={app}) kept as a backup"))
     for label, attrs, ctype, value in items:
         if attrs.get("xdg:schema") == V2 and attrs.get("application") in native_v2:
             continue  # replaced by the native key above
