@@ -101,5 +101,12 @@ What Plasma provided here, and its replacement:
      shell's QML against the qmldir files left on disk, after the removal (only that module was missing), and the
      removed packages' /usr/bin commands (from pacman.log + the package cache) against the repo: only
      switchwall.sh's kdialog file picker (its no-image path, not used by Nexus) is left.
-5. **Clean up**: the shared-desktop marker file, the plasma-* units in execs.lua / uwsm-setup.sh, then (weeks later)
-   `~/.local/share/kwalletd/` and Plasma's files in ~/.config.
+5. **Clean up** (done 2026-10-28): the shared-desktop marker gone (install-main.sh removes it instead of creating it;
+   execs.lua no longer starts gnome-keyring, PAM does), the kde-material-you-colors config and its window rules,
+   switchwall.sh's kdialog picker replaced by `scripts/caelestia4/pick-file.py` (GTK 4's FileDialog through the
+   portal, so Wormhole; Nexus' "system file dialog" wallpaper option uses it), login-screen notes and the docs
+   (README, install.md "Without Plasma", uwsm.md). Left for later, by hand: Plasma's files in the home folder (~60 MB,
+   mostly caches: ~/.cache/plasma*, kwin*, ~/.config/plasma*, kwinrc, kglobalshortcutsrc, ~/.local/share/plasma,
+   kactivitymanagerd), KWallet's wallet (~/.local/share/kwalletd: every key is in gnome-keyring), the profile
+   backups (~/caelestia4-backups) and Brave's `*.caelestia4-bak` files. Kept on purpose: ~/.config/kdeglobals (KDE
+   apps' settings) and kwalletrc's apiEnabled=false (kwallet stays installed as kio's library).

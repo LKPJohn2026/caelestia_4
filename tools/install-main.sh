@@ -4,8 +4,6 @@
 # - Backs up every path it replaces to ~/.local/state/caelestia4/backup-<time>/
 # - Never overwrites existing user configs for fuzzel/kitty/foot/wlogout/portals (copies only if missing/empty)
 # - Keeps ~/.config/hypr/custom/, monitors.lua, workspaces.lua on re-runs
-# - Creates ~/.config/caelestia4/shared-desktop: tells patched end-4 code to leave Plasma's settings alone
-#   (no gnome-keyring start, no gsettings gtk-theme, no kdeglobals, no VS Code settings.json)
 # Re-run safely to update after a `git pull` (tools/stage-for-test.sh is only for test users).
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -46,8 +44,8 @@ copy_if_missing() { # copy_if_missing <src> <dst>: only if dst missing or an emp
 # ---- Caelestia plugin (user-local) ----
 [[ -d "$HOME/.local/lib/qt6/qml/Caelestia" ]] || "$REPO/tools/build-caelestia-plugin.sh"
 
-# ---- marker: shared Plasma account ----
-mkdir -p "$CFG/caelestia4"; touch "$CFG/caelestia4/shared-desktop"
+# caelestia4: the shared-desktop marker (an account shared with Plasma) is gone with Plasma (docs/dev/kde-removal.md)
+mkdir -p "$CFG/caelestia4"; rm -f "$CFG/caelestia4/shared-desktop"
 printf '%s\n' "$REPO" > "$CFG/caelestia4/repo" # caelestia4: where this clone is (Nexus > Updates checks it for new commits)
 
 # ---- Quickshell config (ours) ----

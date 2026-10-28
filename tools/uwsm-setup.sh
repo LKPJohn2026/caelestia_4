@@ -66,8 +66,8 @@ rmdir "$CFG/systemd/user/$TARGET.wants" 2>/dev/null || true
 systemctl --user daemon-reload
 
 # Private copy of hyprland.desktop for uwsm ("uwsm start … hyprland.desktop" looks in ~/.local/share first). The login
-# screen (Plasma Login Manager, its own user) lists every file in /usr/share/wayland-sessions and ignores NoDisplay/
-# Hidden, so hiding the plain "Hyprland" entry means removing the system copy; this one keeps uwsm working.
+# screen (ReGreet, as the greeter user) lists every file in /usr/share/wayland-sessions, so hiding the plain
+# "Hyprland" entry means removing the system copy; this one keeps uwsm working.
 mkdir -p "$HOME/.local/share/wayland-sessions"
 [[ -e "$HOME/.local/share/wayland-sessions/hyprland.desktop" ]] || install -m644 "$REPO/dots-extra/uwsm/hyprland.desktop" "$HOME/.local/share/wayland-sessions/hyprland.desktop"
 say "uwsm compositor entry: ~/.local/share/wayland-sessions/hyprland.desktop"

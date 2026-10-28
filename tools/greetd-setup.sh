@@ -97,8 +97,7 @@ say "installed /etc/greetd, /etc/pam.d/greetd (greetd's own kept as greetd.caele
 
 cat <<'EOF'
 
-Switch the login screen (then reboot):
-  sudo systemctl disable plasmalogin.service && sudo systemctl enable greetd.service
-Back to Plasma's (from a TTY, Ctrl+Alt+F2):
-  sudo systemctl disable greetd.service && sudo systemctl enable plasmalogin.service
+If greetd isn't the login screen yet (then reboot):
+  sudo systemctl enable greetd.service
+If the login screen doesn't come up: Ctrl+Alt+F2, log in, journalctl -b -u greetd and /var/log/regreet/log
 EOF
