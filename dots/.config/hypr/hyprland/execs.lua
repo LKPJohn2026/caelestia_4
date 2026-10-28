@@ -6,8 +6,9 @@ hl.on("hyprland.start", function ()
         hl.exec_cmd("notify-send -u critical -a Hyprland 'Started without uwsm' 'This setup needs the \"Hyprland (uwsm-managed)\" session: log out and pick it at the login screen (or run: uwsm start hyprland.desktop).'")
         return
     end
-    -- packaged units: no Plasma-excluding condition possible (Plasma uses plasma-kwallet-pam too), so start here
-    hl.exec_cmd("systemctl --user start hypridle.service plasma-kwallet-pam.service ydotool.service")
+    -- packaged units, started here (they can't take the uwsm-only condition); KWallet's PAM unit is gone with Plasma
+    -- (the keys are in gnome-keyring, which PAM unlocks itself: docs/dev/kde-removal.md)
+    hl.exec_cmd("systemctl --user start hypridle.service ydotool.service")
     hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
     if not is_file_exists(HOME .. "/.config/caelestia4/shared-desktop") then
         hl.exec_cmd(bg("gnome-keyring-daemon --start --components=secrets"))
