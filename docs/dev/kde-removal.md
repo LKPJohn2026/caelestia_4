@@ -30,6 +30,8 @@ What Plasma provided here, and its replacement:
      re-registered by themselves (KDE Connect, Fcitx, EasyEffects, Steam, CoolerControl); the two Electron apps
      (Claude, one other) register once and come back when they restart. The list survived a shell restart. Order
      matters: with no watcher, Quickshell takes the name itself and a later watcher fails (it exits 1 then).
+     Its unit first lacked `After=graphical-session.target`: systemd then ordered the target after it (WantedBy), and
+     with session-graphical.slice that made a stop cycle, so "uwsm stop" (logout) failed until it was added.
    - cli.json enableGtk / enableQt with the Breeze icons (install-main migrates an older cli.json once).
    - switchwall.sh / scheme.py: the shared-desktop marker (account shared with Plasma) became "caelestia-cli themes
      GTK" (cli.json enableGtk); kde-material-you-colors and its matugen wrapper removed; VS Code's material-code
