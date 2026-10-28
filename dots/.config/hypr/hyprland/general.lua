@@ -285,8 +285,8 @@ hl.config({
         session_lock_xray = true,
         initial_workspace_tracking = false,
         focus_on_activate = true,
-        -- caelestia4: XDG_CURRENT_DESKTOP is Hyprland:KDE on purpose (uwsm env: Chromium/Electron use KWallet, KDE
-        -- defaults as a fallback, Hyprland-only file associations); don't warn about it at every start
+        -- caelestia4: XDG_CURRENT_DESKTOP is set by the uwsm env (Hyprland; it was Hyprland:KDE while the keys were
+        -- in KWallet); don't warn about it at every start
         disable_xdg_env_checks = true
     },
 

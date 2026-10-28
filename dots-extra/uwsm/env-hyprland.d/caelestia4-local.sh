@@ -10,12 +10,11 @@ export QT_IM_MODULE=fcitx
 export QT_IM_MODULES="wayland;fcitx"
 export SDL_IM_MODULE=fcitx
 
-# Chromium/Electron pick their key store from XDG_CURRENT_DESKTOP: with KDE in the list they use KWallet like in
-# Plasma, so switching sessions doesn't log apps out. uwsm set it to "Hyprland" from the session entry before this
-# file runs. NOTE: with KDE in the list, XDG autostart's OnlyShowIn=KDE entries (plasmashell, powerdevil, …) would
-# match, which is why tools/uwsm-setup.sh masks XDG autostart for this compositor.
-export XDG_CURRENT_DESKTOP=Hyprland:KDE
-export KDE_SESSION_VERSION=6
+# No KDE in XDG_CURRENT_DESKTOP since Plasma went (2026-10-28): the keys moved from KWallet to gnome-keyring
+# (docs/dev/kde-removal.md, phase 3). Chromium / Electron pick their key store from it and an unknown desktop gets
+# the unencrypted "basic" store, so Brave, Vesktop and Claude are given --password-store=gnome-libsecret (their
+# flags files / launcher) by tools/keyring-switch.sh finish.
+export XDG_CURRENT_DESKTOP=Hyprland
 
 # Dates and times in Vietnamese (weekday / month names in the shell, end-4 widgets and apps of this session).
 # /etc/locale.conf sets every LC_* except LANG to en_US; only the time format changes here, numbers etc. stay en_US.
