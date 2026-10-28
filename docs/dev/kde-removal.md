@@ -94,5 +94,12 @@ What Plasma provided here, and its replacement:
    (Darkly and breeze need them), kwallet (kio needs it; it no longer holds org.freedesktop.secrets). Each blocker
    came from `pacman -Rsp` dry runs; the target list is one package per line, since fish splits `$(cat …)` by line
    only (a space-separated line failed as one name, harmlessly).
+   - Missed: the removal took `syntax-highlighting`, whose QML module (org.kde.syntaxhighlighting, the Assistant's
+     code blocks) the shell imports; nothing declares that dependency, so pacman couldn't know, and the earlier
+     compile check ran while it was installed. After the reboot the shell didn't load at all (one missing import
+     breaks the whole component tree). Reinstalled as explicit. The check that catches it: every `import` in the
+     shell's QML against the qmldir files left on disk, after the removal (only that module was missing), and the
+     removed packages' /usr/bin commands (from pacman.log + the package cache) against the repo: only
+     switchwall.sh's kdialog file picker (its no-image path, not used by Nexus) is left.
 5. **Clean up**: the shared-desktop marker file, the plasma-* units in execs.lua / uwsm-setup.sh, then (weeks later)
    `~/.local/share/kwalletd/` and Plasma's files in ~/.config.
