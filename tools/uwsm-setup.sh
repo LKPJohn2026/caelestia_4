@@ -9,8 +9,8 @@
 #           orders graphical-session.target after that target, and the units are After=graphical-session.target,
 #           so systemd found an ordering cycle and dropped every start job (shell, hypridle, …) at login.
 #  - app-graphical.slice drop-in: systemd-oomd kills the single app scope under sustained memory pressure
-#  - packaged units (hypridle, plasma-kwallet-pam, ydotool) are started by hypr/hyprland/execs.lua under uwsm; they
-#    can't take the condition (Plasma uses plasma-kwallet-pam too)
+#  - packaged units (hypridle, ydotool) are started by hypr/hyprland/execs.lua under uwsm; they can't take the
+#    condition
 #  - XDG autostart masked for this compositor only: with XDG_CURRENT_DESKTOP=Hyprland:KDE it would start
 #    Plasma's OnlyShowIn=KDE entries (plasmashell, powerdevil, kglobalacceld, polkit-kde-agent, …)
 # The plain "Hyprland" session keeps working as before (the config checks CAELESTIA4_UWSM).
