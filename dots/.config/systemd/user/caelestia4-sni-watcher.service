@@ -5,7 +5,9 @@
 Description=Caelestia 4 system tray watcher (StatusNotifierWatcher)
 PartOf=graphical-session.target
 ConditionEnvironment=CAELESTIA4_UWSM=1
-After=graphical-session-pre.target
+# After the target, like the other session units: without it systemd orders graphical-session.target after this unit
+# (WantedBy), which with session-graphical.slice made a cycle that stopped "uwsm stop" (logout)
+After=graphical-session.target
 Before=caelestia4-shell.service
 
 [Service]
