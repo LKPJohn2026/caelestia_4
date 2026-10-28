@@ -74,6 +74,14 @@ What Plasma provided here, and its replacement:
      So the apps with a key get `--password-store=gnome-libsecret` explicitly: Brave (brave-origin-flags.conf),
      Vesktop (vesktop-flags.conf), Claude (its launcher copy in ~/.local/share/applications; session restore
      launches through .desktop entries, so it gets the flag too). Then `XDG_CURRENT_DESKTOP=Hyprland`.
+   - What went wrong the first time (2026-10-28): the backup of each older libsecret key kept `application=...`.
+     Chromium's libsecret schema is DONT_MATCH_NAME (it looks keys up by application alone), so Brave picked the
+     backup: the cookies it couldn't decrypt were dropped (sites logged out), new ones were written with that key,
+     its passwords (native key) didn't open. Found by decrypting copies of the profile's databases with each
+     candidate key (counts only). Fix: the backups carry `replaced-application` instead; the 57 values Brave wrote
+     with the old key (55 cookies, 2 search-engine url hashes) re-encrypted under the native key with Brave closed,
+     each database backed up as `*.caelestia4-bak` first. Claude's cookies were on the right key; its sign-in was
+     in the Secret portal's per-app secret, which gnome-keyring's portal doesn't read from KWallet's portal item.
    - Check after the next login: Brave's passwords and sessions, Claude, `gh auth status`, Zed, the Assistant's API
      keys, Python keyring. Undo: apiEnabled=true, the old flags, Hyprland:KDE, log out and in.
 4. **Remove packages** (`pacman -Rns -p` first): the plasma group (plasma-workspace, kwin, plasma-login-manager,
