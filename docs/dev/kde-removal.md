@@ -44,9 +44,15 @@ What Plasma provided here, and its replacement:
      installed in phase 4 only, gnome-keyring must not arrive before phase 3.
    - apps.taskManager btop (install-main migrates the old default), fallbacks without Kate / plasma-systemmonitor /
      Dolphin.
-2. **greetd + regreet**: `/etc/greetd/config.toml` (regreet in cage, session `uwsm start hyprland-uwsm.desktop`),
-   `/etc/pam.d/greetd` with both pam_kwallet5 and pam_gnome_keyring for the switch-over (the login keyring is created
-   with the login password at the first login), `systemctl disable plasmalogin && systemctl enable greetd`.
+2. **greetd + regreet** (`tools/greetd-setup.sh`, templates in `dots-extra/greetd/`): ReGreet runs in a Hyprland of
+   its own as "greeter" (`/etc/greetd/hyprland.lua`, the session's monitors and 1.5 scale, which cage can't set;
+   `AQ_DRM_DEVICES` for the NVIDIA card the monitor is on), `regreet; hyprctl dispatch 'hl.dsp.exit()'` so greetd
+   starts the session when it is done. ReGreet: adw-gtk3, Breeze icons, Bibata, Google Sans Flex (installed for every
+   user), Caelestia's GTK 4 colours, a copy of the wallpaper. `/etc/pam.d/greetd` adds pam_kwallet5 as Plasma's login
+   manager had, and pam_gnome_keyring lines that stay inert until gnome-keyring is installed: installing it now would
+   let it take org.freedesktop.secrets from KWallet at the next login, and apps reading keys through the Secret Service
+   (Claude, Zed, gh) would find an empty keyring. The script checks the greeter config (`Hyprland --verify-config`)
+   and leaves the switch to you: `systemctl disable plasmalogin && systemctl enable greetd`.
 3. **Keys to gnome-keyring**: a script reads every KWallet folder and entry over its D-Bus API (one KWallet access
    prompt; values stay in memory), a user D-Bus service override points org.freedesktop.secrets at
    gnome-keyring-daemon, ksecretd is stopped, the items are written to the login keyring with their attributes. Brave's
