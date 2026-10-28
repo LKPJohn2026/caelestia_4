@@ -116,11 +116,12 @@ def plan(items):
                 out.append((attrs["user"], {"xdg:schema": V2, "application": app}, "text/plain", value,
                             f"{label} -> libsecret application={app} ({same})"))
                 native_v2.add(app)
-                # A different older libsecret key encrypted what the app wrote while it used libsecret: kept under
-                # another schema (no app looks it up), in case that data is wanted back
+                # A different older libsecret key encrypted what the app wrote while it used libsecret: kept, in case
+                # that data is wanted back. Without an "application" attribute: Chromium's schema is DONT_MATCH_NAME,
+                # it looks the key up by application alone, so a backup with it would be picked instead (it was)
                 if old is not None and old[1] != value:
                     out.append((f"{old[0]} (replaced libsecret key)",
-                                {"xdg:schema": "org.caelestia4.replaced", "application": app,
+                                {"xdg:schema": "org.caelestia4.replaced", "replaced-application": app,
                                  "replaced-schema": V2}, "text/plain", old[1],
                                 f"the older libsecret {old[0]} (application={app}) kept as a backup"))
     for label, attrs, ctype, value in items:
