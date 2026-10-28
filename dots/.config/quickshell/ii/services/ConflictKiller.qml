@@ -24,9 +24,9 @@ Singleton {
 
     Process {
         id: checkConflictsProc
-        // caelestia4: on a Plasma-shared account (~/.config/caelestia4/shared-desktop) kded6 is expected (Dolphin, KDE Connect,
-        // KWallet start it) and the tray works alongside it, so only notification daemons count as conflicts there.
-        command: ["bash", "-c", `if [ -f "\${XDG_CONFIG_HOME:-$HOME/.config}/caelestia4/shared-desktop" ]; then echo ";$(pidof mako dunst)"; else echo "$(pidof kded6);$(pidof mako dunst)"; fi`]
+        // caelestia4: kded6 is no tray conflict here (the tray watcher is caelestia4-sni-watcher; KDE apps may still
+        // start kded6), so only notification daemons count
+        command: ["bash", "-c", `echo ";$(pidof mako dunst)"`]
         stdout: StdioCollector {
             onStreamFinished: {
                 const output = this.text;

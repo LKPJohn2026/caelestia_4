@@ -28,8 +28,12 @@ unset _c4_dirs _c4_ifs _c4_dir
 
 # Themes
 export QT_QPA_PLATFORM="wayland;xcb"
-export QT_QPA_PLATFORMTHEME=kde
-export XDG_MENU_PREFIX=plasma-
+# Qt apps: Caelestia's platform theme (caelestia4-qtengine; caelestia-cli writes its colours and config, cli.json
+# enableQt). Was Plasma's (kde), which goes with Plasma
+export QT_QPA_PLATFORMTHEME=qtengine
+# Application menu for KDE apps' "Open with" (kbuildsycoca): archlinux-xdg-menu's arch-applications.menu (Plasma's
+# plasma-applications.menu goes with Plasma)
+export XDG_MENU_PREFIX=arch-
 
 # end-4 Python virtual environment
 export ILLOGICAL_IMPULSE_VIRTUAL_ENV="$HOME/.local/state/quickshell/.venv"

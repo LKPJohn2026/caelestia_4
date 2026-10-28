@@ -105,26 +105,16 @@ Tips:
   - Surely needed.
 
 ## illogical-impulse-kde
-- `bluedevil`
-  - Provide command `kcmshell6 kcm_bluetooth` used by Quickshell bluetooth functionality.
+caelestia4: no Plasma since 2026-10-27; bluedevil, plasma-nm, polkit-kde-agent, dolphin and systemsettings are
+replaced by Caelestia's own (Nexus, the bar, the Quickshell polkit agent).
 - `gnome-keyring`
-  - Provide executable `gnome-keyring-daemon`, used in Hyprland and Quickshell config.
+  - The Secret Service (org.freedesktop.secrets): browsers' and apps' keys, the Assistant's API keys.
 - `networkmanager`
   - Basic component.
-- `plasma-nm`
-  - Provide command `kcmshell6 kcm_networkmanagement` used by Quickshell network functionality.
-- `polkit-kde-agent`
-  - Basic component.
-- `dolphin`
-  - Used in Hyprland and Quickshell config.
-- `systemsettings`
-  - Used in Hyprland `keybinds.conf`.
 
 
 ## illogical-impulse-portal
 - `xdg-desktop-portal`
-  - Basic component.
-- `xdg-desktop-portal-kde`
   - Basic component.
 - `xdg-desktop-portal-gtk`
   - Basic component.

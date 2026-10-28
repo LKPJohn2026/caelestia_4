@@ -135,15 +135,17 @@ python3 - "$CFG/matugen/config.toml" <<'PY'
 import re, sys, pathlib
 p = pathlib.Path(sys.argv[1]); s = p.read_text()
 s = re.sub(r'\[templates\.gtk[34]\]\n(?:[^\[\n].*\n?)*', '', s)
-p.write_text("# caelestia4: gtk3/gtk4 templates removed (gtk.css is shared with Plasma)\n" + s)
+p.write_text("# caelestia4: gtk3/gtk4 templates removed (gtk.css is caelestia-cli's, cli.json enableGtk)\n" + s)
 PY
 say "installed $CFG/matugen (no GTK templates)"
 
 # ---- small app configs: only if the user has none ----
 for d in fuzzel kitty foot wlogout; do copy_if_missing "$DOTS/$d" "$CFG/$d"; done
 copy_file_if_missing "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf"
-# caelestia4: Open/Save dialogs moved from KDE to Wormhole (with KDE as the fallback); only the old default is changed
-sed -i 's/^org\.freedesktop\.impl\.portal\.FileChooser = kde$/org.freedesktop.impl.portal.FileChooser = wormhole;kde/' \
+# caelestia4: Open/Save dialogs moved from KDE to Wormhole, then the fallback and the KDE-only interfaces (Background,
+# Clipboard, Usb, Wallpaper) off KDE's portal, which goes with Plasma; only the old defaults are changed
+sed -i -e 's/^org\.freedesktop\.impl\.portal\.FileChooser = \(wormhole;\)\?kde$/org.freedesktop.impl.portal.FileChooser = wormhole;gtk/' \
+    -e 's/^\(org\.freedesktop\.impl\.portal\.\(Background\|Clipboard\|Usb\|Wallpaper\)\) = kde$/\1 = none/' \
     "$CFG/xdg-desktop-portal/hyprland-portals.conf"
 # and the KDE pins (Background, Clipboard, Usb, Wallpaper) added to an existing file, so Wormhole stays FileChooser-only
 python3 - "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf" <<'PY'
@@ -191,8 +193,18 @@ if changed or any(k not in cmds for k in want):
     json.dump(d, open(p, "w"), indent=4)
 PY
 # caelestia-cli makes the colours (wallpaper or preset scheme); its postHook (scheme.py bridge) passes them to end-4.
-# Only themes that write their own files are on (no GTK / Qt / htop / fuzzel / browser policy)
+# It themes GTK (gtk.css, dconf) and Qt (qtengine) too since Plasma's theming went (no htop / fuzzel / browser policy)
 copy_file_if_missing "$DOTS/caelestia/cli.json" "$CFG/caelestia/cli.json"
+# an older cli.json (GTK / Qt were Plasma's): turn them on once, with the Breeze icons (Caelestia's default is Papirus)
+python3 - "$CFG/caelestia/cli.json" <<'PY'
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p))
+t = d.setdefault("theme", {})
+if "iconThemeDark" not in t and "iconTheme" not in t:
+    t.update(enableGtk=True, enableQt=True, iconThemeDark="breeze-dark", iconThemeLight="breeze")
+    json.dump(d, open(p, "w"), indent=4)
+PY
 command -v caelestia >/dev/null || warn "caelestia-cli is not installed (yay -S caelestia-cli): colours fall back to end-4's matugen"
 mkdir -p "$HOME/.local/share/icons"; cp -n "$REPO/dots/.local/share/icons/illogical-impulse.svg" "$HOME/.local/share/icons/" 2>/dev/null || true
 
@@ -204,6 +216,15 @@ if [[ ! -f "$II" ]]; then
   printf '{\n  "panelFamily": "caelestia",\n  "conflictKiller": { "autoKillTrays": false, "autoKillNotificationDaemons": false },\n  "lock": { "useHyprlock": true }\n}\n' > "$II"
   say "created $II (panelFamily: caelestia)"
 fi
+# caelestia4: the task manager (session menu, Nexus > Apps) was Plasma's System Monitor: btop, unless the user set one
+python3 - "$II" <<'PY'
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p))
+if d.get("apps", {}).get("taskManager") == "plasma-systemmonitor --page-name Processes":
+    d["apps"]["taskManager"] = "kitty -1 btop"
+    json.dump(d, open(p, "w"), indent=2)
+PY
 
 # ---- dirs caelestia-cli would normally create ----
 mkdir -p "$STATE/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"
