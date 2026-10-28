@@ -55,10 +55,6 @@ hl.window_rule({match = {class = "^(Zotero)$" },                             flo
 hl.window_rule({match = {class = "^(Zotero)$" },                             size = {"(monitor_w*0.45)", "(monitor_h*0.45)"} })
 
 -- Move
--- kde-material-you-colors spawns a window when changing dark/light theme. This is to make sure it doesn't interfere at all.
-hl.window_rule({match = {class = "^(plasma-changeicons)$" }, float = true})
-hl.window_rule({match = {class = "^(plasma-changeicons)$" }, no_initial_focus = true})
-hl.window_rule({match = {class = "^(plasma-changeicons)$" }, move = {999999, 999999}})
 -- stupid dolphin copy
 hl.window_rule({match = {title = "^(Copying — Dolphin)$" }, move = {40, 80}})
 

@@ -10,9 +10,6 @@ hl.on("hyprland.start", function ()
     -- (the keys are in gnome-keyring, which PAM unlocks itself: docs/dev/kde-removal.md)
     hl.exec_cmd("systemctl --user start hypridle.service ydotool.service")
     hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
-    if not is_file_exists(HOME .. "/.config/caelestia4/shared-desktop") then
-        hl.exec_cmd(bg("gnome-keyring-daemon --start --components=secrets"))
-    end
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
 end)
 

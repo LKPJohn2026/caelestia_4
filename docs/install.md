@@ -1,8 +1,8 @@
 # Installing caelestia_4
 
 The result is a **Hyprland (uwsm-managed)** session on the login screen running the Caelestia-design shell on end-4's
-illogical-impulse, next to any other desktop you already use (it was built on an account that also runs KDE Plasma,
-and leaves Plasma's settings alone). Nothing here needs root except installing packages.
+illogical-impulse. It no longer shares an account with KDE Plasma: since 2026-10-28 it provides what Plasma did itself
+(login screen, key store, tray, Qt / GTK theming; see below). Nothing here needs root except installing packages.
 
 > [!WARNING]
 > Read the scripts before running them. Take a snapshot first if your system supports it (`snapper`, Timeshift…).
@@ -47,9 +47,7 @@ Log out and pick **Hyprland (uwsm-managed)**. The shell runs as the `caelestia4-
 (`systemctl --user restart caelestia4-shell`, or Ctrl+Super+R).
 
 `install-main.sh` never overwrites your own files: `~/.config/hypr/custom/`, `monitors.lua`, `workspaces.lua` and the
-configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when missing. It also creates
-`~/.config/caelestia4/shared-desktop`, which tells the patched end-4 scripts to leave other desktops' settings alone
-(see below). Delete that file on an account that only uses this session to get end-4's normal behaviour back.
+configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when missing.
 
 ## 3. One-time choices after the first login
 
@@ -84,18 +82,21 @@ applies the chosen ones (changes to files removed here stay removed), `mark` rec
   `~/.config/{quickshell/ii,hypr,matugen,illogical-impulse,caelestia4}` and the `caelestia4-*` units in
   `~/.config/systemd/user/`.
 
-## Sharing an account with KDE Plasma
+## Without Plasma
 
-| Shared thing | Risk | Protection |
-|---|---|---|
-| Secret Service (`org.freedesktop.secrets`) | end-4 starts gnome-keyring, so KWallet logins become unreachable | mask `gnome-keyring-daemon.socket/.service` for the user (the installer warns if it isn't); end-4's keyring start is skipped with the marker |
-| `~/.config/kdeglobals` | `switchwall.sh` (kde-material-you-colors) rewrites it | skipped with the marker |
-| GTK theme (`gsettings gtk-theme/color-scheme`) | set on every wallpaper change | skipped with the marker |
-| `~/.config/gtk-{3,4}.0/gtk.css` | matugen GTK templates overwrite them | not in the installed matugen config; only a Thunar-only `@import "thunar.css"` is added |
-| VS Code settings | end-4's colour script edits `settings.json` | skipped with the marker; the Caelestia extension themes it instead |
-| fish, starship, mpv, Konsole, Dolphin, Kvantum, Darkly configs | end-4 ships them | not installed |
-| Open terminals | `applycolor.sh` sends colour codes to every terminal, Plasma's too if both sessions run | cosmetic |
-| kded6 | end-4's conflict killer could stop it (Plasma needs it; it also serves the tray) | disabled |
-| File associations | | Thunar is the folder handler only in this session (`~/.config/hyprland-mimeapps.list`) |
+Plasma was removed on 2026-10-28 (docs/dev/kde-removal.md has the plan, what went wrong and how it was checked). What
+it provided, and what does it here:
 
-KDE / Qt apps in this session use `QT_QPA_PLATFORMTHEME=kde`, so they keep Plasma's colours.
+| Plasma had | Here |
+|---|---|
+| Login screen (plasmalogin) | greetd + ReGreet in a Hyprland of its own: `tools/greetd-setup.sh` (re-run it to refresh its colours / wallpaper) |
+| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by greetd's PAM; `tools/keyring-switch.sh` moved KWallet's keys |
+| Tray registry (kded6) | `caelestia4-sni-watcher` (docs/uwsm.md) |
+| Qt theme / colours | qtengine (`packaging/caelestia4-qtengine`) + Darkly, colours from caelestia-cli (cli.json enableQt) |
+| GTK theme / colours | adw-gtk3 + caelestia-cli's gtk.css (enableGtk) |
+| KDE portal | Wormhole's Open / Save dialogs, GTK's as the fallback |
+
+Brave, Vesktop and Claude read their keys with `--password-store=gnome-libsecret` (their flags files / launcher):
+Chromium and Electron pick the key store from `XDG_CURRENT_DESKTOP`, and an unknown desktop (Hyprland) would give them
+the unencrypted "basic" store. Before removing packages, check what pacman can't see: QML imports
+(org.kde.syntaxhighlighting is one), commands the scripts call, Qt image plugins.

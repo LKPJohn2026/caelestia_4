@@ -37,8 +37,9 @@ A feature-by-feature comparison with both upstreams is in [docs/feature-comparis
 ## Status and requirements
 
 Built and used daily on **Arch-based systems** (CachyOS) with **Hyprland 0.55+** (the Lua config) under **uwsm**.
-It was made for one machine (an ultrawide 7680×2160 monitor at 1.5× scale, NVIDIA) on an account that also runs
-**KDE Plasma**, so it goes out of its way not to touch Plasma's settings. Other setups should work but are less tested.
+It was made for one machine (an ultrawide 7680×2160 monitor at 1.5× scale, NVIDIA), without KDE Plasma since
+2026-10-28 (greetd + ReGreet, gnome-keyring, its own tray watcher and Qt / GTK theming). Other setups should work but
+are less tested.
 
 You need: Hyprland ≥ 0.55, uwsm, a Quickshell build matching your Qt (the `caelestia4-quickshell` PKGBUILD pins one),
 end-4's dependency metapackages (`sdata/dist-arch`), `qt6-m3shapes-git`, matugen, and the build tools for the
