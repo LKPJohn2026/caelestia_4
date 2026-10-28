@@ -59,8 +59,12 @@ What Plasma provided here, and its replacement:
      API, which Brave / Claude / Vesktop use, stays), gnome-keyring unmasked (it was masked while the account was
      shared with Plasma), the Secret portal on gnome-keyring. At the next login pam_gnome_keyring creates the login
      keyring with the login password and gnome-keyring serves org.freedesktop.secrets; no race with ksecretd.
-   - `finish`: every KWallet entry into the login keyring through the Secret Service API (a "plain" session; read
-     back and compared byte for byte), values never printed. Secret Service items keep label, attributes and content
+   - `finish`: every KWallet item into the login keyring through the Secret Service API (a "plain" session; read
+     back and compared byte for byte), values never printed. KWallet is read through ksecretd under its own name
+     (org.kde.secretservicecompat): it lists all 14 items, native ones included; kwalletd6's own API lists each
+     folder six times and misses the Secret Service ones (gh, Zed, keyring, the Assistant). Tested: with
+     apiEnabled=false ksecretd drops org.freedesktop.secrets and keeps that name. A ksecretd started outside the
+     login is locked; the script then shows KWallet's own unlock prompt (the password never passes through it). Secret Service items keep label, attributes and content
      type; native "<App> Keys/<App> Safe Storage" keys are also written as libsecret looks them up
      (chrome_libsecret_os_crypt_password_v2, application = the existing libsecret copy's name, else both the
      Electron form "Claude" and the browser form "brave"); the native one wins over an older libsecret copy and
