@@ -14,7 +14,8 @@ codeEditor = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'windsur
 officeSoftware = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'wps' 'onlyoffice-desktopeditors' 'libreoffice'"
 textEditor = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'kate' 'gnome-text-editor' 'emacs'"
 volumeMixer = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'pavucontrol-qt' 'pavucontrol'"
-settingsApp = "XDG_CURRENT_DESKTOP=gnome ~/.config/hypr/hyprland/scripts/launch_first_available.sh 'qs -p ~/.config/quickshell/$qsConfig/settings.qml' 'systemsettings' 'gnome-control-center' 'better-control'"
+-- caelestia4: Nexus, Caelestia's settings app (end-4's settings app was removed: Nexus has all of its rows)
+settingsApp = "qs -c $qsConfig ipc call nexus open"
 taskManager = "~/.config/hypr/hyprland/scripts/launch_first_available.sh 'gnome-system-monitor' 'plasma-systemmonitor --page-name Processes' '@term btop'"
 
 workspaceGroupSize = 10

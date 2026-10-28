@@ -30,7 +30,6 @@ ShellRoot {
         Quickshell.watchFiles = false
         MaterialThemeLoader.reapplyTheme()
         Hyprsunset.load()
-        FirstRunExperience.load()
         ConflictKiller.load()
         Cliphist.refresh()
         Wallpapers.load()

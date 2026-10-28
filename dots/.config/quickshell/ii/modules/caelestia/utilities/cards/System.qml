@@ -9,6 +9,7 @@ import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
+import qs.modules.caelestia.nexus
 import qs.services as E4 // caelestia4: keep
 
 // caelestia4: end-4's sidebar system row (sidebarRight/SidebarRightContent SystemButtonRow) in Caelestia style:
@@ -55,10 +56,10 @@ StyledRect {
 
         SystemButton {
             icon: "tune"
-            tip: Tr.tr("end-4 settings")
+            tip: Tr.tr("Settings")
             onClicked: {
                 root.screenState.utilities = false;
-                E4.AppLauncher.exec(["qs", "-p", Quickshell.shellPath("settings.qml")]);
+                WindowFactory.create(); // Nexus
             }
         }
 
