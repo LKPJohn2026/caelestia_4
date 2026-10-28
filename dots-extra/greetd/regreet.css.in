@@ -1,0 +1,166 @@
+/* caelestia4: ReGreet in Caelestia's style, like its lock screen: the wallpaper dimmed and softened, a large clock
+   without a card, the login fields in a rounded card, pill buttons. tools/greetd-setup.sh fills the at-sign colour names
+   from the scheme (~/.local/state/caelestia/scheme.json) and installs it as /etc/greetd/regreet.css.
+   ReGreet's widgets have no CSS names: overlay > picture (wallpaper), frame:nth-child(2) (login card),
+   frame:nth-child(3) (clock), box at the bottom (notices, Reboot / Power Off). */
+
+window,
+overlay {
+    background-color: @background@;
+    font-family: "Google Sans Flex", sans-serif;
+}
+
+/* Wallpaper */
+overlay > picture {
+    filter: blur(28px) brightness(0.6) saturate(1.1);
+}
+
+/* Clock: no card; its text and sizes are the clock format in regreet.toml */
+overlay > frame:nth-child(3) {
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin-top: 120px;
+}
+
+overlay > frame:nth-child(3) label {
+    color: @onSurface@;
+    text-shadow: 0 2px 16px alpha(@shadow@, 0.55);
+}
+
+/* Login card */
+overlay > frame:nth-child(2) {
+    background-color: alpha(@surfaceContainer@, 0.82);
+    border: none;
+    border-radius: 32px;
+    box-shadow: 0 16px 48px alpha(@shadow@, 0.45);
+    padding: 18px 14px;
+}
+
+overlay > frame:nth-child(2) > grid label {
+    color: @onSurfaceVariant@;
+}
+
+/* The message ("Chào mừng trở lại!", PAM prompts, errors): the first label, across the card */
+overlay > frame:nth-child(2) > grid > label:first-child {
+    color: @onSurface@;
+    font-size: 1.25em;
+}
+
+/* Fields: pills */
+entry,
+passwordentry,
+combobox button.combo {
+    background-color: @surfaceContainerHighest@;
+    color: @onSurface@;
+    border: none;
+    border-radius: 999px;
+    box-shadow: none;
+    outline: none;
+    min-height: 44px;
+    padding: 0 18px;
+}
+
+entry:focus-within,
+passwordentry:focus-within {
+    box-shadow: inset 0 0 0 2px @primary@;
+}
+
+entry > text > selection,
+passwordentry > text > selection {
+    background-color: alpha(@primary@, 0.35);
+}
+
+entry image,
+passwordentry image {
+    color: @onSurfaceVariant@;
+}
+
+/* Buttons: pills; Login in the primary colour */
+button {
+    background-color: @surfaceContainerHighest@;
+    color: @onSurface@;
+    border: none;
+    border-radius: 999px;
+    box-shadow: none;
+    min-height: 40px;
+    padding: 0 22px;
+    font-weight: 500;
+}
+
+button:hover {
+    background-color: mix(@surfaceContainerHighest@, @onSurface@, 0.08);
+}
+
+button:active {
+    background-color: mix(@surfaceContainerHighest@, @onSurface@, 0.16);
+}
+
+button.suggested-action {
+    background-color: @primary@;
+    color: @onPrimary@;
+}
+
+button.suggested-action:hover {
+    background-color: mix(@primary@, @onPrimary@, 0.08);
+}
+
+button.suggested-action:active {
+    background-color: mix(@primary@, @onPrimary@, 0.16);
+}
+
+/* The edit toggles next to User / Session: round icon buttons */
+grid > button.toggle {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    background-color: transparent;
+    color: @onSurfaceVariant@;
+}
+
+grid > button.toggle:checked {
+    background-color: @secondaryContainer@;
+    color: @onSecondaryContainer@;
+}
+
+/* Reboot / Power Off: tonal pills on the wallpaper; red on hover */
+button.destructive-action {
+    background-color: alpha(@surfaceContainerHigh@, 0.82);
+    color: @onSurface@;
+    min-width: 140px;
+}
+
+button.destructive-action:hover {
+    background-color: @errorContainer@;
+    color: @onErrorContainer@;
+}
+
+/* Notices at the bottom */
+infobar,
+infobar > revealer > box {
+    background-color: alpha(@surfaceContainerHigh@, 0.92);
+    color: @onSurface@;
+    border: none;
+    border-radius: 999px;
+}
+
+/* User / session lists */
+popover > contents {
+    background-color: @surfaceContainer@;
+    color: @onSurface@;
+    border-radius: 20px;
+    box-shadow: 0 8px 28px alpha(@shadow@, 0.4);
+    padding: 6px;
+}
+
+popover modelbutton,
+popover row {
+    border-radius: 999px;
+    padding: 8px 16px;
+}
+
+popover modelbutton:hover,
+popover row:hover,
+popover row:selected {
+    background-color: alpha(@onSurface@, 0.08);
+}
