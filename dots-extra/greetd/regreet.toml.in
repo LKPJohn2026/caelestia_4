@@ -1,0 +1,26 @@
+# caelestia4: ReGreet (the login screen), installed to /etc/greetd/regreet.toml by tools/greetd-setup.sh. Colours:
+# regreet.css (Caelestia's scheme at setup time); the background is a copy of the wallpaper then (the greeter user
+# can't read your home folder). Re-run the script to refresh both.
+[background]
+path = "@BACKGROUND_PATH@"
+fit = "Cover"
+
+[GTK]
+application_prefer_dark_theme = @DARK@
+cursor_theme_name = "Bibata-Modern-Classic"
+cursor_blink = true
+font_name = "Google Sans Flex 16"
+icon_theme_name = "@ICON_THEME@"
+theme_name = "adw-gtk3@DARK_SUFFIX@"
+
+[commands]
+reboot = ["systemctl", "reboot"]
+poweroff = ["systemctl", "poweroff"]
+
+[appearance]
+greeting_msg = "Chào mừng trở lại!"
+
+[widget.clock]
+format = "%A, %d/%m  %H:%M"
+resolution = "500ms"
+locale = "@LOCALE@"
