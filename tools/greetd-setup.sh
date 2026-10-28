@@ -5,7 +5,7 @@
 #   /etc/greetd/config.toml       greetd: Hyprland (as "greeter") with ReGreet in it
 #   /etc/greetd/hyprland.lua      that Hyprland: your monitors and scale, no logo / news / animations
 #   /etc/greetd/regreet.toml      ReGreet: adw-gtk3, Breeze icons, Bibata cursor, Google Sans Flex, Vietnamese clock
-#   /etc/greetd/regreet.css       Caelestia's colours (the GTK 4 colours caelestia-cli wrote)
+#   /etc/greetd/regreet.css       Caelestia's style (dots-extra/greetd/regreet.css.in) in the scheme's colours
 #   /etc/greetd/background.*      a copy of the wallpaper (the greeter can't read your home folder)
 #   /etc/pam.d/greetd             + pam_kwallet5 (and pam_gnome_keyring, inert until phase 3)
 #   /usr/local/share/fonts/caelestia4/  Google Sans Flex for every user
@@ -67,12 +67,17 @@ config = open(os.path.join(src, "config.toml")).read()
 config = config.replace("env AQ_DRM_DEVICES=@AQ_DRM_DEVICES@ ", f"env AQ_DRM_DEVICES={aq} " if aq else "")
 open(os.path.join(out, "config.toml"), "w").write(config)
 
-# Colours: the GTK 4 CSS caelestia-cli writes (cli.json enableGtk), without its imports of your other files
+# Colours: the GTK 4 colours caelestia-cli writes (cli.json enableGtk, for adw-gtk3's own widgets), without its
+# imports of your other files, then Caelestia's style (regreet.css.in) with the scheme's colours filled in
 css = os.path.join(cfg, "gtk-4.0/gtk.css")
 lines = [l for l in open(css).read().splitlines() if not l.startswith("@import")] if os.path.exists(css) else []
+style = open(os.path.join(src, "regreet.css.in")).read()
+missing = sorted({m for m in re.findall(r"@([A-Za-z]+)@", style) if m not in colours})
+assert not missing, f"regreet.css.in: colours the scheme doesn't have: {missing}"
+style = re.sub(r"@([A-Za-z]+)@", lambda m: "#" + colours[m.group(1)], style)
 open(os.path.join(out, "regreet.css"), "w").write(
     "/* caelestia4: Caelestia's colours for ReGreet (tools/greetd-setup.sh, from ~/.config/gtk-4.0/gtk.css) */\n"
-    + "\n".join(lines) + "\n")
+    + "\n".join(lines) + "\n\n" + style)
 print(f"monitors: {monitors.count('hl.monitor')}, layout: {layout}, clock: {locale}, mode: {'dark' if dark else 'light'}, "
       f"background: {os.path.basename(wall) if bg_path else 'none'}, GPU: {aq or 'default'}")
 PY
