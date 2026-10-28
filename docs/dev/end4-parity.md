@@ -426,3 +426,27 @@ Logic stays end-4's (services, Persistent state, IPC, shortcuts, keys); the UI i
 - Gotchas found: Caelestia.Config's attached `Config` shadows end-4's `Config` regardless of import order (alias it,
   `CC.Tokens`); later imports win for same-named QML types (StyledText); an inline component named `Key` compiled in
   the compile check but failed at runtime ("Key is not a type") - always read the live log after deploying.
+
+## end-4 becomes a vendored library (2026-10-27)
+
+The shell is Caelestia's: every panel is Caelestia or restyled to it, and Nexus has every row of end-4's settings app.
+What is left of end-4 is a library the Caelestia UI runs on: services (wallpapers / switchwall.sh, AI, polkit, OSK,
+night light, translator, todo / timer, cliphist and launcher search, Hyprland data and config), `modules/common`,
+scripts, the Hyprland config and `illogical-impulse/config.json`. end-4 had no commits since 2026-10-11, and merging
+it costs a reconciliation each time, so it is no longer merged:
+
+- `tools/sync-end4.sh` reviews instead of merging: new upstream commits since `tools/end4-reviewed` with the files each
+  touches (kept / removed here) and the open PRs; `pick SHA...` applies commits without committing, keeps changes to
+  files removed here removed, and commits them signed as this repo's identity with the source in the message;
+  `mark` records the review. Tested in a scratch worktree: a commit already here is skipped, a kept file's change is
+  picked, a change to a file removed here (modify/delete) stays removed and is skipped.
+- Removed: end-4's settings app (`settings.qml`, `modules/settings/`, `modules/caelestia/settings/SettingsFrame.qml`),
+  the welcome app (`welcome.qml`) and `FirstRunExperience` (set end-4's default wallpaper and opened the welcome app
+  on first run; Caelestia's "Wallpaper missing?" screen covers a missing wallpaper), and 85 files nothing reached any
+  more (68 `modules/common/widgets`, 7 unused quick toggle models, 3 functions, 2 models, `LauncherApps`,
+  `MprisController`, the end-4 OSK window, `WavyTopRect`). Found by reachability from the entry points (shell.qml,
+  GlobalStates, ReloadPopup, killDialog) by name, comments ignored; `shapes/` is end-4's rounded-polygon submodule
+  and stays whole.
+- Super+I and the utilities' System card open Nexus; Shift+Super+Alt+/ (welcome app) is gone.
+- Checked: every remaining non-singleton QML file compiles (`Qt.createComponent` on a scratch copy importing every
+  module; a negative test with a used widget removed fails as it should), then the live log after deploying.
