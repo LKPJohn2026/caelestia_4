@@ -84,10 +84,15 @@ What Plasma provided here, and its replacement:
      in the Secret portal's per-app secret, which gnome-keyring's portal doesn't read from KWallet's portal item.
    - Check after the next login: Brave's passwords and sessions, Claude, `gh auth status`, Zed, the Assistant's API
      keys, Python keyring. Undo: apiEnabled=true, the old flags, Hyprland:KDE, log out and in.
-4. **Remove packages** (`pacman -Rns -p` first): the plasma group (plasma-workspace, kwin, plasma-login-manager,
-   xdg-desktop-portal-kde, kwallet-pam, polkit-kde-agent, spectacle...), Dolphin, Konsole, Kate, Gwenview, Filelight,
-   KCalc, Partition Manager, KWallet Manager, kio-admin, kdialog, signon-kwallet-extension, kde-gtk-config,
-   kinfocenter; the pam_kwallet5 lines in greetd's PAM. Kept: Ark, Haruna, KDE Connect, breeze-icons; kwallet stays
-   as kio's dependency, without org.freedesktop.secrets (the override).
+4. **Remove packages** (done 2026-10-28): first the profiles backed up to `~/caelestia4-backups/<date>/` (Brave's
+   and Claude's, caches and Claude's VM bundles left out, SQLite files through sqlite3's online backup; KWallet's and
+   gnome-keyring's files), end-4's illogical-impulse-kde 1.0-5 (gnome-keyring, networkmanager) and -portal 1.0-4
+   (no KDE portal) installed, qt6-imageformats and kimageformats marked explicit (WebP / AVIF wallpapers; -s would
+   have taken them), greetd's PAM without pam_kwallet5, KWallet's PAM unit no longer started (execs.lua). Then
+   `pacman -Rsn` on the plasma group and the KDE apps except Ark, KDE Connect and Haruna (61 targets, 135 packages,
+   ~657 MiB). Kept as libraries of what stays: breeze, breeze-cursors, kdecoration, libplasma, plasma-activities
+   (Darkly and breeze need them), kwallet (kio needs it; it no longer holds org.freedesktop.secrets). Each blocker
+   came from `pacman -Rsp` dry runs; the target list is one package per line, since fish splits `$(cat …)` by line
+   only (a space-separated line failed as one name, harmlessly).
 5. **Clean up**: the shared-desktop marker file, the plasma-* units in execs.lua / uwsm-setup.sh, then (weeks later)
    `~/.local/share/kwalletd/` and Plasma's files in ~/.config.
