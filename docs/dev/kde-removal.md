@@ -53,13 +53,25 @@ What Plasma provided here, and its replacement:
    let it take org.freedesktop.secrets from KWallet at the next login, and apps reading keys through the Secret Service
    (Claude, Zed, gh) would find an empty keyring. The script checks the greeter config (`Hyprland --verify-config`)
    and leaves the switch to you: `systemctl disable plasmalogin && systemctl enable greetd`.
-3. **Keys to gnome-keyring**: a script reads every KWallet folder and entry over its D-Bus API (one KWallet access
-   prompt; values stay in memory), a user D-Bus service override points org.freedesktop.secrets at
-   gnome-keyring-daemon, ksecretd is stopped, the items are written to the login keyring with their attributes. Brave's
-   libsecret item gets the value of `Brave Keys/Brave Safe Storage` (the key its data is encrypted with); the script
-   compares it with the older libsecret copy without printing either. Then Brave `--password-store=gnome-libsecret`,
-   `XDG_CURRENT_DESKTOP=Hyprland`, and a check of Brave's passwords and sessions, Claude, `gh auth status`, Zed, the
-   Assistant's API keys and Python keyring. Undo: remove the override, put the Brave flag back.
+3. **Keys to gnome-keyring** (`tools/keyring-switch.sh`, `tools/kwallet-to-keyring.py`), in two logins so KWallet
+   stays the source until everything is checked:
+   - `prepare`: KWallet's Secret Service API off (kwalletrc `[org.freedesktop.secrets] apiEnabled=false`; its own
+     API, which Brave / Claude / Vesktop use, stays), gnome-keyring unmasked (it was masked while the account was
+     shared with Plasma), the Secret portal on gnome-keyring. At the next login pam_gnome_keyring creates the login
+     keyring with the login password and gnome-keyring serves org.freedesktop.secrets; no race with ksecretd.
+   - `finish`: every KWallet entry into the login keyring through the Secret Service API (a "plain" session; read
+     back and compared byte for byte), values never printed. Secret Service items keep label, attributes and content
+     type; native "<App> Keys/<App> Safe Storage" keys are also written as libsecret looks them up
+     (chrome_libsecret_os_crypt_password_v2, application = the existing libsecret copy's name, else both the
+     Electron form "Claude" and the browser form "brave"); the native one wins over an older libsecret copy and
+     whether they match is printed; KWallet-only entries become org.kde.kwallet.entry items.
+   - Chromium / Electron pick the store from XDG_CURRENT_DESKTOP: KDE -> KWallet, GNOME-like -> libsecret, an
+     unknown desktop such as Hyprland -> the unencrypted "basic" store with a new key, which would lose their data.
+     So the apps with a key get `--password-store=gnome-libsecret` explicitly: Brave (brave-origin-flags.conf),
+     Vesktop (vesktop-flags.conf), Claude (its launcher copy in ~/.local/share/applications; session restore
+     launches through .desktop entries, so it gets the flag too). Then `XDG_CURRENT_DESKTOP=Hyprland`.
+   - Check after the next login: Brave's passwords and sessions, Claude, `gh auth status`, Zed, the Assistant's API
+     keys, Python keyring. Undo: apiEnabled=true, the old flags, Hyprland:KDE, log out and in.
 4. **Remove packages** (`pacman -Rns -p` first): the plasma group (plasma-workspace, kwin, plasma-login-manager,
    xdg-desktop-portal-kde, kwallet-pam, polkit-kde-agent, spectacle...), Dolphin, Konsole, Kate, Gwenview, Filelight,
    KCalc, Partition Manager, KWallet Manager, kio-admin, kdialog, signon-kwallet-extension, kde-gtk-config,
