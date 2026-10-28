@@ -21,8 +21,9 @@ warn() { printf '\033[33m!!\033[0m %s\n' "$*"; }
 for p in hyprland caelestia4-quickshell qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets gpu-screen-recorder; do
   pacman -Q "$p" >/dev/null 2>&1 || warn "package $p not installed (install it first; see docs/install.md)"
 done
-[[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" == masked ]] \
-  || warn "gnome-keyring socket is not masked for this user (see docs/dev/phase0.md: KWallet must own org.freedesktop.secrets)"
+# caelestia4: gnome-keyring is the Secret Service since the move off KWallet (docs/dev/kde-removal.md, phase 3)
+[[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" != masked ]] \
+  || warn "gnome-keyring is masked for this user (from the KWallet days): tools/keyring-switch.sh prepare unmasks it"
 "$REPO/tools/lint-caelestia.sh"
 
 backup() { # backup <path>
