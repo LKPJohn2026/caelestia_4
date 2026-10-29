@@ -111,9 +111,9 @@ LUA
 fi
 if [[ ! -f "$CFG/hypr/monitors.lua" ]]; then
   cat > "$CFG/hypr/monitors.lua" <<'LUA'
--- caelestia4: Samsung 57" (SAM7475) on DP-2
+-- caelestia4: Samsung 57" (SAM7475), by description: its connector name changes between boots (DP-2, DP-6)
 hl.monitor({
-    output = "DP-2",
+    output = "desc:Samsung Electric Company Odyssey G95NC HNTX401477",
     mode = "7680x2160@240",
     position = "0x0",
     scale = 1.5
