@@ -95,7 +95,7 @@ hl.config({
             enabled = true,
             range = 20,
             offset = {0, 2},
-            render_power = 10,
+            render_power = 4, -- 1 to 4; end-4 had 10, which Hyprland clamped to 4 until 0.57 made it an error
             color = "rgba(00000020)"
 
         },
