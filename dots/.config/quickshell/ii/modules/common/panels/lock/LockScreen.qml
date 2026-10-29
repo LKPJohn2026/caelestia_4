@@ -94,7 +94,7 @@ Scope {
 
     function lock() {
         if (Config.options.lock.useHyprlock) {
-            Quickshell.execDetached(["bash", "-c", "pidof hyprlock || hyprlock"]);
+            Quickshell.execDetached([Quickshell.shellPath("scripts/caelestia4/hyprlock-guard.sh")]); // restarts it if it dies on resume
             return;
         }
         GlobalStates.screenLocked = true;
