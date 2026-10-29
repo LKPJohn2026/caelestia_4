@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Pipewire
 import qs.services as E4 // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep
@@ -12,6 +13,9 @@ import qs.modules.common as E4C // caelestia4: keep
 // caelestia.backgroundMute.classes) are muted while that window is not the focused one, and unmuted when it is
 // focused again. Only streams muted here are ever unmuted, so a manual mute is kept. Opening shell panels
 // (launcher, drawers) does not count as leaving the game: they are layers, not windows.
+// The process id is a property of the PipeWire client, and only some clients (pipewire-pulse ones) copy it onto
+// their stream nodes; Wine's native streams don't (Star Rail: the node has only client.id). Quickshell exposes nodes,
+// not clients, so the client ids are mapped to process ids with pw-dump (clientPids) when the streams change.
 // Toggle: quick toggle "Mute games in background" / caelestia.backgroundMute.enable.
 Scope {
     id: root
@@ -31,13 +35,19 @@ Scope {
     readonly property list<PwNode> streams: Pipewire.nodes.values.filter(n => n.isStream && n.isSink && n.audio)
 
     property var mutedByUs: ({}) // PwNode id -> true
+    property var clientPids: ({}) // PipeWire client id -> process id, from pw-dump
+
+    function streamPid(stream: PwNode): int {
+        const props = stream.properties;
+        return parseInt(props["application.process.id"] ?? clientPids[props["client.id"]] ?? "-1");
+    }
 
     function apply(): void {
         const muted = Object.assign({}, mutedByUs);
         for (const stream of streams) {
             if (!stream.ready || !stream.audio)
                 continue;
-            const pid = parseInt(stream.properties["application.process.id"] ?? "-1");
+            const pid = streamPid(stream);
             const isGame = gamePids.includes(pid);
             const background = cfg.enable && isGame && pid !== focusedPid;
             if (background && !stream.audio.muted) {
@@ -60,7 +70,10 @@ Scope {
 
     onFocusedPidChanged: apply()
     onGamePidsChanged: apply()
-    onStreamsChanged: apply()
+    onStreamsChanged: {
+        clientsProc.running = true;
+        apply();
+    }
     Component.onDestruction: restoreAll()
 
     Connections {
@@ -68,6 +81,22 @@ Scope {
 
         function onEnableChanged(): void {
             root.apply();
+        }
+    }
+
+    Process {
+        id: clientsProc
+
+        command: ["sh", "-c", "pw-dump | jq -c '[.[] | select(.type == \"PipeWire:Interface:Client\") | {key: (.id | tostring), value: .info.props[\"application.process.id\"]}] | from_entries'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    root.clientPids = JSON.parse(text);
+                } catch (e) {
+                    return;
+                }
+                root.apply();
+            }
         }
     }
 
@@ -80,6 +109,11 @@ Scope {
         running: root.gamePids.length > 0
         repeat: true
         interval: 1000
-        onTriggered: root.apply()
+        onTriggered: {
+            // A stream whose client pw-dump hasn't seen yet (it connected after the last dump)
+            if (root.streams.some(s => s.ready && s.properties["application.process.id"] === undefined && !(s.properties["client.id"] in root.clientPids)))
+                clientsProc.running = true;
+            root.apply();
+        }
     }
 }
