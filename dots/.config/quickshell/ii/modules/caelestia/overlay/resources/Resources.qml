@@ -17,6 +17,8 @@ import qs.modules.caelestia.adapters
 
 StyledOverlayWidget {
     id: root
+    Component.onCompleted: ResourceUsage.consumers++ // caelestia4: ResourceUsage (end4-pC's) polls only while used
+    Component.onDestruction: ResourceUsage.consumers--
     minimumWidth: 300
     minimumHeight: 200
     property list<var> resources: [

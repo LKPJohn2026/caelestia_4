@@ -302,8 +302,36 @@ Singleton {
                         property string shape: "Cookie4Sided"
                         property real size: 200
                     }
+                    property JsonObject userCard: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property string sizeMode: "1x2" // 1x1, 1x2, 2x2, 2x3
+                    }
+                    property JsonObject worldClock: JsonObject {
+                        property bool enable: false
+                        property list<string> timezones: ["Australia/Sydney", "Asia/Tokyo", "Europe/London", "America/New_York"]
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property string sizeMode: "2x2" // 2x2, 4x1
+                        property bool vertical: false
+                        property int clockCount: 4
+                    }
+                    property JsonObject resources: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property bool vertical: false
+                    }
                 }
                 property bool widgetsLocked: false
+                property string lockWall: "" // caelestia4: a preset's lock screen wallpaper (hyprlock/lockwall.conf), for widgets
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
                 property bool hideWhenFullscreen: true
@@ -437,6 +465,7 @@ Singleton {
                     property int mouseScrollDeltaThreshold: 120 // delta >= this then it gets detected as mouse scroll rather than touchpad
                     property int mouseScrollFactor: 120
                     property int touchpadScrollFactor: 450
+                    property real touchpadSensitivity: 3.5 // caelestia4: end4-pC's TouchpadScrollArea (world clock city list)
                 }
                 property JsonObject deadPixelWorkaround: JsonObject { // Hyprland leaves out 1 pixel on the right for interactions
                     property bool enable: false
@@ -534,6 +563,12 @@ Singleton {
                 property bool centerIcons: true
             }
 
+            // caelestia4: end4-pC's profile (its user card); the avatar is ~/.face unless both are set
+            property JsonObject profile: JsonObject {
+                property string avatarPath: ""
+                property string avatarPicture: ""
+                property string displayName: "" // empty = the user name
+            }
             property JsonObject regionSelector: JsonObject {
                 property JsonObject targetRegions: JsonObject {
                     property bool windows: true
@@ -597,6 +632,7 @@ Singleton {
 
             property JsonObject sidebar: JsonObject {
                 property bool keepRightSidebarLoaded: true
+                property string bannerImage: "" // caelestia4: a preset's banner, on end4-pC's user card
                 property JsonObject translator: JsonObject {
                     property bool enable: false
                     property int delay: 300 // Delay before sending request. Reduces (potential) rate limits and lag.

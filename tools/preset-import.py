@@ -3,8 +3,8 @@
 
 A preset is end4-pC's whole config.json plus its pictures. Only what this shell can show is taken (a whitelist, so a
 preset can't set commands like apps.*): the desktop widgets end4-pC and this shell share (pcwidgets: clock, weather,
-calendar, media, custom image) at the preset's positions, the visualiser, the colour scheme type, the wallpaper, the
-lock screen wallpaper and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
+calendar, media, custom image, user card, world clock, resources) at the preset's positions, the visualiser, the colour
+scheme type, the wallpaper, the lock screen wallpaper, the banner (on the user card) and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
 
 Widget positions stay in the preset's 1920x1080 coordinates (background.widgets.canvas); each screen scales the room
 around each widget to its own size, so widgets against an edge stay there on a 32:9 screen.
@@ -45,7 +45,7 @@ BLAPPLES_PICS = PICTURES / "Wallpapers/Blapples"
 IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".avif"}
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
-WIDGETS = ["clock", "weather", "calendar", "media", "customImage"]
+WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "worldClock", "resources"]
 # the size end4-pC presets are made on: their widget x / y are pixels on a 1920x1080 screen
 PRESET_CANVAS = {"width": 1920, "height": 1080}
 LOCKWALL_DEFAULT = "# caelestia4: a lock screen wallpaper of its own. Empty = the desktop wallpaper (colors.conf, from matugen).\n"
@@ -210,6 +210,7 @@ def main():
     wallpaper = picture(pbg.get("wallpaperPath"))
     lockwall = picture(pbg.get("lockWall"))
     avatar = picture(meta.get("avatar") or preset.get("profile", {}).get("avatarPicture"))
+    banner = picture(meta.get("banner") or preset.get("sidebar", {}).get("bannerImage"))
 
     ii = load(II_CONFIG)
     widgets = ii.setdefault("background", {}).setdefault("widgets", {})
@@ -227,6 +228,12 @@ def main():
     for key in sorted(set(pwidgets) - set(WIDGETS) - {"visualizer"}):
         if isinstance(pwidgets[key], dict) and pwidgets[key].get("enable"):
             skipped.append(f"widget {key} (not ported)")
+
+    # the user card shows these
+    ii["background"]["lockWall"] = str(lockwall) if lockwall else ""
+    ii.setdefault("sidebar", {})["bannerImage"] = str(banner) if banner else ""
+    if banner:
+        applied.append(f"banner {banner.name}")
 
     palette = preset.get("appearance", {}).get("palette", {})
     if palette.get("type") and palette["type"] != "auto":
@@ -264,8 +271,8 @@ def main():
     print(f"backup: {backup()}  (undo: tools/preset-import.py --undo)")
     save(II_CONFIG, ii)
     save(SHELL_CONFIG, shell)
-    if lockwall:
-        LOCKWALL.write_text(LOCKWALL_DEFAULT + f"$background_image = {lockwall}\n")
+    # always: a preset without one goes back to the desktop wallpaper, not the last preset's
+    LOCKWALL.write_text(LOCKWALL_DEFAULT + (f"$background_image = {lockwall}\n" if lockwall else ""))
     if avatar:
         shutil.copy2(avatar, FACE)
     set_wallpaper(wallpaper)
