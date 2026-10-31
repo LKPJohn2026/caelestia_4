@@ -55,6 +55,9 @@ Singleton {
         temp.windDir = data?.current?.winddir16Point || "N";
         temp.wCode = data?.current?.weatherCode || "113";
         temp.city = data?.location?.areaName[0]?.value || "City";
+        const lang = Qt.locale().name.split("_")[0];
+        temp.description = data?.current?.[`lang_${lang}`]?.[0]?.value || data?.current?.weatherDesc?.[0]?.value || "";
+        temp.cr = (data?.current?.cloudcover ?? 0) + "%";
         temp.temp = "";
         temp.tempFeelsLike = "";
         if (root.useUSCS) {
@@ -91,6 +94,8 @@ Singleton {
 
         // format as json
         command += "?format=j1";
+        // caelestia4: wttr.in translates the description (current_condition.lang_xx) for pcwidgets' weather card
+        command += `\\&lang=${Qt.locale().name.split("_")[0]}`; // escaped: the command runs in sh
         command += " | ";
         // only take the current weather, location, asytronmy data
         command += "jq '{current: .current_condition[0], location: .nearest_area[0], astronomy: .weather[0].astronomy[0]}'";
