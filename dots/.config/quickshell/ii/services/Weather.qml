@@ -57,6 +57,7 @@ Singleton {
         temp.city = data?.location?.areaName[0]?.value || "City";
         const lang = Qt.locale().name.split("_")[0];
         temp.description = data?.current?.[`lang_${lang}`]?.[0]?.value || data?.current?.weatherDesc?.[0]?.value || "";
+        temp.descriptionEn = data?.current?.weatherDesc?.[0]?.value || ""; // for matching words (user card)
         temp.cr = (data?.current?.cloudcover ?? 0) + "%";
         temp.temp = "";
         temp.tempFeelsLike = "";

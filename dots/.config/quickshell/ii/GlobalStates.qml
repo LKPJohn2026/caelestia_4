@@ -27,6 +27,7 @@ Singleton {
     property bool screenUnlockFailed: false
     property bool screenTranslatorOpen: false
     property bool sessionOpen: false
+    property bool desktopWidgetKeyboardFocus: false // caelestia4: a desktop widget (world clock's city search) wants typing
     property bool superDown: false
     property bool superReleaseMightTrigger: true
     property bool wallpaperSelectorOpen: false
