@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import qs.modules.common
+import qs.services
 import qs
 
 /*
@@ -37,6 +38,10 @@ MouseArea {
     onClicked: (mouse) => {
         if (mouse.button === Qt.RightButton) {
             Config.options.background.widgetsLocked = !Config.options.background.widgetsLocked
+            // caelestia4: say so, it is easy to do by accident (also Settings > Wallpaper & style > Desktop widgets)
+            Quickshell.execDetached(["notify-send", "-a", "Shell", "-t", "3000",
+                Config.options.background.widgetsLocked ? Translation.tr("Widgets locked") : Translation.tr("Widgets unlocked"),
+                Translation.tr("Right-click a widget to switch")])
         } else if (mouse.modifiers & Qt.ControlModifier) {
             root.selected = !root.selected
         } else {

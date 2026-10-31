@@ -132,9 +132,11 @@ Variants {
             x: (wallLayer.x + wallLayer.extraW / 2) * factor
             y: (wallLayer.y + wallLayer.extraH / 2) * factor
 
+            // the room beside the bar and the border, so a preset's widgets against an edge aren't under them
             PcWidgetsLoader {
                 anchors.fill: parent
-                screen: win.screen
+                anchors.margins: Config.border.thickness
+                anchors.leftMargin: Tokens.sizes.bar.innerWidth + Math.max(Tokens.padding.small, Config.border.thickness)
                 wallpaperItem: wallpaper
             }
         }

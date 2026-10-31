@@ -158,9 +158,20 @@ ComboBox {
     }
 
     popup: Popup {
-        y: root.height + 4
+        // caelestia4: as large as the combo box is drawn (a desktop widget's scale)
+        property real drawnScale: 1
+        // opens above when there's no room below. Not left to Qt: its flip misplaces a popup scaled in a scaled parent
+        property bool opensUp: false
+        onAboutToShow: {
+            drawnScale = ObjectUtils.drawnScale(root);
+            opensUp = root.mapToItem(null, 0, root.height).y + (popupHeight + 4) * drawnScale > (root.Window.height || Infinity);
+        }
+        scale: drawnScale
+        transformOrigin: Popup.TopLeft
+        readonly property real popupHeight: Math.min(listView.contentHeight + topPadding + bottomPadding, 300)
+        y: opensUp ? -popupHeight - 4 : root.height + 4
         width: root.width
-        height: Math.min(listView.contentHeight + topPadding + bottomPadding, 300)
+        height: popupHeight
         padding: 8
 
         enter: Transition {

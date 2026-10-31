@@ -4,6 +4,14 @@ import Quickshell
 Singleton {
     id: root
 
+    // caelestia4: how much larger than its own size an item is drawn in its window (a desktop widget is scaled by
+    // background.widgets.scale), for popups: they open in the window's overlay, outside that scaling
+    function drawnScale(item) {
+        if (!item) return 1;
+        const o = item.mapToItem(null, 0, 0), u = item.mapToItem(null, 1, 0);
+        return Math.max(0.01, Math.hypot(u.x - o.x, u.y - o.y));
+    }
+
     function toPlainObject(qtObj) {
         if (qtObj === null || typeof qtObj !== "object") return qtObj;
 

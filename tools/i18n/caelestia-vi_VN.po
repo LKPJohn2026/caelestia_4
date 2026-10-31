@@ -4020,3 +4020,18 @@ msgstr "Đã áp dụng %1"
 
 msgid "Failed (exit code %1)"
 msgstr "Thất bại (mã thoát %1)"
+
+msgid "Desktop widgets"
+msgstr "Widget trên desktop"
+
+msgid "Lock widgets"
+msgstr "Khóa widget"
+
+msgid "They can't be dragged or resized. Right-click a widget to switch"
+msgstr "Không kéo hay đổi cỡ được. Chuột phải vào một widget để đổi"
+
+msgid "Grid while dragging"
+msgstr "Hiện lưới khi kéo"
+
+msgid "Widgets snap to it either way"
+msgstr "Widget vẫn bám theo lưới dù có hiện hay không"
