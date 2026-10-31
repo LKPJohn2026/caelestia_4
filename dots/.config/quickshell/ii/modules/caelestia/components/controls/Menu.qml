@@ -65,6 +65,10 @@ MouseArea {
     onClicked: expanded = false
 
     opacity: expanded ? 1 : 0
+    // caelestia4: hidden once faded out. A closed menu is only transparent and scaled down, and the wheel blocker in it
+    // stayed enabled, so it ate the clicks on the rows under the row that owns it (Nexus > Power: only the first of
+    // three select rows could be clicked)
+    visible: opacity > 0
     layer.enabled: opacity < 1
 
     Behavior on opacity {
@@ -118,6 +122,7 @@ MouseArea {
 
         MouseArea {
             anchors.fill: parent
+            enabled: root.expanded
             hoverEnabled: true
             onWheel: e => e.accepted = true
         }
