@@ -358,6 +358,40 @@ Singleton {
                         property real y: 100
                         property real z: 0
                     }
+                    property JsonObject imageCard: JsonObject { // a picture in a card: drop one on it
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property string path: ""
+                        property string sizeMode: "1x2" // rows x columns: "1x1", "1x2", "1x3", "2x2", "2x3"
+                    }
+                    property JsonObject sticker: JsonObject { // a cut-out picture (png, svg, webp, gif) with an outline
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property string path: ""
+                        property real size: 200
+                        property real rotation: 0
+                        property string outlineColor: "#ffffff"
+                        property real outlineWidth: 8
+                    }
+                    property JsonObject customText: JsonObject { // double-click to edit
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 300
+                        property real z: 0
+                        property string content: "Hello world"
+                        property string fontFamily: "Caveat"
+                        property int fontSize: 72
+                        property string color: "" // "" = automatic, otherwise an Appearance color name
+                        property string alignment: "center" // "left", "center", "right"
+                        property bool shadow: true
+                    }
                 }
                 property bool widgetsLocked: false
                 property string lockWall: "" // caelestia4: a preset's lock screen wallpaper (hyprlock/lockwall.conf), for widgets
