@@ -212,6 +212,8 @@ PageBase {
         SelectRow {
             id: methodSelect
 
+            holdsSelection: true
+
             Layout.fillWidth: true
             first: true
             last: root.ipMethod === "auto"
