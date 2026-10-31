@@ -92,7 +92,7 @@ PageBase {
             last: true
             text: Tr.tr("Popout on hover")
             subtext: Tr.tr("Show a details popout when hovering the status icons")
-            checked: Config.bar.popouts.statusIcons
+            value: Config.bar.popouts.statusIcons
             onToggled: GlobalConfig.bar.popouts.statusIcons = checked
         }
     }

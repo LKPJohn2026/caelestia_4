@@ -36,12 +36,16 @@ MouseArea {
     // inside its window: a long menu (Nexus' minute lists) under a low row went past the window's bottom, where it
     // can't be clicked or scrolled to
     readonly property real spaceBelow: {
+        if (!visible || !parent) // only while shown: read while the menu moves to its window, it looped
+            return 0;
         watcher.transform;
-        return parent ? parent.height - attachTo.mapToItem(parent, 0, attachTo.height).y : 0;
+        return parent.height - attachTo.mapToItem(parent, 0, attachTo.height).y;
     }
     readonly property real spaceAbove: {
+        if (!visible || !parent) // only while shown: read while the menu moves to its window, it looped
+            return 0;
         watcher.transform;
-        return parent ? attachTo.mapToItem(parent, 0, 0).y : 0;
+        return attachTo.mapToItem(parent, 0, 0).y;
     }
     readonly property bool opensDown: thisSideY === Menu.Top
     readonly property bool flipY: {

@@ -111,7 +111,7 @@ PageBase {
         ToggleRow {
             text: Tr.tr("Hide unsafe images in the clipboard")
             subtext: Tr.tr("Images copied from adult or anime sites show blurred in clipboard history")
-            checked: E4C.Config.options.workSafety.enable.clipboard
+            value: E4C.Config.options.workSafety.enable.clipboard
             onToggled: E4C.Config.options.workSafety.enable.clipboard = checked
         }
 
@@ -119,7 +119,7 @@ PageBase {
             last: true
             text: Tr.tr("Hide unsafe wallpapers")
             subtext: Tr.tr("Blur wallpapers whose name suggests adult or anime content")
-            checked: E4C.Config.options.workSafety.enable.wallpaper
+            value: E4C.Config.options.workSafety.enable.wallpaper
             onToggled: E4C.Config.options.workSafety.enable.wallpaper = checked
         }
     }

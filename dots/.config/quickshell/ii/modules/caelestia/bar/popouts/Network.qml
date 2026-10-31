@@ -37,7 +37,7 @@ ColumnLayout {
         visible: root.view !== "ethernet"
         Layout.preferredHeight: visible ? implicitHeight : 0
         label: Tr.trCtx("Enabled", "toggle label")
-        checked: Nmcli.wifiEnabled
+        value: Nmcli.wifiEnabled
         toggle.onToggled: Nmcli.enableWifi(checked)
     }
 
@@ -379,6 +379,7 @@ ColumnLayout {
     component Toggle: RowLayout {
         required property string label
         property alias checked: toggle.checked
+        property alias value: toggle.value // bind this (StyledSwitch)
         property alias toggle: toggle
 
         Layout.fillWidth: true

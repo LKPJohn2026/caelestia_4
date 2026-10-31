@@ -31,7 +31,7 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.trCtx("Enabled", "toggle label")
-            checked: root.dock.enable
+            value: root.dock.enable
             onToggled: root.dock.enable = checked
         }
 
@@ -39,21 +39,21 @@ PageBase {
             disabled: !root.dock.enable
             text: Tr.tr("Keep shown after login")
             subtext: Tr.tr("Off: the dock stays hidden until you reveal it")
-            checked: root.dock.pinnedOnStartup
+            value: root.dock.pinnedOnStartup
             onToggled: root.dock.pinnedOnStartup = checked
         }
 
         ToggleRow {
             disabled: !root.dock.enable
             text: Tr.tr("Reveal at the bottom edge")
-            checked: root.dock.hoverToReveal
+            value: root.dock.hoverToReveal
             onToggled: root.dock.hoverToReveal = checked
         }
 
         ToggleRow {
             disabled: !root.dock.enable
             text: Tr.tr("Show on empty workspaces")
-            checked: root.dock.revealOnEmptyWorkspace
+            value: root.dock.revealOnEmptyWorkspace
             onToggled: root.dock.revealOnEmptyWorkspace = checked
         }
 

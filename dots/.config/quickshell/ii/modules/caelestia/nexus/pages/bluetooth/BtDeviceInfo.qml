@@ -155,7 +155,7 @@ PageBase {
             first: true
             text: Tr.trCtx("Trusted", "bluetooth device state")
             subtext: Tr.tr("Allow this device to connect automatically")
-            checked: root.device?.trusted ?? false
+            value: root.device?.trusted ?? false
             onToggled: {
                 if (root.device)
                     root.device.trusted = checked;
@@ -166,7 +166,7 @@ PageBase {
             verticalPadding: Tokens.padding.large
             text: Tr.trCtx("Blocked", "bluetooth device state")
             subtext: Tr.tr("Prevent this device from connecting")
-            checked: root.device?.blocked ?? false
+            value: root.device?.blocked ?? false
             onToggled: {
                 if (root.device)
                     root.device.blocked = checked;
@@ -178,7 +178,7 @@ PageBase {
             last: true
             text: Tr.tr("Wake allowed")
             subtext: Tr.tr("Allow this device to wake the system")
-            checked: root.device?.wakeAllowed ?? false
+            value: root.device?.wakeAllowed ?? false
             onToggled: {
                 if (root.device)
                     root.device.wakeAllowed = checked;

@@ -214,7 +214,7 @@ PageBase {
         ToggleRow {
             text: Tr.tr("Smart colour scheme")
             subtext: Tr.tr("Derive theme mode and variant from the wallpaper")
-            checked: GlobalConfig.services.smartScheme
+            value: GlobalConfig.services.smartScheme
             onToggled: GlobalConfig.services.smartScheme = checked
         }
 
@@ -256,21 +256,21 @@ PageBase {
         ToggleRow {
             text: Tr.tr("Circle to search")
             subtext: Tr.tr("Google Lens starts with a freehand circle instead of a rectangle")
-            checked: E4C.Config.options.search.imageSearch.useCircleSelection
+            value: E4C.Config.options.search.imageSearch.useCircleSelection
             onToggled: E4C.Config.options.search.imageSearch.useCircleSelection = checked
         }
 
         ToggleRow {
             text: Tr.tr("Highlight windows to capture")
             subtext: Tr.tr("Click a highlighted window to select it")
-            checked: E4C.Config.options.regionSelector.targetRegions.windows
+            value: E4C.Config.options.regionSelector.targetRegions.windows
             onToggled: E4C.Config.options.regionSelector.targetRegions.windows = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Aim lines")
-            checked: E4C.Config.options.regionSelector.rect.showAimLines
+            value: E4C.Config.options.regionSelector.rect.showAimLines
             onToggled: E4C.Config.options.regionSelector.rect.showAimLines = checked
         }
 

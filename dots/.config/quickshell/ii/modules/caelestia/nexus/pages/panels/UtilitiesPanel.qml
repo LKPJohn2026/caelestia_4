@@ -49,7 +49,7 @@ PageBase {
             last: true
             text: Tr.trCtx("Enabled", "toggle label")
             subtext: Tr.tr("Show the utilities panel")
-            checked: Config.utilities.enabled
+            value: Config.utilities.enabled
             onToggled: GlobalConfig.utilities.enabled = checked
         }
 
@@ -62,14 +62,14 @@ PageBase {
             first: true
             text: Tr.tr("Keep awake")
             subtext: Tr.tr("Show the idle inhibitor card")
-            checked: Config.utilities.cards.keepAwake
+            value: Config.utilities.cards.keepAwake
             onToggled: GlobalConfig.utilities.cards.keepAwake = checked
         }
 
         ToggleRow {
             text: Tr.tr("Screen recorder")
             subtext: Tr.tr("Show the screen recorder card")
-            checked: Config.utilities.cards.recorder
+            value: Config.utilities.cards.recorder
             onToggled: GlobalConfig.utilities.cards.recorder = checked
         }
 
@@ -77,7 +77,7 @@ PageBase {
             last: true
             text: Tr.tr("Quick toggles")
             subtext: Tr.tr("Show the quick toggles card")
-            checked: Config.utilities.cards.quickToggles
+            value: Config.utilities.cards.quickToggles
             onToggled: GlobalConfig.utilities.cards.quickToggles = checked
         }
 
@@ -91,7 +91,7 @@ PageBase {
             text: Tr.tr("Wi-Fi")
             subtext: Tr.tr("Toggle wireless networking")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("wifi")
+            value: root.isToggleOn("wifi")
             onToggled: root.setToggleOn("wifi", checked)
         }
 
@@ -99,7 +99,7 @@ PageBase {
             text: Tr.tr("Bluetooth")
             subtext: Tr.tr("Toggle the Bluetooth adapter")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("bluetooth")
+            value: root.isToggleOn("bluetooth")
             onToggled: root.setToggleOn("bluetooth", checked)
         }
 
@@ -107,7 +107,7 @@ PageBase {
             text: Tr.tr("Microphone")
             subtext: Tr.tr("Mute or unmute the default source")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("mic")
+            value: root.isToggleOn("mic")
             onToggled: root.setToggleOn("mic", checked)
         }
 
@@ -115,7 +115,7 @@ PageBase {
             text: Tr.tr("Settings")
             subtext: Tr.tr("Open the settings window")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("settings")
+            value: root.isToggleOn("settings")
             onToggled: root.setToggleOn("settings", checked)
         }
 
@@ -123,7 +123,7 @@ PageBase {
             text: Tr.tr("Game mode")
             subtext: Tr.tr("Toggle game mode")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("gameMode")
+            value: root.isToggleOn("gameMode")
             onToggled: root.setToggleOn("gameMode", checked)
         }
 
@@ -131,7 +131,7 @@ PageBase {
             text: Tr.tr("Do not disturb")
             subtext: Tr.tr("Silence notifications")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("dnd")
+            value: root.isToggleOn("dnd")
             onToggled: root.setToggleOn("dnd", checked)
         }
 
@@ -140,7 +140,7 @@ PageBase {
             text: Tr.tr("VPN")
             subtext: Tr.tr("Connect or disconnect the VPN")
             disabled: !Config.utilities.cards.quickToggles
-            checked: root.isToggleOn("vpn")
+            value: root.isToggleOn("vpn")
             onToggled: root.setToggleOn("vpn", checked)
         }
 
@@ -153,13 +153,13 @@ PageBase {
             first: true
             text: Tr.tr("System card")
             subtext: Tr.tr("Uptime, reload, settings and session buttons")
-            checked: E4C.Config.options.caelestia.utilitiesSystem
+            value: E4C.Config.options.caelestia.utilitiesSystem
             onToggled: E4C.Config.options.caelestia.utilitiesSystem = checked
         }
 
         ToggleRow {
             text: Tr.tr("Volume, microphone and brightness sliders")
-            checked: E4C.Config.options.caelestia.utilitiesSliders
+            value: E4C.Config.options.caelestia.utilitiesSliders
             onToggled: E4C.Config.options.caelestia.utilitiesSliders = checked
         }
 

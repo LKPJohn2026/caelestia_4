@@ -32,14 +32,14 @@ PageBase {
             first: true
             text: Tr.tr("Session menu")
             subtext: Tr.tr("Lock, sleep, log out, restart and shut down from the screen edge")
-            checked: Config.session.enabled
+            value: Config.session.enabled
             onToggled: GlobalConfig.session.enabled = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Vim keys (h j k l)")
-            checked: Config.session.vimKeybinds
+            value: Config.session.vimKeybinds
             onToggled: GlobalConfig.session.vimKeybinds = checked
         }
 

@@ -81,7 +81,7 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Lock before sleeping")
-            checked: root.idle.lockBeforeSleep
+            value: root.idle.lockBeforeSleep
             onToggled: {
                 root.idle.lockBeforeSleep = checked;
                 root.applyIdle();
@@ -104,7 +104,7 @@ PageBase {
             last: true
             text: Tr.tr("Use hyprlock")
             subtext: Tr.tr("Recommended: survives the monitor dropping off on wake. Off: the shell's own lock screen")
-            checked: E4C.Config.options.lock.useHyprlock
+            value: E4C.Config.options.lock.useHyprlock
             onToggled: E4C.Config.options.lock.useHyprlock = checked
         }
 

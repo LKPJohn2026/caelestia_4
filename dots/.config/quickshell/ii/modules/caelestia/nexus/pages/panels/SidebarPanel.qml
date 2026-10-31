@@ -26,14 +26,14 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.trCtx("Enabled", "toggle label")
-            checked: Config.sidebar.enabled
+            value: Config.sidebar.enabled
             onToggled: GlobalConfig.sidebar.enabled = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
-            checked: Config.sidebar.showOnHover
+            value: Config.sidebar.showOnHover
             onToggled: GlobalConfig.sidebar.showOnHover = checked
         }
 

@@ -32,26 +32,26 @@ PageBase {
             first: true
             text: Tr.tr("macOS-style key symbols")
             subtext: Tr.tr("⌘ ⌥ ⇧ instead of Super, Alt, Shift")
-            checked: root.cs.useMacSymbol
+            value: root.cs.useMacSymbol
             onToggled: root.cs.useMacSymbol = checked
         }
 
         ToggleRow {
             text: Tr.tr("Symbols for function keys")
-            checked: root.cs.useFnSymbol
+            value: root.cs.useFnSymbol
             onToggled: root.cs.useFnSymbol = checked
         }
 
         ToggleRow {
             text: Tr.tr("Symbols for mouse buttons")
-            checked: root.cs.useMouseSymbol
+            value: root.cs.useMouseSymbol
             onToggled: root.cs.useMouseSymbol = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("One key per box")
-            checked: root.cs.splitButtons
+            value: root.cs.splitButtons
             onToggled: root.cs.splitButtons = checked
         }
     }
