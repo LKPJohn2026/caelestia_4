@@ -31,6 +31,25 @@ MouseArea {
     property MenuItem active: items[0] ?? null
     property bool expanded
 
+    // caelestia4: open on the other side when this one has too little room and the other more, and keep the menu
+    // inside its window: a long menu (Nexus' minute lists) under a low row went past the window's bottom, where it
+    // can't be clicked or scrolled to
+    readonly property real spaceBelow: {
+        watcher.transform;
+        return parent ? parent.height - attachTo.mapToItem(parent, 0, attachTo.height).y : 0;
+    }
+    readonly property real spaceAbove: {
+        watcher.transform;
+        return parent ? attachTo.mapToItem(parent, 0, 0).y : 0;
+    }
+    readonly property bool opensDown: thisSideY === Menu.Top
+    readonly property bool flipY: {
+        const need = menu.implicitHeight + Math.abs(marginY);
+        return opensDown ? spaceBelow < need && spaceAbove > spaceBelow : spaceAbove < need && spaceBelow > spaceAbove;
+    }
+    readonly property int effAttachSideY: flipY ? (attachSideY === Menu.Top ? Menu.Bottom : Menu.Top) : attachSideY
+    readonly property int effThisSideY: flipY ? (thisSideY === Menu.Top ? Menu.Bottom : Menu.Top) : thisSideY
+
     signal itemSelected(item: MenuItem)
 
     parent: {
@@ -75,10 +94,11 @@ MouseArea {
         y: {
             watcher.transform; // mapToItem is not reactive so this forces updates
             const item = root.attachTo;
-            let off = root.attachSideY === Menu.Top ? 0 : item.height;
-            if (root.thisSideY === Menu.Bottom)
+            let off = root.effAttachSideY === Menu.Top ? 0 : item.height;
+            if (root.effThisSideY === Menu.Bottom)
                 off -= height;
-            return item.mapToItem(root.parent, 0, off).y + root.marginY;
+            const y = item.mapToItem(root.parent, 0, off).y + (root.flipY ? -root.marginY : root.marginY);
+            return Math.max(0, Math.min(y, root.parent.height - height));
         }
 
         radius: Tokens.rounding.large
@@ -89,7 +109,7 @@ MouseArea {
 
         transform: Scale {
             yScale: root.expanded ? 1 : 0.1
-            origin.y: root.thisSideY === Menu.Bottom ? menu.height : 0
+            origin.y: root.effThisSideY === Menu.Bottom ? menu.height : 0
 
             Behavior on yScale {
                 Anim {}

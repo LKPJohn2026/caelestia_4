@@ -12,12 +12,21 @@ ConnectedRect {
     property alias label: label.text
     property string subtext
     property alias menuItems: splitButton.menuItems
-    property alias active: splitButton.active
+    // caelestia4: the row shows `active`, usually bound to the setting. The menu sets its own active item when one is
+    // picked, which replaced that binding (an alias), so the row stopped following the setting after the first pick
+    property MenuItem active
+    // The row keeps the picked item itself instead (no setting behind it): `active` starts as the first item
+    property bool holdsSelection
     property alias fallbackText: splitButton.fallbackText
     property alias fallbackIcon: splitButton.fallbackIcon
     property alias menuOnTop: splitButton.menuOnTop
 
     signal selected(item: MenuItem)
+
+    Component.onCompleted: {
+        if (holdsSelection && !active)
+            active = menuItems[0] ?? null;
+    }
 
     Layout.fillWidth: true
     implicitHeight: rowLayout.implicitHeight + rowLayout.anchors.margins * 2
@@ -59,8 +68,15 @@ ConnectedRect {
             id: splitButton
 
             type: SplitButton.Tonal
+            active: root.active
             stateLayer.onClicked: splitButton.expanded = !splitButton.expanded
-            menu.onItemSelected: item => root.selected(item)
+            menu.onItemSelected: item => {
+                root.selected(item);
+                if (root.holdsSelection)
+                    root.active = item;
+                // After this the menu sets its active item, which replaces the binding above: put it back
+                Qt.callLater(() => splitButton.active = Qt.binding(() => root.active));
+            }
         }
     }
 }

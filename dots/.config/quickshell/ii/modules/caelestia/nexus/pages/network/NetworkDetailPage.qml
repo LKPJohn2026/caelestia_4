@@ -268,6 +268,8 @@ PageBase {
         SelectRow {
             id: methodSelect
 
+            holdsSelection: true
+
             first: true
             last: root.ipMethod === "auto"
             label: Tr.tr("IP assignment")

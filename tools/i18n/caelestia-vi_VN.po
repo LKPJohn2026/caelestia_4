@@ -2892,6 +2892,9 @@ msgstr "Đã kiểm tra lúc %1"
 msgid "Up to date"
 msgstr "Đã cập nhật mới nhất"
 
+msgid "Couldn't check for updates"
+msgstr "Không kiểm tra được bản cập nhật"
+
 msgid "Check now"
 msgstr "Kiểm tra ngay"
 
