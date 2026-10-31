@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
 import qs.modules.caelestia.components
+import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.components.effects
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.drawers
@@ -44,11 +45,28 @@ MouseArea {
     }
     readonly property bool opensDown: thisSideY === Menu.Top
     readonly property bool flipY: {
-        const need = menu.implicitHeight + Math.abs(marginY);
+        const need = fullHeight + Math.abs(marginY);
         return opensDown ? spaceBelow < need && spaceAbove > spaceBelow : spaceAbove < need && spaceBelow > spaceAbove;
     }
     readonly property int effAttachSideY: flipY ? (attachSideY === Menu.Top ? Menu.Bottom : Menu.Top) : attachSideY
     readonly property int effThisSideY: flipY ? (thisSideY === Menu.Top ? Menu.Bottom : Menu.Top) : thisSideY
+    // A menu taller than the room on its side scrolls (the room left in the window; when that's too little, the window's
+    // height, with the menu moved up to fit)
+    readonly property real padding: Tokens.padding.extraSmall
+    readonly property real fullHeight: column.implicitHeight + padding * 2
+    readonly property real maxHeight: {
+        const edge = Tokens.padding.small;
+        const room = (effThisSideY === Menu.Top ? spaceBelow : spaceAbove) - Math.abs(marginY) - edge;
+        return room >= Math.min(fullHeight, 240) ? room : (parent ? parent.height - edge * 2 : fullHeight);
+    }
+
+    // Open on the picked item when the list scrolls
+    onExpandedChanged: {
+        if (!expanded || flick.contentHeight <= flick.height)
+            return;
+        const row = repeater.itemAt(items.indexOf(active));
+        flick.contentY = row ? Math.max(0, Math.min(row.y + row.height / 2 - flick.height / 2, flick.contentHeight - flick.height)) : 0;
+    }
 
     signal itemSelected(item: MenuItem)
 
@@ -108,8 +126,8 @@ MouseArea {
         radius: Tokens.rounding.large
         level: 2
 
-        implicitWidth: Math.max(200, column.implicitWidth + column.anchors.margins * 2)
-        implicitHeight: column.implicitHeight + column.anchors.margins * 2
+        implicitWidth: Math.max(200, column.implicitWidth + root.padding * 2 + (flick.interactive ? scrollBar.width : 0))
+        implicitHeight: Math.min(root.fullHeight, root.maxHeight)
 
         transform: Scale {
             yScale: root.expanded ? 1 : 0.1
@@ -132,86 +150,102 @@ MouseArea {
             radius: parent.radius
             color: Colours.palette.m3surfaceContainerLow
 
-            ColumnLayout {
-                id: column
+            StyledFlickable {
+                id: flick
 
                 anchors.fill: parent
-                anchors.margins: Tokens.padding.extraSmall
-                spacing: 0
+                anchors.margins: root.padding
+                contentHeight: column.implicitHeight
+                interactive: contentHeight > height
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
 
-                Repeater {
-                    id: repeater
+                StyledScrollBar.vertical: StyledScrollBar {
+                    id: scrollBar
 
-                    model: root.items
+                    flickable: flick
+                }
 
-                    StyledRect {
-                        id: item
+                ColumnLayout {
+                    id: column
 
-                        required property int index
-                        required property MenuItem modelData
-                        readonly property bool active: modelData === root?.active
+                    width: flick.width - (flick.interactive ? scrollBar.width : 0)
+                    spacing: 0
 
-                        Layout.fillWidth: true
-                        implicitWidth: menuOptionRow.implicitWidth + Tokens.padding.medium * 2
-                        implicitHeight: menuOptionRow.implicitHeight + Tokens.padding.medium * 2
+                    Repeater {
+                        id: repeater
 
-                        radius: active ? Tokens.rounding.medium : Tokens.rounding.extraSmall
-                        topLeftRadius: index === 0 ? Tokens.rounding.medium : radius
-                        topRightRadius: index === 0 ? Tokens.rounding.medium : radius
-                        bottomLeftRadius: index === repeater?.count - 1 ? Tokens.rounding.medium : radius
-                        bottomRightRadius: index === repeater?.count - 1 ? Tokens.rounding.medium : radius
+                        model: root.items
 
-                        color: Qt.alpha(Colours.palette.m3tertiaryContainer, active ? 1 : 0)
+                        StyledRect {
+                            id: item
 
-                        Behavior on radius {
-                            Anim {}
-                        }
+                            required property int index
+                            required property MenuItem modelData
+                            readonly property bool active: modelData === root?.active
 
-                        StateLayer {
-                            topLeftRadius: parent.topLeftRadius
-                            topRightRadius: parent.topRightRadius
-                            bottomLeftRadius: parent.bottomLeftRadius
-                            bottomRightRadius: parent.bottomRightRadius
+                            Layout.fillWidth: true
+                            implicitWidth: menuOptionRow.implicitWidth + Tokens.padding.medium * 2
+                            implicitHeight: menuOptionRow.implicitHeight + Tokens.padding.medium * 2
 
-                            color: item.active ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurface
-                            disabled: !root.expanded
-                            onClicked: {
-                                root.itemSelected(item.modelData);
-                                root.active = item.modelData;
-                                item.modelData.clicked();
-                                root.expanded = false;
-                            }
-                        }
+                            radius: active ? Tokens.rounding.medium : Tokens.rounding.extraSmall
+                            topLeftRadius: index === 0 ? Tokens.rounding.medium : radius
+                            topRightRadius: index === 0 ? Tokens.rounding.medium : radius
+                            bottomLeftRadius: index === repeater?.count - 1 ? Tokens.rounding.medium : radius
+                            bottomRightRadius: index === repeater?.count - 1 ? Tokens.rounding.medium : radius
 
-                        RowLayout {
-                            id: menuOptionRow
+                            color: Qt.alpha(Colours.palette.m3tertiaryContainer, active ? 1 : 0)
 
-                            anchors.fill: parent
-                            anchors.margins: Tokens.padding.medium
-                            spacing: Tokens.spacing.small
-
-                            MaterialIcon {
-                                Layout.alignment: Qt.AlignVCenter
-                                text: item.modelData?.icon ?? ""
-                                color: item.active ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurfaceVariant
+                            Behavior on radius {
+                                Anim {}
                             }
 
-                            StyledText {
-                                Layout.alignment: Qt.AlignVCenter
-                                Layout.fillWidth: true
-                                text: item.modelData?.text ?? ""
+                            StateLayer {
+                                topLeftRadius: parent.topLeftRadius
+                                topRightRadius: parent.topRightRadius
+                                bottomLeftRadius: parent.bottomLeftRadius
+                                bottomRightRadius: parent.bottomRightRadius
+
                                 color: item.active ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurface
+                                disabled: !root.expanded
+                                onClicked: {
+                                    root.itemSelected(item.modelData);
+                                    root.active = item.modelData;
+                                    item.modelData.clicked();
+                                    root.expanded = false;
+                                }
                             }
 
-                            Loader {
-                                asynchronous: true
-                                Layout.alignment: Qt.AlignVCenter
-                                active: item.modelData?.trailingIcon.length > 0
-                                visible: active
+                            RowLayout {
+                                id: menuOptionRow
 
-                                sourceComponent: MaterialIcon {
-                                    text: item.modelData.trailingIcon
+                                anchors.fill: parent
+                                anchors.margins: Tokens.padding.medium
+                                spacing: Tokens.spacing.small
+
+                                MaterialIcon {
+                                    Layout.alignment: Qt.AlignVCenter
+                                    text: item.modelData?.icon ?? ""
                                     color: item.active ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurfaceVariant
+                                }
+
+                                StyledText {
+                                    Layout.alignment: Qt.AlignVCenter
+                                    Layout.fillWidth: true
+                                    text: item.modelData?.text ?? ""
+                                    color: item.active ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurface
+                                }
+
+                                Loader {
+                                    asynchronous: true
+                                    Layout.alignment: Qt.AlignVCenter
+                                    active: item.modelData?.trailingIcon.length > 0
+                                    visible: active
+
+                                    sourceComponent: MaterialIcon {
+                                        text: item.modelData.trailingIcon
+                                        color: item.active ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurfaceVariant
+                                    }
                                 }
                             }
                         }
