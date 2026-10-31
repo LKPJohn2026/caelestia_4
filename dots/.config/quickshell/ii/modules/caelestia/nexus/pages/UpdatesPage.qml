@@ -70,7 +70,7 @@ PageBase {
             first: true
             last: true
             icon: "error"
-            label: root.data.repo?.error ?? ""
+            label: SystemUpdates.errorText(root.data.repo?.error) ?? ""
         }
 
         Repeater {
@@ -97,7 +97,7 @@ PageBase {
             first: true
             last: true
             icon: "error"
-            label: root.data.aur?.error ?? ""
+            label: SystemUpdates.errorText(root.data.aur?.error) ?? ""
         }
 
         Repeater {
@@ -121,8 +121,8 @@ PageBase {
         InfoRow {
             first: true
             icon: root.c4.error && !root.c4.branch ? "error" : (root.c4.behind ?? 0) > 0 ? "upgrade" : "check_circle"
-            label: !root.c4.path ? (root.c4.error ?? Tr.tr("Not checked yet")) : (root.c4.behind ?? 0) > 0 ? Tr.trN("%n new commit", "%n new commits", root.c4.behind) : Tr.tr("Up to date")
-            subtext: [root.c4.path ? `${root.c4.path} · ${root.c4.branch} → ${root.c4.upstream ?? ""}` : "", root.c4.dirty ? Tr.tr("uncommitted changes") : "", (root.c4.ahead ?? 0) > 0 ? Tr.trN("%n local commit not pushed", "%n local commits not pushed", root.c4.ahead) : "", root.c4.path ? (root.c4.error ?? "") : ""].filter(s => s).join(" · ")
+            label: !root.c4.path ? (SystemUpdates.errorText(root.c4.error) ?? Tr.tr("Not checked yet")) : (root.c4.behind ?? 0) > 0 ? Tr.trN("%n new commit", "%n new commits", root.c4.behind) : Tr.tr("Up to date")
+            subtext: [root.c4.path ? `${root.c4.path} · ${root.c4.branch} → ${root.c4.upstream ?? ""}` : "", root.c4.dirty ? Tr.tr("uncommitted changes") : "", (root.c4.ahead ?? 0) > 0 ? Tr.trN("%n local commit not pushed", "%n local commits not pushed", root.c4.ahead) : "", root.c4.path ? (SystemUpdates.errorText(root.c4.error) ?? "") : ""].filter(s => s).join(" · ")
         }
 
         Repeater {

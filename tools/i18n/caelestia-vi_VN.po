@@ -3948,3 +3948,33 @@ msgstr "Nhớ hình nền đặt cho từng không gian làm việc (video vẫn
 # caelestia4: window switcher (end-4 PR #3693)
 msgid "Tab  next   •   Shift+Tab  previous   •   release Super  switch   •   Esc  cancel"
 msgstr "Tab  tiếp   •   Shift+Tab  trước   •   nhả Super  chuyển   •   Esc  hủy"
+
+msgid "%1 -Qua failed (offline?)"
+msgstr "%1 -Qua thất bại (mất mạng?)"
+
+msgid "checkupdates is not installed (pacman-contrib)"
+msgstr "chưa cài checkupdates (gói pacman-contrib)"
+
+msgid "checkupdates failed (offline?)"
+msgstr "checkupdates thất bại (mất mạng?)"
+
+msgid "clone not found (run tools/install-main.sh once)"
+msgstr "không tìm thấy bản clone (chạy tools/install-main.sh một lần)"
+
+msgid "the branch has no upstream"
+msgstr "nhánh này chưa có upstream"
+
+msgid "git fetch failed (offline?): showing the last fetch"
+msgstr "git fetch thất bại (mất mạng?): đang hiện lần fetch trước"
+
+msgid "Caelestia plugin"
+msgstr "Plugin Caelestia"
+
+msgctxt "selected file"
+msgid "\"%1\" selected"
+msgstr "Đã chọn \"%1\""
+
+msgctxt "notification count label, number shown separately"
+msgid "notification"
+msgid_plural "notifications"
+msgstr[0] "thông báo"

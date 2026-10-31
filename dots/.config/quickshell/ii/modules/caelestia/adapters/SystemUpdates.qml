@@ -33,6 +33,23 @@ Singleton {
     readonly property bool updateAdvised: count > (E4C.Config.options.updates.adviseUpdateThreshold ?? 75)
     readonly property bool updateStronglyAdvised: count > (E4C.Config.options.updates.stronglyAdviseUpdateThreshold ?? 200)
 
+    // system.py's errors are English (also for its CLI use); these are the ones it can return, translated. An empty or
+    // missing error comes back as it is
+    function errorText(error: var): var {
+        if (!error)
+            return error;
+        const aur = /^(\S+) -Qua failed \(offline\?\)$/.exec(error);
+        if (aur)
+            return Tr.tr("%1 -Qua failed (offline?)").arg(aur[1]);
+        return {
+            "checkupdates is not installed (pacman-contrib)": Tr.tr("checkupdates is not installed (pacman-contrib)"),
+            "checkupdates failed (offline?)": Tr.tr("checkupdates failed (offline?)"),
+            "clone not found (run tools/install-main.sh once)": Tr.tr("clone not found (run tools/install-main.sh once)"),
+            "the branch has no upstream": Tr.tr("the branch has no upstream"),
+            "git fetch failed (offline?): showing the last fetch": Tr.tr("git fetch failed (offline?): showing the last fetch")
+        }[error] ?? error;
+    }
+
     function refresh(): void {
         checkProc.running = true;
     }
