@@ -107,7 +107,7 @@
   "Distro": "Distro",
   "Clear chat history": "Xóa lịch sử trò chuyện",
   "Float": "Nổi",
-  "<i>No further instruction provided</i>": "<i>No further instruction provided</i>",
+  "<i>No further instruction provided</i>": "<i>Không có hướng dẫn thêm</i>",
   "Choose file": "Chọn tệp",
   "Set the system prompt for the model.": "Đặt chỉ dẫn hệ thống cho model.",
   "Unknown Title": "Bài hát không rõ tên",
@@ -182,7 +182,7 @@
   "Unknown Artist": "Nghệ sĩ không xác định",
   "Appearance": "Giao diện",
   "Task Manager": "Quản lí ứng dụng đang chạy",
-  "To set an API key, pass it with the command\n\nTo view the key, pass \"get\" with the command<br/>\n\n### For %1:\n\n**Link**: %2\n\n%3": "Để đặt API key, viết nó sau lệnh\n\nĐể xem lại, viết \"get\" sau lệnh<br/>\n\n### Với %1:\n\n**Link**: %2\n\n%3",
+  "To set an API key, pass it with the %4 command\n\nTo view the key, pass \"get\" with the command<br/>\n\n### For %1:\n\n**Link**: %2\n\n%3": "Để đặt API key, viết nó sau lệnh %4\n\nĐể xem lại, viết \"get\" sau lệnh<br/>\n\n### Với %1:\n\n**Link**: %2\n\n%3",
   "Opens cheatsheet on press": "Mở bảng tra cứu khi ấn",
   "Invalid arguments. Must provide `key` and `value`.": "Biến không hợp lệ. cần cả `key` và `value`.",
   "About": "Giới thiệu",
@@ -1073,5 +1073,8 @@
   "Hibernate at (%)": "Ngủ đông khi còn (%)",
   "Saves the session to disk before the battery runs out (needs hibernation set up). 0 = never": "Lưu phiên làm việc ra đĩa trước khi hết pin (cần thiết lập ngủ đông). 0 = không bao giờ",
   "Set as favorite": "Ghim vào mục yêu thích",
-  "Remove from favorite": "Bỏ khỏi mục yêu thích"
+  "Remove from favorite": "Bỏ khỏi mục yêu thích",
+  "🌿 Long break: %1 minutes": "🌿 Nghỉ dài: %1 phút",
+  "☕ Break: %1 minutes": "☕ Nghỉ: %1 phút",
+  "🔴 Focus: %1 minutes": "🔴 Tập trung: %1 phút"
 }
