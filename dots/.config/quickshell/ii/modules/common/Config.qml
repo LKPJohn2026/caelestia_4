@@ -99,7 +99,7 @@ Singleton {
                 property JsonObject idle: JsonObject { // hypridle timers, written by scripts/caelestia4/hypridle-timeouts.sh (0 = never)
                     property int lockMinutes: 5
                     property int screenOffMinutes: 10
-                    property int suspendMinutes: 15
+                    property int suspendMinutes: 0 // never: waking from suspend kills hyprlock or Xwayland (docs/install.md, Lock screen)
                     property bool lockBeforeSleep: true
                 }
                 property JsonObject overview: JsonObject { // Caelestia-style overview (modules/caelestia/overview)
