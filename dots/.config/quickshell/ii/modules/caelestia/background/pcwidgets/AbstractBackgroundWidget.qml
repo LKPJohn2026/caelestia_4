@@ -25,8 +25,14 @@ AbstractWidget {
     readonly property var canvas: Config.options.background.widgets.canvas
     readonly property real canvasWidth: canvas.width > 0 ? canvas.width : scaledScreenWidth
     readonly property real canvasHeight: canvas.height > 0 ? canvas.height : scaledScreenHeight
-    property real targetX: Math.max(0, Math.min(toScreen(configEntry.x, width, canvasWidth, scaledScreenWidth), scaledScreenWidth - width))
-    property real targetY: Math.max(0, Math.min(toScreen(configEntry.y, height, canvasHeight, scaledScreenHeight), scaledScreenHeight - height))
+    // caelestia4: and drawn larger or smaller by the screen's height over the canvas's, so a preset's widgets take the
+    // share of the screen they take in its preview (background.widgets.scale sets a size of its own instead)
+    readonly property real widgetScale: Config.options.background.widgets.scale > 0 ? Config.options.background.widgets.scale
+        : canvas.height > 0 ? scaledScreenHeight / canvas.height : 1
+    readonly property real drawnWidth: width * widgetScale
+    readonly property real drawnHeight: height * widgetScale
+    property real targetX: Math.max(0, Math.min(toScreen(configEntry.x, width, drawnWidth, canvasWidth, scaledScreenWidth), scaledScreenWidth - drawnWidth))
+    property real targetY: Math.max(0, Math.min(toScreen(configEntry.y, height, drawnHeight, canvasHeight, scaledScreenHeight), scaledScreenHeight - drawnHeight))
     property real targetZ: configEntry.z
     x: targetX
     y: targetY
@@ -35,6 +41,10 @@ AbstractWidget {
     opacity: (GlobalStates.screenLocked && !visibleWhenLocked) ? 0 : 1
     Behavior on opacity {
         animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
+    transform: Scale {
+        xScale: root.widgetScale
+        yScale: root.widgetScale
     }
     scale: (draggable && containsPress) ? 1.05 : 1
     Behavior on scale {
@@ -53,28 +63,29 @@ AbstractWidget {
     }
 
     function commitPosition() {
-        configEntry.x = toCanvas(root.x, width, canvasWidth, scaledScreenWidth);
-        configEntry.y = toCanvas(root.y, height, canvasHeight, scaledScreenHeight);
+        configEntry.x = toCanvas(root.x, width, drawnWidth, canvasWidth, scaledScreenWidth);
+        configEntry.y = toCanvas(root.y, height, drawnHeight, canvasHeight, scaledScreenHeight);
         configEntry.z = root.z;
-        root.targetX = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.x, width, canvasWidth, scaledScreenWidth), scaledScreenWidth - width)));
-        root.targetY = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.y, height, canvasHeight, scaledScreenHeight), scaledScreenHeight - height)));
+        root.targetX = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.x, width, drawnWidth, canvasWidth, scaledScreenWidth), scaledScreenWidth - drawnWidth)));
+        root.targetY = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.y, height, drawnHeight, canvasHeight, scaledScreenHeight), scaledScreenHeight - drawnHeight)));
         root.targetZ = Qt.binding(() => configEntry.z);
         root.restoreXYBinding();
     }
 
     onReleased: root.commitPosition()
 
-    // One axis: where a widget `size` long, at `pos` on a canvas `canvasSize` long, goes on a screen `screenSize` long.
-    // The room left beside the widget is scaled, not its corner, so a widget against an edge stays against it
-    // (and one in the middle stays in the middle) whatever the screen's aspect ratio
-    function toScreen(pos: real, size: real, canvasSize: real, screenSize: real): real {
-        const from = canvasSize - size, to = screenSize - size;
+    // One axis: where a widget at `pos` on a canvas `canvasSize` long (where it is `size` long) goes on a screen
+    // `screenSize` long (where it is drawn `drawnSize` long). The room left beside the widget is scaled, not its corner,
+    // so a widget against an edge stays against it (and one in the middle stays in the middle) whatever the screen's
+    // aspect ratio; when the widget is scaled as much as the screen, that is just pos * the scale
+    function toScreen(pos: real, size: real, drawnSize: real, canvasSize: real, screenSize: real): real {
+        const from = canvasSize - size, to = screenSize - drawnSize;
         if (from <= 0 || to <= 0) return pos * screenSize / canvasSize; // no room to scale: fall back to the corner
         return pos * to / from;
     }
     // The inverse of toScreen: a position on this screen back to the canvas (saved when a widget is dropped)
-    function toCanvas(pos: real, size: real, canvasSize: real, screenSize: real): real {
-        const from = canvasSize - size, to = screenSize - size;
+    function toCanvas(pos: real, size: real, drawnSize: real, canvasSize: real, screenSize: real): real {
+        const from = canvasSize - size, to = screenSize - drawnSize;
         if (from <= 0 || to <= 0) return pos * canvasSize / screenSize;
         return pos * from / to;
     }
@@ -130,8 +141,8 @@ AbstractWidget {
                 const parsedContent = JSON.parse(output);
                 root.dominantColor = parsedContent.dominant_color || Appearance.colors.colPrimary;
                 if (root.placementStrategy === "free") return;
-                root.targetX = parsedContent.center_x * root.wallpaperScale - root.width / 2;
-                root.targetY  = parsedContent.center_y * root.wallpaperScale - root.height / 2;
+                root.targetX = parsedContent.center_x * root.wallpaperScale - root.drawnWidth / 2;
+                root.targetY = parsedContent.center_y * root.wallpaperScale - root.drawnHeight / 2;
             }
         }
     }

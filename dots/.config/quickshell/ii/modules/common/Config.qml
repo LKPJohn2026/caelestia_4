@@ -208,6 +208,9 @@ Singleton {
                         property real width: 0
                         property real height: 0
                     }
+                    // how much larger widgets are drawn. 0 = the screen's height over the canvas's, so a preset's widgets
+                    // take the share of the screen they take in its preview (1 without a canvas)
+                    property real scale: 0
                     property bool blurWidgets: false
                     property real blurRadius: 32
                     property JsonObject glass: JsonObject {
