@@ -27,8 +27,30 @@ Variants {
         readonly property bool videoShowing: Wallpapers.videoShowingOn(modelData)
         WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled && !videoShowing ? WlrLayer.Background : WlrLayer.Bottom
         color: contentItem.Config.background.wallpaperEnabled && !videoShowing ? "black" : "transparent"
-        // caelestia4: the keyboard only while a desktop widget asks for it (end4-pC's world clock settings)
-        WlrLayershell.keyboardFocus: E4Q.GlobalStates.desktopWidgetKeyboardFocus ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        // caelestia4: the keyboard only while a desktop widget asks for it (a click on one, notes / to-do / text editing,
+        // the world clock's city search). Hyprland gives a layer the keyboard when it turns exclusive, not when it turns
+        // on-demand, so it is exclusive for a moment to take it, then on-demand: a click on a window still takes it back
+        property bool grabbingKeyboard: false
+        WlrLayershell.keyboardFocus: grabbingKeyboard ? WlrKeyboardFocus.Exclusive : E4Q.GlobalStates.desktopWidgetKeyboardFocus ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+        Connections {
+            target: E4Q.GlobalStates
+
+            function onDesktopWidgetKeyboardFocusChanged(): void {
+                // the overlay's widgets (the same widget canvas) have a window of their own
+                if (E4Q.GlobalStates.desktopWidgetKeyboardFocus && !E4Q.GlobalStates.overlayOpen && Hypr.focusedMonitor?.name === win.modelData.name) {
+                    win.grabbingKeyboard = true;
+                    grabTimer.restart();
+                }
+            }
+        }
+
+        Timer {
+            id: grabTimer
+
+            interval: 150
+            onTriggered: win.grabbingKeyboard = false
+        }
         surfaceFormat.opaque: false
 
         anchors.top: true
