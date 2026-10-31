@@ -15,13 +15,22 @@ AbstractWidget {
     required property int scaledScreenWidth
     required property int scaledScreenHeight
     required property real wallpaperScale
-    property bool visibleWhenLocked: false
+
+    property Item wallpaperItem: null
+
+    property bool visibleWhenLocked: Config.options.lock.showWidgets
     property var configEntry: Config.options.background.widgets[configEntryName]
     property string placementStrategy: configEntry.placementStrategy
-    property real targetX: Math.max(0, Math.min(configEntry.x, scaledScreenWidth - width))
-    property real targetY : Math.max(0, Math.min(configEntry.y, scaledScreenHeight - height))
+    // caelestia4: x and y are stored on Config's widget canvas (a preset's 1920x1080, say) and mapped to this screen
+    readonly property var canvas: Config.options.background.widgets.canvas
+    readonly property real canvasWidth: canvas.width > 0 ? canvas.width : scaledScreenWidth
+    readonly property real canvasHeight: canvas.height > 0 ? canvas.height : scaledScreenHeight
+    property real targetX: Math.max(0, Math.min(toScreen(configEntry.x, width, canvasWidth, scaledScreenWidth), scaledScreenWidth - width))
+    property real targetY: Math.max(0, Math.min(toScreen(configEntry.y, height, canvasHeight, scaledScreenHeight), scaledScreenHeight - height))
+    property real targetZ: configEntry.z
     x: targetX
     y: targetY
+    z: targetZ
     visible: opacity > 0
     opacity: (GlobalStates.screenLocked && !visibleWhenLocked) ? 0 : 1
     Behavior on opacity {
@@ -32,12 +41,42 @@ AbstractWidget {
         animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
     }
 
-    draggable: placementStrategy === "free"
-    onReleased: {
-        root.targetX = root.x;
-        root.targetY = root.y;
-        configEntry.x = root.targetX;
-        configEntry.y = root.targetY;
+    draggable: placementStrategy === "free" && !Config.options.background.widgetsLocked
+
+    function requestDelete() {
+        Config.options.background.widgets[root.configEntryName].enable = false
+    }
+    function restoreXYBinding() {
+        root.x = Qt.binding(() => root.targetX);
+        root.y = Qt.binding(() => root.targetY);
+        root.z = Qt.binding(() => root.targetZ);
+    }
+
+    function commitPosition() {
+        configEntry.x = toCanvas(root.x, width, canvasWidth, scaledScreenWidth);
+        configEntry.y = toCanvas(root.y, height, canvasHeight, scaledScreenHeight);
+        configEntry.z = root.z;
+        root.targetX = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.x, width, canvasWidth, scaledScreenWidth), scaledScreenWidth - width)));
+        root.targetY = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.y, height, canvasHeight, scaledScreenHeight), scaledScreenHeight - height)));
+        root.targetZ = Qt.binding(() => configEntry.z);
+        root.restoreXYBinding();
+    }
+
+    onReleased: root.commitPosition()
+
+    // One axis: where a widget `size` long, at `pos` on a canvas `canvasSize` long, goes on a screen `screenSize` long.
+    // The room left beside the widget is scaled, not its corner, so a widget against an edge stays against it
+    // (and one in the middle stays in the middle) whatever the screen's aspect ratio
+    function toScreen(pos: real, size: real, canvasSize: real, screenSize: real): real {
+        const from = canvasSize - size, to = screenSize - size;
+        if (from <= 0 || to <= 0) return pos * screenSize / canvasSize; // no room to scale: fall back to the corner
+        return pos * to / from;
+    }
+    // The inverse of toScreen: a position on this screen back to the canvas (saved when a widget is dropped)
+    function toCanvas(pos: real, size: real, canvasSize: real, screenSize: real): real {
+        const from = canvasSize - size, to = screenSize - size;
+        if (from <= 0 || to <= 0) return pos * canvasSize / screenSize;
+        return pos * from / to;
     }
 
     property bool needsColText: false
@@ -73,22 +112,20 @@ AbstractWidget {
         property int contentHeight: 300
         property int horizontalPadding: 200
         property int verticalPadding: 200
-        command: [Quickshell.shellPath("scripts/images/least-busy-region-venv.sh") // Comments to force the formatter to break lines
-            , "--screen-width", Math.round(root.scaledScreenWidth) //
-            , "--screen-height", Math.round(root.scaledScreenHeight) //
-            , "--width", contentWidth //
-            , "--height", contentHeight //
-            , "--horizontal-padding", horizontalPadding //
-            , "--vertical-padding", verticalPadding //
-            , wallpaperPath //
+        command: [Quickshell.shellPath("scripts/images/least-busy-region-venv.sh")
+            , "--screen-width", Math.round(root.scaledScreenWidth)
+            , "--screen-height", Math.round(root.scaledScreenHeight)
+            , "--width", contentWidth
+            , "--height", contentHeight
+            , "--horizontal-padding", horizontalPadding
+            , "--vertical-padding", verticalPadding
+            , wallpaperPath
             , ...(root.placementStrategy === "mostBusy" ? ["--busiest"] : [])
-            // "--visual-output",
         ]
         stdout: StdioCollector {
             id: leastBusyRegionOutputCollector
             onStreamFinished: {
                 const output = leastBusyRegionOutputCollector.text;
-                // console.log("[Background] Least busy region output:", output)
                 if (output.length === 0) return;
                 const parsedContent = JSON.parse(output);
                 root.dominantColor = parsedContent.dominant_color || Appearance.colors.colPrimary;
@@ -99,4 +136,3 @@ AbstractWidget {
         }
     }
 }
-

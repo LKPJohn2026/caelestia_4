@@ -166,7 +166,7 @@ Status legend:
 | Bar (horizontal / vertical) | 🔁 Equivalent | Caelestia bar |
 | Bar extras: resources, media, weather, utility buttons, clock & battery popups, unread count | 🔁 Equivalent | dashboard tabs, utilities drawer, status icons |
 | Screen corners + hot corners | 🔁 Equivalent | Caelestia frame + edge hover |
-| Background widgets: cookie / digital clock, quote, parallax wallpaper | ✅ E→C | end-4's widgets (modules/caelestia/background/e4widgets) on the Caelestia background: Settings > Desktop > Desktop clock (Caelestia / Cookie / Digital / Off), placement free / least busy / most busy, quote, weather card; workspace parallax with zoom and widget factor |
+| Background widgets: cookie / digital / daily / pixel clock, quote, weather, calendar, media, custom image, parallax wallpaper | ✅ E→C | end4-pC's widgets (pctrade/end4-pC 8840bd0, modules/caelestia/background/pcwidgets) on the Caelestia background: Settings > Desktop > Desktop clock (Caelestia / Cookie / Digital / Off), placement free / least busy / most busy, quote; positions are kept on a canvas (a preset's 1920x1080) and scaled to each screen; end4-pC presets via tools/preset-import.py (widgets, visualiser, wallpaper, lock wallpaper, avatar); workspace parallax with zoom and widget factor |
 | Dock (pinned apps, open windows, previews) | ✅ E→C | Caelestia-style dock with end-4's features |
 | Lock screen (QML) | 🔁 Equivalent | hyprlock (end-4 option `useHyprlock`) |
 | Media controls popup | 🔁 Equivalent | dashboard media tab |
