@@ -8,7 +8,11 @@
 pidof hyprlock >/dev/null && exit 0
 for attempt in 1 2 3 4 5; do
     systemd-cat -t hyprlock hyprlock "$@" && exit 0
-    logger -t hyprlock-guard "hyprlock exited with $?, starting it again ($attempt/5)"
+    status=$?
+    # Hyprland's log is in $XDG_RUNTIME_DIR, which a reboot (the usual way out of a dead lock) clears
+    mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4"
+    cp "$(ls -t "$XDG_RUNTIME_DIR"/hypr/*/hyprland.log | head -1)" "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4/hyprland-lockfail.log" 2>/dev/null
+    logger -t hyprlock-guard "hyprlock exited with $status, starting it again ($attempt/5); Hyprland's log saved to ~/.local/state/caelestia4/hyprland-lockfail.log"
     sleep 1
 done
 logger -t hyprlock-guard "hyprlock failed 5 times; recover from a TTY (docs/install.md, Lock screen)"
