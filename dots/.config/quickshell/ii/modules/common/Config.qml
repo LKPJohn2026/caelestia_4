@@ -329,6 +329,35 @@ Singleton {
                         property real z: 0
                         property bool vertical: false
                     }
+                    property JsonObject notes: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                    }
+                    property JsonObject timers: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property bool vertical: false
+                    }
+                    property JsonObject todo: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                    }
+                    property JsonObject images: JsonObject { // an image converter (ffmpeg, ImageMagick)
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                    }
                 }
                 property bool widgetsLocked: false
                 property string lockWall: "" // caelestia4: a preset's lock screen wallpaper (hyprlock/lockwall.conf), for widgets

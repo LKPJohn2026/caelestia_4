@@ -3978,3 +3978,45 @@ msgctxt "notification count label, number shown separately"
 msgid "notification"
 msgid_plural "notifications"
 msgstr[0] "thông báo"
+
+msgid "Presets"
+msgstr "Preset"
+
+msgid "Update presets"
+msgstr "Cập nhật preset"
+
+msgid "Get presets"
+msgstr "Tải preset"
+
+msgid "From Blapples/wallpapers on GitHub, with all its wallpapers; pictures stay on this computer"
+msgstr "Từ Blapples/wallpapers trên GitHub, kèm toàn bộ hình nền; ảnh chỉ lưu trên máy này"
+
+msgid "Downloading…"
+msgstr "Đang tải…"
+
+msgid "Presets and wallpapers are up to date"
+msgstr "Preset và hình nền đã mới nhất"
+
+msgid "Undo the last preset"
+msgstr "Hoàn tác preset vừa áp dụng"
+
+msgid "Back to the wallpaper, widgets and lock screen from before it"
+msgstr "Trở về hình nền, widget và màn hình khóa như trước đó"
+
+msgid "Restoring…"
+msgstr "Đang khôi phục…"
+
+msgid "Restored"
+msgstr "Đã khôi phục"
+
+msgid "%1 presets: click one to apply it"
+msgstr "%1 preset: bấm vào một preset để áp dụng"
+
+msgid "Applying %1…"
+msgstr "Đang áp dụng %1…"
+
+msgid "Applied %1"
+msgstr "Đã áp dụng %1"
+
+msgid "Failed (exit code %1)"
+msgstr "Thất bại (mã thoát %1)"
