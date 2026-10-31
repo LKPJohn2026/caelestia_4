@@ -13,6 +13,11 @@ After=graphical-session.target caelestia4-sni-watcher.service
 
 [Service]
 Type=exec
+# Qt Multimedia (FFmpeg) probes its hardware decoders the first time it is used, and VDPAU/VA-API open $DISPLAY. When
+# Xwayland has died (it can on resume, NVIDIA explicit sync), Hyprland still holds :0's socket with a full backlog,
+# so XOpenDisplay never returns and the shell hangs at start (only the dock shows). CUDA needs no X server.
+Environment=QT_FFMPEG_DECODING_HW_DEVICE_TYPES=cuda
+Environment=QT_FFMPEG_ENCODING_HW_DEVICE_TYPES=cuda
 ExecStart=/usr/bin/qs -c ii
 Restart=on-failure
 RestartSec=1
