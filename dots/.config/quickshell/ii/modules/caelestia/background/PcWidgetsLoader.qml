@@ -14,9 +14,10 @@ import qs.modules.caelestia.background.pcwidgets.resources
 import qs.modules.caelestia.background.pcwidgets.notes
 import qs.modules.caelestia.background.pcwidgets.timers
 import qs.modules.caelestia.background.pcwidgets.todo
+import qs.modules.caelestia.background.pcwidgets.customtext
 
 // caelestia4: end4-pC's desktop widgets (pctrade/end4-pC 8840bd0, GPL-3), the ones its presets use most.
-// Only some are ported; a preset's other widgets are left off. Settings > Desktop.
+// A preset's widgets not ported here are left off. Settings > Desktop.
 Item {
     id: root
 
@@ -24,7 +25,7 @@ Item {
     required property Item wallpaperItem
 
     Repeater {
-        model: ["customImage", "calendar", "weather", "clock", "media", "userCard", "worldClock", "resources", "notes", "timers", "todo", "images"]
+        model: ["customImage", "calendar", "weather", "clock", "media", "userCard", "worldClock", "resources", "notes", "timers", "todo", "images", "imageCard", "sticker", "customText"]
 
         delegate: FadeLoader {
             id: loader
@@ -44,7 +45,10 @@ Item {
                     notes: notesComp,
                     timers: timersComp,
                     todo: todoComp,
-                    images: imagesComp
+                    images: imagesComp,
+                    imageCard: imageCardComp,
+                    sticker: stickerComp,
+                    customText: customTextComp
                 })[loader.modelData]
         }
     }
@@ -173,6 +177,39 @@ Item {
     Component {
         id: imagesComp
         ImageConverterWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: imageCardComp
+        ImageCardWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: stickerComp
+        StickerWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: customTextComp
+        CustomTextWidget {
             screenWidth: root.screen.width
             screenHeight: root.screen.height
             scaledScreenWidth: root.screen.width

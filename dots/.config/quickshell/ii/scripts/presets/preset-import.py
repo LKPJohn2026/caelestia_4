@@ -47,7 +47,7 @@ IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".avif"}
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
 WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "worldClock", "resources", "notes", "timers",
-           "todo", "images"]
+           "todo", "images", "imageCard", "sticker", "customText"]
 # the size end4-pC presets are made on: their widget x / y are pixels on a 1920x1080 screen
 PRESET_CANVAS = {"width": 1920, "height": 1080}
 LOCKWALL_DEFAULT = "# caelestia4: a lock screen wallpaper of its own. Empty = the desktop wallpaper (colors.conf, from matugen).\n"
@@ -239,8 +239,8 @@ def main():
             widgets.setdefault(key, {})["enable"] = False
             continue
         entry = json.loads(json.dumps(pwidgets[key]))
-        if key == "customImage":
-            img = picture(meta.get("customImage") or entry.get("path"))
+        if key in ("customImage", "imageCard", "sticker"):
+            img = picture(meta.get(key) or entry.get("path"))
             entry["path"] = str(img) if img else ""
         widgets[key] = entry
         applied.append(f"widget {key}" + ("" if entry.get("enable") else " (off)"))

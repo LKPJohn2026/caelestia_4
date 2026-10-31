@@ -1127,5 +1127,7 @@
   "Today, it's %1 %2 of %3 with %4": "Hôm nay là %1, ngày %2 %3, trời %4",
   "Today's %1": "%1 hôm nay",
   "Something": "Không rõ",
-  "Play": "Phát"
+  "Play": "Phát",
+  "Your text": "Chữ của bạn",
+  "Ctrl+Enter to save · Esc to cancel": "Ctrl+Enter để lưu · Esc để hủy"
 }
