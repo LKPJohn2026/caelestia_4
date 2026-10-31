@@ -837,6 +837,27 @@ PageBase {
             }
         }
 
+        // caelestia4: end4-pC's widget canvas: right-click a widget to lock or unlock them all
+        SectionHeader {
+            text: Tr.tr("Desktop widgets")
+        }
+
+        ToggleRow {
+            first: true
+            text: Tr.tr("Lock widgets")
+            subtext: Tr.tr("They can't be dragged or resized. Right-click a widget to switch")
+            value: E4C.Config.options.background.widgetsLocked
+            onToggled: E4C.Config.options.background.widgetsLocked = checked
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Grid while dragging")
+            subtext: Tr.tr("Widgets snap to it either way")
+            value: E4C.Config.options.background.showGrid
+            onToggled: E4C.Config.options.background.showGrid = checked
+        }
+
         SectionHeader {
             text: Tr.tr("Weather widget")
         }

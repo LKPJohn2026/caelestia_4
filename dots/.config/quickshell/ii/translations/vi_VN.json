@@ -1129,5 +1129,8 @@
   "Something": "Không rõ",
   "Play": "Phát",
   "Your text": "Chữ của bạn",
-  "Ctrl+Enter to save · Esc to cancel": "Ctrl+Enter để lưu · Esc để hủy"
+  "Ctrl+Enter to save · Esc to cancel": "Ctrl+Enter để lưu · Esc để hủy",
+  "Widgets locked": "Đã khóa widget",
+  "Widgets unlocked": "Đã mở khóa widget",
+  "Right-click a widget to switch": "Chuột phải vào một widget để đổi lại"
 }

@@ -21,11 +21,11 @@ import qs.modules.caelestia.background.pcwidgets.customtext
 Item {
     id: root
 
-    required property var screen
     required property Item wallpaperItem
 
     Repeater {
-        model: ["customImage", "calendar", "weather", "clock", "media", "userCard", "worldClock", "resources", "notes", "timers", "todo", "images", "imageCard", "sticker", "customText"]
+        // end4-pC's order: widgets with the same z are stacked like this (in a preset's preview too)
+        model: ["customImage", "imageCard", "sticker", "calendar", "weather", "clock", "notes", "media", "images", "resources", "worldClock", "userCard", "todo", "timers", "customText"]
 
         delegate: FadeLoader {
             id: loader
@@ -56,10 +56,10 @@ Item {
     Component {
         id: customImageComp
         CustomImage {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -67,10 +67,10 @@ Item {
     Component {
         id: calendarComp
         CalendarWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -78,10 +78,10 @@ Item {
     Component {
         id: weatherComp
         WeatherWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -89,10 +89,10 @@ Item {
     Component {
         id: clockComp
         ClockWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -100,10 +100,10 @@ Item {
     Component {
         id: mediaComp
         MediaWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -111,10 +111,10 @@ Item {
     Component {
         id: userCardComp
         UserCardWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -122,10 +122,10 @@ Item {
     Component {
         id: worldClockComp
         WorldClockWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -133,10 +133,10 @@ Item {
     Component {
         id: resourcesComp
         ResourcesWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -144,10 +144,10 @@ Item {
     Component {
         id: notesComp
         NotesWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -155,10 +155,10 @@ Item {
     Component {
         id: timersComp
         TimerWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -166,10 +166,10 @@ Item {
     Component {
         id: todoComp
         TodoWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -177,10 +177,10 @@ Item {
     Component {
         id: imagesComp
         ImageConverterWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -188,10 +188,10 @@ Item {
     Component {
         id: imageCardComp
         ImageCardWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -199,10 +199,10 @@ Item {
     Component {
         id: stickerComp
         StickerWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }
@@ -210,10 +210,10 @@ Item {
     Component {
         id: customTextComp
         CustomTextWidget {
-            screenWidth: root.screen.width
-            screenHeight: root.screen.height
-            scaledScreenWidth: root.screen.width
-            scaledScreenHeight: root.screen.height
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
             wallpaperScale: 1
             wallpaperItem: root.wallpaperItem
         }

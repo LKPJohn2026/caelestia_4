@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import qs.modules.common
+import qs.modules.common.functions
 import qs.services
 
 Menu {
@@ -18,13 +19,16 @@ Menu {
     bottomPadding: 6
 
     transformOrigin: Item.TopLeft
+    // caelestia4: as large as the text it edits is drawn (a desktop widget's scale)
+    property real drawnScale: 1
+    onAboutToShow: drawnScale = ObjectUtils.drawnScale(root.editor)
 
     enter: Transition {
         ParallelAnimation {
             NumberAnimation {
                 property: "scale"
-                from: 0.6
-                to: 1
+                from: 0.6 * root.drawnScale
+                to: root.drawnScale
                 duration: 500
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.animationCurves.expressiveFastSpatial
@@ -44,7 +48,7 @@ Menu {
         ParallelAnimation {
             NumberAnimation {
                 property: "scale"
-                to: 0.85
+                to: 0.85 * root.drawnScale
                 duration: 160
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.animationCurves.emphasizedAccel

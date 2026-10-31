@@ -122,8 +122,11 @@ MouseArea {
         if (!(mouse.modifiers & Qt.ControlModifier)) root.clearSelection()
     }
 
-    onActiveFocusChanged: {
-        if (!root.activeFocus) GlobalStates.desktopWidgetKeyboardFocus = false
+    // caelestia4: let the keyboard go when the window loses it (a click on a window), not when the canvas does: a text
+    // field in a widget or in its popup taking focus would take the keyboard from it the moment it is clicked
+    readonly property bool windowActive: Window.active
+    onWindowActiveChanged: {
+        if (!root.windowActive) GlobalStates.desktopWidgetKeyboardFocus = false
     }
 
     onPositionChanged: (mouse) => {
