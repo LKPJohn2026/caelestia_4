@@ -24,6 +24,7 @@ Pictures/Wallpapers/presets/<name>), never into the repo.
 """
 import argparse
 import datetime
+import filecmp
 import json
 import os
 import shutil
@@ -107,8 +108,26 @@ def sync(repo):
     # every preset, whole (its json, meta.json, previews and pictures), into the library
     presets = [d for d in sorted((repo / "presets").iterdir()) if d.is_dir() and preset_json(d)]
     for d in presets:
-        shutil.copytree(d, LIBRARY / d.name, dirs_exist_ok=True)
+        sync_preset(d, LIBRARY / d.name)
     print(f"presets: {len(presets)} in {LIBRARY}  (apply one: tools/preset-import.py NAME)")
+
+
+def sync_preset(src_dir, dst_dir):
+    """Copy one preset from the clone into the library without losing what was changed there by hand."""
+    base = dst_dir / ".upstream"  # each file as the last sync left it, to tell an edit here from a change upstream
+    base.mkdir(parents=True, exist_ok=True)
+    for src in sorted(src_dir.iterdir()):
+        if not src.is_file():
+            continue
+        dst, old = dst_dir / src.name, base / src.name
+        # a file changed here since the last sync (or, before the first one, one that differs at all) is kept
+        edited = dst.is_file() and not filecmp.cmp(dst, old if old.is_file() else src, shallow=False)
+        upstream_changed = not old.is_file() or not filecmp.cmp(src, old, shallow=False)
+        if not edited:
+            shutil.copy2(src, dst)
+        elif upstream_changed:  # said once, when there's an update it doesn't take
+            print(f"  - kept your changes: {dst_dir.name}/{src.name} (Blapples' version: {old})")
+        shutil.copy2(src, old)
 
 
 def list_presets(as_json):
