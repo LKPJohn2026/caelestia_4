@@ -110,6 +110,8 @@ PageBase {
         SelectRow {
             id: securitySelect
 
+            holdsSelection: true
+
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: !root.secured
             label: Tr.tr("Security")

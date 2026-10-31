@@ -28,6 +28,8 @@ Singleton {
     // Packages waiting (repo + AUR); the bar shows this number
     readonly property int count: repoPackages.length + aurPackages.length
     readonly property bool pending: count > 0 || caelestia4Behind > 0
+    // The last check failed (offline, or checkupdates / the AUR helper erred): its empty lists don't mean up to date
+    readonly property string error: data.repo?.error || data.aur?.error || ""
     readonly property bool updateAdvised: count > (E4C.Config.options.updates.adviseUpdateThreshold ?? 75)
     readonly property bool updateStronglyAdvised: count > (E4C.Config.options.updates.stronglyAdviseUpdateThreshold ?? 200)
 
@@ -73,7 +75,7 @@ Singleton {
                     root.data = {};
                 }
                 const interval = (E4C.Config.options.updates.checkInterval ?? 120) * 60000;
-                if (!root.checked || Date.now() - new Date(root.checked).getTime() > interval)
+                if (!root.checked || root.error || Date.now() - new Date(root.checked).getTime() > interval)
                     root.refresh();
             }
         }
@@ -97,6 +99,13 @@ Singleton {
 
         // uwsm-app -T returns when the terminal window closes
         onExited: root.refresh()
+    }
+
+    // A failed check (e.g. the network not back yet after waking) is tried again in 5 minutes, not at the next interval
+    Timer {
+        interval: 5 * 60000
+        running: !!root.error && !root.checking
+        onTriggered: root.refresh()
     }
 
     Timer {

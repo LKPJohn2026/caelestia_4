@@ -39,8 +39,8 @@ PageBase {
 
         InfoRow {
             first: true
-            icon: root.checking ? "sync" : root.total > 0 ? "system_update_alt" : "check_circle"
-            label: root.checking ? Tr.tr("Checking for updates…") : root.total > 0 ? Tr.trN("%n update available", "%n updates available", root.total) : Tr.tr("Up to date")
+            icon: root.checking ? "sync" : root.total > 0 ? "system_update_alt" : SystemUpdates.error ? "error" : "check_circle"
+            label: root.checking ? Tr.tr("Checking for updates…") : root.total > 0 ? Tr.trN("%n update available", "%n updates available", root.total) : SystemUpdates.error ? Tr.tr("Couldn't check for updates") : Tr.tr("Up to date")
             subtext: SystemUpdates.since()
         }
 
