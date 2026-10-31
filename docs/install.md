@@ -64,6 +64,30 @@ configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when 
   and `tools/install-main.sh` again (it sets the theme); after Spotify updates itself, run `spicetify backup apply`.
 - **NVIDIA with an iGPU** (optional): `system/udev/99-caelestia4-dgpu.rules` gives the discrete GPU a stable name.
 
+## Lock screen and suspend
+
+The lock screen is hyprlock, run by `scripts/caelestia4/hyprlock-guard.sh`, which starts it again if it dies while the
+session is locked. Its output and exits are in `journalctl -t hyprlock -t hyprlock-guard`; after a failure, Hyprland's
+log is copied to `~/.local/state/caelestia4/hyprland-lockfail.log`.
+
+**Automatic suspend is off (Power & idle: suspend "Never") since 2026-10-30.** On waking from suspend the G95NC drops
+off DP 2.1 and comes back, and Hyprland 0.57 disconnects a client that was drawing with NVIDIA's explicit sync at that
+moment (`wp_linux_drm_syncobj_surface_v1 error 3: Missing buffer`). The victim varies: hyprlock (the "lock screen
+died" screen) or Xwayland (every X11 app, Steam included, until you log out and back in; Hyprland doesn't start
+Xwayland again). Locking and turning the screen off are safe: DPMS keeps the DP link up. A manual suspend still works
+and can still hit this. DPMS off/on doesn't reproduce it; test with
+`loginctl lock-session; sleep 2; systemctl suspend`.
+
+If the lock screen died, from a TTY (Ctrl+Alt+F3):
+
+```bash
+hyprctl --instance 0 eval 'hl.clear_crashed_lockscreen()'
+hyprctl --instance 0 dispatch 'hl.dsp.exec_cmd("hyprlock")'
+```
+
+Keep awake (utilities drawer) stops the automatic lock, screen off and suspend, not a manual lock or suspend. It is
+turned off again in each new Hyprland session.
+
 ## Updating
 
 ```bash
