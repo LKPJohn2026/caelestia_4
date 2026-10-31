@@ -112,7 +112,7 @@ PageBase {
                     first: true
                     icon: comp.modelData.needsRebuild === true ? "warning" : "extension"
                     iconColour: comp.modelData.needsRebuild === true ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
-                    label: comp.modelData.name
+                    label: comp.modelData.name === "Caelestia plugin" ? Tr.tr("Caelestia plugin") : comp.modelData.name // system.py's name
                     value: [comp.modelData.version, comp.modelData.revision].filter(s => s).join(" · ") || "…"
                     subtext: root.statusFor(comp.modelData)
                 }
