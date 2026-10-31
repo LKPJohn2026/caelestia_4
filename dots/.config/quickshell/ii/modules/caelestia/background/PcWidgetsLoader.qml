@@ -11,6 +11,9 @@ import qs.modules.caelestia.background.pcwidgets.calendar
 import qs.modules.caelestia.background.pcwidgets.usercard
 import qs.modules.caelestia.background.pcwidgets.worldclock
 import qs.modules.caelestia.background.pcwidgets.resources
+import qs.modules.caelestia.background.pcwidgets.notes
+import qs.modules.caelestia.background.pcwidgets.timers
+import qs.modules.caelestia.background.pcwidgets.todo
 
 // caelestia4: end4-pC's desktop widgets (pctrade/end4-pC 8840bd0, GPL-3), the ones its presets use most.
 // Only some are ported; a preset's other widgets are left off. Settings > Desktop.
@@ -21,7 +24,7 @@ Item {
     required property Item wallpaperItem
 
     Repeater {
-        model: ["customImage", "calendar", "weather", "clock", "media", "userCard", "worldClock", "resources"]
+        model: ["customImage", "calendar", "weather", "clock", "media", "userCard", "worldClock", "resources", "notes", "timers", "todo", "images"]
 
         delegate: FadeLoader {
             id: loader
@@ -37,7 +40,11 @@ Item {
                     media: mediaComp,
                     userCard: userCardComp,
                     worldClock: worldClockComp,
-                    resources: resourcesComp
+                    resources: resourcesComp,
+                    notes: notesComp,
+                    timers: timersComp,
+                    todo: todoComp,
+                    images: imagesComp
                 })[loader.modelData]
         }
     }
@@ -122,6 +129,50 @@ Item {
     Component {
         id: resourcesComp
         ResourcesWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: notesComp
+        NotesWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: timersComp
+        TimerWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: todoComp
+        TodoWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: imagesComp
+        ImageConverterWidget {
             screenWidth: root.screen.width
             screenHeight: root.screen.height
             scaledScreenWidth: root.screen.width
