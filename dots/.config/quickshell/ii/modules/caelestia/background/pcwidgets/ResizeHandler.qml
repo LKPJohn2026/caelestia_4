@@ -74,18 +74,22 @@ Canvas {
         property real startValue: 0
         property real startX: 0
         property real startY: 0
+        property real drawnScale: 1
 
         onPressed: (mouse) => {
             startValue = root.currentWidth
             var globalPos = mapToItem(null, mouse.x, mouse.y)
             startX = globalPos.x
             startY = globalPos.y
+            // caelestia4: how much larger the widget is drawn (background.widgets.scale), so it grows with the pointer
+            var o = mapToItem(null, 0, 0), u = mapToItem(null, 1, 0)
+            drawnScale = Math.max(0.01, Math.hypot(u.x - o.x, u.y - o.y)) // a sticker can be rotated
         }
         onPositionChanged: (mouse) => {
             if (!pressed) return
             var globalPos = mapToItem(null, mouse.x, mouse.y)
-            var dx = globalPos.x - startX
-            var dy = globalPos.y - startY
+            var dx = (globalPos.x - startX) / drawnScale
+            var dy = (globalPos.y - startY) / drawnScale
             var delta = root.resizeMode === "diagonal"
                 ? Math.max(dx, dy)
                 : dx
