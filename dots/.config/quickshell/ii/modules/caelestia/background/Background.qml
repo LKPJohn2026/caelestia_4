@@ -7,6 +7,7 @@ import Caelestia.Config
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.adapters
+import qs as E4Q // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep (end-4 background widgets / parallax settings)
 import qs.modules.common.widgets.widgetCanvas as E4Canvas // caelestia4: keep
 
@@ -26,6 +27,8 @@ Variants {
         readonly property bool videoShowing: Wallpapers.videoShowingOn(modelData)
         WlrLayershell.layer: contentItem.Config.background.wallpaperEnabled && !videoShowing ? WlrLayer.Background : WlrLayer.Bottom
         color: contentItem.Config.background.wallpaperEnabled && !videoShowing ? "black" : "transparent"
+        // caelestia4: the keyboard only while a desktop widget asks for it (end4-pC's world clock settings)
+        WlrLayershell.keyboardFocus: E4Q.GlobalStates.desktopWidgetKeyboardFocus ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         surfaceFormat.opaque: false
 
         anchors.top: true

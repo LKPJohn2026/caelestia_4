@@ -8,6 +8,9 @@ import qs.modules.caelestia.background.pcwidgets.weather
 import qs.modules.caelestia.background.pcwidgets.media
 import qs.modules.caelestia.background.pcwidgets.images
 import qs.modules.caelestia.background.pcwidgets.calendar
+import qs.modules.caelestia.background.pcwidgets.usercard
+import qs.modules.caelestia.background.pcwidgets.worldclock
+import qs.modules.caelestia.background.pcwidgets.resources
 
 // caelestia4: end4-pC's desktop widgets (pctrade/end4-pC 8840bd0, GPL-3), the ones its presets use most.
 // Only some are ported; a preset's other widgets are left off. Settings > Desktop.
@@ -18,7 +21,7 @@ Item {
     required property Item wallpaperItem
 
     Repeater {
-        model: ["customImage", "calendar", "weather", "clock", "media"]
+        model: ["customImage", "calendar", "weather", "clock", "media", "userCard", "worldClock", "resources"]
 
         delegate: FadeLoader {
             id: loader
@@ -31,7 +34,10 @@ Item {
                     calendar: calendarComp,
                     weather: weatherComp,
                     clock: clockComp,
-                    media: mediaComp
+                    media: mediaComp,
+                    userCard: userCardComp,
+                    worldClock: worldClockComp,
+                    resources: resourcesComp
                 })[loader.modelData]
         }
     }
@@ -83,6 +89,39 @@ Item {
     Component {
         id: mediaComp
         MediaWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: userCardComp
+        UserCardWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: worldClockComp
+        WorldClockWidget {
+            screenWidth: root.screen.width
+            screenHeight: root.screen.height
+            scaledScreenWidth: root.screen.width
+            scaledScreenHeight: root.screen.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: resourcesComp
+        ResourcesWidget {
             screenWidth: root.screen.width
             screenHeight: root.screen.height
             scaledScreenWidth: root.screen.width

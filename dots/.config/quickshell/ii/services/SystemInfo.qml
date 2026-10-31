@@ -14,6 +14,7 @@ Singleton {
     property string distroId: "unknown"
     property string distroIcon: "linux-symbolic"
     property string username: "user"
+    property string hostname: "" // caelestia4: end4-pC user card
     property string homeUrl: ""
     property string documentationUrl: ""
     property string supportUrl: ""
@@ -85,6 +86,12 @@ Singleton {
             }
 
         }
+    }
+
+    Process {
+        running: true
+        command: ["cat", "/etc/hostname"]
+        stdout: SplitParser { onRead: data => root.hostname = data.trim() }
     }
 
     Process {
