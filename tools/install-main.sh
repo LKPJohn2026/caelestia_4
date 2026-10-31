@@ -87,7 +87,7 @@ rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'worksp
 [[ -d "$CFG/hypr/custom" ]] || cp -a "$DOTS/hypr/custom" "$CFG/hypr/custom"
 # hypridle's timers: (re)create them from the saved settings when missing (5 / 10 / 15 min and lock before sleep by default)
 if [[ ! -f "$CFG/hypr/hypridle-timeouts.conf" ]]; then
-  read -r lockm offm sleepm lockb < <(jq -r '.caelestia.idle // {} | "\(.lockMinutes // 5) \(.screenOffMinutes // 10) \(.suspendMinutes // 15) \(.lockBeforeSleep // true)"' \
+  read -r lockm offm sleepm lockb < <(jq -r '.caelestia.idle // {} | "\(.lockMinutes // 5) \(.screenOffMinutes // 10) \(.suspendMinutes // 0) \(.lockBeforeSleep // true)"' \
     "$CFG/illogical-impulse/config.json" 2>/dev/null || echo "5 10 15 true")
   "$CFG/quickshell/ii/scripts/caelestia4/hypridle-timeouts.sh" "${lockm:-5}" "${offm:-10}" "${sleepm:-15}" "${lockb:-true}" \
     && say "created $CFG/hypr/hypridle-timeouts.conf (idle: lock ${lockm}m, screen off ${offm}m, suspend ${sleepm}m)"
