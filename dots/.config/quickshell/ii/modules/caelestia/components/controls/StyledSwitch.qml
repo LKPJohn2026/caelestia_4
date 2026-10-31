@@ -10,8 +10,43 @@ Switch {
 
     property int cLayer: 1
     property bool disabled
+    // caelestia4: the state this switch shows, usually a setting; bind this, not `checked`. A click sets `checked`
+    // itself, which replaced a binding on it for good, so the switch stopped following the setting (changed elsewhere,
+    // or the file reloading). After a click, `checked` follows `value` again once the handlers have written it
+    // (async ones, like Hyprland options, take a moment: up to 2 s; then it shows what `value` really is)
+    property var value
+    property bool awaitingValue
 
     enabled: !disabled
+    checked: !!value
+
+    onToggled: {
+        if (value === undefined)
+            return;
+        awaitingValue = true;
+        Qt.callLater(() => {
+            if (!!value === checked)
+                rebind();
+        });
+        rebindTimer.restart();
+    }
+    onValueChanged: {
+        if (awaitingValue)
+            rebind();
+    }
+
+    function rebind(): void {
+        awaitingValue = false;
+        rebindTimer.stop();
+        checked = Qt.binding(() => !!value);
+    }
+
+    Timer {
+        id: rebindTimer
+
+        interval: 2000
+        onTriggered: root.rebind()
+    }
 
     implicitWidth: implicitIndicatorWidth
     implicitHeight: implicitIndicatorHeight

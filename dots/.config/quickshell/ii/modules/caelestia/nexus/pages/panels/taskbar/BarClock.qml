@@ -20,26 +20,26 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.trCtx("Background", "taskbar clock: draw a background behind the clock")
-            checked: Config.bar.clock.background
+            value: Config.bar.clock.background
             onToggled: GlobalConfig.bar.clock.background = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show date")
-            checked: Config.bar.clock.showDate
+            value: Config.bar.clock.showDate
             onToggled: GlobalConfig.bar.clock.showDate = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show icon")
-            checked: Config.bar.clock.showIcon
+            value: Config.bar.clock.showIcon
             onToggled: GlobalConfig.bar.clock.showIcon = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Show seconds")
-            checked: Config.bar.clock.showSeconds
+            value: Config.bar.clock.showSeconds
             onToggled: GlobalConfig.bar.clock.showSeconds = checked
         }
     }

@@ -55,7 +55,7 @@ PageBase {
             last: true
             text: Tr.tr("Alt+Tab skips empty workspaces")
             subtext: Tr.tr("Hold Alt, press Tab to step through workspaces, release Alt to switch")
-            checked: E4C.Config.options.caelestia.overview.altTabSkipEmpty
+            value: E4C.Config.options.caelestia.overview.altTabSkipEmpty
             onToggled: E4C.Config.options.caelestia.overview.altTabSkipEmpty = checked
         }
 
@@ -66,13 +66,13 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Darken the screen behind")
-            checked: E4C.Config.options.overlay.darkenScreen
+            value: E4C.Config.options.overlay.darkenScreen
             onToggled: E4C.Config.options.overlay.darkenScreen = checked
         }
 
         ToggleRow {
             text: Tr.tr("Zoom animation when opening")
-            checked: E4C.Config.options.overlay.openingZoomAnimation
+            value: E4C.Config.options.overlay.openingZoomAnimation
             onToggled: E4C.Config.options.overlay.openingZoomAnimation = checked
         }
 

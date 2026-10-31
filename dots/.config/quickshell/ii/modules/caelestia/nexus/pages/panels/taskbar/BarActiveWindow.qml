@@ -22,26 +22,26 @@ PageBase {
             first: true
             text: Tr.tr("Show title")
             subtext: Tr.tr("Off: only the app's icon")
-            checked: Config.bar.activeWindow.showTitle
+            value: Config.bar.activeWindow.showTitle
             onToggled: GlobalConfig.bar.activeWindow.showTitle = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Compact", "taskbar active window layout")
-            checked: Config.bar.activeWindow.compact
+            value: Config.bar.activeWindow.compact
             onToggled: GlobalConfig.bar.activeWindow.compact = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Inverted", "taskbar active window: swap the title and class order")
-            checked: Config.bar.activeWindow.inverted
+            value: Config.bar.activeWindow.inverted
             onToggled: GlobalConfig.bar.activeWindow.inverted = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Only show the active window title while hovering")
-            checked: Config.bar.activeWindow.showOnHover
+            value: Config.bar.activeWindow.showOnHover
             onToggled: GlobalConfig.bar.activeWindow.showOnHover = checked
         }
 
@@ -49,7 +49,7 @@ PageBase {
             last: true
             text: Tr.tr("Popout on hover")
             subtext: Tr.tr("Show a window details popout when hovering")
-            checked: Config.bar.popouts.activeWindow
+            value: Config.bar.popouts.activeWindow
             onToggled: GlobalConfig.bar.popouts.activeWindow = checked
         }
     }

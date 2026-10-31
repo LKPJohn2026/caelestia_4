@@ -28,7 +28,7 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Show when volume or brightness changes")
-            checked: Config.osd.enabled
+            value: Config.osd.enabled
             onToggled: GlobalConfig.osd.enabled = checked
         }
 
@@ -45,7 +45,7 @@ PageBase {
         ToggleRow {
             disabled: !Config.osd.enabled
             text: Tr.tr("Brightness slider")
-            checked: Config.osd.enableBrightness
+            value: Config.osd.enableBrightness
             onToggled: GlobalConfig.osd.enableBrightness = checked
         }
 
@@ -53,7 +53,7 @@ PageBase {
             last: true
             disabled: !Config.osd.enabled
             text: Tr.tr("Microphone slider")
-            checked: Config.osd.enableMicrophone
+            value: Config.osd.enableMicrophone
             onToggled: GlobalConfig.osd.enableMicrophone = checked
         }
     }

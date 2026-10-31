@@ -10,7 +10,7 @@ ToggleRow {
 
     required property string key
 
-    checked: opt.value === true || opt.value === 1
+    value: opt.value === true || opt.value === 1
     onToggled: E4.HyprlandConfig.set(root.key, checked ? "true" : "false")
 
     E4H.HyprlandConfigOption {

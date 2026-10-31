@@ -28,14 +28,14 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.trCtx("Enabled", "toggle label")
-            checked: Config.launcher.enabled
+            value: Config.launcher.enabled
             onToggled: GlobalConfig.launcher.enabled = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
-            checked: Config.launcher.showOnHover
+            value: Config.launcher.showOnHover
             onToggled: GlobalConfig.launcher.showOnHover = checked
         }
 
@@ -105,7 +105,7 @@ PageBase {
             first: true
             text: Tr.tr("Vim keybinds")
             subtext: Tr.tr("Navigate results with Ctrl+hjkl")
-            checked: GlobalConfig.launcher.vimKeybinds
+            value: GlobalConfig.launcher.vimKeybinds
             onToggled: GlobalConfig.launcher.vimKeybinds = checked
         }
 
@@ -113,7 +113,7 @@ PageBase {
             last: true
             text: Tr.tr("Enable dangerous actions")
             subtext: Tr.tr("Allow actions that shut down or log out")
-            checked: GlobalConfig.launcher.enableDangerousActions
+            value: GlobalConfig.launcher.enableDangerousActions
             onToggled: GlobalConfig.launcher.enableDangerousActions = checked
         }
 
@@ -125,32 +125,32 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Apps")
-            checked: GlobalConfig.launcher.useFuzzy.apps
+            value: GlobalConfig.launcher.useFuzzy.apps
             onToggled: GlobalConfig.launcher.useFuzzy.apps = checked
         }
 
         ToggleRow {
             text: Tr.tr("Actions")
-            checked: GlobalConfig.launcher.useFuzzy.actions
+            value: GlobalConfig.launcher.useFuzzy.actions
             onToggled: GlobalConfig.launcher.useFuzzy.actions = checked
         }
 
         ToggleRow {
             text: Tr.tr("Schemes")
-            checked: GlobalConfig.launcher.useFuzzy.schemes
+            value: GlobalConfig.launcher.useFuzzy.schemes
             onToggled: GlobalConfig.launcher.useFuzzy.schemes = checked
         }
 
         ToggleRow {
             text: Tr.tr("Variants")
-            checked: GlobalConfig.launcher.useFuzzy.variants
+            value: GlobalConfig.launcher.useFuzzy.variants
             onToggled: GlobalConfig.launcher.useFuzzy.variants = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Wallpapers")
-            checked: GlobalConfig.launcher.useFuzzy.wallpapers
+            value: GlobalConfig.launcher.useFuzzy.wallpapers
             onToggled: GlobalConfig.launcher.useFuzzy.wallpapers = checked
         }
 

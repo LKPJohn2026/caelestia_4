@@ -33,7 +33,7 @@ PageBase {
 
         ToggleRow {
             text: Tr.trCtx("Muted", "audio output muted")
-            checked: Audio.muted
+            value: Audio.muted
             onToggled: Audio.setStreamMuted(Audio.sink, checked)
         }
 
@@ -60,7 +60,7 @@ PageBase {
 
         ToggleRow {
             text: Tr.trCtx("Muted", "audio input muted")
-            checked: Audio.sourceMuted
+            value: Audio.sourceMuted
             onToggled: Audio.setStreamMuted(Audio.source, checked)
         }
 
@@ -94,7 +94,7 @@ PageBase {
             first: true
             text: Tr.tr("Block sudden loud jumps")
             subtext: Tr.tr("Undo volume changes that are too big or go over the limit, whoever makes them")
-            checked: E4C.Config.options.audio.protection.enable
+            value: E4C.Config.options.audio.protection.enable
             onToggled: E4C.Config.options.audio.protection.enable = checked
         }
 
@@ -124,14 +124,14 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Battery warnings")
-            checked: E4C.Config.options.sounds.battery
+            value: E4C.Config.options.sounds.battery
             onToggled: E4C.Config.options.sounds.battery = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Timer and Pomodoro")
-            checked: E4C.Config.options.sounds.pomodoro
+            value: E4C.Config.options.sounds.pomodoro
             onToggled: E4C.Config.options.sounds.pomodoro = checked
         }
     }

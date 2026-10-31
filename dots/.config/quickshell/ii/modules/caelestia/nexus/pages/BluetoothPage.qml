@@ -31,7 +31,7 @@ PageBase {
             text: Tr.tr("Bluetooth")
             font: Tokens.font.body.medium
             horizontalPadding: Tokens.padding.largeIncreased
-            checked: root.btEnabled
+            value: root.btEnabled
             onToggled: {
                 if (root.adapter)
                     root.adapter.enabled = checked;
@@ -192,7 +192,7 @@ PageBase {
             text: Tr.trCtx("Discoverable", "bluetooth setting")
             subtext: Tr.tr("Allow nearby devices to find this one")
             disabled: !root.btEnabled
-            checked: root.adapter?.discoverable ?? false
+            value: root.adapter?.discoverable ?? false
             onToggled: {
                 if (root.adapter)
                     root.adapter.discoverable = checked;
@@ -209,7 +209,7 @@ PageBase {
             text: Tr.trCtx("Pairable", "bluetooth setting")
             subtext: Tr.tr("Allow nearby devices to pair with this one")
             disabled: !root.btEnabled
-            checked: root.adapter?.pairable ?? false
+            value: root.adapter?.pairable ?? false
             onToggled: {
                 if (root.adapter)
                     root.adapter.pairable = checked;

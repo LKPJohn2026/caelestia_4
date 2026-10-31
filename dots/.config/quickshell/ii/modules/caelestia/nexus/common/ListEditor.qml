@@ -306,7 +306,7 @@ ListView {
                 StyledSwitch {
                     id: enabledSwitch
 
-                    checked: root.toggledFor(item.modelData)
+                    value: root.toggledFor(item.modelData)
                     font: Tokens.font.icon.medium
                     onToggled: root.itemToggled(item.DelegateModel.itemsIndex, checked)
                 }

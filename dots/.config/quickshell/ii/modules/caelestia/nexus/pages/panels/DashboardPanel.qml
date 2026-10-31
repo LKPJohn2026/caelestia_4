@@ -28,14 +28,14 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.trCtx("Enabled", "toggle label")
-            checked: Config.dashboard.enabled
+            value: Config.dashboard.enabled
             onToggled: GlobalConfig.dashboard.enabled = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
-            checked: Config.dashboard.showOnHover
+            value: Config.dashboard.showOnHover
             onToggled: GlobalConfig.dashboard.showOnHover = checked
         }
 
@@ -43,7 +43,7 @@ PageBase {
             last: true
             text: Tr.tr("Show clock seconds")
             subtext: Tr.tr("Display seconds for the clock in the main panel")
-            checked: Config.dashboard.showClockSeconds
+            value: Config.dashboard.showClockSeconds
             onToggled: GlobalConfig.dashboard.showClockSeconds = checked
         }
 
@@ -55,26 +55,26 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Dashboard")
-            checked: Config.dashboard.showDashboard
+            value: Config.dashboard.showDashboard
             onToggled: GlobalConfig.dashboard.showDashboard = checked
         }
 
         ToggleRow {
             text: Tr.tr("Media")
-            checked: Config.dashboard.showMedia
+            value: Config.dashboard.showMedia
             onToggled: GlobalConfig.dashboard.showMedia = checked
         }
 
         ToggleRow {
             text: Tr.tr("Performance")
-            checked: Config.dashboard.showPerformance
+            value: Config.dashboard.showPerformance
             onToggled: GlobalConfig.dashboard.showPerformance = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Weather")
-            checked: Config.dashboard.showWeather
+            value: Config.dashboard.showWeather
             onToggled: GlobalConfig.dashboard.showWeather = checked
         }
 
@@ -86,38 +86,38 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Battery")
-            checked: Config.dashboard.performance.showBattery
+            value: Config.dashboard.performance.showBattery
             onToggled: GlobalConfig.dashboard.performance.showBattery = checked
         }
 
         ToggleRow {
             text: Tr.tr("GPU")
-            checked: Config.dashboard.performance.showGpu
+            value: Config.dashboard.performance.showGpu
             onToggled: GlobalConfig.dashboard.performance.showGpu = checked
         }
 
         ToggleRow {
             text: Tr.tr("CPU")
-            checked: Config.dashboard.performance.showCpu
+            value: Config.dashboard.performance.showCpu
             onToggled: GlobalConfig.dashboard.performance.showCpu = checked
         }
 
         ToggleRow {
             text: Tr.tr("Memory")
-            checked: Config.dashboard.performance.showMemory
+            value: Config.dashboard.performance.showMemory
             onToggled: GlobalConfig.dashboard.performance.showMemory = checked
         }
 
         ToggleRow {
             text: Tr.tr("Storage")
-            checked: Config.dashboard.performance.showStorage
+            value: Config.dashboard.performance.showStorage
             onToggled: GlobalConfig.dashboard.performance.showStorage = checked
         }
 
         ToggleRow {
             last: true
             text: Tr.tr("Network")
-            checked: Config.dashboard.performance.showNetwork
+            value: Config.dashboard.performance.showNetwork
             onToggled: GlobalConfig.dashboard.performance.showNetwork = checked
         }
 
@@ -146,7 +146,7 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("To-do tab")
-            checked: E4C.Config.options.caelestia.dashboardTodo
+            value: E4C.Config.options.caelestia.dashboardTodo
             onToggled: E4C.Config.options.caelestia.dashboardTodo = checked
         }
 
@@ -154,7 +154,7 @@ PageBase {
             last: true
             text: Tr.tr("Timer tab")
             subtext: Tr.tr("Pomodoro and stopwatch")
-            checked: E4C.Config.options.caelestia.dashboardTimer
+            value: E4C.Config.options.caelestia.dashboardTimer
             onToggled: E4C.Config.options.caelestia.dashboardTimer = checked
         }
     }
