@@ -201,14 +201,29 @@ Singleton {
 
             property JsonObject background: JsonObject {
                 property JsonObject widgets: JsonObject {
+                    // caelestia4: the widgets below come from end4-pC (pcwidgets). x and y are in the coordinates of a
+                    // canvas this size (the screen they were placed on, or a preset's 1920x1080); every screen scales
+                    // them to its own size, so a layout keeps its shape on any aspect ratio. 0 = the screen's own size.
+                    property JsonObject canvas: JsonObject {
+                        property real width: 0
+                        property real height: 0
+                    }
+                    property bool blurWidgets: false
+                    property real blurRadius: 32
+                    property JsonObject glass: JsonObject {
+                        property bool enable: false // not ported: no liquid glass shader here
+                    }
+                    property bool shadow: true
                     property JsonObject clock: JsonObject {
                         property bool enable: false // caelestia4: Caelestia's desktop clock is the default (Settings > Desktop > Desktop clock)
                         property bool showOnlyWhenLocked: false
                         property string placementStrategy: "leastBusy" // "free", "leastBusy", "mostBusy"
                         property real x: 100
                         property real y: 100
-                        property string style: "cookie"        // Options: "cookie", "digital"
-                        property string styleLocked: "cookie"  // Options: "cookie", "digital"
+                        property real z: 0
+                        property string style: "cookie"        // Options: "cookie", "digital", "daily", "pixel"
+                        property string color: ""
+                        property string styleLocked: "cookie"  // Options: "cookie", "digital", "daily", "pixel"
                         property JsonObject cookie: JsonObject {
                             property bool aiStyling: false
                             property int sides: 14
@@ -236,9 +251,16 @@ Singleton {
                                 property real roundness: 0
                             }
                         }
+                        property JsonObject daily: JsonObject {
+                            property string variant: "badge" // Options: "badge", "morning", "script", "bold"
+                        }
+                        property JsonObject pixel: JsonObject {
+                            property string orientation: "vertical"
+                        }
                         property JsonObject quote: JsonObject {
                             property bool enable: false
                             property string text: ""
+                            property bool followClock: false
                         }
                     }
                     property JsonObject weather: JsonObject {
@@ -246,8 +268,42 @@ Singleton {
                         property string placementStrategy: "free" // "free", "leastBusy", "mostBusy"
                         property real x: 400
                         property real y: 100
+                        property real z: 0
+                        property string sizeMode: "1x3"
+                        property bool expanded: false
+                    }
+                    property JsonObject calendar: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property string sizeMode: "2x2"
+                    }
+                    property JsonObject media: JsonObject {
+                        property bool enable: false
+                        property bool showControls: true
+                        property bool showLyrics: false
+                        property bool showTitles: true
+                        property string backgroundShape: "Cookie4Sided"
+                        property string placementStrategy: "free"
+                        property real x: 800
+                        property real y: 500
+                        property real z: 0
+                        property string sizeMode: "1x3"
+                    }
+                    property JsonObject customImage: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 400
+                        property real y: 100
+                        property real z: 0
+                        property string path: ""
+                        property string shape: "Cookie4Sided"
+                        property real size: 200
                     }
                 }
+                property bool widgetsLocked: false
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
                 property bool hideWhenFullscreen: true
@@ -262,6 +318,9 @@ Singleton {
             }
 
             property JsonObject bar: JsonObject {
+                property JsonObject media: JsonObject {
+                    property string preferredPlayer: "" // pcwidgets' MprisController: a player name to prefer (e.g. spotify)
+                }
                 property JsonObject autoHide: JsonObject {
                     property bool enable: false
                     property int hoverRegionWidth: 2
@@ -419,6 +478,7 @@ Singleton {
                 }
                 property bool centerClock: true
                 property bool showLockedText: true
+                property bool showWidgets: false // pcwidgets: desktop widgets stay visible while locked
                 property JsonObject security: JsonObject {
                     property bool unlockKeyring: true
                     property bool requirePasswordToPower: false
