@@ -10,8 +10,14 @@ Item {
     property bool vertical: false
     clip: true
 
-    implicitWidth: (reveal || vertical) ? childrenRect.width : 0
-    implicitHeight: (reveal || !vertical) ? childrenRect.height : 0
+    // caelestia4: the child's implicit size, not childrenRect (end4-pC): a child anchored to this item's centre made
+    // childrenRect depend on this item's own height, a binding loop
+    readonly property Item child: children.length > 0 ? children[0] : null
+    readonly property real childWidth: child ? child.implicitWidth : 0
+    readonly property real childHeight: child ? child.implicitHeight : 0
+
+    implicitWidth: (reveal || vertical) ? childWidth : 0
+    implicitHeight: (reveal || !vertical) ? childHeight : 0
     visible: reveal || (implicitWidth > 0 && !vertical) || (implicitHeight > 0 && vertical)
 
     Behavior on implicitWidth {

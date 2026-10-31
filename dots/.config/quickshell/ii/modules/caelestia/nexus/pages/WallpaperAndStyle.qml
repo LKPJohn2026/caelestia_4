@@ -360,6 +360,19 @@ PageBase {
                 verticalPadding: Tokens.padding.medium
                 onClicked: root.nState.openSubPage(3) // Colours page
             }
+
+            // caelestia4: end4-pC presets (wallpaper, desktop widgets, lock screen, avatar)
+            IconTextButton {
+                icon: "style"
+                text: Tr.tr("Presets")
+                font: Tokens.font.body.large
+                isRound: true
+                shapeMorph: true
+                type: IconTextButton.Tonal
+                horizontalPadding: Tokens.padding.extraLarge
+                verticalPadding: Tokens.padding.medium
+                onClicked: root.nState.openSubPage(4) // Presets page
+            }
         }
 
         DialogSelectButton {

@@ -296,7 +296,7 @@ ComboBox {
 
                     TextField {
                         id: searchField
-                        // caelestia4: end4-pC's StyledTextEditMenu (right-click menu) isn't ported
+                        ContextMenu.menu: StyledTextEditMenu { editor: searchField }
                         Layout.fillWidth: true
                         placeholderText: Translation.tr("Search...")
                         placeholderTextColor: root.colSearchHint
