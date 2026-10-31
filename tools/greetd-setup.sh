@@ -8,7 +8,7 @@
 #   /etc/greetd/regreet.css       Caelestia's style (dots-extra/greetd/regreet.css.in) in the scheme's colours
 #   /etc/greetd/background.*      a copy of the wallpaper (the greeter can't read your home folder)
 #   /etc/pam.d/greetd             + pam_kwallet5 (and pam_gnome_keyring, inert until phase 3)
-#   /usr/local/share/fonts/caelestia4/  Google Sans Flex for every user
+#   /usr/local/share/fonts/caelestia4/  Google Sans Flex for every user (tools/fonts-install.sh)
 # It doesn't switch the login manager; it prints the command for that. Re-run it to refresh colours / wallpaper.
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
@@ -95,10 +95,8 @@ sudo install -Dm644 "$OUT/regreet.css" /etc/greetd/regreet.css
 for f in "$OUT"/background.*; do [[ -e "$f" ]] && sudo install -Dm644 "$f" "/etc/greetd/$(basename "$f")"; done
 [[ -e /etc/pam.d/greetd.caelestia4-orig ]] || sudo cp /etc/pam.d/greetd /etc/pam.d/greetd.caelestia4-orig
 sudo install -Dm644 "$OUT/pam-greetd" /etc/pam.d/greetd
-sudo install -Dm644 -t /usr/local/share/fonts/caelestia4 \
-    "$REPO/dots/.config/quickshell/ii/modules/caelestia/assets/google-sans-flex/"*.ttf
-sudo fc-cache -f /usr/local/share/fonts >/dev/null
-say "installed /etc/greetd, /etc/pam.d/greetd (greetd's own kept as greetd.caelestia4-orig), the font"
+say "installed /etc/greetd, /etc/pam.d/greetd (greetd's own kept as greetd.caelestia4-orig)"
+"$REPO/tools/fonts-install.sh"
 
 cat <<'EOF'
 
