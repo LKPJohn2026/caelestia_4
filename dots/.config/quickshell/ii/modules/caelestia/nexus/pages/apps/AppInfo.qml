@@ -85,7 +85,7 @@ PageBase {
             text: Tr.tr("Favourite")
             subtext: root.favouriteByRegex ? Tr.tr("Matched by a regex in favouriteApps — edit the config file to change") : Tr.tr("Pin to the top of the launcher")
             enabled: !root.favouriteByRegex
-            checked: root.app && Strings.testRegexList(GlobalConfig.launcher.favouriteApps, root.app.id)
+            value: root.app && Strings.testRegexList(GlobalConfig.launcher.favouriteApps, root.app.id)
             onToggled: {
                 const apps = GlobalConfig.launcher.favouriteApps;
                 GlobalConfig.launcher.favouriteApps = checked ? [...apps, root.app.id] : apps.filter(a => a !== root.app.id);
@@ -97,7 +97,7 @@ PageBase {
             text: Tr.tr("Hidden")
             subtext: root.hiddenByRegex ? Tr.tr("Matched by a regex in hiddenApps — edit the config file to change") : Tr.tr("Hide from the launcher")
             enabled: !root.hiddenByRegex
-            checked: root.app && Strings.testRegexList(GlobalConfig.launcher.hiddenApps, root.app.id)
+            value: root.app && Strings.testRegexList(GlobalConfig.launcher.hiddenApps, root.app.id)
             onToggled: {
                 const apps = GlobalConfig.launcher.hiddenApps;
                 GlobalConfig.launcher.hiddenApps = checked ? [...apps, root.app.id] : apps.filter(a => a !== root.app.id);

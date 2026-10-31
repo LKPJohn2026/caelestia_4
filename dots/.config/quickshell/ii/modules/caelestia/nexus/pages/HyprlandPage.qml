@@ -359,7 +359,7 @@ PageBase {
             last: true
             text: Tr.tr("Super+S closes any special workspace")
             subtext: Tr.tr("Off: Super+S only shows or hides the scratchpad")
-            checked: !root.scratchpadOnly.exists
+            value: !root.scratchpadOnly.exists
             onToggled: {
                 if (checked)
                     Quickshell.execDetached(["rm", "-f", root.scratchpadOnly.path]);
@@ -403,7 +403,7 @@ PageBase {
             first: true
             text: Tr.tr("Mute games while in the background")
             subtext: Tr.tr("A game's sound stops when you switch away and comes back when you click into it")
-            checked: E4C.Config.options.caelestia.backgroundMute.enable
+            value: E4C.Config.options.caelestia.backgroundMute.enable
             onToggled: E4C.Config.options.caelestia.backgroundMute.enable = checked
         }
 

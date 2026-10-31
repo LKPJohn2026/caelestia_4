@@ -48,46 +48,46 @@ PageBase {
 
         ToggleRow {
             text: Tr.trCtx("Active indicator", "bar workspaces")
-            checked: Config.bar.workspaces.activeIndicator
+            value: Config.bar.workspaces.activeIndicator
             onToggled: GlobalConfig.bar.workspaces.activeIndicator = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Active trail", "bar workspaces")
-            checked: Config.bar.workspaces.activeTrail
+            value: Config.bar.workspaces.activeTrail
             onToggled: GlobalConfig.bar.workspaces.activeTrail = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Occupied background", "bar workspaces")
-            checked: Config.bar.workspaces.occupiedBg
+            value: Config.bar.workspaces.occupiedBg
             onToggled: GlobalConfig.bar.workspaces.occupiedBg = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Show unoccupied", "bar workspaces")
             subtext: Tr.tr("Show workspaces that are inactive and empty")
-            checked: Config.bar.workspaces.showUnoccupied
+            value: Config.bar.workspaces.showUnoccupied
             onToggled: GlobalConfig.bar.workspaces.showUnoccupied = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Per monitor", "bar workspaces")
             subtext: Tr.tr("Hide workspaces not on the current monitor")
-            checked: Config.bar.workspaces.perMonitor
+            value: Config.bar.workspaces.perMonitor
             onToggled: GlobalConfig.bar.workspaces.perMonitor = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Show windows", "bar workspaces")
             subtext: Tr.tr("Show icons of open windows on each workspace")
-            checked: Config.bar.workspaces.showWindows
+            value: Config.bar.workspaces.showWindows
             onToggled: GlobalConfig.bar.workspaces.showWindows = checked
         }
 
         ToggleRow {
             text: Tr.trCtx("Windows on special workspaces", "bar workspaces")
-            checked: Config.bar.workspaces.showWindowsOnSpecialWorkspaces
+            value: Config.bar.workspaces.showWindowsOnSpecialWorkspaces
             onToggled: GlobalConfig.bar.workspaces.showWindowsOnSpecialWorkspaces = checked
         }
 

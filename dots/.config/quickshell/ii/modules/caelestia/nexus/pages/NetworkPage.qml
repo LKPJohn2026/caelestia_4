@@ -63,7 +63,7 @@ PageBase {
             text: Tr.tr("Wi-Fi")
             font: Tokens.font.body.medium
             horizontalPadding: Tokens.padding.largeIncreased
-            checked: Nmcli.wifiEnabled
+            value: Nmcli.wifiEnabled
             onToggled: Nmcli.enableWifi(checked)
         }
 
@@ -121,7 +121,7 @@ PageBase {
             text: Tr.tr("VPN")
             font: Tokens.font.body.medium
             horizontalPadding: Tokens.padding.largeIncreased
-            checked: VPN.connected
+            value: VPN.connected
             // Connectable as long as there's a provider and we're not mid-switch.
             disabled: VPN.connecting || VPN.disconnecting || VPN.providers.length === 0
             onToggled: VPN.toggle()

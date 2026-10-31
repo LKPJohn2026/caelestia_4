@@ -51,13 +51,13 @@ StyledRect {
 
         Toggle {
             label: Tr.tr("Night light")
-            checked: E4.Hyprsunset.temperatureActive
+            value: E4.Hyprsunset.temperatureActive
             onToggled: E4.Hyprsunset.toggleTemperature(checked)
         }
 
         Toggle {
             label: Tr.tr("Automatic schedule")
-            checked: root.night.automatic
+            value: root.night.automatic
             onToggled: root.night.automatic = checked
         }
 
@@ -109,13 +109,13 @@ StyledRect {
 
         Toggle {
             label: Tr.tr("Dim bright content (screen shader)")
-            checked: E4.HyprlandAntiFlashbangShader.enabled
+            value: E4.HyprlandAntiFlashbangShader.enabled
             onToggled: checked ? E4.HyprlandAntiFlashbangShader.enable() : E4.HyprlandAntiFlashbangShader.disable()
         }
 
         Toggle {
             label: Tr.tr("Adapt display brightness")
-            checked: E4C.Config.options.light.antiFlashbang.enable
+            value: E4C.Config.options.light.antiFlashbang.enable
             onToggled: E4C.Config.options.light.antiFlashbang.enable = checked
         }
     }
@@ -125,6 +125,7 @@ StyledRect {
 
         required property string label
         property alias checked: sw.checked
+        property alias value: sw.value // bind this (StyledSwitch)
 
         signal toggled
 

@@ -27,14 +27,14 @@ PageBase {
             first: true
             text: Tr.tr("Persistent")
             subtext: Tr.tr("Keep the bar visible at all times")
-            checked: Config.bar.persistent
+            value: Config.bar.persistent
             onToggled: GlobalConfig.bar.persistent = checked
         }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Reveal the bar when the cursor reaches the screen edge")
-            checked: Config.bar.showOnHover
+            value: Config.bar.showOnHover
             onToggled: GlobalConfig.bar.showOnHover = checked
         }
 
@@ -107,14 +107,14 @@ PageBase {
             first: true
             text: Tr.tr("Workspaces")
             subtext: Tr.tr("Scroll over the workspace indicator to switch workspaces")
-            checked: Config.bar.scrollActions.workspaces
+            value: Config.bar.scrollActions.workspaces
             onToggled: GlobalConfig.bar.scrollActions.workspaces = checked
         }
 
         ToggleRow {
             text: Tr.tr("Volume")
             subtext: Tr.tr("Scroll on the top half of the bar to adjust volume")
-            checked: Config.bar.scrollActions.volume
+            value: Config.bar.scrollActions.volume
             onToggled: GlobalConfig.bar.scrollActions.volume = checked
         }
 
@@ -122,7 +122,7 @@ PageBase {
             last: true
             text: Tr.tr("Brightness")
             subtext: Tr.tr("Scroll on the bottom half of the bar to adjust brightness")
-            checked: Config.bar.scrollActions.brightness
+            value: Config.bar.scrollActions.brightness
             onToggled: GlobalConfig.bar.scrollActions.brightness = checked
         }
     }

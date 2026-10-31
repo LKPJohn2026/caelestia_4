@@ -252,7 +252,7 @@ PageBase {
             last: true
             text: Tr.tr("Connect automatically")
             subtext: Tr.tr("Join this network when it's in range")
-            checked: root.autoconnect
+            value: root.autoconnect
             enabled: root.ipLoaded
             onToggled: {
                 root.autoconnect = checked;

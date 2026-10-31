@@ -28,7 +28,7 @@ ColumnLayout {
 
     Toggle {
         label: Tr.trCtx("Enabled", "toggle label")
-        checked: Bluetooth.defaultAdapter?.enabled ?? false
+        value: Bluetooth.defaultAdapter?.enabled ?? false
         toggle.onToggled: {
             const adapter = Bluetooth.defaultAdapter;
             if (adapter)
@@ -38,7 +38,7 @@ ColumnLayout {
 
     Toggle {
         label: Tr.trCtx("Discovering", "bluetooth adapter state")
-        checked: Bluetooth.defaultAdapter?.discovering ?? false
+        value: Bluetooth.defaultAdapter?.discovering ?? false
         toggle.onToggled: {
             const adapter = Bluetooth.defaultAdapter;
             if (adapter)
@@ -187,6 +187,7 @@ ColumnLayout {
     component Toggle: RowLayout {
         required property string label
         property alias checked: toggle.checked
+        property alias value: toggle.value // bind this (StyledSwitch)
         property alias toggle: toggle
 
         Layout.fillWidth: true

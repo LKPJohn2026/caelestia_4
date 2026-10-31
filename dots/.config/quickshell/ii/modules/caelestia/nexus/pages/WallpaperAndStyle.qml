@@ -379,7 +379,7 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Display wallpaper")
-            checked: Config.background.wallpaperEnabled
+            value: Config.background.wallpaperEnabled
             onToggled: GlobalConfig.background.wallpaperEnabled = checked
         }
 
@@ -389,7 +389,7 @@ PageBase {
 
             text: Tr.tr("Workspace wallpapers")
             subtext: Tr.tr("Remember the wallpaper set on each workspace (videos stay on every workspace)")
-            checked: GlobalConfig.background.workspaceWallpapers.enabled
+            value: GlobalConfig.background.workspaceWallpapers.enabled
             onToggled: GlobalConfig.background.workspaceWallpapers.enabled = checked
         }
 
@@ -399,7 +399,7 @@ PageBase {
             text: Tr.tr("Transparency")
             // TRANSLATORS: %1/%2 = opacity values from 0 to 1 for the base surface and layered surfaces
             subtext: Tr.tr("Base %1, layers %2").arg(Colours.transparency.base).arg(Colours.transparency.layers)
-            checked: Colours.transparency.enabled
+            value: Colours.transparency.enabled
             onToggled: {
                 GlobalConfig.appearance.transparency.enabled = checked;
                 E4C.Config.options.appearance.transparency.enable = checked; // caelestia4: end-4 parts (AI chat, settings app, overlay) too
@@ -411,7 +411,7 @@ PageBase {
 
             last: true
             text: Tr.tr("Dark theme")
-            checked: !Colours.light
+            value: !Colours.light
             onToggled: Colours.setMode(checked ? "dark" : "light")
         }
 
@@ -584,20 +584,20 @@ PageBase {
             first: true
             text: Tr.tr("Colour the shell")
             subtext: Tr.tr("Panels, launcher and widgets follow the wallpaper")
-            checked: E4C.Config.options.appearance.wallpaperTheming.enableAppsAndShell
+            value: E4C.Config.options.appearance.wallpaperTheming.enableAppsAndShell
             onToggled: E4C.Config.options.appearance.wallpaperTheming.enableAppsAndShell = checked
         }
 
         ToggleRow {
             text: Tr.tr("Colour Qt and KDE apps")
-            checked: E4C.Config.options.appearance.wallpaperTheming.enableQtApps
+            value: E4C.Config.options.appearance.wallpaperTheming.enableQtApps
             onToggled: E4C.Config.options.appearance.wallpaperTheming.enableQtApps = checked
         }
 
         ToggleRow {
             text: Tr.tr("Colour terminals")
             subtext: Tr.tr("kitty and other terminals use the wallpaper colours")
-            checked: E4C.Config.options.appearance.wallpaperTheming.enableTerminal
+            value: E4C.Config.options.appearance.wallpaperTheming.enableTerminal
             onToggled: E4C.Config.options.appearance.wallpaperTheming.enableTerminal = checked
         }
 
@@ -605,7 +605,7 @@ PageBase {
             disabled: !E4C.Config.options.appearance.wallpaperTheming.enableTerminal
             text: Tr.tr("Always dark terminal")
             subtext: Tr.tr("Even when the shell is in light mode")
-            checked: E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode
+            value: E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode
             onToggled: E4C.Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode = checked
         }
 
@@ -649,7 +649,7 @@ PageBase {
             last: true
             text: Tr.tr("Use the system file picker")
             subtext: Tr.tr("end-4's wallpaper selector (Ctrl+Super+T) opens the desktop's file dialog instead of its own browser")
-            checked: E4C.Config.options.wallpaperSelector.useSystemFileDialog
+            value: E4C.Config.options.wallpaperSelector.useSystemFileDialog
             onToggled: E4C.Config.options.wallpaperSelector.useSystemFileDialog = checked
         }
 
@@ -669,14 +669,14 @@ PageBase {
         ToggleRow {
             text: Tr.tr("Only wallpapers that fill my screen")
             subtext: root.biggestScreen.w > 0 ? Tr.tr("At least %1 × %2, your largest monitor").arg(root.biggestScreen.w).arg(root.biggestScreen.h) : Tr.tr("At least your monitor's resolution")
-            checked: root.rw.matchScreen
+            value: root.rw.matchScreen
             onToggled: root.rw.matchScreen = checked
         }
 
         ToggleRow {
             text: root.screenRatio ? Tr.tr("Prefer my screen's shape (%1)").arg(root.screenRatio) : Tr.tr("Prefer my screen's shape")
             subtext: Tr.tr("Wallpapers with the same aspect ratio as your largest monitor come first, then the closest shape, so less gets cropped")
-            checked: root.rw.preferScreenRatio
+            value: root.rw.preferScreenRatio
             onToggled: root.rw.preferScreenRatio = checked
         }
 
@@ -698,7 +698,7 @@ PageBase {
             first: true
             text: Tr.tr("Visualiser on the desktop")
             subtext: Tr.tr("Bars along the bottom of the wallpaper that move with the sound")
-            checked: Config.background.visualiser.enabled
+            value: Config.background.visualiser.enabled
             onToggled: GlobalConfig.background.visualiser.enabled = checked
         }
 
@@ -706,14 +706,14 @@ PageBase {
             disabled: !Config.background.visualiser.enabled
             text: Tr.tr("Only on empty desktops")
             subtext: Tr.tr("Hidden while tiled windows cover the workspace")
-            checked: Config.background.visualiser.autoHide
+            value: Config.background.visualiser.autoHide
             onToggled: GlobalConfig.background.visualiser.autoHide = checked
         }
 
         ToggleRow {
             disabled: !Config.background.visualiser.enabled
             text: Tr.tr("Blur behind the bars")
-            checked: Config.background.visualiser.blur
+            value: Config.background.visualiser.blur
             onToggled: GlobalConfig.background.visualiser.blur = checked
         }
 
@@ -763,7 +763,7 @@ PageBase {
             visible: root.desktopClock === "caelestia"
             text: Tr.tr("Show the weather beside it")
             subtext: Tr.tr("Location: end-4 Settings > Apps & services; units: Language & region")
-            checked: E4C.Config.options.caelestia.desktopWeather
+            value: E4C.Config.options.caelestia.desktopWeather
             onToggled: E4C.Config.options.caelestia.desktopWeather = checked
         }
 
@@ -789,7 +789,7 @@ PageBase {
             visible: root.desktopClock === "caelestia"
             last: true
             text: Tr.tr("Background behind it")
-            checked: Config.background.desktopClock.background.enabled
+            value: Config.background.desktopClock.background.enabled
             onToggled: GlobalConfig.background.desktopClock.background.enabled = checked
         }
 
@@ -807,7 +807,7 @@ PageBase {
         ToggleRow {
             visible: root.desktopClock === "cookie"
             text: Tr.tr("Quote under the cookie clock")
-            checked: E4C.Config.options.background.widgets.clock.quote.enable
+            value: E4C.Config.options.background.widgets.clock.quote.enable
             onToggled: E4C.Config.options.background.widgets.clock.quote.enable = checked
         }
 
@@ -833,7 +833,7 @@ PageBase {
             last: !E4C.Config.options.background.widgets.weather.enable
             text: Tr.tr("Weather widget")
             subtext: Tr.tr("end-4's weather card, separate from the clock; drag it when its placement is free")
-            checked: E4C.Config.options.background.widgets.weather.enable
+            value: E4C.Config.options.background.widgets.weather.enable
             onToggled: E4C.Config.options.background.widgets.weather.enable = checked
         }
 
@@ -854,14 +854,14 @@ PageBase {
             first: true
             text: Tr.tr("Move the wallpaper with workspaces")
             subtext: Tr.tr("The wallpaper is zoomed in a little and slides as you switch workspaces")
-            checked: E4C.Config.options.background.parallax.enableWorkspace
+            value: E4C.Config.options.background.parallax.enableWorkspace
             onToggled: E4C.Config.options.background.parallax.enableWorkspace = checked
         }
 
         ToggleRow {
             disabled: !E4C.Config.options.background.parallax.enableWorkspace
             text: Tr.tr("Slide vertically")
-            checked: E4C.Config.options.background.parallax.vertical
+            value: E4C.Config.options.background.parallax.vertical
             onToggled: E4C.Config.options.background.parallax.vertical = checked
         }
 
