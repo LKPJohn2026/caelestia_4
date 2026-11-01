@@ -3,8 +3,8 @@
 
 A preset is end4-pC's whole config.json plus its pictures. Only what this shell can show is taken (a whitelist, so a
 preset can't set commands like apps.*): the desktop widgets end4-pC and this shell share (pcwidgets: clock, weather,
-calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter) at the preset's positions, the visualiser, the colour
-scheme type, the wallpaper, the lock screen wallpaper, the banner (on the user card) and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
+calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter) at the preset's positions, the visualiser, the colours
+(style, accent colour, light / dark), the wallpaper, the lock screen wallpaper, the banner (on the user card) and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
 
 Widget positions stay in the preset's 1920x1080 coordinates (background.widgets.canvas); each screen scales the room
 around each widget to its own size, so widgets against an edge stay there on a 32:9 screen.
@@ -12,7 +12,7 @@ around each widget to its own size, so widgets against an edge stay there on a 3
   tools/preset-import.py --sync [REPO_DIR]   fetch Blapples/wallpapers (or use a clone) and install every preset and
                                              every wallpaper in it
   tools/preset-import.py --list [--json]     the installed presets (--json: for Nexus > Wallpaper & style > Presets)
-  tools/preset-import.py PRESET [--wallpapers DIR] [--dry-run]
+  tools/preset-import.py PRESET [--mode light|dark] [--wallpapers DIR] [--dry-run]
   tools/preset-import.py --undo              put back the settings from before the last import
 
 PRESET is an installed preset's name or a folder holding <name>.json and meta.json. Its pictures are looked for in
@@ -30,6 +30,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 HOME = Path.home()
@@ -44,6 +45,7 @@ LIBRARY = Path(os.environ.get("XDG_DATA_HOME", HOME / ".local/share")) / "caeles
 BLAPPLES_REPO = "https://github.com/Blapples/wallpapers"
 BLAPPLES_CLONE = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "caelestia4/blapples-wallpapers"
 BLAPPLES_PICS = PICTURES / "Wallpapers/Blapples"
+SWITCHWALL = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "quickshell/ii/scripts/colors/switchwall.sh"
 IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".avif"}
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
@@ -177,16 +179,33 @@ def undo():
             dst.write_text(LOCKWALL_DEFAULT)
         elif dst == CURRENT:
             dst.unlink(missing_ok=True)
-    wallpaper = load(II_CONFIG).get("background", {}).get("wallpaperPath")
-    set_wallpaper(wallpaper)
+    ii = load(II_CONFIG)
+    palette = ii.get("appearance", {}).get("palette", {})
+    set_wallpaper(ii.get("background", {}).get("wallpaperPath"), accent=palette.get("accentColor", ""))
     shutil.rmtree(last)
     print(f"restored the settings from {last.name}")
 
 
-def set_wallpaper(path):
-    # through the shell (Wallpapers.qml's IPC), so the colour scheme and hyprlock's colours follow
-    if path and Path(path).is_file():
+def set_wallpaper(path, mode=None, scheme=None, accent=""):
+    # end-4's switchwall.sh, waited for (the shell follows the wallpaper it saves), so its colour runs don't overlap:
+    # a new wallpaper always clears the accent colour, so a preset's accent goes on after it, with the wallpaper kept
+    # (--noswitch). mode: light / dark, None keeps the current one; scheme: the colour style (scheme-rainbow, ...)
+    if not (path and Path(path).is_file()):
+        return
+    if not os.access(SWITCHWALL, os.X_OK):
         subprocess.run(["qs", "-c", "ii", "ipc", "call", "wallpaper", "set", str(path)], check=False)
+        return
+    opts = (["--mode", mode] if mode else []) + (["--type", scheme] if scheme else [])
+    runs = [["--image", str(path)]] + ([["--noswitch", "--color", accent]] if accent else [])
+    for run in runs:
+        # its upscale question (notify-send) waits in the background: on a pipe of ours it would keep a reader (Nexus,
+        # `| tail`) waiting for the answer, so its errors go through a file
+        with tempfile.TemporaryFile("w+") as err:
+            r = subprocess.run([str(SWITCHWALL), *run, *opts], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                               stderr=err, check=False, timeout=120)
+            err.seek(0)
+            if r.returncode:
+                print(f"switchwall.sh {' '.join(run)}: exit {r.returncode}\n{err.read()}", file=sys.stderr)
 
 
 def main():
@@ -194,6 +213,7 @@ def main():
     ap.add_argument("preset", nargs="?", type=Path)
     ap.add_argument("--wallpapers", type=Path)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--mode", choices=["light", "dark"], help="light or dark colours (default: the preset's meta.json \"mode\", else the current one)")
     ap.add_argument("--undo", action="store_true")
     ap.add_argument("--sync", nargs="?", const=True, metavar="REPO_DIR")
     ap.add_argument("--list", action="store_true")
@@ -273,10 +293,20 @@ def main():
     if banner:
         applied.append(f"banner {banner.name}")
 
+    # the colours: the style, the accent colour they're made from (none: from the wallpaper) and light / dark. end4-pC
+    # keeps light / dark out of presets, so meta.json "mode" (or --mode) says which one the preview was taken in
     palette = preset.get("appearance", {}).get("palette", {})
-    if palette.get("type") and palette["type"] != "auto":
-        ii.setdefault("appearance", {}).setdefault("palette", {})["type"] = palette["type"]
-        applied.append(f"scheme {palette['type']}")
+    scheme = palette["type"] if palette.get("type") and palette["type"] != "auto" else None
+    accent = palette.get("accentColor") or ""
+    mode = args.mode or meta.get("mode")
+    iipalette = ii.setdefault("appearance", {}).setdefault("palette", {})
+    if scheme:
+        iipalette["type"] = scheme
+        applied.append(f"scheme {scheme}")
+    iipalette["accentColor"] = accent
+    applied.append(f"accent colour {accent}" if accent else "colours from the wallpaper")
+    if mode:
+        applied.append(f"{mode} mode")
 
     shell = load(SHELL_CONFIG) if SHELL_CONFIG.is_file() else {}
     sbg = shell.setdefault("background", {})
@@ -314,7 +344,7 @@ def main():
     if avatar:
         shutil.copy2(avatar, FACE)
     CURRENT.write_text(name + "\n")
-    set_wallpaper(wallpaper)
+    set_wallpaper(wallpaper, mode, scheme, accent)
 
 
 if __name__ == "__main__":
