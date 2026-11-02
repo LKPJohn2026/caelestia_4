@@ -15,6 +15,7 @@ import qs.modules.caelestia.background.pcwidgets.notes
 import qs.modules.caelestia.background.pcwidgets.timers
 import qs.modules.caelestia.background.pcwidgets.todo
 import qs.modules.caelestia.background.pcwidgets.customtext
+import qs.modules.caelestia.background.pcwidgets.visualizer
 
 // caelestia4: end4-pC's desktop widgets (pctrade/end4-pC 8840bd0, GPL-3), the ones its presets use most.
 // A preset's widgets not ported here are left off. Settings > Desktop.
@@ -25,7 +26,7 @@ Item {
 
     Repeater {
         // end4-pC's order: widgets with the same z are stacked like this (in a preset's preview too)
-        model: ["customImage", "imageCard", "sticker", "calendar", "weather", "clock", "notes", "media", "images", "resources", "worldClock", "userCard", "todo", "timers", "customText"]
+        model: ["visualizer", "customImage", "imageCard", "sticker", "calendar", "weather", "clock", "notes", "media", "images", "resources", "worldClock", "userCard", "todo", "timers", "customText"]
 
         delegate: FadeLoader {
             id: loader
@@ -48,7 +49,8 @@ Item {
                     images: imagesComp,
                     imageCard: imageCardComp,
                     sticker: stickerComp,
-                    customText: customTextComp
+                    customText: customTextComp,
+                    visualizer: visualizerComp
                 })[loader.modelData]
         }
     }
@@ -210,6 +212,20 @@ Item {
     Component {
         id: customTextComp
         CustomTextWidget {
+            screenWidth: root.width
+            screenHeight: root.height
+            scaledScreenWidth: root.width
+            scaledScreenHeight: root.height
+            wallpaperScale: 1
+            wallpaperItem: root.wallpaperItem
+        }
+    }
+    Component {
+        id: visualizerComp
+        VisualizerWidget {
+            // as end4-pC: under every widget whatever is clicked (a click doesn't raise it), and no frame round the band
+            pinnedBottom: true
+            showSelectionBorder: false
             screenWidth: root.width
             screenHeight: root.height
             scaledScreenWidth: root.width
