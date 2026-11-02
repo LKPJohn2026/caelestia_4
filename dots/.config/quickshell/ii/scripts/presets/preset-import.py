@@ -89,6 +89,15 @@ def save(path, data):
     os.replace(tmp, path)
 
 
+def put_face(src):
+    # whole, in one rename, with a new mtime: the shell's avatars reload when ~/.face changes, and a file still being
+    # written over (or one as old as the last avatar, every preset's pictures are) would show half or none of it
+    tmp = FACE.with_name(FACE.name + ".tmp")
+    shutil.copyfile(src, tmp)
+    os.chmod(tmp, 0o644)
+    os.replace(tmp, FACE)
+
+
 def find_picture(name, dirs):
     for d in dirs:
         p = d / name
@@ -291,8 +300,12 @@ def undo():
     per_workspace = load(II_CONFIG).get("background", {}).get("workspacePresets", False)
     for dst in (II_CONFIG, SHELL_CONFIG, LOCKWALL, FACE, CURRENT):
         src = last / dst.name
-        if src.is_file():
+        if dst == FACE and src.is_file():
+            put_face(src)
+        elif src.is_file():
             shutil.copy2(src, dst)
+        elif dst == FACE:
+            dst.unlink(missing_ok=True)  # there was none: not the preset's left on
         elif dst == LOCKWALL:
             dst.write_text(LOCKWALL_DEFAULT)
         elif dst == CURRENT:
@@ -501,7 +514,7 @@ def main():
     # always: a preset without one goes back to the desktop wallpaper, not the last preset's
     LOCKWALL.write_text(LOCKWALL_DEFAULT + (f"$background_image = {lockwall}\n" if lockwall else ""))
     if avatar:
-        shutil.copy2(avatar, FACE)
+        put_face(avatar)
     CURRENT.write_text(name + "\n")
     give_workspace(name, picked_on)
     set_wallpaper(wallpaper, mode, scheme, accent)

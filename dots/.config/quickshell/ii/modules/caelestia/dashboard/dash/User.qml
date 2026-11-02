@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell.Io
 import M3Shapes
 import Caelestia.Config
 import Caelestia.I18n
@@ -88,8 +89,20 @@ Item {
             Visual {
                 id: pfp
 
+                // caelestia4: asked for again (a new query) when ~/.face is written over (a preset's avatar, the
+                // picker above): its path stays the same, so the picture would too
+                property int revision
+
                 anchors.fill: parent
-                source: `${Paths.home}/.face`
+                source: `file://${`${Paths.home}/.face`.split("/").map(encodeURIComponent).join("/")}?${revision}`
+
+                FileView {
+                    path: `${Paths.home}/.face`
+                    preload: false
+                    watchChanges: true
+                    printErrors: false
+                    onFileChanged: pfp.revision++
+                }
             }
 
             StyledRect {

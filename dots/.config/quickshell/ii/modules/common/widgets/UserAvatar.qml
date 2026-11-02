@@ -1,6 +1,7 @@
 import qs.modules.common
 import qs.modules.common.functions
 import QtQuick
+import Quickshell.Io
 import Qt5Compat.GraphicalEffects
 
 Rectangle {
@@ -12,6 +13,16 @@ Rectangle {
     readonly property string picturePath: Config.options.profile.avatarPath !== "" && Config.options.profile.avatarPicture !== ""
         ? Config.options.profile.avatarPicture
         : `${FileUtils.trimFileProtocol(Directories.home)}/.face`
+    // caelestia4: ~/.face written over (a preset's avatar) keeps its path: a new query has the picture loaded again
+    property int revision
+
+    FileView {
+        path: root.picturePath
+        preload: false
+        watchChanges: true
+        printErrors: false
+        onFileChanged: root.revision++
+    }
 
     implicitWidth: 48
     implicitHeight: 48
@@ -22,7 +33,7 @@ Rectangle {
         id: avatarImage
         anchors.fill: parent
         anchors.margins: root.border.width
-        source: `file://${root.picturePath}`
+        source: `file://${root.picturePath.split("/").map(encodeURIComponent).join("/")}?${root.revision}`
         sourceSize.width: width * 2
         sourceSize.height: height * 2
         fillMode: Image.PreserveAspectCrop
