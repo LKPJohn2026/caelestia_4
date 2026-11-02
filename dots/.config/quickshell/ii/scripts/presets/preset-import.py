@@ -163,6 +163,14 @@ def list_presets(as_json):
     print("(* = a widget this shell doesn't have yet)")
 
 
+def tidy(field, value):
+    """Whole pixels on the canvas (a grid step on this screen is a fraction of one there), angles to a tenth: a preset
+    file that reads like one made by hand. On a wider screen than the canvas a widget can land up to ~1.5 px off"""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return value
+    return round(value, 1) if field == "rotation" else round(value)
+
+
 def save_layout():
     """The widgets' layout from the config back into the preset applied last, in the library (the copy --sync keeps)"""
     name = CURRENT.read_text().strip() if CURRENT.is_file() else ""
@@ -177,11 +185,11 @@ def save_layout():
     changed = []
     for key in WIDGETS:
         entry, pentry = widgets.get(key), pwidgets.get(key)
-        if not isinstance(entry, dict) or not isinstance(pentry, dict):
-            continue
+        if not isinstance(entry, dict) or not isinstance(pentry, dict) or not entry.get("enable"):
+            continue  # a widget that's off wasn't moved, and the preset keeps it as it came
         for field in LAYOUT_FIELDS:
-            if field in entry and pentry.get(field) != entry[field]:
-                pentry[field] = entry[field]
+            if field in entry and pentry.get(field) != (value := tidy(field, entry[field])):
+                pentry[field] = value
                 changed.append(f"{key}.{field}")
     if changed:
         save(js, preset)
