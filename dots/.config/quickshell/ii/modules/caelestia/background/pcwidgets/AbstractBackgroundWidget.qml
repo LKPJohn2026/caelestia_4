@@ -5,6 +5,7 @@ import qs
 import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.widgets.widgetCanvas
+import qs.services
 
 AbstractWidget {
     id: root
@@ -70,6 +71,7 @@ AbstractWidget {
         root.targetY = Qt.binding(() => Math.max(0, Math.min(toScreen(configEntry.y, height, drawnHeight, canvasHeight, scaledScreenHeight), scaledScreenHeight - drawnHeight)));
         root.targetZ = Qt.binding(() => configEntry.z);
         root.restoreXYBinding();
+        PresetLayout.requestSave();
     }
 
     onReleased: root.commitPosition()

@@ -119,6 +119,7 @@ AbstractBackgroundWidget {
         onClicked: {
             root.isVertical = !root.isVertical
             root.configEntry.vertical = root.isVertical
+            PresetLayout.requestSave()
         }
     }
 }
