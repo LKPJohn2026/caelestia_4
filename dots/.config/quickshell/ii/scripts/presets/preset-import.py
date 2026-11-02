@@ -470,7 +470,11 @@ def main():
     # the colours: the style, the accent colour they're made from (none: from the wallpaper) and light / dark. end4-pC
     # keeps light / dark out of presets, so meta.json "mode" (or --mode) says which one the preview was taken in
     palette = preset.get("appearance", {}).get("palette", {})
-    scheme = palette["type"] if palette.get("type") and palette["type"] != "auto" else None
+    # "auto" (most presets) goes into the config too: switchwall.sh then picks the style from the wallpaper
+    # (scheme_for_image.py) for an accent colour's scheme, as end-4 did for the preview; left as it was, the last
+    # preset's style (a grey neutral, say) made it. It isn't passed as --type, which would also leave a named scheme
+    # picked in Nexus (and Caelestia's smart scheme) for wallpaper colours
+    scheme = palette.get("type") or "auto"
     accent = palette.get("accentColor") or ""
     mode = args.mode or meta.get("mode")
     iipalette = ii.setdefault("appearance", {}).setdefault("palette", {})
@@ -521,7 +525,7 @@ def main():
         put_face(avatar)
     CURRENT.write_text(name + "\n")
     give_workspace(name, picked_on)
-    set_wallpaper(wallpaper, mode, scheme, accent)
+    set_wallpaper(wallpaper, mode, None if scheme == "auto" else scheme, accent)
 
 
 if __name__ == "__main__":

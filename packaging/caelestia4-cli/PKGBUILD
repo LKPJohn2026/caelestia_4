@@ -5,12 +5,14 @@
 # Based on the AUR caelestia-cli-git PKGBUILD (maintainer: Soramane).
 # It makes the colours here (dots/.config/caelestia/cli.json); videos still reach it as their first frame
 # (switchwall.sh), as mpvpaper plays them.
+# 0001: the colours on Material's 2021 spec (materialyoucolor 3 defaults to 2025's, whose dark tertiary container is
+# light), as end-4's colours and its presets were made with, and its scheme cache kept apart by spec.
 
 _pkgname=caelestia-cli
 _commit=5e804b10c146c9f3278b2da37c8e4b5d8e9708d9
 pkgname=caelestia4-cli
 pkgver=1.1.3.r41.g5e804b1
-pkgrel=1
+pkgrel=2
 pkgdesc='The Caelestia cli (colour schemes and app themes) pinned for caelestia_4'
 arch=('any')
 url='https://github.com/caelestia-dots/cli'
@@ -20,8 +22,15 @@ depends=('python' 'python-pillow' 'python-materialyoucolor' 'libnotify' 'swappy'
 makedepends=('python-build' 'python-installer' 'python-hatch' 'python-hatch-vcs')
 provides=("$_pkgname")
 conflicts=("$_pkgname" "$_pkgname-git")
-source=("$_pkgname::git+$url.git#commit=$_commit")
-sha256sums=('SKIP')
+source=("$_pkgname::git+$url.git#commit=$_commit"
+        0001-material-spec-2021.patch)
+sha256sums=('SKIP'
+            '2b74fcf1402973a1a7291115010d15173210cb4a2d84a85bba8201e364396059')
+
+prepare() {
+  cd "$_pkgname"
+  patch -Np1 -i ../0001-material-spec-2021.patch
+}
 
 build() {
   cd "$_pkgname"

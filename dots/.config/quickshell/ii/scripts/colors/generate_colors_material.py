@@ -108,7 +108,12 @@ elif args.scheme == 'scheme-vibrant':
 else:
     from materialyoucolor.scheme.scheme_tonal_spot import SchemeTonalSpot as Scheme
 # Generate
-scheme = Scheme(hct, darkmode, 0.0)
+# caelestia4: Material's 2021 colour spec, as caelestia-cli's (packaging/caelestia4-cli): materialyoucolor 3's 2025 one
+# makes a dark scheme's tertiary container light
+try:
+    scheme = Scheme(hct, darkmode, 0.0, spec_version="2021")
+except TypeError:  # materialyoucolor < 3
+    scheme = Scheme(hct, darkmode, 0.0)
 
 material_colors = {}
 term_colors = {}
