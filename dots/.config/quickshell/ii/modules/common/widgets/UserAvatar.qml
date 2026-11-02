@@ -33,7 +33,7 @@ Rectangle {
         id: avatarImage
         anchors.fill: parent
         anchors.margins: root.border.width
-        source: `file://${root.picturePath.split("/").map(encodeURIComponent).join("/")}?${root.revision}`
+        source: `${FileUtils.fileUrl(root.picturePath)}?${root.revision}`
         sourceSize.width: width * 2
         sourceSize.height: height * 2
         fillMode: Image.PreserveAspectCrop
