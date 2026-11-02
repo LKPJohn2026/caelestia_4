@@ -9,7 +9,11 @@ Caelestia's renderer never upscales (its texture is at most the picture's own si
 what makes it sharp.
 
 Usage: wallpaper-fit.py IMAGE...   copies for these (made once, then reused until the picture, the screen or the model
-                                   changes; a failure is remembered the same way, so it isn't retried on every switch)
+                                   changes; a failure is remembered the same way, so it isn't retried on every switch).
+                                   The KEEP copies shown last stay, older ones go
+       wallpaper-fit.py --keep IMAGE...
+                                   the same, and these copies stay for good (a whole folder made ahead of time:
+                                   ~6 MB each at 7680x4352); only a picture that's gone loses its copy
 Settings: illogical-impulse config.json background.wallpaperFit {enable, model} (Nexus > Wallpaper & style)."""
 import ctypes
 import fcntl
@@ -149,16 +153,20 @@ def upscale(src, dst, factor, scaled, out, model):
     return "lanczos"
 
 
-def fit(path, target_size, model, index):
+def fit(path, target_size, model, index, keep=False):
     """Make (or reuse) the copy of one picture; returns a line for the log"""
     target = f"{target_size[0]}x{target_size[1]}"
     walls = index["walls"]
     old = walls.get(path)
     if valid(old, path, target, model):
         old["used"] = time.time()
+        if keep:
+            old["keep"] = True
         return f"{path}: kept" + (f" (failed before: {old['error']})" if old.get("error") else "")
     source = stamp(path)
     entry = {"target": target, "source": source, "fitted": "", "used": time.time()}
+    if keep or (old or {}).get("keep"):
+        entry["keep"] = True
     walls[path] = entry
     try:
         w, h, frames = picture_size(path)
@@ -181,10 +189,14 @@ def fit(path, target_size, model, index):
         return f"{path}: failed, shown as it is: {entry['error']}"
 
 
-def prune(index):
-    """Keep the KEEP copies shown last; remove files no entry points at and what a killed run left behind"""
+def prune(index, asked):
+    """Keep the copies made with --keep, the ones this run was asked for and the KEEP others shown last; remove the
+    entries of pictures that are gone, files no entry points at, and what a killed run left behind"""
     walls = index["walls"]
-    for path in sorted(walls, key=lambda p: walls[p].get("used", 0), reverse=True)[KEEP:]:
+    for path in [p for p in walls if not os.path.isfile(p)]:
+        del walls[path]
+    others = [p for p in walls if not walls[p].get("keep") and p not in asked]
+    for path in sorted(others, key=lambda p: walls[p].get("used", 0), reverse=True)[KEEP:]:
         del walls[path]
     kept = {e["fitted"] for e in walls.values() if e.get("fitted")}
     for name in os.listdir(CACHE):
@@ -196,7 +208,8 @@ def prune(index):
 
 
 def main():
-    paths = [os.path.abspath(p) for p in sys.argv[1:] if not p.startswith("-")]
+    keep = "--keep" in sys.argv[1:]
+    paths = [os.path.abspath(p) for p in sys.argv[1:] if p != "--keep"]
     if not paths:
         print(__doc__, file=sys.stderr)
         sys.exit(2)
@@ -213,9 +226,9 @@ def main():
         for path in dict.fromkeys(paths):
             if not os.path.isfile(path) or path.lower().endswith(VIDEOS) or path.startswith(CACHE + os.sep):
                 continue
-            print(fit(path, size, model, index))
+            print(fit(path, size, model, index, keep))
             save_index(index)  # after each: the shell shows each copy as soon as it's made
-        prune(index)
+        prune(index, set(paths))
         save_index(index)
 
 
