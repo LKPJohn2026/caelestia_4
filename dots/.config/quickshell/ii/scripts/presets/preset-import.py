@@ -14,6 +14,8 @@ around each widget to its own size, so widgets against an edge stay there on a 3
   tools/preset-import.py --list [--json]     the installed presets (--json: for Nexus > Wallpaper & style > Presets)
   tools/preset-import.py PRESET [--mode light|dark] [--wallpapers DIR] [--dry-run]
   tools/preset-import.py --undo              put back the settings from before the last import
+  tools/preset-import.py --save-layout       the desktop widgets' places and sizes, as moved with the mouse, into the
+                                             preset applied last (the shell runs it after a drag, resize or turn)
 
 PRESET is an installed preset's name or a folder holding <name>.json and meta.json. Its pictures are looked for in
 its folder, in --wallpapers (default: two levels up, the root of a clone of Blapples/wallpapers), in the Blapples
@@ -34,9 +36,10 @@ import tempfile
 from pathlib import Path
 
 HOME = Path.home()
-II_CONFIG = HOME / ".config/illogical-impulse/config.json"
-SHELL_CONFIG = HOME / ".config/caelestia/shell.json"
-LOCKWALL = HOME / ".config/hypr/hyprlock/lockwall.conf"
+CONFIG = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config"))  # where the shell reads and writes its config
+II_CONFIG = CONFIG / "illogical-impulse/config.json"
+SHELL_CONFIG = CONFIG / "caelestia/shell.json"
+LOCKWALL = CONFIG / "hypr/hyprlock/lockwall.conf"
 FACE = HOME / ".face"
 STATE = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "caelestia4/preset-backups"
 CURRENT = STATE.parent / "preset-current"  # the name of the preset applied last (kept in each backup, for --undo)
@@ -45,7 +48,7 @@ LIBRARY = Path(os.environ.get("XDG_DATA_HOME", HOME / ".local/share")) / "caeles
 BLAPPLES_REPO = "https://github.com/Blapples/wallpapers"
 BLAPPLES_CLONE = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "caelestia4/blapples-wallpapers"
 BLAPPLES_PICS = PICTURES / "Wallpapers/Blapples"
-SWITCHWALL = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "quickshell/ii/scripts/colors/switchwall.sh"
+SWITCHWALL = CONFIG / "quickshell/ii/scripts/colors/switchwall.sh"
 IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".avif"}
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
@@ -53,6 +56,9 @@ WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "
            "todo", "images", "imageCard", "sticker", "customText"]
 # the size end4-pC presets are made on: their widget x / y are pixels on a 1920x1080 screen
 PRESET_CANVAS = {"width": 1920, "height": 1080}
+# what moving, resizing and turning a desktop widget with the mouse changes (--save-layout): where it is, which one is on
+# top, its size (a step or pixels) and angle, and whether a strip of cards stands up
+LAYOUT_FIELDS = ("x", "y", "z", "sizeMode", "size", "rotation", "vertical")
 LOCKWALL_DEFAULT = "# caelestia4: a lock screen wallpaper of its own. Empty = the desktop wallpaper (colors.conf, from matugen).\n"
 
 
@@ -157,6 +163,31 @@ def list_presets(as_json):
     print("(* = a widget this shell doesn't have yet)")
 
 
+def save_layout():
+    """The widgets' layout from the config back into the preset applied last, in the library (the copy --sync keeps)"""
+    name = CURRENT.read_text().strip() if CURRENT.is_file() else ""
+    js = preset_json(LIBRARY / name) if name else None
+    if not js:
+        return  # no preset applied, or it's gone from the library
+    widgets = load(II_CONFIG).get("background", {}).get("widgets", {})
+    if widgets.get("canvas") != PRESET_CANVAS:
+        return  # the widgets were placed on another canvas since: their numbers don't mean the same in the preset
+    preset = load(js)
+    pwidgets = preset.get("background", {}).get("widgets", {})
+    changed = []
+    for key in WIDGETS:
+        entry, pentry = widgets.get(key), pwidgets.get(key)
+        if not isinstance(entry, dict) or not isinstance(pentry, dict):
+            continue
+        for field in LAYOUT_FIELDS:
+            if field in entry and pentry.get(field) != entry[field]:
+                pentry[field] = entry[field]
+                changed.append(f"{key}.{field}")
+    if changed:
+        save(js, preset)
+        print(f"{name}: saved {', '.join(changed)}")
+
+
 def backup():
     dest = STATE / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     dest.mkdir(parents=True)
@@ -218,8 +249,11 @@ def main():
     ap.add_argument("--sync", nargs="?", const=True, metavar="REPO_DIR")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--save-layout", action="store_true")
     args = ap.parse_args()
 
+    if args.save_layout:
+        return save_layout()
     if args.undo:
         return undo()
     if args.sync:

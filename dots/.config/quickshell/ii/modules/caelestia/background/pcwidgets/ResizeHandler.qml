@@ -1,5 +1,6 @@
 import qs.modules.common
 import qs.modules.common.widgets
+import qs.services
 import QtQuick
 
 Canvas {
@@ -98,6 +99,7 @@ Canvas {
         }
         onReleased: {
             root.resizeFinished()
+            PresetLayout.requestSave()
         }
     }
 
@@ -174,6 +176,7 @@ Canvas {
             }
             onReleased: {
                 root.rotateFinished()
+                PresetLayout.requestSave()
             }
         }
     }
