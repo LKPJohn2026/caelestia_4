@@ -34,6 +34,7 @@ ShellRoot {
         Cliphist.refresh()
         Wallpapers.load()
         Updates.load()
+        WorkspacePresets.load()
     }
 
 

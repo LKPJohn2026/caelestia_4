@@ -115,7 +115,7 @@ Searcher {
 
     function setWallpaper(path: string): void {
         actualCurrent = path;
-        assignToFocusedWorkspace(path);
+        assignToFocusedWorkspace(path, false);
         E4.Wallpapers.apply(path);
     }
 
@@ -157,8 +157,10 @@ Searcher {
         return videoPlaying && !showPreview && !workspaceWallFor(screen);
     }
 
-    function assignToFocusedWorkspace(path: string): void {
-        const name = Hypr.focusedMonitor?.activeWorkspace?.name;
+    // fromConfig: the wallpaper came through the config (switchwall.sh), so maybe from a workspace's preset going on,
+    // which sets it seconds later: that workspace's then, wherever the focus is now. One picked here is the focused one's
+    function assignToFocusedWorkspace(path: string, fromConfig: bool): void {
+        const name = (fromConfig && E4.WorkspacePresets.applyingFor) || Hypr.focusedMonitor?.activeWorkspace?.name;
         if (!workspaceWallsEnabled || !name || !path)
             return;
         const walls = Object.assign({}, PersistentState.workspaceWallpapers);
@@ -332,7 +334,7 @@ Searcher {
         // caelestia4: a wallpaper set elsewhere (end-4's selector, random, switchwall.sh) goes to the focused
         // workspace too; the first load at startup is not a change
         if (seenEnd4Current && end4Current && end4Current !== seenEnd4Current)
-            assignToFocusedWorkspace(end4Current);
+            assignToFocusedWorkspace(end4Current, true);
         seenEnd4Current = end4Current;
     }
 
