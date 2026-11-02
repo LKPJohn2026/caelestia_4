@@ -67,6 +67,12 @@ Variants {
         readonly property int wsId: Hypr.monitorFor(modelData)?.activeWorkspace?.id ?? 1
         readonly property real fraction: groupSize <= 1 ? 0.5 : ((Math.max(1, wsId) - 1) % groupSize) / (groupSize - 1)
 
+        // on whole device pixels: the widgets' place is the canvas's offset plus the loader's margins plus their own
+        // (each snapped), and a third of a pixel off anywhere in that sum at 1.5x blurs them all
+        function snapToDevice(pos: real): real {
+            return Math.round(pos * devicePixelRatio) / devicePixelRatio;
+        }
+
         ShellState.ComponentRef {
             screen: win.screen
             slot: "background"
@@ -129,14 +135,15 @@ Variants {
 
             width: parent.width
             height: parent.height
-            x: (wallLayer.x + wallLayer.extraW / 2) * factor
-            y: (wallLayer.y + wallLayer.extraH / 2) * factor
+            // (the parallax slide steps a device pixel at a time)
+            x: win.snapToDevice((wallLayer.x + wallLayer.extraW / 2) * factor)
+            y: win.snapToDevice((wallLayer.y + wallLayer.extraH / 2) * factor)
 
             // the room beside the bar and the border, so a preset's widgets against an edge aren't under them
             PcWidgetsLoader {
                 anchors.fill: parent
-                anchors.margins: Config.border.thickness
-                anchors.leftMargin: Tokens.sizes.bar.innerWidth + Math.max(Tokens.padding.small, Config.border.thickness)
+                anchors.margins: win.snapToDevice(Config.border.thickness)
+                anchors.leftMargin: win.snapToDevice(Tokens.sizes.bar.innerWidth + Math.max(Tokens.padding.small, Config.border.thickness))
                 wallpaperItem: wallpaper
             }
         }
