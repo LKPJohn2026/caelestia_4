@@ -64,6 +64,14 @@ PageBase {
         }
     }
 
+    // a preset applied from elsewhere (Ctrl+Super+P, a terminal) moves the check mark and Undo too
+    readonly property FileView currentFile: FileView {
+        path: `${Quickshell.env("XDG_STATE_HOME") || `${Quickshell.env("HOME")}/.local/state`}/caelestia4/preset-current`
+        watchChanges: true
+        printErrors: false
+        onFileChanged: root.listProc.running = true
+    }
+
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top

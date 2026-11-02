@@ -67,6 +67,12 @@ hl.bind("CTRL + SUPER + T", hl.dsp.global("quickshell:wallpaperSelectorToggle"),
     { description = "Shell: Change wallpaper" })
 hl.bind("CTRL + SUPER + ALT + T", hl.dsp.global("quickshell:wallpaperSelectorRandom"),
     { description = "Shell: Random wallpaper" })
+-- caelestia4: end4-pC presets (wallpaper, desktop widgets, colours, lock screen), the next or previous one installed
+-- (Nexus > Wallpaper & style > Presets lists them in this order)
+hl.bind("CTRL + SUPER + P", hl.dsp.exec_cmd("python3 " .. qsScripts .. "/presets/preset-import.py --next"),
+    { description = "Shell: Next preset" })
+hl.bind("CTRL + SUPER + SHIFT + P", hl.dsp.exec_cmd("python3 " .. qsScripts .. "/presets/preset-import.py --previous"),
+    { description = "Shell: Previous preset" })
 hl.bind("CTRL + SUPER + SHIFT + D", hl.dsp.global("quickshell:toggleLightDark"),
     { description = "Shell: Toggle light/dark mode" })
 hl.bind("CTRL + SUPER + T", hl.dsp.exec_cmd(qsIsAlive .. " || " .. qsScripts .. "/colors/switchwall.sh"))
