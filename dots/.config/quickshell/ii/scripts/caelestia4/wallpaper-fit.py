@@ -43,6 +43,8 @@ CLOSE = 0.02  # within 2% of the screen already: shown as it is
 MAX_PIXELS = 56_000_000
 MAX_SIDE = 65_000
 RETRIES = 2  # an upscale that fell back to Lanczos is tried again on the next runs, this many times
+# upscayl-bin can stall on a picture (one ran for 50 minutes at 2x on a 5000x1803 PNG): past this, Lanczos instead
+UPSCAYL_TIMEOUT = 300
 
 
 def settings():
@@ -137,16 +139,21 @@ def upscale(src, dst, factor, scaled, out, model):
     """Upscayl to the next model scale up (2, 3 or 4), then Lanczos to the exact size; Lanczos alone if it can't"""
     scale = 2 if factor <= 2 else 3 if factor <= 3 else 4
     with tempfile.TemporaryDirectory(dir=CACHE, prefix="tmp-") as tmp:
-        # upscayl-bin reads jpg/png/webp only and knows no EXIF rotation: a plain upright PNG
+        # upscayl-bin reads jpg/png/webp only and knows no EXIF rotation: a plain upright PNG, and opaque (an alpha
+        # channel is upscaled on its own, and the copy is flattened on black anyway)
         flat, big = os.path.join(tmp, "in.png"), os.path.join(tmp, "big.png")
         try:
-            subprocess.run(["magick", f"{src}[0]", "-auto-orient", flat], check=True)
+            subprocess.run(["magick", f"{src}[0]", "-auto-orient", "-background", "black", "-flatten", "-alpha", "off",
+                            flat], check=True)
             r = subprocess.run([UPSCAYL, "-i", flat, "-o", big, "-m", MODELS, "-n", model, "-z", "4", "-s", str(scale),
-                                "-f", "png"], capture_output=True, text=True, preexec_fn=die_with_parent)
+                                "-f", "png"], capture_output=True, text=True, preexec_fn=die_with_parent,
+                               timeout=UPSCAYL_TIMEOUT)
             if r.returncode == 0 and os.path.isfile(big):
                 magick_fit(big, dst, scaled, out)
                 return "upscayl"
             print(f"upscayl-bin failed ({r.returncode}), Lanczos instead: {r.stderr.strip()[-300:]}", file=sys.stderr)
+        except subprocess.TimeoutExpired:  # killed by subprocess.run; tried again on a later run (RETRIES)
+            print(f"upscayl-bin took over {UPSCAYL_TIMEOUT} s, Lanczos instead", file=sys.stderr)
         except OSError as e:  # not installed
             print(f"upscayl-bin: {e}, Lanczos instead", file=sys.stderr)
     magick_fit(src, dst, scaled, out)
