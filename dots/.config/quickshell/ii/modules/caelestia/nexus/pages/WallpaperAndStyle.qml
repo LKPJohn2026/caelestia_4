@@ -851,11 +851,18 @@ PageBase {
         }
 
         ToggleRow {
-            last: true
             text: Tr.tr("Grid while dragging")
             subtext: Tr.tr("Widgets snap to it either way")
             value: E4C.Config.options.background.showGrid
             onToggled: E4C.Config.options.background.showGrid = checked
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Save moves to the preset")
+            subtext: Tr.tr("Moving, resizing or turning a widget also changes the preset applied last, so it opens as you left it")
+            value: E4C.Config.options.background.saveToPreset
+            onToggled: E4C.Config.options.background.saveToPreset = checked
         }
 
         SectionHeader {

@@ -4035,3 +4035,9 @@ msgstr "Hiện lưới khi kéo"
 
 msgid "Widgets snap to it either way"
 msgstr "Widget vẫn bám theo lưới dù có hiện hay không"
+
+msgid "Save moves to the preset"
+msgstr "Lưu vị trí vào preset"
+
+msgid "Moving, resizing or turning a widget also changes the preset applied last, so it opens as you left it"
+msgstr "Kéo, đổi cỡ hay xoay widget cũng sửa preset vừa áp, để lần sau mở ra đúng như bạn để"

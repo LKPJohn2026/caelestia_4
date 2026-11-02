@@ -399,6 +399,7 @@ Singleton {
                 property bool widgetsLocked: false // right-click a widget to lock or unlock them all
                 property bool showGrid: true // a grid while a widget is dragged (they snap to it)
                 property bool showSnapLines: true // where a dropped widget's edges are, for a moment
+                property bool saveToPreset: true // widgets moved with the mouse are saved into the preset applied last (services/PresetLayout.qml)
                 property string lockWall: "" // caelestia4: a preset's lock screen wallpaper (hyprlock/lockwall.conf), for widgets
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
