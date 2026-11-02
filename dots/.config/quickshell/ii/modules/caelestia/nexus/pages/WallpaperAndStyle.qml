@@ -110,6 +110,21 @@ PageBase {
         }
     ]
 
+    // caelestia4: scripts/caelestia4/wallpaper-fit.py's modes
+    readonly property list<MenuItem> fitModeItems: [
+        MenuItem {
+            text: Tr.tr("Fill, cut off the rest")
+            value: "cover"
+        },
+        MenuItem {
+            text: Tr.tr("Whole, blurred sides")
+            value: "contain-blur"
+        },
+        MenuItem {
+            text: Tr.tr("Stretch the background")
+            value: "seam"
+        }
+    ]
     readonly property list<MenuItem> clockPositionItems: [
         MenuItem {
             text: Tr.tr("Top left")
@@ -414,6 +429,16 @@ PageBase {
             subtext: Tr.tr("Upscale (AI, Upscayl) or downscale each wallpaper to the screen's resolution, the whole picture kept. The originals stay as they are")
             value: E4C.Config.options.background.wallpaperFit.enable
             onToggled: E4C.Config.options.background.wallpaperFit.enable = checked
+        }
+
+        SelectRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            visible: E4C.Config.options.background.wallpaperFit.enable
+            label: Tr.tr("Other shapes")
+            subtext: Tr.tr("A wallpaper whose shape isn't the screen's (16:9 on 32:9)")
+            menuItems: root.fitModeItems
+            active: root.fitModeItems.find(i => i.value === E4C.Config.options.background.wallpaperFit.mode) ?? root.fitModeItems[0]
+            onSelected: item => E4C.Config.options.background.wallpaperFit.mode = item.value
         }
 
         ToggleRow {

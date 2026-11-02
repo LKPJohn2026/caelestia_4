@@ -4047,3 +4047,18 @@ msgstr "Ảnh nền vừa khít màn hình"
 
 msgid "Upscale (AI, Upscayl) or downscale each wallpaper to the screen's resolution, the whole picture kept. The originals stay as they are"
 msgstr "Phóng to (AI, Upscayl) hay thu nhỏ mỗi ảnh nền về đúng độ phân giải màn hình, giữ trọn ảnh. Ảnh gốc giữ nguyên"
+
+msgid "Other shapes"
+msgstr "Ảnh khác tỉ lệ"
+
+msgid "A wallpaper whose shape isn't the screen's (16:9 on 32:9)"
+msgstr "Ảnh nền có tỉ lệ khác màn hình (16:9 trên 32:9)"
+
+msgid "Fill, cut off the rest"
+msgstr "Lấp đầy, cắt phần thừa"
+
+msgid "Whole, blurred sides"
+msgstr "Trọn ảnh, hai bên làm mờ"
+
+msgid "Stretch the background"
+msgstr "Kéo giãn phần nền"
