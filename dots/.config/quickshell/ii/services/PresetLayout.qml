@@ -14,7 +14,8 @@ Singleton {
     id: root
 
     function requestSave(): void {
-        saveTimer.restart();
+        if (Config.options.background.saveToPreset)
+            saveTimer.restart();
     }
 
     Timer {
