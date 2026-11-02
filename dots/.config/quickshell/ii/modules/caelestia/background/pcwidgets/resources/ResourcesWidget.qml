@@ -33,6 +33,10 @@ AbstractBackgroundWidget {
         property int shape: MaterialShape.Shape.Cookie12Sided
         property color bgColor: Appearance.colors.colPrimaryContainer
         property color shapeColor: Appearance.colors.colPrimary
+        // caelestia4: each card's own "on" colours, not the primary ones on all three: a container of another kind
+        // can be light where primary's is dark (Material's 2025 spec makes a dark scheme's tertiary container light)
+        property color symbolColor: Appearance.colors.colOnPrimary
+        property color textColor: Appearance.colors.colOnPrimaryContainer
 
         implicitWidth: root.cardWidth
         implicitHeight: root.cardHeight
@@ -50,7 +54,7 @@ AbstractBackgroundWidget {
                 Layout.alignment: Qt.AlignRight
                 shape: statCard.shape
                 color: statCard.shapeColor
-                colSymbol: Appearance.colors.colOnPrimary
+                colSymbol: statCard.symbolColor
                 text: statCard.icon
                 iconSize: 18
                 fill: 1
@@ -65,13 +69,13 @@ AbstractBackgroundWidget {
                 text: statCard.value
                 font.pixelSize: Appearance.font.pixelSize.hugeass
                 font.weight: Font.Bold
-                color: Appearance.colors.colOnPrimaryContainer
+                color: statCard.textColor
             }
 
             StyledText {
                 text: statCard.label
                 font.pixelSize: Appearance.font.pixelSize.small
-                color: Appearance.colors.colOnPrimaryContainer
+                color: statCard.textColor
                 opacity: 0.6
             }
         }
@@ -100,6 +104,8 @@ AbstractBackgroundWidget {
             shape: MaterialShape.Shape.Cookie4Sided
             bgColor: Appearance.colors.colSecondaryContainer
             shapeColor: Appearance.colors.colSecondary
+            symbolColor: Appearance.colors.colOnSecondary
+            textColor: Appearance.colors.colOnSecondaryContainer
         }
         StatCard {
             icon: root.hasBattery ? "battery_full" : "storage"
@@ -110,6 +116,8 @@ AbstractBackgroundWidget {
             shape: MaterialShape.Shape.Cookie12Sided
             bgColor: Appearance.colors.colTertiaryContainer
             shapeColor: Appearance.colors.colTertiary
+            symbolColor: Appearance.colors.colOnTertiary
+            textColor: Appearance.colors.colOnTertiaryContainer
         }
     }
     WidgetFlipHandle {

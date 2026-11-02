@@ -1,0 +1,31 @@
+--- a/src/caelestia/utils/material/generator.py
++++ b/src/caelestia/utils/material/generator.py
+@@ -181,7 +181,15 @@
+     colours = {}
+ 
+     # Material colours
+-    primary_scheme = get_scheme(scheme.variant)(source_color_hct=primary, is_dark=not is_light, contrast_level=0.0)
++    # caelestia_4: Material's 2021 colour spec, the one end-4's colours and its presets were made with. materialyoucolor
++    # 3 defaults to 2025's, where a dark scheme's tertiary container is a light colour (tone 87-93, not 30), so a
++    # tertiary card (a preset's battery / disk stat) comes out light among dark ones and its light text unreadable
++    try:
++        primary_scheme = get_scheme(scheme.variant)(
++            source_color_hct=primary, is_dark=not is_light, contrast_level=0.0, spec_version="2021"
++        )
++    except TypeError:  # materialyoucolor < 3: 2021 is all it has
++        primary_scheme = get_scheme(scheme.variant)(source_color_hct=primary, is_dark=not is_light, contrast_level=0.0)
+     if hasattr(MaterialDynamicColors, "all_colors"):  # materialyoucolor-python >= 3.0.0
+         dyn_colours = MaterialDynamicColors()
+         for colour in dyn_colours.all_colors:
+--- a/src/caelestia/utils/material/__init__.py
++++ b/src/caelestia/utils/material/__init__.py
+@@ -31,7 +31,8 @@
+         scheme = get_scheme()
+ 
+     cache_base = scheme_cache_dir / compute_hash(image)
+-    cache = (cache_base / scheme.variant / scheme.flavour / scheme.mode).with_suffix(".json")
++    # caelestia_4: by colour spec too (0001), so colours cached on another spec aren't taken for these; the score stays
++    cache = (cache_base / "spec2021" / scheme.variant / scheme.flavour / scheme.mode).with_suffix(".json")
+ 
+     try:
+         with cache.open("r") as f:
