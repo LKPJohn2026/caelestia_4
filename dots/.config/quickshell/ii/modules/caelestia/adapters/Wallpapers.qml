@@ -144,7 +144,7 @@ Searcher {
 
     // The preview while one shows, otherwise what the screen shows
     function forScreen(screen: ShellScreen): string {
-        return showPreview ? previewPath : actualForScreen(screen);
+        return displayPath(showPreview ? previewPath : actualForScreen(screen));
     }
 
     // What the screen shows, ignoring any preview
@@ -225,6 +225,89 @@ Searcher {
         } else if (pendingPreviewClear) {
             pendingPreviewClear = false;
             Colours.showPreview = false;
+        }
+    }
+
+    // caelestia4: wallpapers at the screen's own resolution (scripts/caelestia4/wallpaper-fit.py; Nexus > Wallpaper &
+    // style). A screen shows the original's upscaled (or downscaled) copy once it's made, the original until then;
+    // everything else (config, colours, the lists, workspace wallpapers) keeps the original's path
+    readonly property bool fitEnabled: E4C.Config.options.background.wallpaperFit.enable
+    property var fitted: ({}) // original -> its copy, from the script's index
+    property var copyOf: ({}) // every copy shown this session -> its original (sameWallpaper)
+
+    function displayPath(path: string): string {
+        return fitEnabled && fitted[path] ? fitted[path] : path;
+    }
+
+    // Two paths for the same picture (the original and its copy, or two copies of it): the renderer swaps them in
+    // place instead of playing the wallpaper transition again
+    function sameWallpaper(a: string, b: string): bool {
+        return !!a && !!b && (copyOf[a] ?? a) === (copyOf[b] ?? b);
+    }
+
+    // what the screens show, and at what size: a new wallpaper or screen gets its copy made (the script reuses the
+    // ones still right, so asking again costs nothing)
+    // (not a video's first frame: mpvpaper covers it)
+    readonly property list<string> shownWalls: [...new Set(Screens.screens.map(s => actualForScreen(s)))].filter(p => p && p !== fallback && !(isVideo && p === end4Thumbnail))
+    readonly property string fitKey: Screens.screens.map(s => `${s.width}x${s.height}@${s.devicePixelRatio}`).join(" ") + "|" + E4C.Config.options.background.wallpaperFit.model + "|" + shownWalls.join("|")
+
+    onFitKeyChanged: fitDelay.restart()
+    onFitEnabledChanged: fitDelay.restart()
+
+    Timer {
+        id: fitDelay
+
+        interval: 500 // a few wallpapers picked in a row: only the last
+        onTriggered: {
+            if (!root.fitEnabled || !root.shownWalls.length)
+                return;
+            if (fitProc.running) {
+                fitProc.again = true;
+                return;
+            }
+            fitProc.command = ["python3", Quickshell.shellPath("scripts/caelestia4/wallpaper-fit.py"), ...root.shownWalls];
+            fitProc.running = true;
+        }
+    }
+
+    Process {
+        id: fitProc
+
+        property bool again
+
+        onExited: {
+            fitIndex.reload();
+            if (again) {
+                again = false;
+                fitDelay.restart();
+            }
+        }
+    }
+
+    FileView {
+        id: fitIndex
+
+        path: `${Quickshell.env("XDG_CACHE_HOME") || `${Quickshell.env("HOME")}/.cache`}/caelestia4/wallpaper-fit/index.json`
+        watchChanges: true // each copy as soon as it's made, not only when the run ends
+        blockLoading: true // at startup the screens open on the copies, not on the originals first
+        printErrors: false
+        onFileChanged: reload()
+        onLoadFailed: root.fitted = {}
+        onLoaded: {
+            try {
+                const index = JSON.parse(text());
+                const map = {};
+                const copies = Object.assign({}, root.copyOf);
+                for (const [path, entry] of Object.entries(index.walls ?? {}))
+                    if (entry.fitted && entry.target === index.target) {
+                        map[path] = entry.fitted;
+                        copies[entry.fitted] = path;
+                    }
+                root.copyOf = copies;
+                root.fitted = map;
+            } catch (e) {
+                // half written: the next change brings it whole
+            }
         }
     }
 

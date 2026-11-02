@@ -193,7 +193,8 @@ switch() {
             exit 0
         fi
 
-        check_and_prompt_upscale "$imgpath" &
+        # caelestia4: unless the shell fits wallpapers to the screen itself (scripts/caelestia4/wallpaper-fit.py)
+        [[ $(jq -r '.background.wallpaperFit.enable' "$SHELL_CONFIG_FILE" 2>/dev/null) == "false" ]] && check_and_prompt_upscale "$imgpath" &
         kill_existing_mpvpaper
 
         if is_video "$imgpath"; then

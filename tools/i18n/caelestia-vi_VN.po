@@ -4041,3 +4041,9 @@ msgstr "Lưu vị trí vào preset"
 
 msgid "Moving, resizing or turning a widget also changes the preset applied last, so it opens as you left it"
 msgstr "Kéo, đổi cỡ hay xoay widget cũng sửa preset vừa áp, để lần sau mở ra đúng như bạn để"
+
+msgid "Fit wallpapers to the screen"
+msgstr "Ảnh nền vừa khít màn hình"
+
+msgid "Upscale (AI, Upscayl) or downscale each wallpaper to the screen's resolution, the whole picture kept. The originals stay as they are"
+msgstr "Phóng to (AI, Upscayl) hay thu nhỏ mỗi ảnh nền về đúng độ phân giải màn hình, giữ trọn ảnh. Ảnh gốc giữ nguyên"
