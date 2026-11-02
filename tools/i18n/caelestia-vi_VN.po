@@ -4062,3 +4062,24 @@ msgstr "Trọn ảnh, hai bên làm mờ"
 
 msgid "Stretch the background"
 msgstr "Kéo giãn phần nền"
+
+msgid "A preset per workspace"
+msgstr "Preset theo từng không gian làm việc"
+
+msgid "Going back to a workspace applies its preset again, colours too"
+msgstr "Quay lại một không gian là áp lại preset của nó, cả màu sắc"
+
+msgid "Forget the workspaces' presets"
+msgstr "Quên preset của các không gian"
+
+msgid "Workspaces with a preset: %1"
+msgstr "Không gian có preset: %1"
+
+msgid "No workspace has a preset yet: apply one on it"
+msgstr "Chưa không gian nào có preset: hãy áp một preset trên đó"
+
+msgid "Forgetting…"
+msgstr "Đang quên…"
+
+msgid "Each workspace keeps the preset on"
+msgstr "Mọi không gian giữ preset đang dùng"

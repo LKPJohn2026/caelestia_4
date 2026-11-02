@@ -17,8 +17,16 @@ around each widget to its own size, so widgets against an edge stay there on a 3
                                              order, round the end (Ctrl+Super+P / Ctrl+Super+Shift+P); a press while
                                              one is still being applied is dropped
   tools/preset-import.py --undo              put back the settings from before the last import
+  tools/preset-import.py --workspace WS      the preset workspace WS was given, applied (the shell runs it on a switch
+                                             to WS, with background.workspacePresets on): no backup, nothing said,
+                                             and nothing done while another apply runs (exit 75: asked again)
+  tools/preset-import.py --forget [WS]       WS's preset forgotten (all workspaces' without WS)
   tools/preset-import.py --save-layout       the desktop widgets' places and sizes, as moved with the mouse, into the
                                              preset applied last (the shell runs it after a drag, resize or turn)
+
+With background.workspacePresets on (Nexus > Wallpaper & style > Presets), a preset applied (Nexus,
+Ctrl+Super+P, here) is the workspace's it was picked on from then on: preset-workspaces.json, next to preset-current;
+an undo puts the workspaces' presets back as they were before it.
 
 PRESET is an installed preset's name or a folder holding <name>.json and meta.json. Its pictures are looked for in
 its folder, in --wallpapers (default: two levels up, the root of a clone of Blapples/wallpapers), in the Blapples
@@ -47,6 +55,8 @@ LOCKWALL = CONFIG / "hypr/hyprlock/lockwall.conf"
 FACE = HOME / ".face"
 STATE = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "caelestia4/preset-backups"
 CURRENT = STATE.parent / "preset-current"  # the name of the preset applied last (kept in each backup, for --undo)
+WORKSPACES = STATE.parent / "preset-workspaces.json"  # {workspace name: preset}, with background.workspacePresets on
+BUSY = 75  # --workspace while another apply runs: EX_TEMPFAIL, the shell asks again
 PICTURES = Path(subprocess.run(["xdg-user-dir", "PICTURES"], capture_output=True, text=True).stdout.strip() or HOME / "Pictures")
 LIBRARY = Path(os.environ.get("XDG_DATA_HOME", HOME / ".local/share")) / "caelestia4/presets"
 BLAPPLES_REPO = "https://github.com/Blapples/wallpapers"
@@ -159,6 +169,44 @@ def step(by):
     return names[(names.index(current) + by) % len(names)]
 
 
+def workspaces():
+    try:
+        mapping = load(WORKSPACES)
+        return mapping if isinstance(mapping, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def focused_workspace():
+    """The workspace a preset is picked on, with background.workspacePresets on (else None): read when the apply
+    starts, not when it's done (the focus may have moved on by then)"""
+    try:
+        if not load(II_CONFIG).get("background", {}).get("workspacePresets"):
+            return None
+        out = subprocess.run(["hyprctl", "activeworkspace", "-j"], capture_output=True, text=True, timeout=5).stdout
+        ws = json.loads(out).get("name")  # a special workspace is never the active one
+        return str(ws) if ws else None
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return None
+
+
+def give_workspace(name, ws):
+    """Workspace `ws`'s preset is `name` from now on. Under the lock"""
+    if ws:
+        mapping = workspaces()
+        mapping[ws] = name
+        save(WORKSPACES, mapping)
+
+
+def forget(ws):
+    mapping = workspaces()
+    if ws is True:
+        mapping = {}
+    else:
+        mapping.pop(ws, None)
+    save(WORKSPACES, mapping)
+
+
 def notify(text):
     # one notification, replaced by the next press's; none without libnotify
     if shutil.which("notify-send"):
@@ -181,7 +229,8 @@ def list_presets(as_json):
     if as_json:
         current = CURRENT.read_text().strip() if CURRENT.is_file() else ""
         undo = STATE.is_dir() and any(STATE.iterdir())
-        print(json.dumps({"presets": presets, "current": current, "canUndo": undo, "library": str(LIBRARY)}, ensure_ascii=False))
+        print(json.dumps({"presets": presets, "current": current, "canUndo": undo, "library": str(LIBRARY),
+                          "workspaces": workspaces()}, ensure_ascii=False))
         return
     for p in presets:
         print(f"{p['name']:24} " + ", ".join(p["widgets"] + [k + "*" for k in p["missing"]]))
@@ -222,11 +271,14 @@ def save_layout():
 
 
 def backup():
-    dest = STATE / datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    # to the microsecond: two presets in a second (Ctrl+Super+P) each keep theirs; still in order by name
+    dest = STATE / datetime.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     dest.mkdir(parents=True)
     for src in (II_CONFIG, SHELL_CONFIG, LOCKWALL, FACE, CURRENT):
         if src.is_file():
             shutil.copy2(src, dest / src.name)
+    # always, empty or not: the workspaces' presets before this one is given to one (an undo takes that back too)
+    save(dest / WORKSPACES.name, workspaces())
     return dest
 
 
@@ -235,6 +287,8 @@ def undo():
     if not backups:
         sys.exit("no preset backup to restore")
     last = backups[-1]
+    # a setting changed since isn't taken back with the preset: the switch below the Undo button stays as it is
+    per_workspace = load(II_CONFIG).get("background", {}).get("workspacePresets", False)
     for dst in (II_CONFIG, SHELL_CONFIG, LOCKWALL, FACE, CURRENT):
         src = last / dst.name
         if src.is_file():
@@ -244,6 +298,11 @@ def undo():
         elif dst == CURRENT:
             dst.unlink(missing_ok=True)
     ii = load(II_CONFIG)
+    if ii.get("background", {}).get("workspacePresets", False) != per_workspace:
+        ii.setdefault("background", {})["workspacePresets"] = per_workspace
+        save(II_CONFIG, ii)
+    if (last / WORKSPACES.name).is_file():  # a backup from before presets per workspace has none: left as it is
+        shutil.copy2(last / WORKSPACES.name, WORKSPACES)
     palette = ii.get("appearance", {}).get("palette", {})
     set_wallpaper(ii.get("background", {}).get("wallpaperPath"), accent=palette.get("accentColor", ""))
     shutil.rmtree(last)
@@ -285,9 +344,13 @@ def main():
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--save-layout", action="store_true")
+    ap.add_argument("--workspace", metavar="WS")
+    ap.add_argument("--forget", nargs="?", const=True, metavar="WS")
     args = ap.parse_args()
     if args.step and (args.preset or args.undo or args.sync or args.list or args.save_layout):
         ap.error("--next / --previous go alone (with --mode, --wallpapers, --dry-run at most)")
+    if args.workspace and (args.preset or args.step or args.undo or args.sync or args.list or args.save_layout):
+        ap.error("--workspace goes alone")
 
     if args.list:
         return list_presets(args.json)
@@ -297,9 +360,12 @@ def main():
     STATE.parent.mkdir(parents=True, exist_ok=True)
     lock = open(STATE.parent / "preset.lock", "w")
     try:
-        fcntl.flock(lock, fcntl.LOCK_EX | (fcntl.LOCK_NB if args.step else 0))
+        fcntl.flock(lock, fcntl.LOCK_EX | (fcntl.LOCK_NB if args.step or args.workspace else 0))
     except BlockingIOError:
-        return
+        # a workspace switch mid-apply: the shell asks again once this one is done (the last switch wins)
+        sys.exit(BUSY if args.workspace else 0)
+    if args.forget:
+        return forget(args.forget)
     if args.save_layout:
         return save_layout()
     if args.undo:
@@ -308,6 +374,13 @@ def main():
         return sync(None if args.sync is True else Path(args.sync))
     if args.step:
         args.preset = LIBRARY / step(args.step)
+    picked_on = None if args.workspace else focused_workspace()
+    if args.workspace:
+        name = workspaces().get(args.workspace)
+        current = CURRENT.read_text().strip() if CURRENT.is_file() else ""
+        if not name or name == current:
+            return  # none given, or on already
+        args.preset = LIBRARY / name
     if not args.preset:
         ap.error("give a preset (or --next, --previous, --sync, --list, --undo)")
 
@@ -340,7 +413,8 @@ def main():
         if src.parent == BLAPPLES_PICS:
             return src  # already on this computer
         dst = out / src.name
-        if not args.dry_run:
+        same = dst.is_file() and dst.stat().st_size == src.stat().st_size and dst.stat().st_mtime == src.stat().st_mtime
+        if not args.dry_run and not same:  # copied already: a workspace switch doesn't copy them all again
             out.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
         return dst
@@ -420,7 +494,8 @@ def main():
     if args.step:  # said before the colour pass, the slow part
         notify(name)
 
-    print(f"backup: {backup()}  (undo: tools/preset-import.py --undo)")
+    if not args.workspace:  # a switch isn't something to undo: Undo stays for the presets picked
+        print(f"backup: {backup()}  (undo: tools/preset-import.py --undo)")
     save(II_CONFIG, ii)
     save(SHELL_CONFIG, shell)
     # always: a preset without one goes back to the desktop wallpaper, not the last preset's
@@ -428,6 +503,7 @@ def main():
     if avatar:
         shutil.copy2(avatar, FACE)
     CURRENT.write_text(name + "\n")
+    give_workspace(name, picked_on)
     set_wallpaper(wallpaper, mode, scheme, accent)
 
 
