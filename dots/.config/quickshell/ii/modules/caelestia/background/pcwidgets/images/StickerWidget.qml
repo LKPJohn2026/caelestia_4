@@ -53,11 +53,13 @@ AbstractBackgroundWidget {
             fillMode: Image.PreserveAspectFit
             cache: false
             antialiasing: true
-            sourceSize.width: parent.width * 2
-            sourceSize.height: parent.height * 2
+            sourceSize.width: parent.width * root.renderScale
+            sourceSize.height: parent.height * root.renderScale
             visible: root.imagePath !== "" && status === Image.Ready
 
             layer.enabled: true
+
+            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
             layer.effect: DropShadow {
                 horizontalOffset: 0
                 verticalOffset: 0

@@ -30,13 +30,18 @@ AbstractWidget {
     // share of the screen they take in its preview (background.widgets.scale sets a size of its own instead)
     readonly property real widgetScale: Config.options.background.widgets.scale > 0 ? Config.options.background.widgets.scale
         : canvas.height > 0 ? scaledScreenHeight / canvas.height : 1
+    // caelestia4: device pixels per logical pixel inside the widget (the scale above times the screen's 1.5x, say):
+    // what its textures are drawn at, so the Scale doesn't stretch them soft (WidgetScale)
+    readonly property real dpr: (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1
+    readonly property real renderScale: widgetScale * dpr
     readonly property real drawnWidth: width * widgetScale
     readonly property real drawnHeight: height * widgetScale
     property real targetX: Math.max(0, Math.min(toScreen(configEntry.x, width, drawnWidth, canvasWidth, scaledScreenWidth), scaledScreenWidth - drawnWidth))
     property real targetY: Math.max(0, Math.min(toScreen(configEntry.y, height, drawnHeight, canvasHeight, scaledScreenHeight), scaledScreenHeight - drawnHeight))
     property real targetZ: configEntry.z
-    x: targetX
-    y: targetY
+    // on whole device pixels (a third of a pixel off at 1.5x blurs every edge the same third)
+    x: snapToDevice(targetX)
+    y: snapToDevice(targetY)
     z: targetZ
     visible: opacity > 0
     opacity: (GlobalStates.screenLocked && !visibleWhenLocked) ? 0 : 1
@@ -58,8 +63,8 @@ AbstractWidget {
         Config.options.background.widgets[root.configEntryName].enable = false
     }
     function restoreXYBinding() {
-        root.x = Qt.binding(() => root.targetX);
-        root.y = Qt.binding(() => root.targetY);
+        root.x = Qt.binding(() => root.snapToDevice(root.targetX));
+        root.y = Qt.binding(() => root.snapToDevice(root.targetY));
         root.z = Qt.binding(() => root.targetZ);
     }
 
@@ -75,6 +80,11 @@ AbstractWidget {
     }
 
     onReleased: root.commitPosition()
+
+    // (not snap(): AbstractWidget's, the drag grid)
+    function snapToDevice(pos: real): real {
+        return Math.round(pos * dpr) / dpr;
+    }
 
     // One axis: where a widget at `pos` on a canvas `canvasSize` long (where it is `size` long) goes on a screen
     // `screenSize` long (where it is drawn `drawnSize` long). The room left beside the widget is scaled, not its corner,

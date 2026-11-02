@@ -95,6 +95,8 @@ AbstractBackgroundWidget {
         }
 
         layer.enabled: root.configEntry.shadow
+
+        layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
         layer.effect: DropShadow {
             radius: 8
             samples: radius * 2 + 1

@@ -1,4 +1,5 @@
 import qs.modules.common
+import qs.modules.common.functions
 import QtQuick
 
 StyledText {
@@ -6,7 +7,9 @@ StyledText {
     property real iconSize: Appearance?.font.pixelSize.small ?? 16
     property real fill: 0
     property real truncatedFill: fill.toFixed(1) // Reduce memory consumption spikes from constant font remapping
-    renderType: Text.NativeRendering
+    // caelestia4: native glyphs are drawn once at the window's scale, so a desktop widget's Scale stretches them soft;
+    // curves are drawn at whatever size they end up
+    renderType: WidgetScale.transformed(root) ? Text.CurveRendering : Text.NativeRendering
     font {
         hintingPreference: Font.PreferNoHinting
         family: Appearance?.font.family.iconMaterial ?? "Material Symbols Rounded"

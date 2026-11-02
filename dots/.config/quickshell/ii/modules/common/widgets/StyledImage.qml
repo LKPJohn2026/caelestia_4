@@ -6,6 +6,8 @@ import qs.modules.common.widgets
 import qs.modules.common.functions
 
 Image {
+    id: root
+
     asynchronous: true
     retainWhileLoading: true
     visible: opacity > 0
@@ -25,7 +27,8 @@ Image {
     }
 
     sourceSize: {
-        const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
-        return Qt.size(width * dpr, height * dpr);
+        // caelestia4: in a desktop widget, its Scale too (WidgetScale)
+        const k = WidgetScale.renderScale(root) || ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1);
+        return Qt.size(width * k, height * k);
     }
 }

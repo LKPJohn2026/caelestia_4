@@ -111,8 +111,8 @@ AbstractBackgroundWidget {
                 antialiasing: true
                 smooth: true
                 mipmap: true
-                sourceSize.width: root.imageWiderThanCard ? 0 : root.modeWidth * 2
-                sourceSize.height: root.imageWiderThanCard ? root.modeHeight * 2 : 0
+                sourceSize.width: root.imageWiderThanCard ? 0 : root.modeWidth * root.renderScale
+                sourceSize.height: root.imageWiderThanCard ? root.modeHeight * root.renderScale : 0
             }
 
             MaterialSymbol {

@@ -164,8 +164,11 @@ AbstractBackgroundWidget {
                 id: squareArt
                 anchors.fill: parent
                 layer.enabled: true
+                layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                 layer.effect: OpacityMask {
                     maskSource: Rectangle {
+                        layer.enabled: true
+                        layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                         width: squareArt.width
                         height: squareArt.height
                         radius: card.radius
@@ -178,8 +181,8 @@ AbstractBackgroundWidget {
                     fillMode: Image.PreserveAspectCrop
                     cache: false
                     antialiasing: true
-                    sourceSize.width: root.singleWidth * 2
-                    sourceSize.height: root.cardHeight * 2
+                    sourceSize.width: root.singleWidth * root.renderScale
+                    sourceSize.height: root.cardHeight * root.renderScale
                     visible: root.displayedArtFilePath !== ""
                 }
 
@@ -282,8 +285,11 @@ AbstractBackgroundWidget {
                     bottomRightRadius: 0
                     clip: true
                     layer.enabled: true
+                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
+                            layer.enabled: true
+                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                             width: artBlock.width
                             height: artBlock.height
                             topLeftRadius: card.radius
@@ -299,8 +305,8 @@ AbstractBackgroundWidget {
                         fillMode: Image.PreserveAspectCrop
                         cache: false
                         antialiasing: true
-                        sourceSize.width: artBlock.width * 2
-                        sourceSize.height: artBlock.height * 2
+                        sourceSize.width: artBlock.width * root.renderScale
+                        sourceSize.height: artBlock.height * root.renderScale
                         visible: root.displayedArtFilePath !== ""
                     }
 
@@ -426,8 +432,11 @@ AbstractBackgroundWidget {
                     bottomRightRadius: 0
                     clip: true
                     layer.enabled: true
+                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
+                            layer.enabled: true
+                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                             width: bigArt.width
                             height: bigArt.height
                             topLeftRadius: card.radius
@@ -443,8 +452,8 @@ AbstractBackgroundWidget {
                         fillMode: Image.PreserveAspectCrop
                         cache: false
                         antialiasing: true
-                        sourceSize.width: bigArt.width * 2
-                        sourceSize.height: bigArt.height * 2
+                        sourceSize.width: bigArt.width * root.renderScale
+                        sourceSize.height: bigArt.height * root.renderScale
                         visible: root.displayedArtFilePath !== ""
                     }
 
@@ -571,8 +580,11 @@ AbstractBackgroundWidget {
                         bottomRightRadius: 0
                         clip: true
                         layer.enabled: true
+                        layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                         layer.effect: OpacityMask {
                             maskSource: Rectangle {
+                                layer.enabled: true
+                                layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                                 width: artRect.width
                                 height: artRect.height
                                 topLeftRadius: card.radius
@@ -588,8 +600,8 @@ AbstractBackgroundWidget {
                             fillMode: Image.PreserveAspectCrop
                             cache: false
                             antialiasing: true
-                            sourceSize.width: artRect.width * 2
-                            sourceSize.height: artRect.height * 2
+                            sourceSize.width: artRect.width * root.renderScale
+                            sourceSize.height: artRect.height * root.renderScale
                             visible: root.displayedArtFilePath !== ""
                         }
 
@@ -791,8 +803,11 @@ AbstractBackgroundWidget {
                             radius: Appearance.rounding?.normal ?? 12
                             clip: true
                             layer.enabled: true
+                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                             layer.effect: OpacityMask {
                                 maskSource: Rectangle {
+                                    layer.enabled: true
+                                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                                     width: labelArt.width
                                     height: labelArt.height
                                     radius: labelArt.radius
@@ -805,8 +820,8 @@ AbstractBackgroundWidget {
                                 fillMode: Image.PreserveAspectCrop
                                 cache: false
                                 antialiasing: true
-                                sourceSize.width: labelArt.width * 2
-                                sourceSize.height: labelArt.height * 2
+                                sourceSize.width: labelArt.width * root.renderScale
+                                sourceSize.height: labelArt.height * root.renderScale
                                 visible: root.displayedArtFilePath !== ""
                             }
 

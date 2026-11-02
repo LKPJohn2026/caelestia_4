@@ -247,7 +247,7 @@ AbstractBackgroundWidget {
                         id: bgImageA
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
-                        sourceSize: Qt.size(root.snapWidth3, root.snapHeight3)
+                        sourceSize: Qt.size(root.snapWidth3 * root.renderScale, root.snapHeight3 * root.renderScale)
                         asynchronous: true
                         cache: false
                         opacity: 1
@@ -259,7 +259,7 @@ AbstractBackgroundWidget {
                         id: bgImageB
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
-                        sourceSize: Qt.size(root.snapWidth3, root.snapHeight3)
+                        sourceSize: Qt.size(root.snapWidth3 * root.renderScale, root.snapHeight3 * root.renderScale)
                         asynchronous: true
                         cache: false
                         opacity: 0
@@ -295,8 +295,11 @@ AbstractBackgroundWidget {
                     source: bgImage
                     radius: 48
                     layer.enabled: true
+                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
+                            layer.enabled: true
+                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                             width: outerRect.width
                             height: outerRect.height
                             radius: Appearance.rounding?.verylarge ?? 30
@@ -508,8 +511,11 @@ AbstractBackgroundWidget {
                         }
                         height: cardBg.height * 0.62
                         layer.enabled: true
+                        layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                         layer.effect: OpacityMask {
                             maskSource: Rectangle {
+                                layer.enabled: true
+                                layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                                 width: heroWrap.width
                                 height: heroWrap.height
                                 topLeftRadius: cardBg.radius
@@ -528,7 +534,7 @@ AbstractBackgroundWidget {
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
                             cache: false
-                            sourceSize: Qt.size(root.snapWidth4, heroWrap.height)
+                            sourceSize: Qt.size(root.snapWidth4 * root.renderScale, heroWrap.height * root.renderScale)
                         }
                     }
 

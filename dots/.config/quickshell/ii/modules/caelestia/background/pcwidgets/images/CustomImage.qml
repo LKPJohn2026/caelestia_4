@@ -58,8 +58,12 @@ AbstractBackgroundWidget {
             shape: root.shapeType
 
             layer.enabled: true
+
+            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
             layer.effect: OpacityMask {
                 maskSource: MaterialShape {
+                    layer.enabled: true
+                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     width: imageShape.width
                     height: imageShape.height
                     shape: root.shapeType
@@ -72,8 +76,8 @@ AbstractBackgroundWidget {
                 fillMode: Image.PreserveAspectCrop
                 cache: false
                 antialiasing: true
-                sourceSize.width: parent.width
-                sourceSize.height: parent.height
+                sourceSize.width: parent.width * root.renderScale
+                sourceSize.height: parent.height * root.renderScale
                 visible: root.imagePath !== ""
             }
 
