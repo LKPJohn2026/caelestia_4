@@ -403,6 +403,12 @@ Singleton {
                 property string lockWall: "" // caelestia4: a preset's lock screen wallpaper (hyprlock/lockwall.conf), for widgets
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
+                // caelestia4: show wallpapers at the screen's resolution: Upscayl's AI model (/usr/share/upscayl/models) up,
+                // Lanczos down, the whole picture kept (scripts/caelestia4/wallpaper-fit.py)
+                property JsonObject wallpaperFit: JsonObject {
+                    property bool enable: true
+                    property string model: "digital-art-4x"
+                }
                 property bool hideWhenFullscreen: true
                 property JsonObject parallax: JsonObject {
                     property bool vertical: false

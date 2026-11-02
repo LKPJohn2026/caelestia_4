@@ -27,8 +27,15 @@ Item {
     property string source: Wallpapers.current
     property ShaderEffectSource currentCapture: capture1
     property real transitionProgress: 1
+    // caelestia4: the same picture at another resolution (Wallpapers.displayPath: its copy fitted to the screen) is
+    // swapped in without the transition: the old frame stays until the new one is ready, then it's simply there
+    property var sameWallpaper: (a, b) => Wallpapers.sameWallpaper(a, b)
+    property string shownSource
+    property bool quietSwap
 
     onSourceChanged: {
+        quietSwap = sameWallpaper(shownSource, source);
+        shownSource = source;
         transitionAnim.stop();
 
         if (transitionProgress < 1) {
@@ -42,7 +49,10 @@ Item {
         currentCapture.scheduleUpdate();
     }
 
-    Component.onCompleted: live.source = source
+    Component.onCompleted: {
+        shownSource = source;
+        live.source = source;
+    }
 
     NumberAnimation on transitionProgress {
         id: transitionAnim
@@ -66,8 +76,15 @@ Item {
             root.transitionProgress = 0;
             live.source = root.source;
             if (live.ready)
-                transitionAnim.start();
+                root.finishTransition();
         }
+    }
+
+    function finishTransition(): void {
+        if (quietSwap)
+            transitionProgress = 1;
+        else
+            transitionAnim.start();
     }
 
     ShaderEffectSource {
@@ -83,7 +100,7 @@ Item {
             root.transitionProgress = 0;
             live.source = root.source;
             if (live.ready)
-                transitionAnim.start();
+                root.finishTransition();
         }
     }
 
@@ -97,7 +114,7 @@ Item {
 
         onReadyChanged: {
             if (ready && source === root.source)
-                transitionAnim.start();
+                root.finishTransition();
         }
     }
 

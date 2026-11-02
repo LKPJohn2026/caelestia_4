@@ -406,6 +406,16 @@ PageBase {
             onToggled: GlobalConfig.background.workspaceWallpapers.enabled = checked
         }
 
+        // caelestia4: scripts/caelestia4/wallpaper-fit.py
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+
+            text: Tr.tr("Fit wallpapers to the screen")
+            subtext: Tr.tr("Upscale (AI, Upscayl) or downscale each wallpaper to the screen's resolution, the whole picture kept. The originals stay as they are")
+            value: E4C.Config.options.background.wallpaperFit.enable
+            onToggled: E4C.Config.options.background.wallpaperFit.enable = checked
+        }
+
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
 
