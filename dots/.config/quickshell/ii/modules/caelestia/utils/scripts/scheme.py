@@ -7,7 +7,12 @@ shell parts read directly, and themes btop / nvtop / Zed / Spotify itself (~/.co
 change it runs its postHook, `scheme.py bridge`, which hands the same colours to end-4's outputs:
   - `matugen json` renders end-4's templates (shell colours.json, Hyprland, hyprlock, fuzzel) from the scheme
   - material_colors.scss + applycolor.sh: terminal colours (the scheme's term0-15), kitty, the remaining app themes
-end-4's switchwall.sh stays the entry point for wallpapers, light/dark and the colour style; it calls `wall` and `mode`.
+end-4's switchwall.sh stays the entry point for wallpapers, light/dark, the colour style and the accent colour; it calls
+`wall`, `mode` and `accent`.
+
+An accent colour (end-4's appearance.palette.accentColor: switchwall.sh --color, presets) is a dynamic scheme made from
+that colour instead of the wallpaper, by caelestia-cli's own generator, so it reaches everything a wallpaper's colours do
+(Caelestia's shell parts too). It stays until a new wallpaper or a scheme is picked; light/dark and the colour style keep it.
 
 Usage:
   scheme.py list                      JSON {name: {flavour: {mode: {role: "rrggbb"}}}} (preview roles only)
@@ -20,6 +25,8 @@ Usage:
   scheme.py mode [M] [--variant V] [--dynamic]
                                       light/dark (a preset without that mode switches flavour, see counterpart()),
                                       the Material variant, and --dynamic to leave a preset for wallpaper colours
+  scheme.py accent HEX [--mode M] [--variant V]
+                                      colours made from HEX (also saved as end-4's accentColor); V: end-4's colour style
   scheme.py bridge                    caelestia-cli's postHook: pass the current scheme to end-4
 """
 import importlib.util, json, os, re, shutil, subprocess, sys, tempfile
@@ -36,6 +43,9 @@ GENERATED = os.path.join(STATE, "quickshell/user/generated")
 SHELL_CONFIG = os.path.join(CONFIG, "illogical-impulse/config.json")
 CLI_CONFIG = os.path.join(CONFIG, "caelestia/cli.json")
 CAELESTIA_SHELL = os.path.join(CONFIG, "caelestia/shell.json")
+# the accent the current colours were made from (apply_accent): caelestia-cli's scheme.json can't say so, and it would
+# keep them when asked for wallpaper colours with the same name and mode
+ACCENT_MARK = os.path.join(STATE, "caelestia4/scheme-accent")
 
 PREVIEW = ["primary", "secondary", "tertiary", "surface", "surfaceContainer", "onSurface", "outline", "primaryContainer"]
 # matugen roles that have no camelCase twin in caelestia's colours
@@ -141,6 +151,79 @@ def wallpaper_path():
         return ""
 
 
+def config_accent():
+    """end-4's accent colour (appearance.palette.accentColor) as rrggbb, or "" (colours from the wallpaper)"""
+    try:
+        with open(SHELL_CONFIG) as f:
+            value = json.load(f).get("appearance", {}).get("palette", {}).get("accentColor") or ""
+    except (OSError, ValueError):
+        return ""
+    value = value.removeprefix("#").lower()
+    return value if re.fullmatch(r"[0-9a-f]{6}", value) else ""
+
+
+def save_config_accent(value):
+    """Write end-4's accentColor ("" clears it), as switchwall.sh's set_accent_color does"""
+    try:
+        with open(SHELL_CONFIG) as f:
+            config = json.load(f)
+    except (OSError, ValueError):
+        return
+    palette = config.setdefault("appearance", {}).setdefault("palette", {})
+    if palette.get("accentColor", "") == value:
+        return
+    palette["accentColor"] = value
+    with tempfile.NamedTemporaryFile("w", dir=os.path.dirname(SHELL_CONFIG), delete=False) as f:
+        json.dump(config, f, indent=2)
+        tmp = f.name
+    os.replace(tmp, SHELL_CONFIG)
+
+
+def apply_accent(accent, mode=None, variant=None):
+    """A dynamic scheme from the colour accent (rrggbb) instead of the wallpaper: caelestia-cli's generator and theming,
+    then its postHook (bridge) as for any scheme change. caelestia-cli has no command for it (its dynamic scheme always
+    scores the wallpaper), so its Scheme is filled in directly: the package is pinned (packaging/caelestia4-cli)"""
+    from caelestia.utils.material.generator import gen_scheme
+    from caelestia.utils.scheme import get_scheme
+    from caelestia.utils.theme import apply_colours
+    from materialyoucolor.hct import Hct
+
+    scheme = get_scheme()
+    scheme._name = "dynamic"
+    if scheme.flavour not in ("default", "hard"):
+        scheme._flavour = "default"
+    scheme._mode = mode or scheme.mode
+    scheme._variant = variant or scheme.variant
+    scheme._colours = gen_scheme(scheme, Hct.from_int(0xFF000000 | int(accent, 16)))
+    scheme.save()
+    os.makedirs(os.path.dirname(ACCENT_MARK), exist_ok=True)
+    with open(ACCENT_MARK, "w") as f:
+        f.write(accent + "\n")
+    apply_colours(scheme.colours, scheme.mode)
+
+
+def from_accent():
+    return os.path.exists(ACCENT_MARK)
+
+
+def leave_accent(mode=None, variant=None):
+    """Wallpaper colours again after an accent's, made by caelestia-cli (its `scheme set` changes nothing while the name
+    and mode stay the same)"""
+    from caelestia.utils.scheme import get_scheme
+    from caelestia.utils.theme import apply_colours
+
+    ensure_wallpaper()
+    os.remove(ACCENT_MARK)
+    scheme = get_scheme()
+    scheme._name = "dynamic"
+    if scheme.flavour not in ("default", "hard"):
+        scheme._flavour = "default"
+    scheme._mode = mode or scheme.mode
+    scheme._variant = variant or scheme.variant
+    scheme.update_colours()
+    apply_colours(scheme.colours, scheme.mode)
+
+
 def ensure_wallpaper():
     """caelestia-cli needs a wallpaper before it can make a dynamic scheme"""
     if not os.path.exists(WALL_PATH) and (wall := wallpaper_path()):
@@ -154,6 +237,8 @@ def apply_to_end4(colours, mode):
     for role, src in EXTRA.items():
         if src in colours:
             roles[role] = colours[src]
+    if (accent := config_accent()) and load_scheme().get("name") == "dynamic":
+        roles["source_color"] = accent  # the colour itself, as matugen gives it (VS Code's theme is made from it)
     data = {
         "colors": {r: {m: {"color": f"#{v}"} for m in ("dark", "default", "light")} for r, v in roles.items()},
         "image": wallpaper_path(),
@@ -247,6 +332,9 @@ def main():
     elif cmd == "get":
         print(json.dumps({k: scheme.get(k, "") for k in ("name", "flavour", "mode", "variant")}))
     elif cmd == "set" and len(args) >= 2 and args[1] == "dynamic":
+        save_config_accent("")  # wallpaper colours, not the accent's
+        if from_accent():
+            return leave_accent(mode)
         ensure_wallpaper()
         caelestia("scheme", "set", "--notify", "-n", "dynamic", "-m", mode or scheme.get("mode", "dark"))
     elif cmd == "set" and len(args) >= 3:
@@ -254,6 +342,9 @@ def main():
         if not os.path.isdir(os.path.join(SCHEMES, name, flavour)):
             raise SystemExit(f"unknown scheme {name} {flavour}")
         mode = pick_mode(name, flavour, mode or scheme.get("mode", "dark"))
+        save_config_accent("")
+        if from_accent():
+            os.remove(ACCENT_MARK)
         caelestia("scheme", "set", "--notify", "-n", name, "-f", flavour, "-m", mode)
     elif cmd == "wall" and len(args) >= 2:
         try:
@@ -261,7 +352,11 @@ def main():
                 same = f.read().strip() == os.path.realpath(args[1])
         except OSError:
             same = False
-        if not same:  # the same path again would only re-run every theme
+        if same and from_accent():
+            leave_accent()  # its colours again, without the smart scheme picking light/dark: it isn't a new wallpaper
+        elif not same:  # the same path again would only re-run every theme
+            if from_accent():
+                os.remove(ACCENT_MARK)
             caelestia("wallpaper", "-f", args[1], *([] if smart() else ["--no-smart"]))
     elif cmd == "smart":
         sys.exit(0 if smart() else 1)
@@ -270,7 +365,12 @@ def main():
         dynamic = take(args, "--dynamic", valued=False) or scheme.get("name") == "dynamic"
         wanted = args[1] if len(args) >= 2 else mode
         opts = []
-        if dynamic:
+        if dynamic and (accent := config_accent()):
+            # caelestia-cli would remake the colours from the wallpaper: from the accent again instead
+            apply_accent(accent, wanted, variant)
+        elif dynamic and from_accent():
+            leave_accent(wanted, variant)  # the accent was cleared (switchwall.sh --color clear)
+        elif dynamic:
             ensure_wallpaper()
             if scheme.get("name") != "dynamic":
                 opts += ["-n", "dynamic"]
@@ -289,6 +389,13 @@ def main():
                 opts += ["-m", m]
         if opts:
             caelestia("scheme", "set", "--notify", *opts)
+    elif cmd == "accent" and len(args) >= 2:
+        variant = VARIANTS.get(take(args, "--variant") or "")
+        accent = args[1].removeprefix("#").lower() if len(args) >= 2 else ""
+        if not re.fullmatch(r"[0-9a-f]{6}", accent):
+            raise SystemExit("accent: a colour like #ff1814")
+        save_config_accent(f"#{accent.upper()}")
+        apply_accent(accent, mode, variant)
     elif cmd == "bridge":
         colours = json.loads(os.environ["SCHEME_COLOURS"]) if os.environ.get("SCHEME_COLOURS") else scheme["colours"]
         apply_to_end4(colours, os.environ.get("SCHEME_MODE") or scheme.get("mode", "dark"))

@@ -25,8 +25,9 @@ service **owns**, the rule became:
 > schemes, kept in `~/.local/state/caelestia/scheme.json`, which `Colours` reads directly again (all roles + term0-15).
 > Its postHook `scheme.py bridge` renders end-4's outputs from that scheme (matugen json → colours.json, Hyprland,
 > hyprlock, fuzzel theme; material_colors.scss → applycolor.sh → terminals, kitty, apptheme.py). switchwall.sh stays the
-> entry point (`scheme.py wall` / `scheme.py mode`); only an accent colour (`--color`) still uses matugen, and then the
-> Caelestia half keeps the scheme colours. cli.json leaves GTK, Qt, htop, fuzzel, Discord, Chromium, Hyprland and
+> entry point (`scheme.py wall` / `scheme.py mode` / `scheme.py accent`). An accent colour (`--color`, presets) is a
+> dynamic scheme made from that colour by caelestia-cli's generator (2026-11-01; before, matugen made it for end-4's
+> half only), kept through light/dark and colour style changes until a new wallpaper or scheme. cli.json leaves GTK, Qt, htop, fuzzel, Discord, Chromium, Hyprland and
 > terminals off (end-4 / apptheme.py do those without overwriting user files). Without caelestia-cli everything falls
 > back to the old matugen path. `services.smartScheme` stays unused (always `--no-smart`: light/dark is end-4's switch).
 | Adapter | end-4 source | Why it must be end-4 | Not supported (yet) |

@@ -298,9 +298,15 @@ switch() {
 
     # caelestia4 (backend step 3): caelestia-cli makes the colours, from the wallpaper (with the colour style as its
     # variant) or a preset scheme it keeps across wallpaper changes; its postHook (scheme.py bridge) writes end-4's
-    # outputs (colours.json, Hyprland, hyprlock, terminals). Only an accent colour (--color) still uses matugen below.
+    # outputs (colours.json, Hyprland, hyprlock, terminals). An accent colour (--color, accentColor) too: scheme.py makes
+    # the scheme from it with caelestia-cli's generator. matugen below only runs without caelestia-cli.
     # Without --mode the scheme keeps its mode (gsettings may hold another desktop's preference).
-    if [[ "$color_flag" != "1" ]] && command -v caelestia &>/dev/null && [[ -x "$SCHEME_SCRIPT" ]]; then
+    if command -v caelestia &>/dev/null && [[ -x "$SCHEME_SCRIPT" ]]; then
+        if [[ "$color_flag" == "1" ]]; then
+            "$SCHEME_SCRIPT" accent "$color" ${explicit_mode:+--mode "$explicit_mode"} --variant "$type_flag"
+            post_process "" "" "$imgpath"
+            return
+        fi
         [[ -n "$colour_img" ]] && "$SCHEME_SCRIPT" wall "$colour_img"
         # A new wallpaper with Caelestia's smart scheme on: caelestia-cli just picked light/dark and the variant from it
         # (end-4 passes the current --mode with every wallpaper, so that would undo it). The light/dark switch
