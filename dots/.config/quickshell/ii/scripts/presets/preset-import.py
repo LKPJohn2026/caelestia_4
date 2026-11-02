@@ -3,7 +3,7 @@
 
 A preset is end4-pC's whole config.json plus its pictures. Only what this shell can show is taken (a whitelist, so a
 preset can't set commands like apps.*): the desktop widgets end4-pC and this shell share (pcwidgets: clock, weather,
-calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter) at the preset's positions, the visualiser, the colours
+calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter, visualizer) at the preset's positions, the colours
 (style, accent colour, light / dark), the wallpaper, the lock screen wallpaper, the banner (on the user card) and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
 
 Widget positions stay in the preset's 1920x1080 coordinates (background.widgets.canvas); each screen scales the room
@@ -67,12 +67,15 @@ IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".avif"}
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
 WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "worldClock", "resources", "notes", "timers",
-           "todo", "images", "imageCard", "sticker", "customText"]
+           "todo", "images", "imageCard", "sticker", "customText", "visualizer"]
+# end4-pC's visualizer defaults: most presets keep only enable and a place, and a style left from the preset before
+# (an aurora, a ring) mustn't stay on
+VISUALIZER_DEFAULTS = {"z": -1000, "style": "bars", "colorSource": "theme", "sensitivity": 1, "height": 260, "ringSize": 380}
 # the size end4-pC presets are made on: their widget x / y are pixels on a 1920x1080 screen
 PRESET_CANVAS = {"width": 1920, "height": 1080}
 # what moving, resizing and turning a desktop widget with the mouse changes (--save-layout): where it is, which one is on
 # top, its size (a step or pixels) and angle, and whether a strip of cards stands up
-LAYOUT_FIELDS = ("x", "y", "z", "sizeMode", "size", "rotation", "vertical")
+LAYOUT_FIELDS = ("x", "y", "z", "sizeMode", "size", "rotation", "vertical", "ringSize")
 LOCKWALL_DEFAULT = "# caelestia4: a lock screen wallpaper of its own. Empty = the desktop wallpaper (colors.conf, from matugen).\n"
 
 
@@ -227,7 +230,7 @@ def list_presets(as_json):
     presets = []
     for d, js in installed():
         pw = load(js).get("background", {}).get("widgets", {})
-        on = [k for k, v in pw.items() if isinstance(v, dict) and v.get("enable") and k != "visualizer"]
+        on = [k for k, v in pw.items() if isinstance(v, dict) and v.get("enable")]
         presets.append({
             "name": d.name,
             "preview": str(d / "preview.png") if (d / "preview.png").is_file() else "",
@@ -447,12 +450,14 @@ def main():
             widgets.setdefault(key, {})["enable"] = False
             continue
         entry = json.loads(json.dumps(pwidgets[key]))
+        if key == "visualizer":
+            entry = {**VISUALIZER_DEFAULTS, **entry}
         if key in ("customImage", "imageCard", "sticker"):
             img = picture(meta.get(key) or entry.get("path"))
             entry["path"] = str(img) if img else ""
         widgets[key] = entry
         applied.append(f"widget {key}" + ("" if entry.get("enable") else " (off)"))
-    for key in sorted(set(pwidgets) - set(WIDGETS) - {"visualizer"}):
+    for key in sorted(set(pwidgets) - set(WIDGETS)):
         if isinstance(pwidgets[key], dict) and pwidgets[key].get("enable"):
             skipped.append(f"widget {key} (not ported)")
 
@@ -479,10 +484,9 @@ def main():
 
     shell = load(SHELL_CONFIG) if SHELL_CONFIG.is_file() else {}
     sbg = shell.setdefault("background", {})
-    visualizer = pwidgets.get("visualizer", {}).get("enable")
-    if visualizer is not None:
-        sbg.setdefault("visualiser", {})["enabled"] = bool(visualizer)
-        applied.append(f"visualiser {'on' if visualizer else 'off'}")
+    # one visualiser: the preset's (the visualizer widget, on or off), not Caelestia's bars as well
+    sbg.setdefault("visualiser", {})["enabled"] = False
+    applied.append("Caelestia visualiser off")
     if pwidgets.get("clock", {}).get("enable"):
         # one clock: the preset's, not Caelestia's desktop clock as well
         sbg.setdefault("desktopClock", {})["enabled"] = False

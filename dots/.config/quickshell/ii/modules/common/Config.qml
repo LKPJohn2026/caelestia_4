@@ -395,6 +395,20 @@ Singleton {
                         property string alignment: "center" // "left", "center", "right"
                         property bool shadow: true
                     }
+                    // caelestia4: end4-pC's visualizer (pcwidgets/visualizer); a ring is placed like any widget, the
+                    // other styles run along the bottom of the screen
+                    property JsonObject visualizer: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free"
+                        property real x: 0
+                        property real y: 0
+                        property real z: -1000
+                        property string style: "bars" // "bars", "mirror", "aurora", "ring", "dots"
+                        property string colorSource: "theme" // "theme", "cover" (shader styles)
+                        property real sensitivity: 1
+                        property int height: 260 // mirror, aurora and dots
+                        property int ringSize: 380
+                    }
                 }
                 property bool widgetsLocked: false // right-click a widget to lock or unlock them all
                 property bool showGrid: true // a grid while a widget is dragged (they snap to it)

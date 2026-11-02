@@ -91,6 +91,54 @@ PageBase {
     // (background widgets), as in end-4's Settings app (Desktop)
     readonly property string desktopClock: E4C.Config.options.background.widgets.clock.enable ? E4C.Config.options.background.widgets.clock.style : (Config.background.desktopClock.enabled ? "caelestia" : "none")
 
+    // caelestia4: one visualiser on the desktop, the same way: Caelestia's bars (background.visualiser) or end4-pC's
+    // visualizer widget in one of its styles (background.widgets.visualizer)
+    readonly property var e4Vis: E4C.Config.options.background.widgets.visualizer
+    readonly property string desktopVisualiser: e4Vis.enable ? e4Vis.style : (Config.background.visualiser.enabled ? "caelestia" : "none")
+    readonly property bool visualiserShader: ["mirror", "aurora", "dots", "ring"].includes(desktopVisualiser)
+
+    readonly property list<MenuItem> visualiserItems: [
+        MenuItem {
+            text: "Caelestia"
+            value: "caelestia"
+        },
+        MenuItem {
+            text: Tr.tr("Bars")
+            value: "bars"
+        },
+        MenuItem {
+            text: Tr.tr("Mirror")
+            value: "mirror"
+        },
+        MenuItem {
+            text: Tr.tr("Aurora")
+            value: "aurora"
+        },
+        MenuItem {
+            text: Tr.tr("Dots")
+            value: "dots"
+        },
+        MenuItem {
+            text: Tr.tr("Ring")
+            value: "ring"
+        },
+        MenuItem {
+            text: Tr.tr("Off")
+            value: "none"
+        }
+    ]
+
+    readonly property list<MenuItem> visualiserColourItems: [
+        MenuItem {
+            text: Tr.tr("Theme")
+            value: "theme"
+        },
+        MenuItem {
+            text: Tr.tr("Album cover")
+            value: "cover"
+        }
+    ]
+
     readonly property list<MenuItem> clockItems: [
         MenuItem {
             text: "Caelestia"
@@ -742,16 +790,58 @@ PageBase {
             text: Tr.tr("Audio visualiser")
         }
 
-        ToggleRow {
+        SelectRow {
             first: true
-            text: Tr.tr("Visualiser on the desktop")
-            subtext: Tr.tr("Bars along the bottom of the wallpaper that move with the sound")
-            value: Config.background.visualiser.enabled
-            onToggled: GlobalConfig.background.visualiser.enabled = checked
+            last: root.desktopVisualiser === "none" || root.desktopVisualiser === "bars"
+            label: Tr.tr("Visualiser on the desktop")
+            subtext: root.desktopVisualiser === "ring" ? Tr.tr("A ring around the album cover: drag it, or resize it from a corner") : Tr.tr("Along the bottom of the wallpaper, moving with the sound; presets pick theirs")
+            menuItems: root.visualiserItems
+            active: root.visualiserItems.find(i => i.value === root.desktopVisualiser) ?? null
+            onSelected: item => {
+                const v = item.value;
+                GlobalConfig.background.visualiser.enabled = v === "caelestia";
+                root.e4Vis.enable = v !== "caelestia" && v !== "none";
+                if (root.e4Vis.enable)
+                    root.e4Vis.style = v;
+            }
+        }
+
+        SelectRow {
+            visible: root.visualiserShader
+            label: Tr.tr("Colours")
+            menuItems: root.visualiserColourItems
+            active: root.visualiserColourItems.find(i => i.value === root.e4Vis.colorSource) ?? root.visualiserColourItems[0]
+            onSelected: item => root.e4Vis.colorSource = item.value
+        }
+
+        StepperRow {
+            visible: root.visualiserShader
+            label: Tr.tr("Sensitivity (%)")
+            value: Math.round(root.e4Vis.sensitivity * 100)
+            from: 30
+            to: 300
+            stepSize: 5
+            onMoved: v => root.e4Vis.sensitivity = v / 100
+        }
+
+        StepperRow {
+            visible: root.visualiserShader
+            last: true
+            label: root.desktopVisualiser === "ring" ? Tr.tr("Ring size") : Tr.tr("Height")
+            value: root.desktopVisualiser === "ring" ? root.e4Vis.ringSize : root.e4Vis.height
+            from: root.desktopVisualiser === "ring" ? 200 : 80
+            to: root.desktopVisualiser === "ring" ? 900 : 600
+            stepSize: 10
+            onMoved: v => {
+                if (root.desktopVisualiser === "ring")
+                    root.e4Vis.ringSize = v;
+                else
+                    root.e4Vis.height = v;
+            }
         }
 
         ToggleRow {
-            disabled: !Config.background.visualiser.enabled
+            visible: root.desktopVisualiser === "caelestia"
             text: Tr.tr("Only on empty desktops")
             subtext: Tr.tr("Hidden while tiled windows cover the workspace")
             value: Config.background.visualiser.autoHide
@@ -759,14 +849,14 @@ PageBase {
         }
 
         ToggleRow {
-            disabled: !Config.background.visualiser.enabled
+            visible: root.desktopVisualiser === "caelestia"
             text: Tr.tr("Blur behind the bars")
             value: Config.background.visualiser.blur
             onToggled: GlobalConfig.background.visualiser.blur = checked
         }
 
         StepperRow {
-            enabled: Config.background.visualiser.enabled
+            visible: root.desktopVisualiser === "caelestia"
             label: Tr.tr("Bar roundness")
             value: Config.background.visualiser.rounding
             from: 0
@@ -777,7 +867,7 @@ PageBase {
 
         StepperRow {
             last: true
-            enabled: Config.background.visualiser.enabled
+            visible: root.desktopVisualiser === "caelestia"
             label: Tr.tr("Gap between bars")
             value: Config.background.visualiser.spacing
             from: 0

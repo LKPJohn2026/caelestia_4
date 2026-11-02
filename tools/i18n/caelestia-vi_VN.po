@@ -4083,3 +4083,39 @@ msgstr "Đang quên…"
 
 msgid "Each workspace keeps the preset on"
 msgstr "Mọi không gian giữ preset đang dùng"
+
+msgid "Bars"
+msgstr "Cột"
+
+msgid "Mirror"
+msgstr "Gương"
+
+msgid "Aurora"
+msgstr "Cực quang"
+
+msgid "Dots"
+msgstr "Chấm"
+
+msgid "Ring"
+msgstr "Vòng"
+
+msgid "Theme"
+msgstr "Theo chủ đề"
+
+msgid "Album cover"
+msgstr "Theo ảnh bìa"
+
+msgid "Sensitivity (%)"
+msgstr "Độ nhạy (%)"
+
+msgid "Ring size"
+msgstr "Cỡ vòng"
+
+msgid "Height"
+msgstr "Chiều cao"
+
+msgid "A ring around the album cover: drag it, or resize it from a corner"
+msgstr "Một vòng quanh ảnh bìa: kéo để di chuyển, kéo góc để đổi cỡ"
+
+msgid "Along the bottom of the wallpaper, moving with the sound; presets pick theirs"
+msgstr "Dọc đáy hình nền, chuyển động theo âm thanh; mỗi preset chọn kiểu riêng"
