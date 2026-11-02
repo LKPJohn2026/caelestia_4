@@ -27,13 +27,13 @@ AbstractBackgroundWidget {
     }
     property bool wallpaperSafetyTriggered: false
     needsColText: clockStyle === "digital" || clockStyle === "daily"
-    x: forceCenter ? ((root.screenWidth - root.drawnWidth) / 2) : targetX
-    y: forceCenter ? ((root.screenHeight - root.drawnHeight) / 2) : targetY
+    x: snapToDevice(forceCenter ? ((root.screenWidth - root.drawnWidth) / 2) : targetX) // caelestia4: snapped
+    y: snapToDevice(forceCenter ? ((root.screenHeight - root.drawnHeight) / 2) : targetY)
     visibleWhenLocked: true
 
     function restoreXYBinding() {
-        root.x = Qt.binding(() => root.forceCenter ? ((root.screenWidth - root.drawnWidth) / 2) : root.targetX);
-        root.y = Qt.binding(() => root.forceCenter ? ((root.screenHeight - root.drawnHeight) / 2) : root.targetY);
+        root.x = Qt.binding(() => root.snapToDevice(root.forceCenter ? ((root.screenWidth - root.drawnWidth) / 2) : root.targetX));
+        root.y = Qt.binding(() => root.snapToDevice(root.forceCenter ? ((root.screenHeight - root.drawnHeight) / 2) : root.targetY));
     }
 
     property var textHorizontalAlignment: {
