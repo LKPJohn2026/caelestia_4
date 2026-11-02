@@ -13,6 +13,9 @@ around each widget to its own size, so widgets against an edge stay there on a 3
                                              every wallpaper in it
   tools/preset-import.py --list [--json]     the installed presets (--json: for Nexus > Wallpaper & style > Presets)
   tools/preset-import.py PRESET [--mode light|dark] [--wallpapers DIR] [--dry-run]
+  tools/preset-import.py --next | --previous the installed preset after (before) the one applied last, in --list's
+                                             order, round the end (Ctrl+Super+P / Ctrl+Super+Shift+P); a press while
+                                             one is still being applied is dropped
   tools/preset-import.py --undo              put back the settings from before the last import
   tools/preset-import.py --save-layout       the desktop widgets' places and sizes, as moved with the mouse, into the
                                              preset applied last (the shell runs it after a drag, resize or turn)
@@ -26,6 +29,7 @@ Pictures/Wallpapers/presets/<name>), never into the repo.
 """
 import argparse
 import datetime
+import fcntl
 import filecmp
 import json
 import os
@@ -138,12 +142,33 @@ def sync_preset(src_dir, dst_dir):
         shutil.copy2(src, old)
 
 
+def installed():
+    """The library's presets, by name (the order of --list, Nexus and --next)"""
+    dirs = sorted(LIBRARY.iterdir(), key=lambda d: d.name.lower()) if LIBRARY.is_dir() else []
+    return [(d, js) for d in dirs if (js := preset_json(d))]
+
+
+def step(by):
+    """The name of the preset `by` places from the one applied last (from the first or last, when none is)"""
+    names = [d.name for d, _ in installed()]
+    if not names:
+        sys.exit("no presets installed (tools/preset-import.py --sync)")
+    current = CURRENT.read_text().strip() if CURRENT.is_file() else ""
+    if current not in names:
+        return names[0 if by > 0 else -1]
+    return names[(names.index(current) + by) % len(names)]
+
+
+def notify(text):
+    # one notification, replaced by the next press's; none without libnotify
+    if shutil.which("notify-send"):
+        subprocess.run(["notify-send", "-a", "Presets", "-i", "palette",
+                        "-h", "string:x-canonical-private-synchronous:preset", "Preset", text], check=False)
+
+
 def list_presets(as_json):
     presets = []
-    for d in sorted(LIBRARY.iterdir(), key=lambda d: d.name.lower()) if LIBRARY.is_dir() else []:
-        js = preset_json(d)
-        if not js:
-            continue
+    for d, js in installed():
         pw = load(js).get("background", {}).get("widgets", {})
         on = [k for k, v in pw.items() if isinstance(v, dict) and v.get("enable") and k != "visualizer"]
         presets.append({
@@ -254,22 +279,37 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--mode", choices=["light", "dark"], help="light or dark colours (default: the preset's meta.json \"mode\", else the current one)")
     ap.add_argument("--undo", action="store_true")
+    ap.add_argument("--next", dest="step", action="store_const", const=1)
+    ap.add_argument("--previous", dest="step", action="store_const", const=-1)
     ap.add_argument("--sync", nargs="?", const=True, metavar="REPO_DIR")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--save-layout", action="store_true")
     args = ap.parse_args()
+    if args.step and (args.preset or args.undo or args.sync or args.list or args.save_layout):
+        ap.error("--next / --previous go alone (with --mode, --wallpapers, --dry-run at most)")
 
+    if args.list:
+        return list_presets(args.json)
+    # one at a time: an apply, an undo and a layout save each read preset-current and write the config, and a key held
+    # down or pressed again mid-apply (switchwall takes seconds) would step from the same preset-current and run two
+    # colour passes over each other; a --next / --previous then is dropped, the others wait
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    lock = open(STATE.parent / "preset.lock", "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | (fcntl.LOCK_NB if args.step else 0))
+    except BlockingIOError:
+        return
     if args.save_layout:
         return save_layout()
     if args.undo:
         return undo()
     if args.sync:
         return sync(None if args.sync is True else Path(args.sync))
-    if args.list:
-        return list_presets(args.json)
+    if args.step:
+        args.preset = LIBRARY / step(args.step)
     if not args.preset:
-        ap.error("give a preset (or --sync, --list, --undo)")
+        ap.error("give a preset (or --next, --previous, --sync, --list, --undo)")
 
     pdir = args.preset if args.preset.is_dir() else LIBRARY / args.preset
     if not pdir.is_dir():
@@ -377,6 +417,8 @@ def main():
     if args.dry_run:
         print("dry run: nothing changed")
         return
+    if args.step:  # said before the colour pass, the slow part
+        notify(name)
 
     print(f"backup: {backup()}  (undo: tools/preset-import.py --undo)")
     save(II_CONFIG, ii)
