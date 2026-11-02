@@ -231,7 +231,9 @@ void VisualSource::refresh() {
 
     if (cached.isEmpty()) {
         cache->store(key, path, bucket, aspectMode());
-        setImagePath(QUrl::fromLocalFile(path));
+        // caelestia4: the source's own URL, query and all: a file changed in place (~/.face) is asked for with a new
+        // query to load again, which the bare path would lose (the pixmap cache would hand back the old picture)
+        setImagePath(rawUrl());
     } else {
         setImagePath(cached);
     }
