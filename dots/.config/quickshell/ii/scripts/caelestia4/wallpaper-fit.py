@@ -8,13 +8,22 @@ which copy is whose, and the shell shows the copy once it's there (modules/caele
 Caelestia's renderer never upscales (its texture is at most the picture's own size, stretched when drawn), so this is
 what makes it sharp.
 
+The renderer fills the screen as "cover": what doesn't fit the screen's shape is cut off (a 16:9 picture on a 32:9
+screen loses a quarter at the top and one at the bottom). The other modes make a copy of exactly the screen's size:
+  cover         the above (default)
+  contain-blur  the whole picture, as high (or as wide) as the screen, on a blurred, dimmed copy of itself
+  seam          the same, widened (or heightened) first by seam carving (ImageMagick's -liquid-rescale): the parts with
+                the least detail (sky, a blurred background) are stretched, faces and edges keep their shape; at most
+                SEAM_MAX times, the rest blurred as above. ~25 s a picture on top of the upscale
+A picture already within CLOSE of the screen's shape is made as "cover" in every mode (nothing to fill).
+
 Usage: wallpaper-fit.py IMAGE...   copies for these (made once, then reused until the picture, the screen or the model
                                    changes; a failure is remembered the same way, so it isn't retried on every switch).
                                    The KEEP copies shown last stay, older ones go
        wallpaper-fit.py --keep IMAGE...
                                    the same, and these copies stay for good (a whole folder made ahead of time:
                                    ~6 MB each at 7680x4352); only a picture that's gone loses its copy
-Settings: illogical-impulse config.json background.wallpaperFit {enable, model} (Nexus > Wallpaper & style)."""
+Settings: illogical-impulse config.json background.wallpaperFit {enable, model, mode} (Nexus > Wallpaper & style)."""
 import ctypes
 import fcntl
 import hashlib
@@ -43,6 +52,10 @@ CLOSE = 0.02  # within 2% of the screen already: shown as it is
 MAX_PIXELS = 56_000_000
 MAX_SIDE = 65_000
 RETRIES = 2  # an upscale that fell back to Lanczos is tried again on the next runs, this many times
+MODES = ("cover", "contain-blur", "seam")
+SEAM_MAX = 2.0  # seam carving past twice the width (or height) bends and repeats what it keeps
+SEAM_TIMEOUT = 600  # a 3840x2160 picture widened to 7680x2160 takes ~25 s
+BLUR_SHRINK = 8  # the background is blurred at 1/8 of the screen's size and scaled up: the same look, ~60x faster
 # upscayl-bin can stall on a picture (one ran for 50 minutes at 2x on a 5000x1803 PNG): past this, Lanczos instead
 UPSCAYL_TIMEOUT = 300
 
@@ -53,7 +66,8 @@ def settings():
             fit = json.load(f).get("background", {}).get("wallpaperFit", {})
     except (OSError, ValueError):
         fit = {}
-    return fit.get("enable", True) is not False, fit.get("model") or "digital-art-4x"
+    mode = fit.get("mode") if fit.get("mode") in MODES else "cover"
+    return fit.get("enable", True) is not False, fit.get("model") or "digital-art-4x", mode
 
 
 def screen_size():
@@ -100,16 +114,28 @@ def save_index(index):
     os.replace(f.name, INDEX)
 
 
-def valid(entry, path, target, model):
-    """The entry still answers for this picture, screen and model (a copy, "as it is", or a remembered failure)"""
+def any_mode(entry, target):
+    """A picture of the screen's shape is made the same in every mode (a cover with nothing cut off): its copy stays
+    when the mode changes. Copies made before the modes have no "anymode": theirs is in the name, at the screen's size"""
+    if "anymode" in entry:
+        return entry["anymode"]
+    return entry.get("fitted", "").endswith(f"-{target}.jpg")
+
+
+def valid(entry, path, target, model, mode):
+    """The entry still answers for this picture, screen, model and mode (a copy, "as it is", or a remembered failure)"""
     if not entry or entry.get("target") != target or entry.get("source") != stamp(path):
+        return False
+    if entry.get("mode", "cover") != mode and not any_mode(entry, target):
         return False
     if entry.get("fitted") and not os.path.isfile(entry["fitted"]):
         return False
     if entry.get("upscale") and entry.get("model") != model:
         return False
-    # an upscale Upscayl failed on (Lanczos stood in): again, a few times
-    return not (entry.get("upscale") and entry.get("how") == "lanczos" and entry.get("tries", 0) < RETRIES)
+    # an upscale Upscayl failed on (Lanczos stood in), or a seam carving that failed (blurred room instead): again, a
+    # few times
+    stood_in = (entry.get("upscale") and entry.get("how") == "lanczos") or entry.get("seamFailed")
+    return not (stood_in and entry.get("tries", 0) < RETRIES)
 
 
 def cover(w, h, target):
@@ -160,38 +186,94 @@ def upscale(src, dst, factor, scaled, out, model):
     return "lanczos"
 
 
-def fit(path, target_size, model, index, keep=False):
+def contain(w, h, target, mode):
+    """For contain-blur and seam: the picture's size scaled to fit inside the screen, and that size after seam carving
+    along the short side (the same in contain-blur, or when seam carving would stretch it past SEAM_MAX)"""
+    factor = min(target[0] / w, target[1] / h)
+    inside = (min(target[0], round(w * factor)), min(target[1], round(h * factor)))
+    if mode != "seam":
+        return factor, inside, inside
+    carved = (min(target[0], round(inside[0] * SEAM_MAX)), min(target[1], round(inside[1] * SEAM_MAX)))
+    return factor, inside, carved
+
+
+def fill(src, fg, dst, target, inside, carved):
+    """The copy: `fg` (the picture at `inside`), seam-carved to `carved`, centred on the blurred picture; returns how
+    the room was filled"""
+    how = "blur"
+    if carved != inside:
+        wide = fg + ".seam.miff"
+        try:
+            subprocess.run(["magick", fg, "-liquid-rescale", f"{carved[0]}x{carved[1]}!", wide], check=True,
+                           timeout=SEAM_TIMEOUT, preexec_fn=die_with_parent)
+            fg, inside = wide, carved
+            how = "seam"
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+            print(f"seam carving failed ({e}), blurred room instead", file=sys.stderr)
+    if inside == target:
+        subprocess.run(["magick", fg, "-quality", "95", "-sampling-factor", "4:4:4", dst], check=True)
+        return how
+    if how == "seam":
+        how = "seam+blur"
+    small = (max(1, target[0] // BLUR_SHRINK), max(1, target[1] // BLUR_SHRINK))
+    subprocess.run(["magick", f"{src}[0]", "-auto-orient", "-background", "black", "-flatten",
+                    "-resize", f"{small[0]}x{small[1]}^", "-gravity", "center", "-extent", f"{small[0]}x{small[1]}",
+                    "-blur", "0x6", "-modulate", "70", "-filter", "Lanczos", "-resize", f"{target[0]}x{target[1]}!",
+                    fg, "-gravity", "center", "-composite",
+                    "-quality", "95", "-sampling-factor", "4:4:4", dst], check=True)
+    return how
+
+
+def fit(path, target_size, model, index, keep=False, mode="cover"):
     """Make (or reuse) the copy of one picture; returns a line for the log"""
     target = f"{target_size[0]}x{target_size[1]}"
     walls = index["walls"]
     old = walls.get(path)
-    if valid(old, path, target, model):
+    if valid(old, path, target, model, mode):
         old["used"] = time.time()
         if keep:
             old["keep"] = True
         return f"{path}: kept" + (f" (failed before: {old['error']})" if old.get("error") else "")
     source = stamp(path)
-    entry = {"target": target, "source": source, "fitted": "", "used": time.time()}
+    entry = {"target": target, "source": source, "fitted": "", "used": time.time(), "mode": mode}
     if keep or (old or {}).get("keep"):
         entry["keep"] = True
     walls[path] = entry
     try:
         w, h, frames = picture_size(path)
         factor, scaled, out = cover(w, h, target_size)
-        if frames > 1 or abs(factor - 1) <= CLOSE:
+        inner, inside, carved = contain(w, h, target_size, mode)
+        # the screen's shape already (to CLOSE): nothing to fill, every mode makes the same cover
+        same_shape = inner / factor >= 1 - CLOSE
+        filled = mode != "cover" and not same_shape
+        entry.update(mode=mode if filled else "cover", anymode=same_shape or frames > 1)
+        if frames > 1 or (not filled and abs(factor - 1) <= CLOSE):
             return f"{path}: as it is ({w}x{h})"  # animated, or already the screen's size
+        if filled:
+            factor, scaled, out = inner, inside, target_size
         entry.update(upscale=factor > 1, model=model)
         # a new name for each version of the picture: the renderer reloads only when the path changes
-        key = hashlib.sha1(f"{path}|{source['mtime']}|{source['bytes']}|{model}".encode()).hexdigest()[:16]
+        # (a cover's name as before the modes: those copies stay good)
+        version = f"{path}|{source['mtime']}|{source['bytes']}|{model}" + (f"|{mode}" if filled else "")
+        key = hashlib.sha1(version.encode()).hexdigest()[:16]
         dst = os.path.join(CACHE, f"{key}-{out[0]}x{out[1]}.jpg")
         part = dst + ".part.jpg"
-        how = upscale(path, part, factor, scaled, out, model) if factor > 1 else magick_fit(path, part, scaled, out) or "lanczos"
+        if filled:
+            with tempfile.TemporaryDirectory(dir=CACHE, prefix="tmp-") as tmp:
+                fg = os.path.join(tmp, "fg.miff")  # the picture at its size inside the screen, uncompressed
+                how = upscale(path, fg, factor, inside, inside, model) if factor > 1 else magick_fit(path, fg, inside, inside) or "lanczos"
+                entry["fill"] = fill(path, fg, part, target_size, inside, carved)
+        else:
+            how = upscale(path, part, factor, scaled, out, model) if factor > 1 else magick_fit(path, part, scaled, out) or "lanczos"
         os.replace(part, dst)
         entry.update(fitted=dst, how=how)
-        if how == "lanczos" and factor > 1:
+        if filled and carved != inside and not entry["fill"].startswith("seam"):
+            entry["seamFailed"] = True
+        if (how == "lanczos" and factor > 1) or entry.get("seamFailed"):
             entry["tries"] = (old or {}).get("tries", 0) + 1 if (old or {}).get("source") == source else 1
-        return f"{path}: {w}x{h} -> {out[0]}x{out[1]} ({how}{' ' + model if how == 'upscayl' else ''})"
-    except (subprocess.CalledProcessError, OSError, ValueError, IndexError) as e:
+        return (f"{path}: {w}x{h} -> {out[0]}x{out[1]} ({how}{' ' + model if how == 'upscayl' else ''}"
+                f"{', ' + entry['fill'] if filled else ''})")
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError, ValueError, IndexError) as e:
         entry["error"] = str(e)[-300:]  # remembered: not tried again until the picture, screen or model changes
         return f"{path}: failed, shown as it is: {entry['error']}"
 
@@ -220,7 +302,7 @@ def main():
     if not paths:
         print(__doc__, file=sys.stderr)
         sys.exit(2)
-    enabled, model = settings()
+    enabled, model, mode = settings()
     if not enabled:
         return
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))  # so the temporary files are cleaned up
@@ -233,7 +315,7 @@ def main():
         for path in dict.fromkeys(paths):
             if not os.path.isfile(path) or path.lower().endswith(VIDEOS) or path.startswith(CACHE + os.sep):
                 continue
-            print(fit(path, size, model, index, keep))
+            print(fit(path, size, model, index, keep, mode))
             save_index(index)  # after each: the shell shows each copy as soon as it's made
         prune(index, set(paths))
         save_index(index)

@@ -408,6 +408,8 @@ Singleton {
                 property JsonObject wallpaperFit: JsonObject {
                     property bool enable: true
                     property string model: "digital-art-4x"
+                    // what fills a screen of another shape: "cover" (cut off), "contain-blur", "seam" (seam carving)
+                    property string mode: "cover"
                 }
                 property bool hideWhenFullscreen: true
                 property JsonObject parallax: JsonObject {

@@ -232,6 +232,8 @@ Searcher {
     // style). A screen shows the original's upscaled (or downscaled) copy once it's made, the original until then;
     // everything else (config, colours, the lists, workspace wallpapers) keeps the original's path
     readonly property bool fitEnabled: E4C.Config.options.background.wallpaperFit.enable
+    // as the script reads it: anything else is a cover
+    readonly property string fitMode: ["contain-blur", "seam"].includes(E4C.Config.options.background.wallpaperFit.mode) ? E4C.Config.options.background.wallpaperFit.mode : "cover"
     property var fitted: ({}) // original -> its copy, from the script's index
     property var copyOf: ({}) // every copy shown this session -> its original (sameWallpaper)
 
@@ -249,10 +251,38 @@ Searcher {
     // ones still right, so asking again costs nothing)
     // (not a video's first frame: mpvpaper covers it)
     readonly property list<string> shownWalls: [...new Set(Screens.screens.map(s => actualForScreen(s)))].filter(p => p && p !== fallback && !(isVideo && p === end4Thumbnail))
-    readonly property string fitKey: Screens.screens.map(s => `${s.width}x${s.height}@${s.devicePixelRatio}`).join(" ") + "|" + E4C.Config.options.background.wallpaperFit.model + "|" + shownWalls.join("|")
+    readonly property string fitKey: Screens.screens.map(s => `${s.width}x${s.height}@${s.devicePixelRatio}`).join(" ") + "|" + E4C.Config.options.background.wallpaperFit.model + "|" + fitMode + "|" + shownWalls.join("|")
 
     onFitKeyChanged: fitDelay.restart()
     onFitEnabledChanged: fitDelay.restart()
+    // another mode's copies stop showing at once (the originals until this mode's are made)
+    onFitModeChanged: readFitIndex()
+
+    function readFitIndex(): void {
+        try {
+            const index = JSON.parse(fitIndex.text());
+            const map = {};
+            const copies = Object.assign({}, copyOf);
+            for (const [path, entry] of Object.entries(index.walls ?? {})) {
+                if (!entry.fitted || entry.target !== index.target)
+                    continue;
+                const mode = entry.mode ?? "cover";
+                // a copy of the screen's shape is the same in every mode (wallpaper-fit.py any_mode)
+                const anyMode = entry.anymode ?? entry.fitted.endsWith(`-${index.target}.jpg`);
+                if (mode !== fitMode && !anyMode)
+                    continue;
+                map[path] = entry.fitted;
+                // a cover copy looks like the original, sharper: swapped in quietly. A filled one is framed
+                // differently (the whole picture, blurred or carved room): it gets the transition
+                if (mode === "cover")
+                    copies[entry.fitted] = path;
+            }
+            copyOf = copies;
+            fitted = map;
+        } catch (e) {
+            // half written (the next change brings it whole), or not there yet
+        }
+    }
 
     Timer {
         id: fitDelay
@@ -293,22 +323,7 @@ Searcher {
         printErrors: false
         onFileChanged: reload()
         onLoadFailed: root.fitted = {}
-        onLoaded: {
-            try {
-                const index = JSON.parse(text());
-                const map = {};
-                const copies = Object.assign({}, root.copyOf);
-                for (const [path, entry] of Object.entries(index.walls ?? {}))
-                    if (entry.fitted && entry.target === index.target) {
-                        map[path] = entry.fitted;
-                        copies[entry.fitted] = path;
-                    }
-                root.copyOf = copies;
-                root.fitted = map;
-            } catch (e) {
-                // half written: the next change brings it whole
-            }
-        }
+        onLoaded: root.readFitIndex()
     }
 
     // end-4 wrote the new wallpaper path (colours are generated after this): follow it
