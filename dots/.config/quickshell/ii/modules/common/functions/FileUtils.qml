@@ -16,6 +16,20 @@ Singleton {
     }
 
     /**
+     * caelestia4: a file:// URL for a local path, each part of it encoded: a plain path given as an Image's source is
+     * read as a URL, so a '#', '?' or '%' in a file name (a preset's pictures have them) would cut or change it.
+     * A URL (with a scheme) or an empty string is given back as it is
+     * @param {string} path
+     * @returns {string}
+     */
+    function fileUrl(path) {
+        const s = path ? path.toString() : "";
+        if (!s.startsWith("/"))
+            return s;
+        return "file://" + s.split("/").map(encodeURIComponent).join("/");
+    }
+
+    /**
      * Extracts the file name from a file path
      * @param {string} str
      * @returns {string}

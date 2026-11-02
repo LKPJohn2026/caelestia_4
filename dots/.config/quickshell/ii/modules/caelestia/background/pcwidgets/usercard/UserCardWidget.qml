@@ -239,9 +239,10 @@ AbstractBackgroundWidget {
                     visible: false
 
                     // Only feeds the FastBlur used when widget blur is off
-                    property string effectiveSource: Config.options.background.widgets.blurWidgets ? "" : "file://" + (GlobalStates.screenLocked && Config.options.background.lockWall !== ""
+                    // caelestia4: encoded (a '#' in a file name) and a video wallpaper's still (root.wallpaperPath)
+                    property string effectiveSource: Config.options.background.widgets.blurWidgets ? "" : FileUtils.fileUrl(GlobalStates.screenLocked && Config.options.background.lockWall !== ""
                         ? Config.options.background.lockWall
-                        : Config.options.background.wallpaperPath)
+                        : root.wallpaperPath)
 
                     Image {
                         id: bgImageA
@@ -530,7 +531,7 @@ AbstractBackgroundWidget {
 
                         Image {
                             anchors.fill: parent
-                            source: Config.options.sidebar.bannerImage || Config.options.background.wallpaperPath
+                            source: FileUtils.fileUrl(Config.options.sidebar.bannerImage || root.wallpaperPath) // caelestia4: a path with '#' too, a video's still
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
                             cache: false
