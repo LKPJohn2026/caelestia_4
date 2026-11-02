@@ -87,22 +87,27 @@ Variants {
             Item {
                 id: wallLayer
 
-                readonly property real extraW: parent.width * (win.zoom - 1)
-                readonly property real extraH: parent.height * (win.zoom - 1)
+                readonly property real extraW: width - parent.width
+                readonly property real extraH: height - parent.height
+                // the slide is animated here and the layer put on the device pixel nearest it each frame, so the
+                // wallpaper is drawn unshifted by a fraction of a pixel (and in step with the widgets, which follow x)
+                property real slideX: win.verticalParallax ? -extraW / 2 : -extraW * win.fraction
+                property real slideY: win.verticalParallax ? -extraH * win.fraction : -extraH / 2
 
-                width: parent.width * win.zoom
-                height: parent.height * win.zoom
-                x: win.verticalParallax ? -extraW / 2 : -extraW * win.fraction
-                y: win.verticalParallax ? -extraH * win.fraction : -extraH / 2
+                // a zoomed layer a whole number of device pixels across too
+                width: win.snapToDevice(parent.width * win.zoom)
+                height: win.snapToDevice(parent.height * win.zoom)
+                x: win.snapToDevice(slideX)
+                y: win.snapToDevice(slideY)
 
-                Behavior on x {
+                Behavior on slideX {
                     NumberAnimation {
                         duration: 600
                         easing.type: Easing.OutCubic
                     }
                 }
 
-                Behavior on y {
+                Behavior on slideY {
                     NumberAnimation {
                         duration: 600
                         easing.type: Easing.OutCubic
