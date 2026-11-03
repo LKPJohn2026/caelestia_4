@@ -54,7 +54,7 @@ Singleton {
         temp.sunset = data?.astronomy?.sunset || "0.0";
         temp.windDir = data?.current?.winddir16Point || "N";
         temp.wCode = data?.current?.weatherCode || "113";
-        temp.city = data?.location?.areaName[0]?.value || "City";
+        temp.city = data?.location?.areaName[0]?.value || Translation.tr("City");
         const lang = Qt.locale().name.split("_")[0];
         temp.description = data?.current?.[`lang_${lang}`]?.[0]?.value || data?.current?.weatherDesc?.[0]?.value || "";
         temp.descriptionEn = data?.current?.weatherDesc?.[0]?.value || ""; // for matching words (user card)

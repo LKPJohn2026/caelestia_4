@@ -44,7 +44,7 @@ NestableObject {
         } catch (e) {
             print("Failed to parse API response: " + e + "\n" + out)
             root.state = GCloudApi.State.Error;
-            root.errorMessage = "Failed to parse API response";
+            root.errorMessage = Translation.tr("Failed to parse API response");
             root.error(root.errorMessage);
             return false;
         }

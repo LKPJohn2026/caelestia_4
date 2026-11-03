@@ -99,7 +99,7 @@ Column {
     spacing: titleSpacing
 
     StyledText {
-        text: root.isCategorized ? root.categoryName : "Uncategorized"
+        text: root.isCategorized ? root.categoryName : Translation.tr("Uncategorized")
         font.pixelSize: Appearance.font.pixelSize.title
     }
 

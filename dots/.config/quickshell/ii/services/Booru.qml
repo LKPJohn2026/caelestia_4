@@ -312,7 +312,7 @@ Singleton {
             "fixedTags": [
                 {
                     "name": "ycy",
-                    "count": "General"
+                    "count": Translation.tr("General")
                 },
                 {
                     "name": "moez",
@@ -324,11 +324,11 @@ Singleton {
                 },
                 {
                     "name": "fj",
-                    "count": "Landscape"
+                    "count": Translation.tr("Landscape")
                 },
                 {
                     "name": "bd",
-                    "count": "Girl on white background"
+                    "count": Translation.tr("Girl on white background")
                 },
                 {
                     "name": "xhl",

@@ -7,6 +7,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Caelestia.Config
+import Caelestia.I18n
 import qs // caelestia4: keep
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
@@ -21,7 +22,7 @@ Scope {
         FloatingWindow {
             id: window
 
-            title: "Assistant"
+            title: Tr.tr("Assistant")
             visible: GlobalStates.sidebarLeftOpen
             implicitWidth: E4C.Appearance.sizes.sidebarWidthExtended
             implicitHeight: 900

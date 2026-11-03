@@ -60,7 +60,7 @@ ColumnLayout {
                 font.pixelSize: Appearance.font.pixelSize.small
                 font.weight: Font.DemiBold
                 color: Colours.palette.m3onSurface
-                text: root.displayLang ? Repository.definitionForName(root.displayLang).name : "plain"
+                text: root.displayLang ? Repository.definitionForName(root.displayLang).name : Translation.tr("plain")
             }
 
             Item { Layout.fillWidth: true }

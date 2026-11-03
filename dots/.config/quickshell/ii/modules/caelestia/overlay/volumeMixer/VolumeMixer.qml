@@ -20,6 +20,7 @@ import qs.modules.caelestia.adapters
 
 StyledOverlayWidget {
     id: root
+    title: Tr.tr("Volume mixer")
 
     readonly property bool output: E4C.Persistent.states.overlay.volumeMixer.tabIndex === 0
     readonly property list<PwNode> devices: output ? Audio.sinks : Audio.sources

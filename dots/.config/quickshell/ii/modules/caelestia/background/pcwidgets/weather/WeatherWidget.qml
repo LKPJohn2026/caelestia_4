@@ -354,7 +354,7 @@ AbstractBackgroundWidget {
                                 Layout.fillWidth: true
                                 spacing: 0
                                 StyledText {
-                                    text: "Humidity"
+                                    text: Translation.tr("Humidity")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -389,7 +389,7 @@ AbstractBackgroundWidget {
                                 Layout.fillWidth: true
                                 spacing: 0
                                 StyledText {
-                                    text: "Rain"
+                                    text: Translation.tr("Rain")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -425,7 +425,7 @@ AbstractBackgroundWidget {
                                 Layout.fillWidth: true
                                 spacing: 0
                                 StyledText {
-                                    text: "Wind"
+                                    text: Translation.tr("Wind")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -460,7 +460,7 @@ AbstractBackgroundWidget {
                                 Layout.fillWidth: true
                                 spacing: 0
                                 StyledText {
-                                    text: "Visibility"
+                                    text: Translation.tr("Visibility")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -707,7 +707,7 @@ AbstractBackgroundWidget {
                         }
                         
                         StyledText {
-                            text: "Feels like " + (Weather.data?.tempFeelsLike ?? "--")
+                            text: Translation.tr("Feels like %1").arg(Weather.data?.tempFeelsLike ?? "--")
                             font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colOnPrimaryContainer
                             opacity: 0.55
@@ -760,7 +760,7 @@ AbstractBackgroundWidget {
                                 spacing: 0
                                 Layout.fillWidth: true
                                 StyledText {
-                                    text: "Humidity"
+                                    text: Translation.tr("Humidity")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -796,7 +796,7 @@ AbstractBackgroundWidget {
                                 spacing: 0
                                 Layout.fillWidth: true
                                 StyledText {
-                                    text: "Wind"
+                                    text: Translation.tr("Wind")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -832,7 +832,7 @@ AbstractBackgroundWidget {
                                 spacing: 0
                                 Layout.fillWidth: true
                                 StyledText {
-                                    text: "Rain Chance"
+                                    text: Translation.tr("Rain Chance")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -868,7 +868,7 @@ AbstractBackgroundWidget {
                                 spacing: 0
                                 Layout.fillWidth: true
                                 StyledText {
-                                    text: "Visibility"
+                                    text: Translation.tr("Visibility")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -904,7 +904,7 @@ AbstractBackgroundWidget {
                                 spacing: 0
                                 Layout.fillWidth: true
                                 StyledText {
-                                    text: "Sunrise"
+                                    text: Translation.tr("Sunrise")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
@@ -940,7 +940,7 @@ AbstractBackgroundWidget {
                                 spacing: 0
                                 Layout.fillWidth: true
                                 StyledText {
-                                    text: "Sunset"
+                                    text: Translation.tr("Sunset")
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
