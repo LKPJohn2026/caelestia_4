@@ -132,7 +132,7 @@ AbstractBackgroundWidget {
             font.weight: parent.bold || parent.isToday ? Font.Bold : Font.Normal
             color: parent.isToday
                 ? Appearance.colors.colOnPrimary
-                : Appearance.colors.colOnLayer0
+                : Appearance.colors.colOnPrimaryContainer
             opacity: parent.currentMonth ? 1.0 : 0.3
         }
     }

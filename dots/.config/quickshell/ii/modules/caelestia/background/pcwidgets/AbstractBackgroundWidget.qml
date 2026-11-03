@@ -116,6 +116,13 @@ AbstractWidget {
     
     onWallpaperPathChanged: refreshPlacementIfNeeded()
     onPlacementStrategyChanged: refreshPlacementIfNeeded()
+    // caelestia4: a widget is made after Config.ready, so a free one needing colText samples the wallpaper here too
+    // (free: nothing moves, only dominantColor is set)
+    function refreshColTextIfNeeded() {
+        if (root.needsColText && root.placementStrategy === "free") refreshPlacementIfNeeded();
+    }
+    onNeedsColTextChanged: refreshColTextIfNeeded()
+    Component.onCompleted: refreshColTextIfNeeded()
     Connections {
         target: Config
         function onReadyChanged() { refreshPlacementIfNeeded() }

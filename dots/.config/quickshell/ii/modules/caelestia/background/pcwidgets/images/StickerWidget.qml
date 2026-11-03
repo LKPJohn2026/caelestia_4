@@ -14,6 +14,8 @@ AbstractBackgroundWidget {
 
     configEntryName: "sticker"
     hoverEnabled: true
+    // caelestia4: the placeholder sits on the wallpaper: its colour comes from it
+    needsColText: root.imagePath === "" || stickerImage.status !== Image.Ready
 
     property string imagePath: Config.options.background.widgets.sticker.path ?? ""
     property bool dropHover: false
@@ -78,7 +80,7 @@ AbstractBackgroundWidget {
             fill: root.dropHover ? 1 : 0
             color: root.dropHover
                 ? Appearance.colors.colPrimary
-                : Appearance.colors.colOnPrimaryContainer
+                : root.colText // caelestia4: on the wallpaper itself
             visible: root.imagePath === "" || stickerImage.status !== Image.Ready
             Behavior on color { animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this) }
         }

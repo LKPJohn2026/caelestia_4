@@ -191,7 +191,7 @@ AbstractBackgroundWidget {
                     fill: 1
                     text: "music_note"
                     iconSize: root.cardHeight / 3
-                    color: Appearance.colors.colOnSecondaryContainer
+                    color: Appearance.colors.colOnPrimaryContainer
                     visible: root.displayedArtFilePath === ""
                 }
 
@@ -315,7 +315,7 @@ AbstractBackgroundWidget {
                         fill: 1
                         text: "music_note"
                         iconSize: root.cardHeight / 3
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: Appearance.colors.colOnSurfaceVariant
                         visible: root.displayedArtFilePath === ""
                     }
                 }
@@ -462,7 +462,7 @@ AbstractBackgroundWidget {
                         fill: 1
                         text: "music_note"
                         iconSize: root.cardHeight / 2.5
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: Appearance.colors.colOnSurfaceVariant
                         visible: root.displayedArtFilePath === ""
                     }
                 }
@@ -610,7 +610,7 @@ AbstractBackgroundWidget {
                             fill: 1
                             text: "music_note"
                             iconSize: root.cardHeight / 3
-                            color: Appearance.colors.colOnSecondaryContainer
+                            color: Appearance.colors.colOnSurfaceVariant
                             visible: root.displayedArtFilePath === ""
                         }
                     }
@@ -846,14 +846,14 @@ AbstractBackgroundWidget {
                                 font.pixelSize: Appearance.font.pixelSize.small
                                 font.weight: Font.DemiBold
                                 font.italic: true
-                                color: Appearance.colors.colOnPrimaryContainer
+                                color: Appearance.colors.colOnSurface
                                 elide: Text.ElideRight
                             }
                             StyledText {
                                 Layout.fillWidth: true
                                 text: root.currentPlayer?.trackArtist ?? "Something"
                                 font.pixelSize: Appearance.font.pixelSize.smaller
-                                color: Appearance.colors.colOnPrimaryContainer
+                                color: Appearance.colors.colOnSurface
                                 opacity: 0.65
                                 elide: Text.ElideRight
                             }
