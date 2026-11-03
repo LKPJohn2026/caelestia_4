@@ -202,6 +202,9 @@ AbstractBackgroundWidget {
                             Layout.fillWidth: true
                             text: Translation.tr("Hi, %1!").arg(root.username)
                             font.pixelSize: Appearance.font.pixelSize.normal
+                            // caelestia4: a long name ("Chào your-user!") shrinks to fit before it elides
+                            fontSizeMode: Text.HorizontalFit
+                            minimumPixelSize: Appearance.font.pixelSize.smaller
                             font.weight: Font.Bold
                             color: Appearance.colors.colOnPrimaryContainer
                             elide: Text.ElideRight
@@ -219,6 +222,9 @@ AbstractBackgroundWidget {
                         StyledText {
                             Layout.fillWidth: true
                             text: root.todayString
+                            // caelestia4: a long date ("Hôm nay • Chủ Nhật 29 thg 11") shrinks to fit before it elides
+                            fontSizeMode: Text.HorizontalFit
+                            minimumPixelSize: Appearance.font.pixelSize.smallest
                             font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colOnPrimaryContainer
                             opacity: 0.6
@@ -387,11 +393,13 @@ AbstractBackgroundWidget {
 
                             Rectangle {
                                 Layout.fillWidth: true
+                                Layout.minimumWidth: lockRow2.implicitWidth + 8 // caelestia4: never narrower than its label
                                 implicitHeight: 40
                                 radius: Appearance.rounding.full
                                 color: Appearance.colors.colOnPrimaryContainer
 
                                 RowLayout {
+                                    id: lockRow2
                                     anchors.centerIn: parent
                                     spacing: 4
                                     MaterialSymbol {
@@ -681,12 +689,15 @@ AbstractBackgroundWidget {
                             Item { Layout.fillWidth: true }
 
                             Rectangle {
-                                Layout.fillWidth: true
+                                // caelestia4: as wide as its label: sharing the room with the spacer before it
+                                // clipped a longer one ("Khóa màn hình")
+                                Layout.preferredWidth: lockRow3.implicitWidth + 32
                                 implicitHeight: 36
                                 radius: Appearance.rounding.full
                                 color: Appearance.colors.colOnPrimaryContainer
 
                                 RowLayout {
+                                    id: lockRow3
                                     anchors.centerIn: parent
                                     spacing: 4
                                     MaterialSymbol {

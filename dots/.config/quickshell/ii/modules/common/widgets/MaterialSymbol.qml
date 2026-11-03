@@ -8,16 +8,19 @@ StyledText {
     property real fill: 0
     property real truncatedFill: fill.toFixed(1) // Reduce memory consumption spikes from constant font remapping
     // caelestia4: native glyphs are drawn once at the window's scale, so a desktop widget's Scale stretches them soft;
-    // curves are drawn at whatever size they end up. Not a filled glyph: its outlines overlap (the variable font keeps
-    // them), and the GPU's curve renderer draws the overlaps as holes, slivers through a play button and a dotted
-    // ring in a cloud, where native glyphs come out whole
-    renderType: WidgetScale.transformed(root) && truncatedFill === 0 ? Text.CurveRendering : Text.NativeRendering
+    // curves are drawn at whatever size they end up. A filled glyph of the variable font keeps overlapping outlines,
+    // which the GPU's curve renderer draws as holes (slivers through a play button, a dotted ring in a cloud): a filled
+    // one takes Material Symbols Rounded Filled, the same glyphs with the overlaps merged. Half filled (mid-animation)
+    // or without that font it's a native glyph, whole but soft
+    readonly property bool scaled: WidgetScale.transformed(root)
+    readonly property bool staticFilled: scaled && truncatedFill === 1 && (Appearance?.font.family.iconMaterialFilled ?? "") !== ""
+    renderType: scaled && (truncatedFill === 0 || staticFilled) ? Text.CurveRendering : Text.NativeRendering
     font {
         hintingPreference: Font.PreferNoHinting
-        family: Appearance?.font.family.iconMaterial ?? "Material Symbols Rounded"
+        family: staticFilled ? Appearance.font.family.iconMaterialFilled : (Appearance?.font.family.iconMaterial ?? "Material Symbols Rounded")
         pixelSize: iconSize
-        weight: Font.Normal + (Font.DemiBold - Font.Normal) * truncatedFill
-        variableAxes: { 
+        weight: staticFilled ? Font.Normal : Font.Normal + (Font.DemiBold - Font.Normal) * truncatedFill
+        variableAxes: staticFilled ? ({}) : { 
             "FILL": truncatedFill,
             // "wght": font.weight,
             // "GRAD": 0,
