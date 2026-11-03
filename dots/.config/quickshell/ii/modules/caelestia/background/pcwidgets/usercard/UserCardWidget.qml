@@ -20,7 +20,7 @@ AbstractBackgroundWidget {
 
     readonly property real snapWidth1: 132
     readonly property real snapWidth2: 276
-    readonly property real snapWidth3: 276
+    readonly property real snapWidth3: 304 // caelestia4: 276 clipped a longer Lock button ("Khóa màn hình")
     readonly property real snapWidth4: 420
 
     readonly property real snapHeight1: 120
@@ -41,9 +41,13 @@ AbstractBackgroundWidget {
         switch (root.sizeMode) {
             case "1x1": return snapHeight1
             case "1x2": return snapHeight2
+            case "2x2": return Math.max(snapHeight3, twoByTwoNeeded)
             default:    return snapHeight3
         }
     }
+    // caelestia4: the 2x2 card grows to hold its content box: a longer line (a quip in Vietnamese) wraps to two
+    // and pushed the buttons past the card's edge
+    property real twoByTwoNeeded: 0
 
     readonly property real heightToggleFraction: 0.3
     readonly property real heightToggleDelta: (root.snapHeight3 - root.snapHeight2) * root.heightToggleFraction
@@ -248,7 +252,7 @@ AbstractBackgroundWidget {
                         id: bgImageA
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
-                        sourceSize: Qt.size(root.snapWidth3 * root.renderScale, root.snapHeight3 * root.renderScale)
+                        sourceSize: Qt.size(root.snapWidth3 * root.renderScale, Math.max(root.snapHeight3, root.twoByTwoNeeded) * root.renderScale)
                         asynchronous: true
                         cache: false
                         opacity: 1
@@ -260,7 +264,7 @@ AbstractBackgroundWidget {
                         id: bgImageB
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectCrop
-                        sourceSize: Qt.size(root.snapWidth3 * root.renderScale, root.snapHeight3 * root.renderScale)
+                        sourceSize: Qt.size(root.snapWidth3 * root.renderScale, Math.max(root.snapHeight3, root.twoByTwoNeeded) * root.renderScale)
                         asynchronous: true
                         cache: false
                         opacity: 0
@@ -299,11 +303,9 @@ AbstractBackgroundWidget {
                     layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
-                            layer.enabled: true
-                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                            width: outerRect.width
-                            height: outerRect.height
-                            radius: Appearance.rounding?.verylarge ?? 30
+                            width: outerRect.width * root.renderScale
+                            height: outerRect.height * root.renderScale
+                            radius: (Appearance.rounding?.verylarge ?? 30) * root.renderScale
                         }
                     }
                 }
@@ -330,10 +332,14 @@ AbstractBackgroundWidget {
                     id: contentBox
                     x: root.blurMargin
                     y: root.avatarSize / 2 + root.blurMargin + 30
-                    width: 240
+                    width: root.snapWidth3 - root.blurMargin * 2 // the 2x2 width, not the one animating to it
                     color: Appearance.colors.colPrimaryContainer
                     radius: Appearance.rounding.large
                     implicitHeight: contentColumn.implicitHeight + 30
+                    readonly property real needed: y + implicitHeight + root.blurMargin
+                    onNeededChanged: root.twoByTwoNeeded = needed
+                    Component.onCompleted: root.twoByTwoNeeded = needed
+                    Component.onDestruction: root.twoByTwoNeeded = 0
 
                     ColumnLayout {
                         id: contentColumn
@@ -515,12 +521,10 @@ AbstractBackgroundWidget {
                         layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                         layer.effect: OpacityMask {
                             maskSource: Rectangle {
-                                layer.enabled: true
-                                layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                                width: heroWrap.width
-                                height: heroWrap.height
-                                topLeftRadius: cardBg.radius
-                                topRightRadius: cardBg.radius
+                                width: heroWrap.width * root.renderScale
+                                height: heroWrap.height * root.renderScale
+                                topLeftRadius: cardBg.radius * root.renderScale
+                                topRightRadius: cardBg.radius * root.renderScale
                                 gradient: Gradient {
                                     GradientStop { position: 0.0; color: "#ffffff" }
                                     GradientStop { position: 0.55; color: "#ffffff" }

@@ -167,11 +167,9 @@ AbstractBackgroundWidget {
                 layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                 layer.effect: OpacityMask {
                     maskSource: Rectangle {
-                        layer.enabled: true
-                        layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                        width: squareArt.width
-                        height: squareArt.height
-                        radius: card.radius
+                        width: squareArt.width * root.renderScale
+                        height: squareArt.height * root.renderScale
+                        radius: card.radius * root.renderScale
                     }
                 }
 
@@ -288,12 +286,10 @@ AbstractBackgroundWidget {
                     layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
-                            layer.enabled: true
-                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                            width: artBlock.width
-                            height: artBlock.height
-                            topLeftRadius: card.radius
-                            bottomLeftRadius: card.radius
+                            width: artBlock.width * root.renderScale
+                            height: artBlock.height * root.renderScale
+                            topLeftRadius: card.radius * root.renderScale
+                            bottomLeftRadius: card.radius * root.renderScale
                             topRightRadius: 0
                             bottomRightRadius: 0
                         }
@@ -435,12 +431,10 @@ AbstractBackgroundWidget {
                     layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                     layer.effect: OpacityMask {
                         maskSource: Rectangle {
-                            layer.enabled: true
-                            layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                            width: bigArt.width
-                            height: bigArt.height
-                            topLeftRadius: card.radius
-                            topRightRadius: card.radius
+                            width: bigArt.width * root.renderScale
+                            height: bigArt.height * root.renderScale
+                            topLeftRadius: card.radius * root.renderScale
+                            topRightRadius: card.radius * root.renderScale
                             bottomLeftRadius: 0
                             bottomRightRadius: 0
                         }
@@ -583,12 +577,10 @@ AbstractBackgroundWidget {
                         layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                         layer.effect: OpacityMask {
                             maskSource: Rectangle {
-                                layer.enabled: true
-                                layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                                width: artRect.width
-                                height: artRect.height
-                                topLeftRadius: card.radius
-                                bottomLeftRadius: card.radius
+                                width: artRect.width * root.renderScale
+                                height: artRect.height * root.renderScale
+                                topLeftRadius: card.radius * root.renderScale
+                                bottomLeftRadius: card.radius * root.renderScale
                                 topRightRadius: 0
                                 bottomRightRadius: 0
                             }
@@ -806,11 +798,9 @@ AbstractBackgroundWidget {
                             layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
                             layer.effect: OpacityMask {
                                 maskSource: Rectangle {
-                                    layer.enabled: true
-                                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                                    width: labelArt.width
-                                    height: labelArt.height
-                                    radius: labelArt.radius
+                                    width: labelArt.width * root.renderScale
+                                    height: labelArt.height * root.renderScale
+                                    radius: labelArt.radius * root.renderScale
                                 }
                             }
 

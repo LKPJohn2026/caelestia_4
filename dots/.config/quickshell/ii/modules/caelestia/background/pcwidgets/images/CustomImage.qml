@@ -62,10 +62,8 @@ AbstractBackgroundWidget {
             layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
             layer.effect: OpacityMask {
                 maskSource: MaterialShape {
-                    layer.enabled: true
-                    layer.textureSize: Qt.size(width * root.renderScale, height * root.renderScale)
-                    width: imageShape.width
-                    height: imageShape.height
+                    width: imageShape.width * root.renderScale
+                    height: imageShape.height * root.renderScale
                     shape: root.shapeType
                 }
             }

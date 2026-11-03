@@ -8,8 +8,10 @@ StyledText {
     property real fill: 0
     property real truncatedFill: fill.toFixed(1) // Reduce memory consumption spikes from constant font remapping
     // caelestia4: native glyphs are drawn once at the window's scale, so a desktop widget's Scale stretches them soft;
-    // curves are drawn at whatever size they end up
-    renderType: WidgetScale.transformed(root) ? Text.CurveRendering : Text.NativeRendering
+    // curves are drawn at whatever size they end up. Not a filled glyph: its outlines overlap (the variable font keeps
+    // them), and the GPU's curve renderer draws the overlaps as holes, slivers through a play button and a dotted
+    // ring in a cloud, where native glyphs come out whole
+    renderType: WidgetScale.transformed(root) && truncatedFill === 0 ? Text.CurveRendering : Text.NativeRendering
     font {
         hintingPreference: Font.PreferNoHinting
         family: Appearance?.font.family.iconMaterial ?? "Material Symbols Rounded"
