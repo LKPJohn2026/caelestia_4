@@ -96,7 +96,7 @@ AbstractBackgroundWidget {
                             anchors.centerIn: parent
                             iconSize: Appearance.font.pixelSize.normal
                             text: "settings"
-                            color: Appearance.colors.colOnSurfaceVariant
+                            color: Appearance.colors.colOnPrimaryContainer
                         }
                         MouseArea {
                             anchors.fill: parent
@@ -144,7 +144,7 @@ AbstractBackgroundWidget {
                                 : ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
                             property color fg: modelData.isDay
                                 ? Appearance.colors.colOnPrimary
-                                : Appearance.colors.colOnLayer0
+                                : Appearance.colors.colOnPrimaryContainer
                             Behavior on color { ColorAnimation { duration: 400 } }
 
                             ColumnLayout {
@@ -206,7 +206,7 @@ AbstractBackgroundWidget {
                                 anchors.centerIn: parent
                                 iconSize: Appearance.font.pixelSize.normal
                                 text: "arrow_back"
-                                color: Appearance.colors.colOnSurfaceVariant
+                                color: Appearance.colors.colOnPrimaryContainer
                             }
                             MouseArea {
                                 anchors.fill: parent
@@ -248,6 +248,9 @@ AbstractBackgroundWidget {
                             StyledComboBoxSearch {
                                 model: WorldClock.comboModel
                                 colBackground: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
+                                colBackgroundHover: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.7)
+                                colBackgroundActive: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.6)
+                                colText: Appearance.colors.colOnPrimaryContainer
                                 textRole: "label"
                                 currentIndex: WorldClock.comboModel.findIndex(m => m.tz === WorldClock.timezones[0])
                                 onActivated: (idx) => WorldClock.setTimezone(0, WorldClock.comboModel[idx].tz)
@@ -255,18 +258,27 @@ AbstractBackgroundWidget {
                             StyledComboBoxSearch {
                                 model: WorldClock.comboModel; textRole: "label"
                                 colBackground: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
+                                colBackgroundHover: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.7)
+                                colBackgroundActive: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.6)
+                                colText: Appearance.colors.colOnPrimaryContainer
                                 currentIndex: WorldClock.comboModel.findIndex(m => m.tz === WorldClock.timezones[1])
                                 onActivated: (idx) => WorldClock.setTimezone(1, WorldClock.comboModel[idx].tz)
                             }
                             StyledComboBoxSearch {
                                 model: WorldClock.comboModel; textRole: "label"
                                 colBackground: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
+                                colBackgroundHover: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.7)
+                                colBackgroundActive: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.6)
+                                colText: Appearance.colors.colOnPrimaryContainer
                                 currentIndex: WorldClock.comboModel.findIndex(m => m.tz === WorldClock.timezones[2])
                                 onActivated: (idx) => WorldClock.setTimezone(2, WorldClock.comboModel[idx].tz)
                             }
                             StyledComboBoxSearch {
                                 model: WorldClock.comboModel; textRole: "label"
                                 colBackground: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
+                                colBackgroundHover: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.7)
+                                colBackgroundActive: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.6)
+                                colText: Appearance.colors.colOnPrimaryContainer
                                 currentIndex: WorldClock.comboModel.findIndex(m => m.tz === WorldClock.timezones[3])
                                 onActivated: (idx) => WorldClock.setTimezone(3, WorldClock.comboModel[idx].tz)
                             }
@@ -326,15 +338,15 @@ AbstractBackgroundWidget {
                                     : Appearance.colors.colPrimaryContainer)
                             handColor: (clockWrapper.cityData?.isDay ?? true)
                                 ? Appearance.colors.colOnPrimary
-                                : Appearance.colors.colOnLayer0
+                                : Appearance.colors.colOnPrimaryContainer
                             centerDotColor: (clockWrapper.cityData?.isDay ?? true)
                                 ? Appearance.colors.colOnPrimary
-                                : Appearance.colors.colOnLayer0
+                                : Appearance.colors.colOnPrimaryContainer
                             label:       clockWrapper.cityData?.name ?? ""
                             labelColor:  Qt.rgba(
-                                ((clockWrapper.cityData?.isDay ?? true) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0).r,
-                                ((clockWrapper.cityData?.isDay ?? true) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0).g,
-                                ((clockWrapper.cityData?.isDay ?? true) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0).b,
+                                ((clockWrapper.cityData?.isDay ?? true) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnPrimaryContainer).r,
+                                ((clockWrapper.cityData?.isDay ?? true) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnPrimaryContainer).g,
+                                ((clockWrapper.cityData?.isDay ?? true) ? Appearance.colors.colOnPrimary : Appearance.colors.colOnPrimaryContainer).b,
                                 0.75)
                             labelSpacing: 6
                             autoTime:    false

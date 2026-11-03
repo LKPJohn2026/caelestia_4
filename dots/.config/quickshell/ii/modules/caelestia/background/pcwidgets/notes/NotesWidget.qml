@@ -211,7 +211,7 @@ AbstractBackgroundWidget {
                         text: root.editingText
                         wrapMode: TextArea.Wrap
                         placeholderText: Translation.tr("Type your note...")
-                        color: Appearance.colors.colOnLayer0
+                        color: Appearance.colors.colOnSurface
                         background: null
                         onTextChanged: root.editingText = text
                     }

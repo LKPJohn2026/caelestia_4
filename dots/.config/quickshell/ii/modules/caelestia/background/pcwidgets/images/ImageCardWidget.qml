@@ -95,7 +95,7 @@ AbstractBackgroundWidget {
         widget: root
         glass: false
         blurred: false
-        color: "transparent"
+        color: root.imagePath === "" ? Appearance.colors.colPrimaryContainer : "transparent" // caelestia4: the placeholder's container
 
         ClippingRectangle {
             anchors.fill: parent

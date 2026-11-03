@@ -222,7 +222,7 @@ AbstractBackgroundWidget {
                                     text: Weather.data?.humidity ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -245,7 +245,7 @@ AbstractBackgroundWidget {
                                     text: Weather.data?.cr ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -356,14 +356,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Humidity"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.humidity ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -391,14 +391,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Rain"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.cr ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -427,14 +427,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Wind"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.wind ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -462,14 +462,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Visibility"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.visib ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -566,7 +566,7 @@ AbstractBackgroundWidget {
                                 text: Weather.data?.humidity ?? "--"
                                 font.pixelSize: Appearance.font.pixelSize.smaller
                                 font.weight: Font.Bold
-                                color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                color: Appearance.colors.colOnPrimaryContainer
                             }
                         }
                     }
@@ -589,7 +589,7 @@ AbstractBackgroundWidget {
                                 text: Weather.data?.cr ?? "--"
                                 font.pixelSize: Appearance.font.pixelSize.smaller
                                 font.weight: Font.Bold
-                                color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                color: Appearance.colors.colOnPrimaryContainer
                             }
                         }
                     }
@@ -612,7 +612,7 @@ AbstractBackgroundWidget {
                                 text: Weather.data?.wind ?? "--"
                                 font.pixelSize: Appearance.font.pixelSize.smaller
                                 font.weight: Font.Bold
-                                color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                color: Appearance.colors.colOnPrimaryContainer
                             }
                         }
                     }
@@ -635,7 +635,7 @@ AbstractBackgroundWidget {
                                 text: Weather.data?.visib ?? "--"
                                 font.pixelSize: Appearance.font.pixelSize.smaller
                                 font.weight: Font.Bold
-                                color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                color: Appearance.colors.colOnPrimaryContainer
                             }
                         }
                     }
@@ -762,14 +762,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Humidity"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.humidity ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -798,14 +798,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Wind"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.wind ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -834,14 +834,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Rain Chance"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.cr ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -870,14 +870,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Visibility"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.visib ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -906,14 +906,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Sunrise"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.sunrise ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }
@@ -942,14 +942,14 @@ AbstractBackgroundWidget {
                                 StyledText {
                                     text: "Sunset"
                                     font.pixelSize: Appearance.font.pixelSize.smaller
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
                                 }
                                 StyledText {
                                     text: Weather.data?.sunset ?? "--"
                                     font.pixelSize: Appearance.font.pixelSize.small
                                     font.weight: Font.Bold
-                                    color: Appearance.colors.colOnSurfaceVariant ?? Appearance.colors.colOnPrimaryContainer
+                                    color: Appearance.colors.colOnPrimaryContainer
                                 }
                             }
                         }

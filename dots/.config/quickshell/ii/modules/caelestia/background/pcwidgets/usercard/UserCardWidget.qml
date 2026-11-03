@@ -473,14 +473,14 @@ AbstractBackgroundWidget {
                         text: root.userDisplay
                         font.pixelSize: Appearance.font.pixelSize.small
                         font.weight: Font.DemiBold
-                        color: Appearance.colors.colOnLayer1
+                        color: Appearance.colors.colOnPrimaryContainer
                         elide: Text.ElideRight
                     }
                     StyledText {
                         Layout.fillWidth: true
                         text: Translation.tr("Up") + " • " + DateTime.uptime
                         font.pixelSize: Appearance.font.pixelSize.smaller
-                        color: Appearance.colors.colOnLayer1
+                        color: Appearance.colors.colOnPrimaryContainer
                         opacity: 0.6
                         elide: Text.ElideRight
                     }

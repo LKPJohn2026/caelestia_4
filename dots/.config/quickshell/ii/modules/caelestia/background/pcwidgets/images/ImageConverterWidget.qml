@@ -218,7 +218,7 @@ AbstractBackgroundWidget {
                             case "hover": return Appearance.colors.colPrimary
                             case "done":  return Appearance.colors.colTertiary
                             case "error": return Appearance.colors.colError
-                            default:      return Appearance.colors.colOnLayer1
+                            default:      return Appearance.colors.colOnPrimaryContainer
                         }
                     }
                     text: {
@@ -241,9 +241,10 @@ AbstractBackgroundWidget {
                     color: {
                         switch (root.dropStatus) {
                             case "hover":  return Appearance.colors.colPrimary
+                            case "converting": return Appearance.colors.colOnSecondaryContainer
                             case "done":   return Appearance.colors.colTertiary
                             case "error":  return Appearance.colors.colError
-                            default:       return Appearance.colors.colOnLayer1
+                            default:       return Appearance.colors.colOnPrimaryContainer
                         }
                     }
                     opacity: root.dropStatus === "idle" ? 0.6 : 1.0
@@ -291,7 +292,7 @@ AbstractBackgroundWidget {
                     Layout.leftMargin: 3
                     text: Translation.tr("Convert to:")
                     font.pixelSize: Appearance.font.pixelSize.small
-                    color: Appearance.colors.colOnLayer1
+                    color: Appearance.colors.colOnPrimaryContainer
                     opacity: 0.7
                     Layout.alignment: Qt.AlignVCenter
                 }
@@ -299,9 +300,10 @@ AbstractBackgroundWidget {
                 StyledComboBox {
                     Layout.fillWidth: true
                     model: root.formatOptions
-                    colBackground: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
-                    colBackgroundHover: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8)
-                    colBackgroundActive: ColorUtils.transparentize(Appearance.colors.colLayer0, 0.8) // same color I didn't like the hover 
+                    // caelestia4: StyledComboBox draws its text in colOnSecondaryContainer, so it sits on that container
+                    colBackground: Appearance.colors.colSecondaryContainer
+                    colBackgroundHover: Appearance.colors.colSecondaryContainer
+                    colBackgroundActive: Appearance.colors.colSecondaryContainer // same color I didn't like the hover
                     textRole: "displayName"
                     valueRole: "value"
                     currentIndex: {
