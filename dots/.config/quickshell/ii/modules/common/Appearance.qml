@@ -229,8 +229,11 @@ Singleton {
         property int windowRounding: 18
     }
 
+    property FontLoader outlineSymbolsLoader: FontLoader {
+        source: Quickshell.shellPath("modules/caelestia/assets/material-symbols-static/MaterialSymbolsRoundedOutline.ttf")
+    }
     property FontLoader filledSymbolsLoader: FontLoader {
-        source: Quickshell.shellPath("modules/caelestia/assets/material-symbols-filled/MaterialSymbolsRoundedFilled.ttf")
+        source: Quickshell.shellPath("modules/caelestia/assets/material-symbols-static/MaterialSymbolsRoundedFilled.ttf")
     }
 
     font: QtObject {
@@ -239,8 +242,9 @@ Singleton {
             property string numbers: Config.options.appearance.fonts.numbers
             property string title: Config.options.appearance.fonts.title
             property string iconMaterial: "Material Symbols Rounded"
-            // caelestia4: filled icons for a scaled desktop widget, its overlaps merged (tools/gen-filled-symbols.sh);
-            // "" until it has loaded, and MaterialSymbol keeps the variable font then
+            // caelestia4: icons for a scaled desktop widget, unfilled and filled, their overlaps merged
+            // (tools/gen-static-symbols.sh); "" until loaded, and MaterialSymbol keeps the variable font then
+            property string iconMaterialOutline: root.outlineSymbolsLoader.status === FontLoader.Ready ? root.outlineSymbolsLoader.name : ""
             property string iconMaterialFilled: root.filledSymbolsLoader.status === FontLoader.Ready ? root.filledSymbolsLoader.name : ""
             property string iconNerd: Config.options.appearance.fonts.iconNerd
             property string monospace: Config.options.appearance.fonts.monospace

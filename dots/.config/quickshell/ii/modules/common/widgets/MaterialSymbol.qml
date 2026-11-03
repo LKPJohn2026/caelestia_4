@@ -8,19 +8,21 @@ StyledText {
     property real fill: 0
     property real truncatedFill: fill.toFixed(1) // Reduce memory consumption spikes from constant font remapping
     // caelestia4: native glyphs are drawn once at the window's scale, so a desktop widget's Scale stretches them soft;
-    // curves are drawn at whatever size they end up. A filled glyph of the variable font keeps overlapping outlines,
-    // which the GPU's curve renderer draws as holes (slivers through a play button, a dotted ring in a cloud): a filled
-    // one takes Material Symbols Rounded Filled, the same glyphs with the overlaps merged. Half filled (mid-animation)
-    // or without that font it's a native glyph, whole but soft
-    readonly property bool scaled: WidgetScale.transformed(root)
-    readonly property bool staticFilled: scaled && truncatedFill === 1 && (Appearance?.font.family.iconMaterialFilled ?? "") !== ""
-    renderType: scaled && (truncatedFill === 0 || staticFilled) ? Text.CurveRendering : Text.NativeRendering
+    // curves are drawn at whatever size they end up. But the variable font's glyphs keep overlapping outlines (a filled
+    // play button's, the note over the page in "lyrics"), which the GPU's curve renderer draws as holes: in a scaled
+    // widget an icon takes Material Symbols Rounded Outline or Filled, the same glyphs with the overlaps merged. Half
+    // filled (mid-animation) or before those fonts load it's a native glyph, whole but soft
+    readonly property string staticFamily: !WidgetScale.transformed(root) ? ""
+        : truncatedFill === 0 ? (Appearance?.font.family.iconMaterialOutline ?? "")
+        : truncatedFill === 1 ? (Appearance?.font.family.iconMaterialFilled ?? "") : ""
+    readonly property bool staticGlyphs: staticFamily !== "" // a static font: no variable axes
+    renderType: staticGlyphs ? Text.CurveRendering : Text.NativeRendering
     font {
         hintingPreference: Font.PreferNoHinting
-        family: staticFilled ? Appearance.font.family.iconMaterialFilled : (Appearance?.font.family.iconMaterial ?? "Material Symbols Rounded")
+        family: staticGlyphs ? staticFamily : (Appearance?.font.family.iconMaterial ?? "Material Symbols Rounded")
         pixelSize: iconSize
-        weight: staticFilled ? Font.Normal : Font.Normal + (Font.DemiBold - Font.Normal) * truncatedFill
-        variableAxes: staticFilled ? ({}) : { 
+        weight: staticGlyphs ? Font.Normal : Font.Normal + (Font.DemiBold - Font.Normal) * truncatedFill
+        variableAxes: staticGlyphs ? ({}) : { 
             "FILL": truncatedFill,
             // "wght": font.weight,
             // "GRAD": 0,
