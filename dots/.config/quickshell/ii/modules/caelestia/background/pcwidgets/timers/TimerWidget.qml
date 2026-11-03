@@ -179,7 +179,7 @@ AbstractBackgroundWidget {
 
                         StyledText {
                             anchors.centerIn: parent
-                            text: "+" + modelData + "m"
+                            text: Translation.tr("+%1m").arg(modelData)
                             font.pixelSize: Appearance.font.pixelSize.smallest
                             font.weight: Font.DemiBold
                             color: Appearance.colors.colOnPrimaryContainer

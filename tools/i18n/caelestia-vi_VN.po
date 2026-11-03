@@ -4119,3 +4119,15 @@ msgstr "Một vòng quanh ảnh bìa: kéo để di chuyển, kéo góc để đ
 
 msgid "Along the bottom of the wallpaper, moving with the sound; presets pick theirs"
 msgstr "Dọc đáy hình nền, chuyển động theo âm thanh; mỗi preset chọn kiểu riêng"
+
+msgid "<Number>"
+msgstr "<Số>"
+
+msgid "<Direction>"
+msgstr "<Hướng>"
+
+msgid "Volume mixer"
+msgstr "Trộn âm lượng"
+
+msgid "%1 · %2"
+msgstr "%1 · %2"

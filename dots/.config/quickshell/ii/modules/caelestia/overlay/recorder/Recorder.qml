@@ -15,6 +15,7 @@ import qs.modules.caelestia.adapters
 
 StyledOverlayWidget {
     id: root
+    title: Translation.tr("Recorder")
     minimumWidth: 310
     minimumHeight: 150
 

@@ -215,8 +215,9 @@ Singleton {
         let h12 = h % 12
         if (h12 === 0) h12 = 12
         const base = pad(h12) + ":" + pad(m)
-        if (root.ampmToken === "AP") return base + " " + (h >= 12 ? "PM" : "AM")
-        return base + " " + (h >= 12 ? "pm" : "am")
+        // caelestia4: the locale's markers, as the main clock's Qt.locale().toString() writes them ("CH", not "PM")
+        const marker = h >= 12 ? Qt.locale().pmText : Qt.locale().amText
+        return base + " " + (root.ampmToken === "AP" ? marker.toUpperCase() : marker.toLowerCase())
     }
 
     function offsetLabelFor(index) {

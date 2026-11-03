@@ -111,14 +111,14 @@ StyledRect {
     }
 
     function transformKey(key: string): string {
-        return (keySubstitutions[key] || key).replace("1", "<Number>").replace("Left", "<Direction>");
+        return (keySubstitutions[key] || key).replace("1", Tr.tr("<Number>")).replace("Left", Tr.tr("<Direction>"));
     }
 
     function transformDescription(bind: var): string {
         const text = bind.description.replace(new RegExp("\\s*" + categoryName + "\\s*:\\s*"), "");
         if (!firstRepetitive(bind))
             return text;
-        return text.replace("1", "<Number>").replace(/ \b(left|right|up|down)\b/i, " <Direction>");
+        return text.replace("1", Tr.tr("<Number>")).replace(/ \b(left|right|up|down)\b/i, " " + Tr.tr("<Direction>"));
     }
 
     visible: binds.length > 0

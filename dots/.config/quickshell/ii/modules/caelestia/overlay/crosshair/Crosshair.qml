@@ -1,11 +1,13 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import qs.services
 import qs.modules.common
 import qs.modules.caelestia.overlay
 
 StyledOverlayWidget {
     id: root
+    title: Translation.tr("Crosshair")
     fancyBorders: false // Crosshair should be see-through
     showCenterButton: true
     opacity: 1 // The crosshair itself already has transparency if configured

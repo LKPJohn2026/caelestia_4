@@ -63,14 +63,14 @@ Item {
 
     readonly property string statusText: {
         if (cloudVision.state == GCloudApi.State.Preparing)
-            return qsTr("Uploading image");
+            return E4.Translation.tr("Uploading image");
         else if (cloudVision.state == GCloudApi.State.Processing)
-            return qsTr("Reading text");
+            return E4.Translation.tr("Reading text");
         else if (cloudTrans.state == GCloudApi.State.Preparing)
-            return qsTr("Getting ready to translate");
+            return E4.Translation.tr("Getting ready to translate");
         else if (cloudTrans.state == GCloudApi.State.Processing)
-            return qsTr("Translating");
-        return qsTr("Preparing");
+            return E4.Translation.tr("Translating");
+        return E4.Translation.tr("Preparing");
     }
 
     GCloudVisionResult {
@@ -79,7 +79,7 @@ Item {
 
     function handleError(msg) {
         if (msg?.length > 0) root.errorMessage = msg;
-        else root.errorMessage = qsTr("Set your Google Cloud service account key");
+        else root.errorMessage = E4.Translation.tr("Set your Google Cloud service account key");
         root.showError();
     }
 

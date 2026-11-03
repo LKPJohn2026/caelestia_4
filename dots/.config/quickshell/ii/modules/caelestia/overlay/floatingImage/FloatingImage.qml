@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Qt5Compat.GraphicalEffects
+import qs.services
 import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.utils
@@ -10,6 +11,7 @@ import qs.modules.caelestia.adapters
 
 StyledOverlayWidget {
     id: root
+    title: Translation.tr("Floating image")
     showClickabilityButton: false
     resizable: false
     clickthrough: true

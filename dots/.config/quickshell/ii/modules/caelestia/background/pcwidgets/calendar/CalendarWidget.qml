@@ -247,7 +247,7 @@ AbstractBackgroundWidget {
                             implicitHeight: 20
                             StyledText {
                                 anchors.centerIn: parent
-                                text: modelData
+                                text: Translation.tr(modelData)
                                 font.pixelSize: Appearance.font.pixelSize.smaller
                                 font.weight: Font.Bold
                                 color: Appearance.colors.colOnPrimaryContainer
@@ -356,7 +356,7 @@ AbstractBackgroundWidget {
                             font.weight: Font.Bold
                             color: Appearance.colors.colOnPrimaryContainer
                             opacity: 0.6
-                            text: modelData
+                            text: Translation.tr(modelData)
                         }
                     }
                 }
@@ -464,7 +464,7 @@ AbstractBackgroundWidget {
                                     font.weight: Font.Bold
                                     color: Appearance.colors.colOnPrimaryContainer
                                     opacity: 0.6
-                                    text: modelData
+                                    text: Translation.tr(modelData)
                                 }
                             }
                         }
