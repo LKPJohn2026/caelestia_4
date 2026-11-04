@@ -311,7 +311,7 @@ msgid "Edit quick toggles"
 msgstr "Sửa nút bật nhanh"
 
 msgid "Elements"
-msgstr "Thành phần"
+msgstr "Nguyên tố"
 
 msgid "Enable widgets in the dashboard settings"
 msgstr "Bật tiện ích trong cài đặt bảng điều khiển"
@@ -4131,3 +4131,432 @@ msgstr "Trộn âm lượng"
 
 msgid "%1 · %2"
 msgstr "%1 · %2"
+
+msgctxt "keybind category"
+msgid "Shell"
+msgstr "Shell"
+
+msgctxt "keybind category"
+msgid "Utilities"
+msgstr "Tiện ích"
+
+msgctxt "keybind category"
+msgid "Screen"
+msgstr "Màn hình"
+
+msgctxt "keybind category"
+msgid "Media"
+msgstr "Phương tiện"
+
+msgctxt "keybind category"
+msgid "Window"
+msgstr "Cửa sổ"
+
+msgctxt "keybind category"
+msgid "Workspace"
+msgstr "Không gian làm việc"
+
+msgctxt "keybind category"
+msgid "Session"
+msgstr "Phiên"
+
+msgctxt "keybind category"
+msgid "App"
+msgstr "Ứng dụng"
+
+msgctxt "keybind category"
+msgid "Input"
+msgstr "Nhập liệu"
+
+msgctxt "keybind: Shell"
+msgid "Toggle search"
+msgstr "Mở/đóng tìm kiếm"
+
+msgctxt "keybind: Shell"
+msgid "Window switcher"
+msgstr "Chuyển cửa sổ"
+
+msgctxt "keybind: Shell"
+msgid "Window switcher (back)"
+msgstr "Chuyển cửa sổ (ngược lại)"
+
+msgctxt "keybind: Shell"
+msgid "Alt+Tab workspaces"
+msgstr "Alt+Tab giữa các không gian làm việc"
+
+msgctxt "keybind: Shell"
+msgid "Toggle left sidebar"
+msgstr "Mở/đóng thanh bên trái"
+
+msgctxt "keybind: Shell"
+msgid "Toggle right sidebar"
+msgstr "Mở/đóng thanh bên phải"
+
+msgctxt "keybind: Shell"
+msgid "Toggle cheatsheet"
+msgstr "Mở/đóng bảng phím tắt"
+
+msgctxt "keybind: Shell"
+msgid "Toggle on-screen keyboard"
+msgstr "Mở/đóng bàn phím ảo"
+
+msgctxt "keybind: Shell"
+msgid "Toggle media controls"
+msgstr "Mở/đóng điều khiển phương tiện"
+
+msgctxt "keybind: Shell"
+msgid "Toggle widget overlay"
+msgstr "Mở/đóng lớp phủ tiện ích"
+
+msgctxt "keybind: Shell"
+msgid "Toggle session menu"
+msgstr "Mở/đóng menu phiên"
+
+msgctxt "keybind: Shell"
+msgid "Toggle bar"
+msgstr "Ẩn/hiện thanh"
+
+msgctxt "keybind: Shell"
+msgid "Next dashboard tab"
+msgstr "Thẻ tiếp theo của bảng điều khiển"
+
+msgctxt "keybind: Shell"
+msgid "Previous dashboard tab"
+msgstr "Thẻ trước của bảng điều khiển"
+
+msgctxt "keybind: Shell"
+msgid "Change wallpaper"
+msgstr "Đổi hình nền"
+
+msgctxt "keybind: Shell"
+msgid "Random wallpaper"
+msgstr "Hình nền ngẫu nhiên"
+
+msgctxt "keybind: Shell"
+msgid "Next preset"
+msgstr "Preset tiếp theo"
+
+msgctxt "keybind: Shell"
+msgid "Previous preset"
+msgstr "Preset trước"
+
+msgctxt "keybind: Shell"
+msgid "Toggle light/dark mode"
+msgstr "Chuyển chế độ sáng/tối"
+
+msgctxt "keybind: Shell"
+msgid "Restart widgets"
+msgstr "Khởi động lại tiện ích"
+
+msgctxt "keybind: Utilities"
+msgid "Clipboard history >> clipboard"
+msgstr "Lịch sử bộ nhớ tạm >> bộ nhớ tạm"
+
+msgctxt "keybind: Utilities"
+msgid "Emoji >> clipboard"
+msgstr "Biểu tượng cảm xúc >> bộ nhớ tạm"
+
+msgctxt "keybind: Utilities"
+msgid "Screen snip"
+msgstr "Chụp màn hình (chọn vùng)"
+
+msgctxt "keybind: Utilities"
+msgid "Google Lens"
+msgstr "Google Lens"
+
+msgctxt "keybind: Utilities"
+msgid "Character recognition >> clipboard"
+msgstr "Nhận dạng chữ (OCR) >> bộ nhớ tạm"
+
+msgctxt "keybind: Utilities"
+msgid "Translate screen content"
+msgstr "Dịch nội dung trên màn hình"
+
+msgctxt "keybind: Utilities"
+msgid "Pick color #RRGGBB >> clipboard"
+msgstr "Chọn màu #RRGGBB >> bộ nhớ tạm"
+
+msgctxt "keybind: Utilities"
+msgid "Record region (no sound)"
+msgstr "Ghi vùng (không âm thanh)"
+
+msgctxt "keybind: Utilities"
+msgid "Record screen (with sound)"
+msgstr "Ghi toàn màn hình (kèm âm thanh)"
+
+msgctxt "keybind: Utilities"
+msgid "Screenshot >> clipboard"
+msgstr "Chụp màn hình >> bộ nhớ tạm"
+
+msgctxt "keybind: Utilities"
+msgid "Screenshot >> clipboard & file"
+msgstr "Chụp màn hình >> bộ nhớ tạm & tệp"
+
+msgctxt "keybind: Utilities"
+msgid "Generate AI summary for selected text"
+msgstr "Tóm tắt văn bản đang chọn bằng AI"
+
+msgctxt "keybind: Screen"
+msgid "Zoom out"
+msgstr "Thu nhỏ"
+
+msgctxt "keybind: Screen"
+msgid "Zoom in"
+msgstr "Phóng to"
+
+msgctxt "keybind: Media"
+msgid "Next track"
+msgstr "Bài tiếp theo"
+
+msgctxt "keybind: Media"
+msgid "Previous track"
+msgstr "Bài trước"
+
+msgctxt "keybind: Media"
+msgid "Play/pause media"
+msgstr "Phát/tạm dừng"
+
+msgctxt "keybind: Media"
+msgid "Seek forward 5 s"
+msgstr "Tua tới 5 giây"
+
+msgctxt "keybind: Media"
+msgid "Seek backward 5 s"
+msgstr "Tua lùi 5 giây"
+
+msgctxt "keybind: Media"
+msgid "Seek forward 10 s"
+msgstr "Tua tới 10 giây"
+
+msgctxt "keybind: Media"
+msgid "Seek backward 10 s"
+msgstr "Tua lùi 10 giây"
+
+msgctxt "keybind: Media"
+msgid "Toggle mute"
+msgstr "Bật/tắt tiếng"
+
+msgctxt "keybind: Media"
+msgid "Toggle mic"
+msgstr "Bật/tắt micro"
+
+msgctxt "keybind: Window"
+msgid "Move"
+msgstr "Di chuyển"
+
+msgctxt "keybind: Window"
+msgid "Resize"
+msgstr "Đổi kích thước"
+
+msgctxt "keybind: Window"
+msgid "Focus <Direction>"
+msgstr "Chuyển sang cửa sổ <Direction>"
+
+msgctxt "keybind: Window"
+msgid "Move <Direction>"
+msgstr "Di chuyển sang <Direction>"
+
+msgctxt "keybind: Window"
+msgid "Close"
+msgstr "Đóng"
+
+msgctxt "keybind: Window"
+msgid "Forcefully zap a window"
+msgstr "Buộc đóng cửa sổ"
+
+msgctxt "keybind: Window"
+msgid "Float/Tile"
+msgstr "Nổi/Xếp"
+
+msgctxt "keybind: Window"
+msgid "Maximize"
+msgstr "Phóng to tối đa"
+
+msgctxt "keybind: Window"
+msgid "Fullscreen"
+msgstr "Toàn màn hình"
+
+msgctxt "keybind: Window"
+msgid "Fullscreen spoof"
+msgstr "Giả lập toàn màn hình"
+
+msgctxt "keybind: Window"
+msgid "Pin"
+msgstr "Ghim"
+
+msgctxt "keybind: Window"
+msgid "Send to workspace <Number>"
+msgstr "Chuyển sang không gian làm việc <Number>"
+
+msgctxt "keybind: Window"
+msgid "Send to workspace left"
+msgstr "Chuyển sang không gian làm việc bên trái"
+
+msgctxt "keybind: Window"
+msgid "Send to workspace right"
+msgstr "Chuyển sang không gian làm việc bên phải"
+
+msgctxt "keybind: Window"
+msgid "Send to scratchpad"
+msgstr "Chuyển vào scratchpad"
+
+msgctxt "keybind: Workspace"
+msgid "Focus <Number>"
+msgstr "Đến không gian làm việc <Number>"
+
+msgctxt "keybind: Workspace"
+msgid "Focus <Direction>"
+msgstr "Đến không gian làm việc <Direction>"
+
+msgctxt "keybind: Workspace"
+msgid "Toggle scratchpad / hide special"
+msgstr "Ẩn/hiện scratchpad / ẩn không gian đặc biệt"
+
+msgctxt "keybind: Session"
+msgid "Lock"
+msgstr "Khóa màn hình"
+
+msgctxt "keybind: Session"
+msgid "Sleep"
+msgstr "Ngủ"
+
+msgctxt "keybind: Session"
+msgid "Shut down"
+msgstr "Tắt máy"
+
+msgctxt "keybind: App"
+msgid "Terminal"
+msgstr "Terminal"
+
+msgctxt "keybind: App"
+msgid "File manager"
+msgstr "Trình quản lý tệp"
+
+msgctxt "keybind: App"
+msgid "Browser"
+msgstr "Trình duyệt"
+
+msgctxt "keybind: App"
+msgid "Code editor"
+msgstr "Trình soạn thảo mã"
+
+msgctxt "keybind: App"
+msgid "Office software"
+msgstr "Phần mềm văn phòng"
+
+msgctxt "keybind: App"
+msgid "Text editor"
+msgstr "Trình soạn thảo văn bản"
+
+msgctxt "keybind: App"
+msgid "Volume mixer"
+msgstr "Trộn âm lượng"
+
+msgctxt "keybind: App"
+msgid "Settings (Nexus)"
+msgstr "Cài đặt (Nexus)"
+
+msgctxt "keybind: App"
+msgid "Task manager"
+msgstr "Trình quản lý tác vụ"
+
+msgctxt "keybind: Workspace"
+msgid "System monitor (btop)"
+msgstr "Giám sát hệ thống (btop)"
+
+msgctxt "keybind: Workspace"
+msgid "Music"
+msgstr "Âm nhạc"
+
+msgctxt "keybind: Workspace"
+msgid "Communication (Discord)"
+msgstr "Liên lạc (Discord)"
+
+msgctxt "keybind: Workspace"
+msgid "Todo"
+msgstr "Việc cần làm"
+
+msgctxt "keybind: Window"
+msgid "Picture-in-picture (corner, pinned)"
+msgstr "Hình trong hình (ở góc, đã ghim)"
+
+#, no-c-format
+msgctxt "keybind: Window"
+msgid "Reset size (55% x 70%, centred)"
+msgstr "Đặt lại kích thước (55% x 70%, căn giữa)"
+
+msgctxt "keybind"
+msgid "Edit user keybinds"
+msgstr "Sửa phím tắt của bạn"
+
+msgctxt "keybind: Input"
+msgid "Toggle US / Vietnamese (Bamboo)"
+msgstr "Chuyển bàn phím Anh / Việt (Bamboo)"
+
+msgctxt "keycap"
+msgid "Scroll ↓"
+msgstr "Cuộn ↓"
+
+msgctxt "keycap"
+msgid "Scroll ↑"
+msgstr "Cuộn ↑"
+
+msgctxt "keycap"
+msgid "LMB"
+msgstr "Chuột trái"
+
+msgctxt "keycap"
+msgid "RMB"
+msgstr "Chuột phải"
+
+msgctxt "keycap"
+msgid "MouseBack"
+msgstr "Chuột lùi"
+
+msgctxt "chemical element"
+msgid "Iron"
+msgstr "Sắt"
+
+msgctxt "chemical element"
+msgid "Copper"
+msgstr "Đồng"
+
+msgctxt "chemical element"
+msgid "Zinc"
+msgstr "Kẽm"
+
+msgctxt "chemical element"
+msgid "Silver"
+msgstr "Bạc"
+
+msgctxt "chemical element"
+msgid "Tin"
+msgstr "Thiếc"
+
+msgctxt "chemical element"
+msgid "Gold"
+msgstr "Vàng"
+
+msgctxt "chemical element"
+msgid "Mercury"
+msgstr "Thủy ngân"
+
+msgctxt "chemical element"
+msgid "Lead"
+msgstr "Chì"
+
+msgctxt "chemical element"
+msgid "Sulfur"
+msgstr "Lưu huỳnh"
+
+msgctxt "chemical element"
+msgid "Aluminum"
+msgstr "Nhôm"
+
+msgctxt "chemical element"
+msgid "Sodium"
+msgstr "Natri"
+
+msgctxt "chemical element"
+msgid "Potassium"
+msgstr "Kali"

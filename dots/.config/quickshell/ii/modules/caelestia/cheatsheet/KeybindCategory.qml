@@ -62,11 +62,11 @@ StyledRect {
     readonly property list<string> keyBlacklist: ["SUPER_L", "SUPER_R"]
     readonly property var keySubstitutions: Object.assign({
         Super: "Super",
-        mouse_up: "Scroll ↓",
-        mouse_down: "Scroll ↑",
-        "mouse:272": "LMB",
-        "mouse:273": "RMB",
-        "mouse:275": "MouseBack",
+        mouse_up: Tr.trCtx("Scroll ↓", "keycap"),
+        mouse_down: Tr.trCtx("Scroll ↑", "keycap"),
+        "mouse:272": Tr.trCtx("LMB", "keycap"),
+        "mouse:273": Tr.trCtx("RMB", "keycap"),
+        "mouse:275": Tr.trCtx("MouseBack", "keycap"),
         Slash: "/",
         Hash: "#",
         Return: "Enter"
@@ -103,7 +103,9 @@ StyledRect {
             return false;
         if (/\d/.test(key) && !key.includes("1"))
             return true;
-        return /^(right|up|down)\b/i.test(key);
+        // caelestia4: a Right/Up/Down key only repeats a Left one when its description names the direction too
+        // (Super+Alt+Right is "Next dashboard tab", its own row)
+        return /^(right|up|down)\b/i.test(key) && / \b(left|right|up|down)\b/i.test(bind.description);
     }
 
     function firstRepetitive(bind: var): bool {
@@ -115,10 +117,13 @@ StyledRect {
     }
 
     function transformDescription(bind: var): string {
-        const text = bind.description.replace(new RegExp("\\s*" + categoryName + "\\s*:\\s*"), "");
-        if (!firstRepetitive(bind))
-            return text;
-        return text.replace("1", Tr.tr("<Number>")).replace(/ \b(left|right|up|down)\b/i, " " + Tr.tr("<Direction>"));
+        let text = bind.description.replace(new RegExp("\\s*" + categoryName + "\\s*:\\s*"), "");
+        if (firstRepetitive(bind))
+            text = text.replace("1", "<Number>").replace(/ \b(left|right|up|down)\b/i, " <Direction>");
+        // caelestia4: the English line (tokens and all) is the key, in its category's context: "Focus <Direction>" is a
+        // window's in Window and a workspace's in Workspace
+        return Tr.trCtx(text, isCategorized ? "keybind: " + categoryName : "keybind")
+            .replace("<Number>", Tr.tr("<Number>")).replace("<Direction>", Tr.tr("<Direction>"));
     }
 
     visible: binds.length > 0
@@ -137,7 +142,7 @@ StyledRect {
 
         StyledText {
             Layout.bottomMargin: Tokens.spacing.extraSmall
-            text: root.isCategorized ? root.categoryName : Tr.tr("Other")
+            text: root.isCategorized ? Tr.trCtx(root.categoryName, "keybind category") : Tr.tr("Other")
             font: Tokens.font.title.small
             color: Colours.palette.m3primary
         }

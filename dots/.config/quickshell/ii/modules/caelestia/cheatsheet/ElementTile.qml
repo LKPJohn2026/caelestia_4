@@ -1,5 +1,6 @@
 import QtQuick
 import Caelestia.Config
+import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
 
@@ -51,7 +52,7 @@ StyledRect {
         width: parent.width - 6
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
-        text: root.modelData.name ?? ""
+        text: root.modelData.name ? Tr.trCtx(root.modelData.name, "chemical element") : ""
         font: Tokens.font.label.small
         color: Colours.palette.m3onSurfaceVariant
     }
