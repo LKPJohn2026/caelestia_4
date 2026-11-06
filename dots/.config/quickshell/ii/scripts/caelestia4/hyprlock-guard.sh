@@ -6,6 +6,7 @@
 # hyprlock's output and the exits go to the journal (journalctl -t hyprlock -t hyprlock-guard): started from the shell
 # or hypridle, they were lost, and with them why it died.
 pidof hyprlock >/dev/null && exit 0
+"$(dirname "$(readlink -f "$0")")/hyprlock-strings.sh" 2>/dev/null
 for attempt in 1 2 3 4 5; do
     systemd-cat -t hyprlock hyprlock "$@" && exit 0
     status=$?

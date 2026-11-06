@@ -62,7 +62,21 @@ def fill(name, values):
 
 open(os.path.join(out, "hyprland.lua"), "w").write(fill("hyprland.lua.in", {
     "MONITORS": monitors, "BACKGROUND": colours["background"], "KB_LAYOUT": layout}))
+# In the shell's language (its catalogue), else the locale's
+try:
+    ui = json.load(open(os.path.join(cfg, "illogical-impulse/config.json"))).get("language", {}).get("ui", "auto")
+except (OSError, ValueError):
+    ui = "auto"
+if ui == "auto":
+    ui = (os.environ.get("LC_MESSAGES") or os.environ.get("LANG") or "").split(".")[0]
+try:
+    catalogue = json.load(open(os.path.join(src, "../../dots/.config/quickshell/ii/translations", f"{ui}.json")))
+except (OSError, ValueError):
+    catalogue = {}
+def tr(text):
+    return (catalogue.get(text) or text).removesuffix("/*keep*/").strip()
 open(os.path.join(out, "regreet.toml"), "w").write(fill("regreet.toml.in", {
+    "GREETING": tr("Welcome back!"), "DATE_FORMAT": tr("%A, %d %B"),
     "BACKGROUND_PATH": bg_path, "DARK": "true" if dark else "false", "DARK_SUFFIX": "-dark" if dark else "",
     "ICON_THEME": "breeze-dark" if dark else "breeze", "LOCALE": locale}))
 config = open(os.path.join(src, "config.toml")).read()

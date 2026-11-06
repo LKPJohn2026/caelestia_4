@@ -119,7 +119,7 @@ PageBase {
             first: true
             key: "input:kb_layout"
             label: Tr.tr("Layouts")
-            subtext: Tr.tr("Comma separated, e.g. us,de. Vietnamese typing is fcitx5 (Super+Space)")
+            subtext: Tr.tr("Comma separated, e.g. us,de. An input method (fcitx5) is separate: Super+Space switches it")
             placeholderText: "us"
         }
 

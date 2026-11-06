@@ -14,11 +14,13 @@ if [ -e /dev/dri/nvidia-dgpu ]; then
     unset _card _status
 fi
 
-# fcitx5 (Vietnamese via Bamboo). GTK uses Wayland text-input natively, so GTK_IM_MODULE is deliberately unset.
-export XMODIFIERS=@im=fcitx
-export QT_IM_MODULE=fcitx
-export QT_IM_MODULES="wayland;fcitx"
-export SDL_IM_MODULE=fcitx
+# fcitx5, if it's installed. GTK uses Wayland text-input natively, so GTK_IM_MODULE is deliberately unset.
+if command -v fcitx5 >/dev/null 2>&1; then
+    export XMODIFIERS=@im=fcitx
+    export QT_IM_MODULE=fcitx
+    export QT_IM_MODULES="wayland;fcitx"
+    export SDL_IM_MODULE=fcitx
+fi
 
 # No KDE in XDG_CURRENT_DESKTOP since Plasma went (2026-10-28): the keys moved from KWallet to gnome-keyring
 # (docs/dev/kde-removal.md, phase 3). Chromium / Electron pick their key store from it and an unknown desktop gets
@@ -26,6 +28,6 @@ export SDL_IM_MODULE=fcitx
 # flags files / launcher) by tools/keyring-switch.sh finish.
 export XDG_CURRENT_DESKTOP=Hyprland
 
-# Dates and times in Vietnamese (weekday / month names in the shell, end-4 widgets and apps of this session).
-# /etc/locale.conf sets every LC_* except LANG to en_US; only the time format changes here, numbers etc. stay en_US.
-export LC_TIME=vi_VN.UTF-8
+# Dates and times in another language than the system's (weekday / month names in the shell and this session's apps).
+# The locale must be generated (locale -a).
+# export LC_TIME=vi_VN.UTF-8
