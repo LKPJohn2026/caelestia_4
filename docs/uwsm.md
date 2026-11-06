@@ -24,7 +24,7 @@ Then log out and pick **Hyprland (uwsm-managed)**.
 | fcitx5, KDE Connect (+ indicator) | `custom/execs.lua` | `caelestia4-fcitx5`, `caelestia4-kdeconnectd`, `caelestia4-kdeconnect-indicator` |
 | hypridle, ydotoold | exec | packaged `hypridle`, `ydotool` units, started by `execs.lua` |
 | Apps (keybinds via `launch_first_available.sh`, launcher, dock, session restore) | children of Hyprland / the shell | own unit each (`uwsm-app --`), app-graphical.slice |
-| XDG autostart | not run | **masked** for Hyprland (`wayland-session-xdg-autostart@hyprland.desktop.target`) |
+| XDG autostart | not run | runs, except the entries of what's a unit here (`tools/uwsm-setup.sh` hides them in `~/.config/autostart`) |
 | Logout | logind Terminate | same (Caelestia session menu uses logind; uwsm-compatible). Don't use Hyprland's `exit`. |
 
 All caelestia4 units are `WantedBy=graphical-session.target` with `ConditionEnvironment=CAELESTIA4_UWSM=1`, so another
@@ -32,9 +32,9 @@ session that activates graphical-session.target (Plasma did, while it was instal
 by uwsm's `wayland-session@hyprland.desktop.target` (the first version did this): a target is implicitly ordered after
 what it wants, uwsm orders graphical-session.target after that target, and the units are `After=graphical-session.target`,
 so systemd found an ordering cycle at login and deleted the start jobs (no shell, hypridle, fcitx5, clipboard…).
-Packaged units (hypridle, ydotool) can't take the condition, so `execs.lua` starts them under uwsm. XDG autostart was
-masked while `XDG_CURRENT_DESKTOP` was `Hyprland:KDE` (every `OnlyShowIn=KDE` entry, plasmashell, powerdevil… would have
-matched); it stays masked, since the session's own services are units.
+Packaged units (hypridle, ydotool) can't take the condition, so `execs.lua` starts them under uwsm. Earlier versions masked XDG
+autostart (`wayland-session-xdg-autostart@hyprland.desktop.target`), while `XDG_CURRENT_DESKTOP` was `Hyprland:KDE`. An
+account that has the mask keeps it until `systemctl --user unmask` of that target.
 
 ## Launching apps and terminals
 Everything goes through `uwsm-app` (`services/AppLauncher.qml`, Hyprland `app()`/`bg()`, `launch_first_available.sh`):
