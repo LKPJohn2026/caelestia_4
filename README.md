@@ -30,20 +30,22 @@ A feature-by-feature comparison with both upstreams is in [docs/feature-comparis
 | **Control centre** | Caelestia's Nexus: networks (saved, hidden, IPv4, VPN), Bluetooth pairing, audio, apps, panels, colours |
 | **Workspaces** | Caelestia's special workspaces (music, communication, system monitor, todo) that start their apps on first use; overview, Alt+Tab, wallpaper parallax |
 | **Desktop** | Caelestia's desktop clock or end-4's cookie / digital clock, quote and weather widgets; video wallpapers (mpvpaper) |
-| **Recording** | gpu-screen-recorder (NVENC), pause / resume, region or full screen, path copied to the clipboard |
+| **Recording** | gpu-screen-recorder (hardware encoding), pause / resume, region or full screen, path copied to the clipboard |
 | **Lock screen** | hyprlock in Caelestia's layout: clock, weather, system, media, resources, notifications |
 | **Localisation** | full Vietnamese translation of both shells (end-4's JSON catalogue + Caelestia's gettext catalogue) |
 
 ## Status and requirements
 
-Built and used daily on **Arch-based systems** (CachyOS) with **Hyprland 0.55+** (the Lua config) under **uwsm**.
-It was made for one machine (an ultrawide 7680×2160 monitor at 1.5× scale, NVIDIA), without KDE Plasma since
-2026-10-28 (greetd + ReGreet, gnome-keyring, its own tray watcher and Qt / GTK theming). Other setups should work but
-are less tested.
+Supported on **Arch-based systems with systemd**, **Hyprland 0.55+** (the Lua config) and **uwsm**. It doesn't need KDE
+Plasma (greetd + ReGreet, gnome-keyring, its own tray watcher and Qt / GTK theming). The `sdata/dist-*` folders for other
+distros come from end-4 and don't cover what this fork adds, so they aren't a supported way to install it.
+
+It was developed on one machine (NVIDIA with an AMD iGPU, one ultrawide monitor at 1.5× scale). Other GPUs, several
+monitors, laptops and small screens are meant to work but are less tested: please report what doesn't.
 
 You need: Hyprland ≥ 0.55, uwsm, a Quickshell build matching your Qt (the `caelestia4-quickshell` PKGBUILD pins one),
-end-4's dependency metapackages (`sdata/dist-arch`), `qt6-m3shapes-git`, matugen, and the build tools for the
-Caelestia QML plugin (CMake, Ninja, Qt 6 dev files).
+end-4's dependency metapackages and this fork's (`sdata/dist-arch`, with `./setup install-deps`), and the packages built
+from `packaging/`.
 
 ## Install
 

@@ -1,13 +1,12 @@
-# caelestia4: Ollama as the user (not the packaged system service), with its model store on the games drive
-# next to LM Studio's GGUFs, so imported models are hard links to LM Studio's files (no second copy).
+# caelestia4: Ollama as the user (not the packaged system service). To share LM Studio's GGUFs without a second copy
+# (tools/ollama-import-lmstudio.sh hard-links them), keep the model store on the same drive: change OLLAMA_MODELS.
 [Unit]
 Description=Ollama (user)
 After=network-online.target local-fs.target
-RequiresMountsFor=/mnt/data
 
 [Service]
 ExecStart=/usr/bin/ollama serve
-Environment=OLLAMA_MODELS=/mnt/data/Users/your-user/.ollama/models
+Environment=OLLAMA_MODELS=%h/.ollama/models
 Environment=OLLAMA_HOST=127.0.0.1:11434
 Environment=OLLAMA_FLASH_ATTENTION=1
 Restart=on-failure
