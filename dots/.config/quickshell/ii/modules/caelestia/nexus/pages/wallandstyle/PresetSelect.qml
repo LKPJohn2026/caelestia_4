@@ -13,9 +13,9 @@ import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus.common
 
 // caelestia4: end4-pC presets: a wallpaper, desktop widgets, a lock screen wallpaper and an avatar each, applied by
-// scripts/presets/preset-import.py, which keeps a backup for Undo. Installed ones (the library) are applied with a
-// click; the gallery lists the community's (pctrade/end4-pCpresets, the main repo), Blapples/wallpapers' and those of any
-// repo added by its link (a copy of a preset the main repo has is skipped), installed on demand.
+// scripts/presets/preset-import.py, which keeps a backup for Undo. Two lists, each installed on demand and applied with a
+// click: the main repo's (pctrade/end4-pCpresets), and the third parties' (Blapples/wallpapers and any repo added by its
+// link; a copy of a preset the main repo has is skipped).
 // "Use presets" off puts back your own desktop (--disable) and refuses presets until it's on again (--enable)
 PageBase {
     id: root
@@ -38,20 +38,22 @@ PageBase {
     property bool toggling
     property bool toggleTo
 
-    // the gallery (--catalog --json): name -> entry, and the names shown (search, filter), in the catalog's order
+    // the lists (--catalog --json): name -> entry, and the names shown (search, filter)
     property var catalog: ({})
     property var catalogNames: []
     property real fetched // unix seconds, 0 = never
     property string catalogError
     property var thumbsTried: ({}) // name -> true: a preview asked for once (again after a refresh)
     property string search
-    property string sourceFilter: "all" // "all", "blapples", "community", "added"
-    property int shownCount: 24 // the gallery grows by this much with "Show more"
+    property bool installedOnly
+    property int mainCount: 24 // each list grows by this much with "Show more"
+    property int thirdCount: 24
+    property var recentNames: [] // the presets of a repo just added: first in their list
     property string installing // the preset being installed, offered to apply once it's in
     property string justInstalled
     property string toggleStatus // the last "Use presets" switch's outcome
 
-    // repos added by link (--add-source): the catalog's list of them, and what the last one came to
+    // the third parties (--add-source adds one): the catalog's list of them, and what the last one came to
     property var addedSources: [] // {repo, count}
     property string addMessage
     property string addSkipped
@@ -93,10 +95,6 @@ PageBase {
         root.addProc.running = true;
     }
 
-    function isAdded(p: var): bool {
-        return !!p && p.source !== "blapples" && p.source !== "community";
-    }
-
     // turned on or off from elsewhere (a terminal): what was said about the last switch is old
     onPresetsOnChanged: {
         if (toggleSettle.running) { // the script is done and the config has caught up: the switch shows the real state
@@ -115,28 +113,39 @@ PageBase {
         onTriggered: root.toggling = false
     }
 
-    readonly property var galleryNames: {
+    // the names of a list that pass the search and the filter, in the catalog's order (by title), the presets of a repo
+    // just added first. Installing doesn't move a preset: its second click, on the same spot, applies it
+    function namesOf(third: bool): var {
         const q = root.search.trim().toLowerCase();
-        return root.catalogNames.filter(n => {
+        const names = root.catalogNames.filter(n => {
             const p = root.catalog[n];
-            if (!p)
-                return false;
-            if (root.sourceFilter === "added" ? !root.isAdded(p) : root.sourceFilter !== "all" && p.source !== root.sourceFilter)
+            if (!p || (p.source !== "community") !== third || (root.installedOnly && !p.installed))
                 return false;
             return !q || `${p.title ?? ""} ${p.name} ${p.author ?? ""}`.toLowerCase().includes(q);
         });
+        const recent = n => root.recentNames.includes(n);
+        return [...names.filter(recent), ...names.filter(n => !recent(n))]; // (QML's sort isn't stable)
     }
 
-    // the gallery's items: replaced only when the names change, so a listing (a preview arriving) keeps the grid
-    property var shownNames: []
+    readonly property var mainNames: namesOf(false)
+    readonly property var thirdNames: namesOf(true)
+
+    // the items: replaced only when the names change, so a listing (a preview arriving) keeps the grid
+    property var mainShown: []
+    property var thirdShown: []
     function updateShown(): void {
-        const n = root.galleryNames.slice(0, root.shownCount);
-        if (n.join("\n") !== root.shownNames.join("\n"))
-            root.shownNames = n;
+        const m = root.mainNames.slice(0, root.mainCount);
+        if (m.join("\n") !== root.mainShown.join("\n"))
+            root.mainShown = m;
+        const t = root.thirdNames.slice(0, root.thirdCount);
+        if (t.join("\n") !== root.thirdShown.join("\n"))
+            root.thirdShown = t;
         thumbsDue.restart();
     }
-    onGalleryNamesChanged: updateShown()
-    onShownCountChanged: updateShown()
+    onMainNamesChanged: updateShown()
+    onThirdNamesChanged: updateShown()
+    onMainCountChanged: updateShown()
+    onThirdCountChanged: updateShown()
 
     // previews only for the presets on screen (all of them would be ~200 MB), each asked for once
     function fetchThumbs(): void {
@@ -144,7 +153,7 @@ PageBase {
             thumbsDue.restart();
             return;
         }
-        const names = root.shownNames.filter(n => root.catalog[n] && !root.catalog[n].preview && !root.thumbsTried[n]);
+        const names = [...root.mainShown, ...root.thirdShown].filter(n => root.catalog[n] && !root.catalog[n].preview && !root.thumbsTried[n]);
         if (names.length === 0)
             return;
         const tried = Object.assign({}, root.thumbsTried);
@@ -160,13 +169,9 @@ PageBase {
         onTriggered: root.fetchThumbs()
     }
 
-    // a preset's name as shown: community presets ("pctrade--name" in the library) say so
+    // a preset's name as shown
     function titleOf(p: var): string {
-        if (!p)
-            return "";
-        const title = p.title || p.name;
-        // TRANSLATORS: %1 = a community preset's name
-        return p.source === "community" ? Tr.tr("%1 (community)").arg(title) : title;
+        return p ? (p.title || p.name || "") : "";
     }
 
     // label while it runs (the script's own lines follow), done once it exits
@@ -229,6 +234,14 @@ PageBase {
                 try {
                     const d = JSON.parse(text);
                     root.presets = d.presets;
+                    // the installed ones at once: --catalog may take a while on a bad network
+                    if (root.catalogNames.length === 0 && d.presets.length > 0) {
+                        const map = {};
+                        for (const p of d.presets)
+                            map[p.name] = Object.assign({}, p, {installed: true});
+                        root.catalog = map;
+                        root.catalogNames = d.presets.map(p => p.name);
+                    }
                     root.current = d.current;
                     root.canUndo = d.canUndo;
                     root.workspaces = d.workspaces ?? {};
@@ -341,9 +354,10 @@ PageBase {
                 if (d.added > 0) {
                     sourceField.clear();
                     searchField.clear();
-                    root.sourceFilter = "added";
-                    filterRow.active = filterRow.menuItems[3];
-                    root.shownCount = 24;
+                    root.installedOnly = false;
+                    filterRow.active = filterRow.menuItems[0];
+                    root.recentNames = d.names ?? [];
+                    root.thirdCount = 24;
                 }
             }
         }
@@ -359,14 +373,6 @@ PageBase {
     readonly property Timer removeConfirm: Timer {
         interval: 4000
         onTriggered: root.removing = ""
-    }
-
-    // nothing added any more: the gallery isn't left showing an empty filter
-    onAddedSourcesChanged: {
-        if (root.addedSources.length === 0 && root.sourceFilter === "added" && !root.addProc.running) {
-            root.sourceFilter = "all";
-            filterRow.active = filterRow.menuItems[0];
-        }
     }
 
     // previews downloaded in the background, one "thumb <name>" line each: the catalog listed again a moment after
@@ -486,19 +492,98 @@ PageBase {
                 onClicked: root.run(["--forget"], Tr.tr("Forgetting…"), Tr.tr("Each workspace keeps the preset on"))
             }
 
+            // the main repo's presets
             SectionHeader {
-                // TRANSLATORS: %1 = how many presets are installed
-                text: root.presets.length > 0 ? Tr.tr("%1 installed: click one to apply it").arg(root.presets.length) : Tr.tr("Installed")
+                text: Tr.tr("Presets from pctrade/end4-pCpresets")
             }
 
-            StyledText {
+            RowButton {
+                first: true
+                disabled: root.catalogProc.running
+                icon: root.catalogProc.running || root.thumbsProc.running ? "hourglass_top" : "refresh"
+                text: root.catalogProc.running ? Tr.tr("Loading the presets…") : Tr.tr("Refresh the presets")
+                subtext: root.catalogError || (root.thumbsProc.running ? Tr.tr("Getting previews…") : root.fetchedText()) || Tr.tr("From GitHub; click a preset to install it, click again to apply it")
+                subLabel.color: root.catalogError ? Colours.palette.m3error : Colours.palette.m3outline
+                onClicked: root.listCatalog(true)
+            }
+
+            SelectRow {
+                id: filterRow
+
+                last: true
+                label: Tr.tr("Show")
+                // TRANSLATORS: %1 = how many presets of the main repo match, %2 = of third parties
+                subtext: Tr.tr("%1 from pctrade, %2 from third parties").arg(root.mainNames.length).arg(root.thirdNames.length)
+                holdsSelection: true
+                menuItems: [
+                    MenuItem {
+                        text: Tr.tr("All")
+                        value: "all"
+                    },
+                    MenuItem {
+                        text: Tr.tr("Installed")
+                        value: "installed"
+                    }
+                ]
+                onSelected: item => {
+                    root.installedOnly = item.value === "installed";
+                    root.mainCount = 24;
+                    root.thirdCount = 24;
+                }
+            }
+
+            SearchBar {
+                id: searchField
+
                 Layout.fillWidth: true
-                Layout.leftMargin: Tokens.padding.small
-                visible: root.presets.length === 0
-                text: Tr.tr("None yet: install some from the gallery below")
-                color: Colours.palette.m3outline
-                font: Tokens.font.label.medium
-                wrapMode: Text.WordWrap
+                Layout.topMargin: Tokens.spacing.small
+                Layout.bottomMargin: Tokens.spacing.small
+
+                placeholderText: Tr.tr("Search presets")
+                font: Tokens.font.body.medium
+                onTextChanged: {
+                    root.search = text;
+                    root.mainCount = 24;
+                    root.thirdCount = 24;
+                }
+            }
+
+            Component {
+                id: presetDelegate
+
+                PresetItem {
+                    required property string modelData
+                    readonly property var preset: root.catalog[modelData] ?? ({})
+                    readonly property string shownName: root.titleOf(preset)
+                    readonly property string givenTo: E4C.Config.options.background.workspacePresets ? root.workspacesOf(modelData) : ""
+                    // TRANSLATORS: %1 = a preset's name, %2 = who made it
+                    readonly property string credited: preset.author ? Tr.tr("%1 · by %2").arg(shownName).arg(preset.author) : shownName
+
+                    enabled: !root.runProc.running
+                    opacity: enabled ? 1 : 0.6
+                    source: preset.preview ?? ""
+                    badge: preset.installed ? Tr.tr("Installed") : ""
+                    actions: !!preset.installed
+                    // TRANSLATORS: %1 = a preset's name, %2 = the workspaces it's given to ("1, 3")
+                    text: (modelData === root.current ? "✓ " : "") + (givenTo ? Tr.tr("%1 · %2").arg(credited).arg(givenTo) : credited)
+                    onClicked: {
+                        if (preset.installed) {
+                            root.run([modelData], Tr.tr("Applying %1…").arg(shownName), Tr.tr("Applied %1").arg(shownName));
+                        } else {
+                            if (root.runProc.running)
+                                return;
+                            root.justInstalled = "";
+                            root.installing = modelData;
+                            root.run(["--install", modelData], Tr.tr("Installing %1…").arg(shownName), Tr.tr("Installed %1").arg(shownName));
+                        }
+                    }
+                    onUpdateClicked: root.run(["--update", modelData], Tr.tr("Updating %1…").arg(shownName), Tr.tr("%1 is up to date").arg(shownName))
+                    onUninstallClicked: {
+                        if (root.justInstalled === modelData)
+                            root.justInstalled = "";
+                        root.run(["--uninstall", modelData], Tr.tr("Uninstalling %1…").arg(shownName), Tr.tr("Uninstalled %1").arg(shownName));
+                    }
+                }
             }
 
             GridLayout {
@@ -509,34 +594,37 @@ PageBase {
                 columnSpacing: Tokens.spacing.large
 
                 Repeater {
-                    model: root.presets
-
-                    PresetItem {
-                        required property var modelData
-                        readonly property string onWorkspaces: E4C.Config.options.background.workspacePresets ? root.workspacesOf(modelData.name) : ""
-                        readonly property string shownName: root.titleOf(modelData)
-
-                        enabled: !root.runProc.running
-                        opacity: enabled ? 1 : 0.6
-                        // the gallery's small preview when there's one, else the preset's own
-                        source: root.catalog[modelData.name]?.preview || modelData.preview
-                        actions: true
-
-                        // TRANSLATORS: %1 = a preset's name, %2 = the workspaces it's given to ("1, 3")
-                        text: (modelData.name === root.current ? "✓ " : "") + (onWorkspaces ? Tr.tr("%1 · %2").arg(shownName).arg(onWorkspaces) : shownName)
-                        onClicked: root.run([modelData.name], Tr.tr("Applying %1…").arg(shownName), Tr.tr("Applied %1").arg(shownName))
-                        onUpdateClicked: root.run(["--update", modelData.name], Tr.tr("Updating %1…").arg(shownName), Tr.tr("%1 is up to date").arg(shownName))
-                        onUninstallClicked: root.run(["--uninstall", modelData.name], Tr.tr("Uninstalling %1…").arg(shownName), Tr.tr("Uninstalled %1").arg(shownName))
-                    }
+                    model: root.mainShown
+                    delegate: presetDelegate
                 }
             }
 
-            // the gallery: every preset of all sources, installed with a click
-            SectionHeader {
-                text: Tr.tr("Gallery")
+            StyledText {
+                Layout.fillWidth: true
+                Layout.leftMargin: Tokens.padding.small
+                visible: root.mainNames.length === 0 && !root.catalogProc.running
+                text: root.catalogNames.length === 0 ? Tr.tr("Nothing listed yet: refresh the presets (it needs the internet once)") : Tr.tr("No preset matches")
+                color: Colours.palette.m3outline
+                font: Tokens.font.label.medium
+                wrapMode: Text.WordWrap
             }
 
-            // the address bar: a repo's link, Enter adds its presets that the list doesn't have yet
+            RowButton {
+                first: true
+                last: true
+                visible: root.mainNames.length > root.mainCount
+                icon: "expand_more"
+                // TRANSLATORS: %1 = how many more presets the list has
+                text: Tr.tr("Show more (%1 left)").arg(root.mainNames.length - root.mainCount)
+                onClicked: root.mainCount += 24
+            }
+
+            // the third parties: Blapples and the repos added by link
+            SectionHeader {
+                text: Tr.tr("From third parties")
+            }
+
+            // the address bar: a repo's link, Enter adds its presets that the main repo doesn't have
             SearchBar {
                 id: sourceField
 
@@ -593,7 +681,7 @@ PageBase {
                     disabled: root.runProc.running
                     icon: root.removing === modelData.repo ? "delete_forever" : "link"
                     text: modelData.repo
-                    // TRANSLATORS: %1 = how many presets of an added repo the gallery shows
+                    // TRANSLATORS: %1 = how many presets of a third party's are listed
                     subtext: root.removing === modelData.repo ? Tr.tr("Click again to take it out of the list (installed presets stay)") : Tr.tr("%1 presets · click to remove the repo").arg(modelData.count)
                     onClicked: {
                         if (root.removing === sourceRow.modelData.repo) {
@@ -611,118 +699,28 @@ PageBase {
                 }
             }
 
-            RowButton {
-                first: true
-                Layout.topMargin: root.addedSources.length > 0 ? Tokens.spacing.small : 0
-                disabled: root.catalogProc.running
-                icon: root.catalogProc.running || root.thumbsProc.running ? "hourglass_top" : "refresh"
-                text: root.catalogProc.running ? Tr.tr("Loading the gallery…") : Tr.tr("Refresh the gallery")
-                subtext: root.catalogError || (root.thumbsProc.running ? Tr.tr("Getting previews…") : root.fetchedText()) || Tr.tr("From Blapples/wallpapers and pctrade/end4-pCpresets on GitHub")
-                subLabel.color: root.catalogError ? Colours.palette.m3error : Colours.palette.m3outline
-                onClicked: root.listCatalog(true)
-            }
-
-            SelectRow {
-                id: filterRow
-
-                last: true
-                label: Tr.tr("Show")
-                // TRANSLATORS: %1 = how many gallery presets match the search and filter
-                subtext: Tr.tr("%1 presets").arg(root.galleryNames.length)
-                holdsSelection: true
-                menuItems: [
-                    MenuItem {
-                        text: Tr.tr("All")
-                        value: "all"
-                    },
-                    MenuItem {
-                        text: Tr.tr("Blapples")
-                        value: "blapples"
-                    },
-                    MenuItem {
-                        text: Tr.tr("Community")
-                        value: "community"
-                    },
-                    MenuItem {
-                        text: Tr.tr("Added repos")
-                        value: "added"
-                    }
-                ]
-                onSelected: item => {
-                    root.sourceFilter = item.value;
-                    root.shownCount = 24;
-                }
-            }
-
-            SearchBar {
-                id: searchField
-
-                Layout.fillWidth: true
-                Layout.topMargin: Tokens.spacing.small
-                Layout.bottomMargin: Tokens.spacing.small
-
-                placeholderText: Tr.tr("Search presets")
-                font: Tokens.font.body.medium
-                onTextChanged: {
-                    root.search = text;
-                    root.shownCount = 24;
-                }
-            }
-
             GridLayout {
                 Layout.fillWidth: true
+                Layout.topMargin: Tokens.spacing.medium
 
                 columns: Math.max(1, Config.nexus.wallpapersPerRow - 1)
                 rowSpacing: Tokens.spacing.medium
                 columnSpacing: Tokens.spacing.large
 
                 Repeater {
-                    model: root.shownNames
-
-                    PresetItem {
-                        required property string modelData
-                        readonly property var preset: root.catalog[modelData] ?? ({})
-                        readonly property string shownName: root.titleOf(preset)
-
-                        enabled: !root.runProc.running
-                        opacity: enabled ? 1 : 0.6
-                        source: preset.preview ?? ""
-                        badge: preset.installed ? Tr.tr("Installed") : preset.source === "community" ? Tr.tr("Community") : root.isAdded(preset) ? Tr.tr("Added") : ""
-                        // TRANSLATORS: %1 = a preset's name, %2 = who made it
-                        text: preset.author ? Tr.tr("%1 · by %2").arg(preset.title || preset.name).arg(preset.author) : (preset.title || preset.name || "")
-                        onClicked: {
-                            if (preset.installed) {
-                                root.run([modelData], Tr.tr("Applying %1…").arg(shownName), Tr.tr("Applied %1").arg(shownName));
-                            } else {
-                                if (root.runProc.running)
-                                    return;
-                                root.justInstalled = "";
-                                root.installing = modelData;
-                                root.run(["--install", modelData], Tr.tr("Installing %1…").arg(shownName), Tr.tr("Installed %1").arg(shownName));
-                            }
-                        }
-                    }
+                    model: root.thirdShown
+                    delegate: presetDelegate
                 }
-            }
-
-            StyledText {
-                Layout.fillWidth: true
-                Layout.leftMargin: Tokens.padding.small
-                visible: root.galleryNames.length === 0 && !root.catalogProc.running
-                text: root.catalogNames.length === 0 ? Tr.tr("Nothing listed yet: refresh the gallery (it needs the internet once)") : Tr.tr("No preset matches")
-                color: Colours.palette.m3outline
-                font: Tokens.font.label.medium
-                wrapMode: Text.WordWrap
             }
 
             RowButton {
                 first: true
                 last: true
-                visible: root.galleryNames.length > root.shownCount
+                visible: root.thirdNames.length > root.thirdCount
                 icon: "expand_more"
-                // TRANSLATORS: %1 = how many more presets the gallery has
-                text: Tr.tr("Show more (%1 left)").arg(root.galleryNames.length - root.shownCount)
-                onClicked: root.shownCount += 24
+                // TRANSLATORS: %1 = how many more presets the list has
+                text: Tr.tr("Show more (%1 left)").arg(root.thirdNames.length - root.thirdCount)
+                onClicked: root.thirdCount += 24
             }
         }
     }

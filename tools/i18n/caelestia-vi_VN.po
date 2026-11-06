@@ -4561,9 +4561,6 @@ msgctxt "chemical element"
 msgid "Potassium"
 msgstr "Kali"
 
-msgid "%1 (community)"
-msgstr "%1 (cộng đồng)"
-
 msgid "%1 installed: click one to apply it"
 msgstr "Đã cài %1: nhấn vào một preset để áp dụng"
 
@@ -4588,14 +4585,8 @@ msgstr "Áp dụng %1"
 msgid "Applying a preset replaces these. With \"Save moves to the preset\" on, a widget added or removed here goes into the preset applied last."
 msgstr "Áp dụng một preset sẽ thay thế các widget này. Khi bật \"Lưu vị trí vào preset\", widget thêm hoặc gỡ ở đây sẽ được lưu vào preset áp dụng gần nhất."
 
-msgid "Blapples"
-msgstr "Blapples"
-
 msgid "Calendar"
 msgstr "Lịch"
-
-msgid "Community"
-msgstr "Cộng đồng"
 
 msgid "Every widget, Caelestia's clock and visualiser too"
 msgstr "Mọi widget, cả đồng hồ và hiệu ứng âm thanh của Caelestia"
@@ -4605,9 +4596,6 @@ msgstr "Đã tải lúc %1"
 
 msgid "From Blapples/wallpapers and pctrade/end4-pCpresets on GitHub"
 msgstr "Từ Blapples/wallpapers và pctrade/end4-pCpresets trên GitHub"
-
-msgid "Gallery"
-msgstr "Thư viện"
 
 msgid "Getting previews…"
 msgstr "Đang tải ảnh xem trước…"
@@ -4632,9 +4620,6 @@ msgstr "Kiểu và vị trí: ở mục Đồng hồ trên màn nền phía trê
 
 msgid "Its style: Audio visualiser above"
 msgstr "Kiểu: ở mục Hiệu ứng âm thanh phía trên"
-
-msgid "Loading the gallery…"
-msgstr "Đang tải thư viện…"
 
 msgid "Media player"
 msgstr "Trình phát nhạc"
@@ -4674,9 +4659,6 @@ msgstr "Đang áp dụng lại preset gần nhất…"
 
 msgid "Putting your own desktop back…"
 msgstr "Đang khôi phục màn nền của bạn…"
-
-msgid "Refresh the gallery"
-msgstr "Làm mới thư viện"
 
 msgid "Remove all from the desktop"
 msgstr "Gỡ tất cả khỏi màn nền"
@@ -4759,9 +4741,6 @@ msgstr "Thêm repo: dán liên kết GitHub rồi nhấn Enter"
 msgid "Added"
 msgstr "Đã thêm"
 
-msgid "Added repos"
-msgstr "Repo đã thêm"
-
 msgid "Click again to take it out of the list (installed presets stay)"
 msgstr "Bấm lần nữa để gỡ khỏi danh sách (preset đã cài vẫn giữ lại)"
 
@@ -4809,3 +4788,24 @@ msgstr "Không thêm được repo"
 
 msgid "and %1 more"
 msgstr "và %1 preset khác"
+
+msgid "%1 from pctrade, %2 from third parties"
+msgstr "%1 từ pctrade, %2 từ bên thứ ba"
+
+msgid "From GitHub; click a preset to install it, click again to apply it"
+msgstr "Từ GitHub; bấm vào một preset để cài, bấm lần nữa để áp dụng"
+
+msgid "From third parties"
+msgstr "Từ bên thứ ba"
+
+msgid "Loading the presets…"
+msgstr "Đang tải danh sách preset…"
+
+msgid "Nothing listed yet: refresh the presets (it needs the internet once)"
+msgstr "Chưa có gì trong danh sách: hãy làm mới (cần mạng một lần)"
+
+msgid "Presets from pctrade/end4-pCpresets"
+msgstr "Preset từ pctrade/end4-pCpresets"
+
+msgid "Refresh the presets"
+msgstr "Làm mới danh sách preset"
