@@ -1,8 +1,10 @@
 # Installing caelestia_4
 
 The result is a **Hyprland (uwsm-managed)** session on the login screen running the Caelestia-design shell on end-4's
-illogical-impulse. It no longer shares an account with KDE Plasma: since 2026-10-28 it provides what Plasma did itself
-(login screen, key store, tray, Qt / GTK theming; see below). Nothing here needs root except installing packages.
+illogical-impulse. It doesn't need KDE Plasma: it provides the login screen, key store, tray and Qt / GTK theming itself
+(see below). Nothing here needs root except installing packages, the fonts and the login screen.
+
+**Arch-based systems with systemd only** (`sdata/dist-*` for other distros come from end-4 and don't cover this fork).
 
 > [!WARNING]
 > Read the scripts before running them. Take a snapshot first if your system supports it (`snapper`, Timeshift…).
@@ -42,7 +44,7 @@ git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
 5. Optional, enables the matching features:
    - `gpu-screen-recorder` — screen recording with pause
    - `mpvpaper` — video wallpapers
-   - `thunar thunar-volman tumbler gvfs` — the file manager the session uses
+   - `thunar thunar-volman tumbler gvfs` — a file manager to fall back on without Atlas
    - `spotify-launcher` + `spicetify-cli` (AUR) — Spotify with the Caelestia theme
 
 ## 2. Install
@@ -51,6 +53,13 @@ git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
 tools/build-caelestia-plugin.sh   # the Caelestia QML plugin, into ~/.local/lib/qt6/qml (no sudo)
 tools/install-main.sh             # the configs and the uwsm session (tools/uwsm-setup.sh: env, user units, login entry);
                                   # backs up what it replaces to ~/.local/state/caelestia4/backup-*
+```
+
+Two steps that need sudo (each says what it does first):
+
+```bash
+tools/fonts-install.sh            # fonts no package provides (the lock screen's, the presets')
+tools/greetd-setup.sh             # optional: the login screen (greetd + ReGreet), once the session has its colours
 ```
 
 Log out and pick **Hyprland (uwsm-managed)**. The shell runs as the `caelestia4-shell` user unit
@@ -84,13 +93,14 @@ The lock screen is hyprlock, run by `scripts/caelestia4/hyprlock-guard.sh`, whic
 session is locked. Its output and exits are in `journalctl -t hyprlock -t hyprlock-guard`; after a failure, Hyprland's
 log is copied to `~/.local/state/caelestia4/hyprland-lockfail.log`.
 
-**Automatic suspend is off (Power & idle: suspend "Never") since 2026-10-30.** On waking from suspend the G95NC drops
-off DP 2.1 and comes back, and Hyprland 0.57 disconnects a client that was drawing with NVIDIA's explicit sync at that
+The machine suspends after 15 idle minutes by default (Nexus → Power & idle).
+
+**NVIDIA with a monitor that drops off its link on wake** (seen with a Samsung G95NC on DP 2.1): set suspend to "Never".
+The monitor comes back, and Hyprland 0.57 disconnects a client that was drawing with NVIDIA's explicit sync at that
 moment (`wp_linux_drm_syncobj_surface_v1 error 3: Missing buffer`). The victim varies: hyprlock (the "lock screen
 died" screen) or Xwayland (every X11 app, Steam included, until you log out and back in; Hyprland doesn't start
-Xwayland again). Locking and turning the screen off are safe: DPMS keeps the DP link up. A manual suspend still works
-and can still hit this. DPMS off/on doesn't reproduce it; test with
-`loginctl lock-session; sleep 2; systemctl suspend`.
+Xwayland again). Locking and turning the screen off are safe: DPMS keeps the DP link up. A manual suspend can still hit
+this. DPMS off/on doesn't reproduce it; test with `loginctl lock-session; sleep 2; systemctl suspend`.
 
 If the lock screen died, from a TTY (Ctrl+Alt+F3):
 
@@ -105,9 +115,13 @@ turned off again in each new Hyprland session.
 ## Updating
 
 ```bash
-git pull
+git pull --recurse-submodules
 tools/install-main.sh
 ```
+
+It rebuilds the Caelestia plugin when its source changed and updates the session's env and units (log out and in for
+those). XDG autostart was masked for this session by earlier versions, and stays so until you run
+`systemctl --user unmask wayland-session-xdg-autostart@hyprland.desktop.target`.
 
 Maintainers: Caelestia is merged with `tools/sync-upstreams.sh`. end-4 is a vendored library since 2026-10-27, not an
 upstream to merge: `tools/sync-end4.sh` lists its new commits (and open PRs) since `tools/end4-reviewed`, `pick SHA`
@@ -122,19 +136,18 @@ applies the chosen ones (changes to files removed here stay removed), `mark` rec
 
 ## Without Plasma
 
-Plasma was removed on 2026-10-28 (docs/dev/kde-removal.md has the plan, what went wrong and how it was checked). What
-it provided, and what does it here:
+docs/dev/kde-removal.md has how Plasma was replaced. What it provided, and what does it here:
 
 | Plasma had | Here |
 |---|---|
 | Login screen (plasmalogin) | greetd + ReGreet in a Hyprland of its own: `tools/greetd-setup.sh` (re-run it to refresh its colours / wallpaper) |
-| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by greetd's PAM; `tools/keyring-switch.sh` moved KWallet's keys |
+| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by greetd's PAM; `tools/keyring-switch.sh` moves an existing KWallet's keys |
 | Tray registry (kded6) | `caelestia4-sni-watcher` (docs/uwsm.md) |
 | Qt theme / colours | qtengine (`packaging/caelestia4-qtengine`) + Darkly, colours from caelestia-cli (cli.json enableQt) |
 | GTK theme / colours | adw-gtk3 + caelestia-cli's gtk.css (enableGtk) |
 | KDE portal | Wormhole's Open / Save dialogs, GTK's as the fallback |
 
-Brave, Vesktop and Claude read their keys with `--password-store=gnome-libsecret` (their flags files / launcher):
-Chromium and Electron pick the key store from `XDG_CURRENT_DESKTOP`, and an unknown desktop (Hyprland) would give them
+Chromium-based browsers and Electron apps read their keys with `--password-store=gnome-libsecret` (`install-main.sh`
+writes the flags files you don't have; Claude's is its launcher, by `tools/keyring-switch.sh`): Chromium and Electron pick the key store from `XDG_CURRENT_DESKTOP`, and an unknown desktop (Hyprland) would give them
 the unencrypted "basic" store. Before removing packages, check what pacman can't see: QML imports
 (org.kde.syntaxhighlighting is one), commands the scripts call, Qt image plugins.

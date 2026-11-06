@@ -202,7 +202,7 @@ AbstractBackgroundWidget {
                             Layout.fillWidth: true
                             text: Translation.tr("Hi, %1!").arg(root.username)
                             font.pixelSize: Appearance.font.pixelSize.normal
-                            // caelestia4: a long name ("Chào your-user!") shrinks to fit before it elides
+                            // caelestia4: a long name shrinks to fit before it elides
                             fontSizeMode: Text.HorizontalFit
                             minimumPixelSize: Appearance.font.pixelSize.smaller
                             font.weight: Font.Bold
