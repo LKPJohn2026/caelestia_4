@@ -76,7 +76,9 @@ except (OSError, ValueError):
 def tr(text):
     return (catalogue.get(text) or text).removesuffix("/*keep*/").strip()
 open(os.path.join(out, "regreet.toml"), "w").write(fill("regreet.toml.in", {
-    "GREETING": tr("Welcome back!"), "DATE_FORMAT": tr("%A, %d %B"),
+    "GREETING": tr("Welcome back!"),
+    # with words of its own only in the clock's locale: weekday and month names come from that
+    "DATE_FORMAT": tr("%A, %d %B") if ui.split("_")[0] == locale.split("_")[0] else "%A, %d %B",
     "BACKGROUND_PATH": bg_path, "DARK": "true" if dark else "false", "DARK_SUFFIX": "-dark" if dark else "",
     "ICON_THEME": "breeze-dark" if dark else "breeze", "LOCALE": locale}))
 config = open(os.path.join(src, "config.toml")).read()

@@ -129,7 +129,8 @@ applies the chosen ones (changes to files removed here stay removed), `mark` rec
 
 ## Undo
 
-- Other desktops were not changed: log into them as usual.
+- Other desktops keep working: log into them as usual. What's shared by the account: the flags files
+  (`~/.config/*-flags.conf`) that set the browsers' key store.
 - Restore from `~/.local/state/caelestia4/backup-*`, or delete
   `~/.config/{quickshell/ii,hypr,matugen,illogical-impulse,caelestia4}` and the `caelestia4-*` units in
   `~/.config/systemd/user/`.

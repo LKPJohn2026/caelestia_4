@@ -240,10 +240,15 @@ PY
 # caelestia4: Chromium and Electron pick their key store from the desktop's name, and an unknown one (Hyprland) gets the
 # unencrypted "basic" store: flags for those without a flags file of the user's (tools/keyring-switch.sh moved an old
 # KWallet's keys, a separate matter)
-for f in chrome code thorium; do copy_file_if_missing "$DOTS/$f-flags.conf" "$CFG/$f-flags.conf"; done
-for f in chromium brave brave-origin vesktop electron; do
-  [[ -e "$CFG/$f-flags.conf" ]] || printf '# caelestia4: keys in gnome-keyring (libsecret)\n--password-store=gnome-libsecret\n' > "$CFG/$f-flags.conf"
-done
+# An account with a KWallet keeps its keys there until it's moved: the flag alone would lock its apps out of them
+if [[ -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwalletd/kdewallet.kwl" && ! -e "$CFG/brave-flags.conf" && ! -e "$CFG/chrome-flags.conf" ]]; then
+  warn "this account has a KWallet: tools/keyring-switch.sh moves its keys and sets the browsers' key store"
+else
+  for f in chrome code thorium; do copy_file_if_missing "$DOTS/$f-flags.conf" "$CFG/$f-flags.conf"; done
+  for f in chromium brave brave-origin vesktop electron; do
+    [[ -e "$CFG/$f-flags.conf" ]] || printf '# caelestia4: keys in gnome-keyring (libsecret)\n--password-store=gnome-libsecret\n' > "$CFG/$f-flags.conf"
+  done
+fi
 
 # ---- dirs caelestia-cli would normally create ----
 mkdir -p "$STATE/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"

@@ -24,14 +24,15 @@ tr_() {
     shift
     for arg in "$@"; do
         n=$((n + 1))
-        text=${text//%$n/$arg}
+        text=${text//%$n/"$arg"}
     done
     printf '%s' "$text"
 }
 
 # A label and the spaces up to a column (characters, whatever the locale's charset)
 tr_pad() {
-    local LC_ALL=C.UTF-8 pad=$(($2 - ${#1}))
+    local LC_ALL=C.UTF-8
+    local pad=$(($2 - ${#1}))
     ((pad < 1)) && pad=1
     printf '%s%*s' "$1" "$pad" ''
 }

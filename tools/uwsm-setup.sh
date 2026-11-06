@@ -11,7 +11,8 @@
 #  - app-graphical.slice drop-in: systemd-oomd kills the single app scope under sustained memory pressure
 #  - packaged units (hypridle, ydotool) are started by hypr/hyprland/execs.lua under uwsm; they can't take the
 #    condition
-#  - XDG autostart stays on, as on any desktop, except for the entries of what runs as a unit here (a second copy)
+#  - XDG autostart stays on, as on any desktop, except in this session for the entries of what runs as a unit here (a
+#    second copy): NotShowIn=Hyprland, so another desktop on this account still starts them
 # The plain "Hyprland" session keeps working as before (the config checks CAELESTIA4_UWSM).
 set -euo pipefail
 
@@ -76,11 +77,17 @@ if [[ -e /usr/share/wayland-sessions/hyprland.desktop ]]; then
   say "  sudo rm /usr/share/wayland-sessions/hyprland.desktop"
 fi
 
-# what the units above run has an autostart entry too (a copy of the user's, if any, wins over the system's)
+# what the units above run has an autostart entry too; a copy of the user's, if any, stays as it is
 mkdir -p "$CFG/autostart"
 hide() { # hide <unit that replaces it> <desktop entry>
-  [[ " ${enable[*]} " == *" $1 "* && -e "/etc/xdg/autostart/$2" && ! -e "$CFG/autostart/$2" ]] || return 0
-  printf '[Desktop Entry]\nType=Application\nName=%s\nHidden=true\n' "${2%.desktop}" > "$CFG/autostart/$2"
+  local sys="/etc/xdg/autostart/$2" own="$CFG/autostart/$2"
+  [[ " ${enable[*]} " == *" $1 "* && -e "$sys" && ! -e "$own" ]] || return 0
+  grep -q '^OnlyShowIn=' "$sys" && return 0 # not shown here anyway, unless it names Hyprland
+  if grep -q '^NotShowIn=' "$sys"; then
+    sed 's/^NotShowIn=\(.*[^;]\);*$/NotShowIn=\1;Hyprland;/' "$sys" > "$own"
+  else
+    sed '0,/^\[Desktop Entry\]$/s//[Desktop Entry]\nNotShowIn=Hyprland;/' "$sys" > "$own"
+  fi
 }
 hide caelestia4-fcitx5.service org.fcitx.Fcitx5.desktop
 hide caelestia4-kdeconnectd.service org.kde.kdeconnect.daemon.desktop
