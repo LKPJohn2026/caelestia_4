@@ -9,9 +9,9 @@ calendar, media, custom image, user card, world clock, resources, notes, timers,
 Widget positions stay in the preset's 1920x1080 coordinates (background.widgets.canvas); each screen scales the room
 around each widget to its own size, so widgets against an edge stay there on a 32:9 screen.
 
-Presets come from these places, browsed and installed one at a time: the community's pctrade/end4-pCpresets, the main
-repo (installed as pctrade--<name>, as end4-pC does), Blapples/wallpapers (plain names), and any GitHub repo you add
-(--add-source, installed as <owner>--<repo>--<name>). A preset of another repo that the main repo already has (the same
+Presets come from pctrade/end4-pCpresets, the main repo (installed as pctrade--<name>, as end4-pC does), and from third
+parties, browsed and installed one at a time: Blapples/wallpapers (plain names; it can be taken out too) and any GitHub
+repo you add (--add-source, installed as <owner>--<repo>--<name>). A preset of another repo that the main repo already has (the same
 preset file, the same preview.png, or the same name with a picture in common) isn't listed, unless it's installed.
 
   tools/preset-import.py --catalog [--refresh] [--json]
@@ -130,14 +130,12 @@ COMMUNITY = "pctrade--"  # the community's presets in the library (end4-pC names
 # community's are whole in their folders; their authors are in a branch of their own
 REPO = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/(?!\.+$)[A-Za-z0-9._-]{1,100}")
 BRANCH = re.compile(r"[A-Za-z0-9._][A-Za-z0-9._/-]{0,200}")
-SOURCES = [
-    {"id": "blapples", "repo": "Blapples/wallpapers", "branch": "main", "prefix": "", "rootWallpapers": True,
-     "author": "Blapples"},
-    {"id": "community", "repo": "pctrade/end4-pCpresets", "branch": "main", "prefix": COMMUNITY,
-     "authors": "gallery-data"},
-]
-
-MAIN_SOURCE = SOURCES[1]  # the main repo for presets: another repo's copy of one of its presets is a duplicate
+# the main repo for presets (its id "community": what end4-pC calls it, in the kept catalog) and the third parties that
+# come with the shell; others are added by link. A third party's copy of a main repo's preset is a duplicate
+MAIN_SOURCE = {"id": "community", "repo": "pctrade/end4-pCpresets", "branch": "main", "prefix": COMMUNITY,
+               "authors": "gallery-data"}
+BLAPPLES = {"id": "blapples", "repo": "Blapples/wallpapers", "branch": "main", "prefix": "", "rootWallpapers": True,
+            "author": "Blapples"}
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
 WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "worldClock", "resources", "notes", "timers",
@@ -267,7 +265,7 @@ def safe_name(name):
 
 
 def added_source(repo, branch):
-    """A repo added by link, as SOURCES has them; None if the file's entry isn't one"""
+    """A repo added by link, as MAIN_SOURCE has it; None if the file's entry isn't one"""
     if not (isinstance(repo, str) and isinstance(branch, str) and REPO.fullmatch(repo) and valid_branch(branch)):
         return None
     owner, name = repo.split("/")
@@ -279,23 +277,36 @@ def valid_branch(branch):
     return bool(BRANCH.fullmatch(branch)) and ".." not in branch and not branch.endswith("/")
 
 
-def added_sources():
+def added_entries():
     try:
         entries = load(ADDED_SOURCES)
-    except (OSError, ValueError):
+    except (OSError, ValueError, RecursionError):
         return []
-    found = [added_source(e.get("repo"), e.get("branch")) for e in entries if isinstance(e, dict)] \
-        if isinstance(entries, list) else []
+    return [e for e in entries if isinstance(e, dict)] if isinstance(entries, list) else []
+
+
+def added_sources():
+    found = [added_source(e.get("repo"), e.get("branch")) for e in added_entries()]
     return [s for s in found if s]
 
 
-def save_added_sources(added):
-    ADDED_SOURCES.parent.mkdir(parents=True, exist_ok=True)
-    save(ADDED_SOURCES, [{"repo": s["repo"], "branch": s["branch"]} for s in added])
+def blapples_off():
+    """Blapples taken out of the list by hand"""
+    return any(e.get("repo") == BLAPPLES["repo"] and e.get("off") is True for e in added_entries())
+
+
+def save_added_sources(added, off=None):
+    off = blapples_off() if off is None else off
+    save(ADDED_SOURCES, ([{"repo": BLAPPLES["repo"], "off": True}] if off else [])
+         + [{"repo": s["repo"], "branch": s["branch"]} for s in added])
+
+
+def third_parties():
+    return ([] if blapples_off() else [BLAPPLES]) + added_sources()
 
 
 def all_sources():
-    return SOURCES + added_sources()
+    return [MAIN_SOURCE] + third_parties()
 
 
 def plain_name(name):
@@ -576,7 +587,7 @@ def duplicates(cache):
     says nothing (Blapples' asa_mitaka and pctrade's are different presets; many names are like Nord or Black), and nor
     does a picture alone (the main repo's own different presets share wallpapers)"""
     shas, names, dup = {}, {}, {}
-    for src in [MAIN_SOURCE] + [s for s in all_sources() if s is not MAIN_SOURCE]:
+    for src in all_sources():
         new_shas, new_names = {}, {}
         for name, p in sorted(((cache["sources"].get(src["id"]) or {}).get("presets") or {}).items()):
             files = p["files"]
@@ -671,7 +682,10 @@ def show_catalog(refresh, as_json):
     entries = catalog_entries(cache)
     fetched = [s["fetched"] for s in cache["sources"].values() if "fetched" in s]
     if as_json:
-        added = [{"repo": s["repo"], "count": sum(e["source"] == s["id"] for e in entries)} for s in added_sources()]
+        # (not the installed ones it doesn't list: a preset of a plain name may be yours)
+        added = [{"repo": s["repo"], "count": sum(e["source"] == s["id"] and e["name"] in
+                                                  (cache["sources"].get(s["id"]) or {}).get("presets", {}) for e in entries)}
+                 for s in third_parties()]
         print(json.dumps({"presets": entries, "fetched": min(fetched) if fetched else 0, "error": error,
                           "sources": added}, ensure_ascii=False))
         return
@@ -964,9 +978,44 @@ def list_added(src, wanted):
     raise SourceError("not_found", f"{src['repo']} has no branch {src['branch']}")
 
 
+def compare_and_keep(src, listed, keep, drop):
+    """A source's list against the main repo's as it is now: kept (keep()) if it has something new, else dropped (drop()).
+    What the result says"""
+    if not listed["presets"]:
+        raise SourceError("no_presets", f"{src['repo']} has no presets (each one a folder with one .json and a picture)")
+    cache, _ = catalog()
+    stale = False
+    try:  # not with a list hours old
+        cache["sources"][MAIN_SOURCE["id"]] = list_source(MAIN_SOURCE)
+    except NetError as e:
+        stale = True
+        if not (cache["sources"].get(MAIN_SOURCE["id"]) or {}).get("presets"):
+            raise net_problem(e) from None
+    cache["sources"][src["id"]] = listed
+    keep()  # duplicates() and the list below go by the file
+    dup = duplicates(cache)
+    new = sorted(n for n in listed["presets"] if n not in dup)
+    if not new:  # nothing to show: not kept
+        drop()
+        del cache["sources"][src["id"]]
+    CACHE.mkdir(parents=True, exist_ok=True)
+    save(CATALOG, cache)
+    return {"ok": True, "repo": src["repo"], "total": len(listed["presets"]), "added": len(new), "names": new,
+            "skipped": [{"name": n, "of": dup[n]} for n in sorted(listed["presets"]) if n in dup],
+            "saved": bool(new), "stale": stale}
+
+
 def add_source(link):
     """A repo's presets into the catalog, against the main repo's list as it is now: what the result says"""
     repo, wanted = parse_link(link)
+    if repo.lower() == BLAPPLES["repo"].lower() and blapples_off():  # back in the list: it comes with the shell
+        try:
+            listed = list_source(BLAPPLES)
+        except NetError as e:
+            raise net_problem(e) from None
+        added = added_sources()
+        return compare_and_keep(BLAPPLES, listed, lambda: save_added_sources(added, off=False),
+                                lambda: save_added_sources(added, off=True))
     known = {s["repo"].lower() for s in all_sources()}
     if repo.lower() in known:
         raise SourceError("already", f"{repo} is in the list already")
@@ -991,39 +1040,23 @@ def add_source(link):
     if not src:
         raise SourceError("bad_link", f"not a link to a GitHub repo: {link}")
     src, listed = list_added(src, wanted)
-    if not listed["presets"]:
-        raise SourceError("no_presets", f"{full} has no presets (each one a folder with one .json and a picture)")
-
-    cache, _ = catalog()
-    stale = False
-    try:  # compared with what the main repo has now, not with a list hours old
-        cache["sources"][MAIN_SOURCE["id"]] = list_source(MAIN_SOURCE)
-    except NetError as e:
-        stale = True
-        if not (cache["sources"].get(MAIN_SOURCE["id"]) or {}).get("presets"):
-            raise net_problem(e) from None
-    cache["sources"][src["id"]] = listed
-    added = added_sources() + [src]
-    save_added_sources(added)  # duplicates() and the list below go by the file
-    dup = duplicates(cache)
-    new = sorted(n for n in listed["presets"] if n not in dup)
-    if not new:  # nothing to show: not kept
-        save_added_sources(added[:-1])
-        del cache["sources"][src["id"]]
-    CACHE.mkdir(parents=True, exist_ok=True)
-    save(CATALOG, cache)
-    return {"ok": True, "repo": full, "total": len(listed["presets"]), "added": len(new), "names": new,
-            "skipped": [{"name": n, "of": dup[n]} for n in sorted(listed["presets"]) if n in dup],
-            "saved": bool(new), "stale": stale}
+    added = added_sources()
+    return compare_and_keep(src, listed, lambda: save_added_sources(added + [src]), lambda: save_added_sources(added))
 
 
 def remove_source(repo):
-    added = added_sources()
-    kept = [s for s in added if s["repo"].lower() != repo.strip().lower()]
-    if len(kept) == len(added):
-        sys.exit(f"no repo {repo} in the list")
-    save_added_sources(kept)
     gone = repo.strip().lower()
+    if gone == MAIN_SOURCE["repo"].lower():
+        sys.exit(f"{repo} is the main repo: it stays")
+    added = added_sources()
+    kept = [s for s in added if s["repo"].lower() != gone]
+    if gone == BLAPPLES["repo"].lower() and not blapples_off():
+        save_added_sources(added, off=True)
+        gone = BLAPPLES["id"]
+    elif len(kept) == len(added):
+        sys.exit(f"no repo {repo} in the list")
+    else:
+        save_added_sources(kept)
     try:
         cache = load_catalog()
         if cache["sources"].pop(gone, None) is not None:
