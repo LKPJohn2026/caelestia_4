@@ -3049,8 +3049,8 @@ msgstr "Bàn phím"
 msgid "Layouts"
 msgstr "Bố cục"
 
-msgid "Comma separated, e.g. us,de. Vietnamese typing is fcitx5 (Super+Space)"
-msgstr "Cách nhau bằng dấu phẩy, vd. us,de. Gõ tiếng Việt dùng fcitx5 (Super+Space)"
+msgid "Comma separated, e.g. us,de. An input method (fcitx5) is separate: Super+Space switches it"
+msgstr "Phân cách bằng dấu phẩy, ví dụ us,de. Bộ gõ (fcitx5) là riêng: Super+Space để chuyển"
 
 msgid "Layout options"
 msgstr "Tùy chọn bố cục"

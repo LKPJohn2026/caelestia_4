@@ -8,6 +8,7 @@ CONFIG_DIR="$XDG_CONFIG_HOME/quickshell/$QUICKSHELL_CONFIG_NAME"
 CACHE_DIR="$XDG_CACHE_HOME/quickshell"
 STATE_DIR="$XDG_STATE_HOME/quickshell"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../caelestia4/tr.sh"
 SHELL_CONFIG_FILE="$XDG_CONFIG_HOME/illogical-impulse/config.json"
 MATUGEN_DIR="$XDG_CONFIG_HOME/matugen"
 terminalscheme="$SCRIPT_DIR/terminal/scheme-base.json"
@@ -65,9 +66,9 @@ check_and_prompt_upscale() {
             img_height=$(identify -format "%h" "$img" 2>/dev/null)
         fi
         if [[ "$img_width" -lt "$min_width_desired" || "$img_height" -lt "$min_height_desired" ]]; then
-            action=$(notify-send "Phóng to ảnh?" \
-                "Độ phân giải ảnh (${img_width}x${img_height}) thấp hơn màn hình (${min_width_desired}x${min_height_desired})" \
-                -A "open_upscayl=Mở Upscayl"\
+            action=$(notify-send "$(tr_ "Upscale the image?")" \
+                "$(tr_ "The image (%1) is smaller than the screen (%2)" "${img_width}x${img_height}" "${min_width_desired}x${min_height_desired}")" \
+                -A "open_upscayl=$(tr_ "Open Upscayl")"\
                 -a "Wallpaper switcher")
             if [[ "$action" == "open_upscayl" ]]; then
                 if command -v upscayl &>/dev/null; then
@@ -76,8 +77,8 @@ check_and_prompt_upscale() {
                     action2=$(notify-send \
                         -a "Wallpaper switcher" \
                         -c "im.error" \
-                        -A "install_upscayl=Cài Upscayl (Arch)" \
-                        "Cài Upscayl?" \
+                        -A "install_upscayl=$(tr_ "Install Upscayl (Arch)")" \
+                        "$(tr_ "Install Upscayl?")" \
                         "yay -S upscayl-bin")
                     if [[ "$action2" == "install_upscayl" ]]; then
                         kitty -1 yay -S upscayl-bin
@@ -213,13 +214,13 @@ switch() {
                 action=$(notify-send \
                     -a "Wallpaper switcher" \
                     -c "im.error" \
-                    -A "install_arch=Cài đặt (Arch)" \
-                    "Không đổi được sang hình nền video" \
-                    "Thiếu gói: ${missing_deps[*]}")
+                    -A "install_arch=$(tr_ "Install (Arch)")" \
+                    "$(tr_ "Couldn't switch to a video wallpaper")" \
+                    "$(tr_ "Missing packages: %1" "${missing_deps[*]}")")
                 if [[ "$action" == "install_arch" ]]; then
-                    kitty -1 sudo pacman -S "${missing_deps[*]}"
+                    kitty -1 sudo pacman -S "${missing_deps[@]}"
                     if command -v mpvpaper &>/dev/null && command -v ffmpeg &>/dev/null; then
-                        notify-send 'Đổi hình nền' 'Xong, thử lại nhé!' -a "Wallpaper switcher"
+                        notify-send "$(tr_ "Switch wallpaper")" "$(tr_ "Done: try again")" -a "Wallpaper switcher"
                     fi
                 fi
                 exit 0

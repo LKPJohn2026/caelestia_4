@@ -10,6 +10,8 @@
 # shell doesn't cut a recording. gpu-screen-recorder can't report whether it's paused, so the pause state is kept
 # in $XDG_RUNTIME_DIR/caelestia4-recording-paused (read by the shell's Recorder adapter).
 
+source "$(dirname "$(readlink -f "$0")")/../caelestia4/tr.sh"
+
 RECORDER=gpu-screen-recorder
 CONFIG_FILE="$HOME/.config/illogical-impulse/config.json"
 PAUSED_FILE="${XDG_RUNTIME_DIR:-/tmp}/caelestia4-recording-paused"
@@ -28,7 +30,7 @@ PAUSE=0
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --region)
-            [[ -n "${2:-}" ]] || { notify-send -a Recorder "Đã huỷ ghi màn hình" "Thiếu vùng cho --region"; exit 1; }
+            [[ -n "${2:-}" ]] || { notify-send -a Recorder "$(tr_ "Screen recording cancelled")" "$(tr_ "--region needs a region")"; exit 1; }
             REGION="$2"; shift 2 ;;
         --sound) SOUND=1; shift ;;
         --fullscreen) FULLSCREEN=1; shift ;;
@@ -57,8 +59,9 @@ if running; then
     fi
     # The notification waits for a click, so it lives in its own process
     (
-        action=$(notify-send -a Recorder -A watch="Xem" -A open="Mở thư mục" \
-            "Đã dừng ghi màn hình" "Đã lưu ${last:-vào $RECORDING_DIR}${last:+ (đã chép vào bộ nhớ tạm)}") || exit 0
+        action=$(notify-send -a Recorder -A watch="$(tr_ "Watch")" -A open="$(tr_ "Open folder")" \
+            "$(tr_ "Screen recording stopped")" \
+            "$(if [[ -n "$last" ]]; then tr_ "Saved %1 (copied to the clipboard)" "$last"; else tr_ "Saved to %1" "$RECORDING_DIR"; fi)") || exit 0
         case "$action" in
             watch) [[ -n "$last" ]] && exec xdg-open "$last" ;;
             open) exec xdg-open "$RECORDING_DIR" ;;
@@ -83,7 +86,7 @@ else
             REGION="${BASH_REMATCH[3]}x${BASH_REMATCH[4]}+${BASH_REMATCH[1]}+${BASH_REMATCH[2]}"
         fi
     elif ! REGION=$(slurp -f '%wx%h+%x+%y'); then
-        notify-send -a Recorder "Đã huỷ ghi màn hình" "Chưa chọn vùng"
+        notify-send -a Recorder "$(tr_ "Screen recording cancelled")" "$(tr_ "No region selected")"
         exit 1
     fi
     # Frame rate of the fastest monitor the region touches
@@ -104,7 +107,7 @@ disown
 
 sleep 1
 if running; then
-    notify-send -a Recorder "Đang ghi màn hình" "$(basename "$file")"
+    notify-send -a Recorder "$(tr_ "Recording the screen")" "$(basename "$file")"
 else
-    notify-send -a Recorder -u critical "Không ghi được màn hình" "$RECORDER ${args[*]} đã thoát ngay. Xem: journalctl --user -n 20"
+    notify-send -a Recorder -u critical "$(tr_ "Couldn't record the screen")" "$(tr_ "%1 exited at once. See: journalctl --user -n 20" "$RECORDER ${args[*]}")"
 fi

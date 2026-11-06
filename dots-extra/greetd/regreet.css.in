@@ -41,7 +41,7 @@ overlay > frame:nth-child(2) > grid label {
     color: @onSurfaceVariant@;
 }
 
-/* The message ("Chào mừng trở lại!", PAM prompts, errors): the first label, across the card */
+/* The message (the greeting, PAM prompts, errors): the first label, across the card */
 overlay > frame:nth-child(2) > grid > label:first-child {
     color: @onSurface@;
     font-size: 1.25em;

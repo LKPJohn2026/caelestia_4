@@ -26,6 +26,19 @@ for f in glob.glob(QML + "/**/*.qml", recursive=True):
     cae.update((unesc(c), unesc(x), "") for x, c in pat_ctx.findall(s))
     cae.update(("", unesc(x), unesc(p)) for x, p in pat_n.findall(s))
 
+# caelestia4: shell scripts and the lock screen use the end-4 catalogue too (scripts/caelestia4/tr.sh)
+HYPRLOCK = os.path.join(ROOT, "dots/.config/hypr/hyprlock")
+pat_sh = re.compile(r'''\btr_ "((?:[^"\\]|\\.)*)"''')
+pat_py = re.compile(r'''\btr\(\s*["']([^"']+)["']''')
+for f in [*glob.glob(QML + "/scripts/**/*.sh", recursive=True), *glob.glob(HYPRLOCK + "/**/*.sh", recursive=True)]:
+    s = open(f, errors="ignore").read()
+    e4.update(unesc(x) for x in pat_sh.findall(s) if not x.startswith("$"))
+    e4.update(pat_py.findall(s))
+for f, keys in {os.path.join(QML, "scripts/caelestia4/hyprlock-strings.sh"): re.compile(r'line \w+ "([^"]+)"'),
+                os.path.join(ROOT, "tools/greetd-setup.py"): pat_py, os.path.join(ROOT, "tools/greetd-setup.sh"): pat_py}.items():
+    if os.path.exists(f):
+        e4.update(keys.findall(open(f, errors="ignore").read()))
+
 tfile = os.path.join(QML, "translations", f"{lang}.json")
 have = json.load(open(tfile)) if os.path.exists(tfile) else {}
 miss_e4 = sorted(x for x in e4 if x not in have)

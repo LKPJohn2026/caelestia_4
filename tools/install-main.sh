@@ -89,7 +89,8 @@ mkdir -p "$CFG/hypr"
 # caelestia4: hypridle-timeouts.conf is generated from the settings app (Power & idle); --delete removed it, and then
 # hypridle ran with no rules at all: never locked, never turned the screen off, never slept
 rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'workspaces.lua' --exclude 'hyprland/shellOverrides/main.lua' --exclude 'hypridle-timeouts.conf' \
-      --exclude 'hyprland/colors.lua' --exclude 'hyprlock/colors.conf' --exclude 'hyprlock/lockwall.conf' "$DOTS/hypr/" "$CFG/hypr/"
+      --exclude 'hyprland/colors.lua' --exclude 'hyprlock/colors.conf' --exclude 'hyprlock/lockwall.conf' --exclude 'hyprlock/strings.conf' "$DOTS/hypr/" "$CFG/hypr/"
+"$CFG/quickshell/ii/scripts/caelestia4/hyprlock-strings.sh" # hyprlock's text in the shell's language
 [[ -f "$CFG/hypr/hyprland/colors.lua" ]] || cp "$DOTS/hypr/hyprland/colors.lua" "$CFG/hypr/hyprland/colors.lua"
 # caelestia4: settings-app Hyprland options live here (written by the shell); never overwrite them
 [[ -f "$CFG/hypr/hyprland/shellOverrides/main.lua" ]] || { mkdir -p "$CFG/hypr/hyprland/shellOverrides"; cp "$DOTS/hypr/hyprland/shellOverrides/main.lua" "$CFG/hypr/hyprland/shellOverrides/main.lua"; }

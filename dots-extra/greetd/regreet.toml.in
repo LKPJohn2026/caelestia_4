@@ -18,12 +18,12 @@ reboot = ["systemctl", "reboot"]
 poweroff = ["systemctl", "poweroff"]
 
 [appearance]
-greeting_msg = "Chào mừng trở lại!"
+greeting_msg = "@GREETING@"
 
 [widget.clock]
 # Pango markup around chrono's format (no "%" in the markup: chrono would read it): the time large and light, the
 # date below (in the clock locale), like Caelestia's lock screen
-format = "<span font_desc='Google Sans Flex Light 72'>%H:%M</span>\n<span font_desc='Google Sans Flex 17' fgalpha='50000'>%A, %d tháng %m</span>"
+format = "<span font_desc='Google Sans Flex Light 72'>%H:%M</span>\n<span font_desc='Google Sans Flex 17' fgalpha='50000'>@DATE_FORMAT@</span>"
 resolution = "1s"
 label_width = 700
 locale = "@LOCALE@"
