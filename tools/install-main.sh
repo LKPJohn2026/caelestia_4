@@ -16,12 +16,22 @@ warn() { printf '\033[33m!!\033[0m %s\n' "$*"; }
 
 # ---- preflight ----
 [[ "$(id -u)" -ne 0 ]] || { echo "Run as your user, not root." >&2; exit 1; }
-for p in hyprland caelestia4-quickshell qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets gpu-screen-recorder; do
+for p in hyprland caelestia4-quickshell caelestia4-qtengine caelestia4-wormhole qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets illogical-impulse-caelestia4; do
   pacman -Q "$p" >/dev/null 2>&1 || warn "package $p not installed (install it first; see docs/install.md)"
 done
 # caelestia4: gnome-keyring is the Secret Service since the move off KWallet (docs/dev/kde-removal.md, phase 3)
 [[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" != masked ]] \
   || warn "gnome-keyring is masked for this user (from the KWallet days): tools/keyring-switch.sh prepare unmasks it"
+# caelestia4: the shapes library is a git submodule, which a plain `git clone` leaves empty: the bar and the widgets
+# wouldn't load
+SHAPES="dots/.config/quickshell/ii/modules/common/widgets/shapes"
+if [[ ! -f "$REPO/$SHAPES/material-shapes.js" ]]; then
+  git -C "$REPO" submodule update --init -- "$SHAPES" 2>/dev/null || true
+  [[ -f "$REPO/$SHAPES/material-shapes.js" ]] || {
+    echo "$SHAPES is empty, and the submodule couldn't be fetched: use a git clone (git clone --recursive), not a zip." >&2
+    exit 1
+  }
+fi
 "$REPO/tools/lint-caelestia.sh"
 
 backup() { # backup <path>
@@ -101,26 +111,17 @@ if ! grep -q 'QML_IMPORT_PATH' "$ENV" 2>/dev/null; then
 hl.env("QML_IMPORT_PATH", os.getenv("HOME") .. "/.local/lib/qt6/qml")
 LUA
 fi
-if ! grep -q 'AQ_DRM_DEVICES' "$ENV" 2>/dev/null; then
-  if [[ -e /dev/dri/nvidia-dgpu ]]; then gpu=/dev/dri/nvidia-dgpu
-  else gpu=/dev/dri/card1; warn "udev rule not installed; using $gpu (may change between boots; see system/udev/)"; fi
-  cat >> "$ENV" <<LUA
+# caelestia4: an earlier version wrote card1 when the udev rule was missing, wrong on most machines (see below)
+sed -i -e '/^-- caelestia4: render on the GPU that drives the monitor (RTX 5090)$/{N;/"\/dev\/dri\/card1"/d}' "$ENV" 2>/dev/null || true
+# caelestia4: Hyprland picks a GPU by itself. It's told only with two GPUs, when the optional udev rule named the discrete
+# one and a monitor is on it (cardN can't be written: the numbers can swap between boots)
+if ! grep -q 'AQ_DRM_DEVICES' "$ENV" 2>/dev/null && [[ -e /dev/dri/nvidia-dgpu ]] \
+  && grep -qsx connected "/sys/class/drm/$(basename "$(readlink -f /dev/dri/nvidia-dgpu)")"-*/status; then
+  cat >> "$ENV" <<'LUA'
 
--- caelestia4: render on the GPU that drives the monitor (RTX 5090)
-hl.env("AQ_DRM_DEVICES", "$gpu")
+-- caelestia4: render on the GPU that drives the monitor (system/udev/99-caelestia4-dgpu.rules names it)
+hl.env("AQ_DRM_DEVICES", "/dev/dri/nvidia-dgpu")
 LUA
-fi
-if [[ ! -f "$CFG/hypr/monitors.lua" ]]; then
-  cat > "$CFG/hypr/monitors.lua" <<'LUA'
--- caelestia4: Samsung 57" (SAM7475), by description: its connector name changes between boots (DP-2, DP-6)
-hl.monitor({
-    output = "desc:Samsung Electric Company Odyssey G95NC SERIAL-REDACTED",
-    mode = "7680x2160@240",
-    position = "0x0",
-    scale = 1.5
-})
-LUA
-  say "created $CFG/hypr/monitors.lua"
 fi
 
 # ---- matugen (colour generation) without the GTK templates (GTK css is shared with Plasma) ----
@@ -178,12 +179,15 @@ copy_file_if_missing "$DOTS/caelestia/shell.json" "$CFG/caelestia/shell.json" # 
 # Session menu: Caelestia's defaults are `logout` (a shell builtin, nothing to run) and `hibernate` (no such program):
 # log out through uwsm and hibernate through systemd, unless the user set these
 python3 - "$CFG/caelestia/shell.json" <<'PY'
-import json, sys
+import json, shutil, sys
 p = sys.argv[1]
 d = json.load(open(p))
 # caelestia4: Atlas as the shell's file manager (Caelestia's default is Thunar), unless the user picked one
-changed = "explorer" not in d.setdefault("general", {}).setdefault("apps", {})
-d["general"]["apps"].setdefault("explorer", ["atlas"])
+apps = d.setdefault("general", {}).setdefault("apps", {})
+changed = apps.get("explorer", ["atlas"]) == ["atlas"] and not shutil.which("atlas")
+if changed or "explorer" not in apps:  # not built (packaging/caelestia4-atlas): what there is
+    apps["explorer"] = [next((a for a in ("atlas", "thunar", "dolphin", "nautilus") if shutil.which(a)), "xdg-open")]
+    changed = True
 cmds = d.setdefault("session", {}).setdefault("commands", {})
 want = {"logout": ["uwsm", "stop"], "hibernate": ["systemctl", "hibernate"]}
 if changed or any(k not in cmds for k in want):

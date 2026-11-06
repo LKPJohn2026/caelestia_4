@@ -22,6 +22,16 @@ for po in "$REPO_ROOT"/tools/i18n/caelestia-*.po; do
   cp "$po" "$TRS/$lang.po"
 done
 
+# caelestia4: what its CMake needs, named at once (./setup install-deps installs them: illogical-impulse-caelestia4)
+command -v cmake >/dev/null && command -v ninja >/dev/null && command -v pkg-config >/dev/null || {
+  echo "cmake, ninja and pkgconf are needed: yay -S --needed cmake ninja pkgconf" >&2; exit 1; }
+missing=()
+for mod in libqalculate:libqalculate libpipewire-0.3:pipewire aubio:aubio; do
+  pkg-config --exists "${mod%%:*}" || missing+=("${mod##*:}")
+done
+pkg-config --exists libcava || pkg-config --exists cava || missing+=(libcava)
+[[ ${#missing[@]} -eq 0 ]] || { echo "Missing to build the plugin: yay -S --needed ${missing[*]}" >&2; exit 1; }
+
 cmake -S "$SRC" -B "$BUILD" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DENABLE_MODULES=plugin \

@@ -1,0 +1,26 @@
+# caelestia4: what the Caelestia shell needs beyond end-4's metapackages
+groups=(illogical-impulse)
+pkgname=illogical-impulse-caelestia4
+pkgver=1.0
+pkgrel=1
+pkgdesc='Caelestia shell dependencies of caelestia_4'
+arch=(any)
+license=(None)
+depends=(
+  # the Caelestia plugin (tools/build-caelestia-plugin.sh)
+  aubio
+  cmake
+  libcava
+  libqalculate
+  lm_sensors
+  ninja
+  pkgconf
+  qt6-m3shapes-git
+  qt6-shadertools
+  # the shell and its scripts
+  archlinux-xdg-menu # kbuildsycoca's menu (dots/.config/uwsm/env-hyprland)
+  btop # the task manager
+  ddcutil # external monitors' brightness
+  python-gobject # the tray watcher and the system file dialog
+  socat # pausing a video wallpaper
+)

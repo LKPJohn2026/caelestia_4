@@ -31,7 +31,10 @@ dark = scheme.get("mode", "dark") == "dark"
 colours = scheme["colours"]
 
 # Monitors: the hl.monitor blocks of the session's monitors.lua (Nexus > Display saves it)
-mon = open(os.path.join(cfg, "hypr/monitors.lua")).read()
+try:
+    mon = open(os.path.join(cfg, "hypr/monitors.lua")).read()
+except OSError:  # none saved yet: Hyprland's defaults
+    mon = ""
 monitors = "\n".join(re.findall(r"hl\.monitor\(\{.*?\}\)", mon, re.S)) or 'hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })'
 
 layout = json.loads(subprocess.run(["hyprctl", "getoption", "input:kb_layout", "-j"], capture_output=True, text=True).stdout or "{}").get("str") or "us"

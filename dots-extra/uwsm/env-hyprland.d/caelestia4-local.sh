@@ -1,8 +1,18 @@
-# caelestia4: machine-specific env for the uwsm Hyprland session (this PC: RTX 5090 + AMD iGPU, shared with Plasma).
-# Install to ~/.config/uwsm/env-hyprland.d/ (tools/uwsm-setup.sh does). Mirrors ~/.config/hypr/custom/env.lua.
+# caelestia4: env of the uwsm Hyprland session, yours to change: tools/uwsm-setup.sh installs it if it's missing and then
+# keeps it (~/.config/uwsm/env-hyprland.d/). Mirrors ~/.config/hypr/custom/env.lua.
 
-# Render on the GPU that drives the monitor
-export AQ_DRM_DEVICES=/dev/dri/nvidia-dgpu
+# Hyprland picks a GPU by itself. Told only when the optional udev rule named the discrete one
+# (system/udev/99-caelestia4-dgpu.rules) and a monitor is on it
+if [ -e /dev/dri/nvidia-dgpu ]; then
+    _card=$(basename "$(readlink -f /dev/dri/nvidia-dgpu)")
+    for _status in /sys/class/drm/"$_card"-*/status; do
+        if [ "$(cat "$_status" 2>/dev/null)" = connected ]; then
+            export AQ_DRM_DEVICES=/dev/dri/nvidia-dgpu
+            break
+        fi
+    done
+    unset _card _status
+fi
 
 # fcitx5 (Vietnamese via Bamboo). GTK uses Wayland text-input natively, so GTK_IM_MODULE is deliberately unset.
 export XMODIFIERS=@im=fcitx
