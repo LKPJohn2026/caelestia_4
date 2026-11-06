@@ -7,6 +7,12 @@ illogical-impulse. It no longer shares an account with KDE Plasma: since 2026-10
 > [!WARNING]
 > Read the scripts before running them. Take a snapshot first if your system supports it (`snapper`, Timeshift…).
 
+Clone with its submodule (`tools/install-main.sh` fetches it if you didn't; a zip of the repo won't work):
+
+```bash
+git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
+```
+
 ## 1. Dependencies (Arch / CachyOS)
 
 1. **Hyprland ≥ 0.55** (the config is Lua) and **uwsm**:
@@ -26,10 +32,14 @@ illogical-impulse. It no longer shares an account with KDE Plasma: since 2026-10
    ```
    Quickshell and the Caelestia plugin use Qt's private API: **rebuild both after every Qt minor update**
    (`makepkg -Cf` here, then `tools/build-caelestia-plugin.sh`).
-4. **qt6-m3shapes-git** (AUR), used by Caelestia's shapes: `yay -S qt6-m3shapes-git`
-5. **caelestia-cli** (AUR), which makes the colour scheme (wallpaper colours and preset schemes) and themes btop,
-   nvtop, Zed and Spotify: `yay -S caelestia-cli`. Without it, colours fall back to end-4's matugen.
-6. Optional, enables the matching features:
+4. **The packages built from this repo**: the Qt theme (qtengine), the Open / Save dialogs (Wormhole), the file manager
+   (Atlas) and caelestia-cli, which makes the colour scheme (wallpaper colours and preset schemes) and themes btop,
+   nvtop, Zed and Spotify. Without Atlas the shell uses the file manager it finds; without the CLI, colours fall back to
+   end-4's matugen.
+   ```bash
+   for p in qtengine wormhole atlas cli; do (cd "packaging/caelestia4-$p" && makepkg -Csi); done
+   ```
+5. Optional, enables the matching features:
    - `gpu-screen-recorder` — screen recording with pause
    - `mpvpaper` — video wallpapers
    - `thunar thunar-volman tumbler gvfs` — the file manager the session uses
@@ -62,7 +72,11 @@ configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when 
   **Midnight (Caelestia)** once in its Settings > Themes; caelestia-cli keeps its colours in step (it needs `dart-sass`).
 - **Spotify**: open it once and log in, then `spicetify config spotify_path ~/.local/share/spotify-launcher/install/usr/share/spotify prefs_path ~/.config/spotify/prefs`
   and `tools/install-main.sh` again (it sets the theme); after Spotify updates itself, run `spicetify backup apply`.
-- **NVIDIA with an iGPU** (optional): `system/udev/99-caelestia4-dgpu.rules` gives the discrete GPU a stable name.
+- **NVIDIA with an iGPU, monitors on the NVIDIA card** (optional): Hyprland picks a GPU by itself. If it picks the wrong
+  one, `system/udev/99-caelestia4-dgpu.rules` gives the NVIDIA card a stable name and the session then renders on it
+  (not for a laptop whose panel is on the iGPU).
+- **Monitors**: Nexus → Display saves your layout to `~/.config/hypr/monitors.lua`; until then Hyprland uses each
+  monitor's preferred mode at scale 1.
 
 ## Lock screen and suspend
 
