@@ -4740,3 +4740,72 @@ msgstr "Các thay đổi của bạn trong preset được giữ lại; hình �
 
 msgid "Your own layout is shown: the widgets you pick in Wallpaper & style > Widgets on the desktop. Turn presets on to apply one again (the last one comes back)."
 msgstr "Đang hiển thị bố cục của bạn: các widget bạn chọn trong Hình nền & phong cách > Widget trên màn nền. Bật preset để áp dụng lại (preset gần nhất sẽ trở lại)."
+
+msgid "%1 presets · click to remove the repo"
+msgstr "%1 preset · bấm để gỡ repo"
+
+msgid "%1: %2 presets added, %3 duplicates skipped"
+msgstr "%1: đã thêm %2 preset, bỏ qua %3 preset trùng"
+
+msgid "%1: all %2 presets are already in the list, nothing added"
+msgstr "%1: cả %2 preset đều đã có trong danh sách, không thêm gì"
+
+msgid "(compared with the list kept from before: GitHub couldn't be reached)"
+msgstr "(so với danh sách đã lưu trước đó vì không kết nối được GitHub)"
+
+msgid "Add a repo: paste its GitHub link and press Enter"
+msgstr "Thêm repo: dán liên kết GitHub rồi nhấn Enter"
+
+msgid "Added"
+msgstr "Đã thêm"
+
+msgid "Added repos"
+msgstr "Repo đã thêm"
+
+msgid "Click again to take it out of the list (installed presets stay)"
+msgstr "Bấm lần nữa để gỡ khỏi danh sách (preset đã cài vẫn giữ lại)"
+
+msgid "Comparing its presets with pctrade/end4-pCpresets…"
+msgstr "Đang so sánh preset của repo với pctrade/end4-pCpresets…"
+
+msgid "GitHub couldn't be reached"
+msgstr "Không kết nối được GitHub"
+
+msgid "GitHub's limit of listings is reached: try again in a while, or sign in with gh auth login"
+msgstr "Đã hết lượt truy vấn GitHub: hãy thử lại sau, hoặc đăng nhập bằng gh auth login"
+
+msgid "No presets there: each needs a folder with one .json and a picture"
+msgstr "Không có preset nào: mỗi preset cần một thư mục có một tệp .json và một hình ảnh"
+
+msgid "No public repo or branch at that link"
+msgstr "Không có repo công khai hoặc nhánh nào ở liên kết đó"
+
+msgid "Only GitHub repos can be added"
+msgstr "Chỉ có thể thêm repo trên GitHub"
+
+msgid "Removed %1"
+msgstr "Đã gỡ %1"
+
+msgid "Removing %1…"
+msgstr "Đang gỡ %1…"
+
+msgid "Skipped: %1"
+msgstr "Đã bỏ qua: %1"
+
+msgid "That isn't a link to a GitHub repo"
+msgstr "Đây không phải liên kết đến một repo GitHub"
+
+msgid "This repo is in the list already"
+msgstr "Repo này đã có trong danh sách"
+
+msgid "This repo is private: only public ones can be added"
+msgstr "Repo này ở chế độ riêng tư: chỉ có thể thêm repo công khai"
+
+msgid "This repo has too many folders to check"
+msgstr "Repo này có quá nhiều thư mục để kiểm tra"
+
+msgid "The repo couldn't be added"
+msgstr "Không thêm được repo"
+
+msgid "and %1 more"
+msgstr "và %1 preset khác"

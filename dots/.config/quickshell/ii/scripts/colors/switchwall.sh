@@ -125,7 +125,7 @@ pkill -f -9 mpvpaper
 for monitor in \$(hyprctl monitors -j | jq -r '.[] | .name'); do
     opts="$VIDEO_OPTS input-ipc-server=\${XDG_RUNTIME_DIR:-/run/user/\$UID}/caelestia4-mpvpaper-\$monitor.sock"
     [[ -e "\${XDG_STATE_HOME:-\$HOME/.local/state}/caelestia4/wallpaper-paused" ]] && opts+=" pause=yes"
-    uwsm-app -s b -- mpvpaper -o "\$opts" "\$monitor" "$video_path" & # caelestia4: own unit, IPC socket, remembered pause
+    uwsm-app -s b -- mpvpaper -o "\$opts" "\$monitor" $(printf %q "$video_path") & # caelestia4: own unit, IPC socket, remembered pause; the path quoted for this script (a preset names the file)
     sleep 0.1
 done
 EOF
