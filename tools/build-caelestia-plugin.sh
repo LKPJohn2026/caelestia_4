@@ -9,6 +9,10 @@ SRC="$REPO_ROOT/third_party/caelestia-shell"
 BUILD="$REPO_ROOT/build/caelestia-plugin"
 PREFIX="${PREFIX:-$HOME/.local}"
 
+# caelestia4: what this build comes from: its source and our translations, as git has them (install-main.sh compares it)
+source_id() { git -C "$REPO_ROOT" rev-parse HEAD:third_party/caelestia-shell/plugin HEAD:tools/i18n 2>/dev/null | tr '\n' ' ' | sed 's/ $//'; }
+[[ "${1:-}" == --source-id ]] && { source_id; exit 0; }
+
 # Vendored: caelestia-dots/shell main 4b1dae84 (v2.5.0+50, 2026-10-25); before that 2e1c51fa (v2.5.0+48), 29fcf69a (v2.5.0+39), 21a75375 (v2.5.0+20); originally v2.5.0 -> d999d487 (docs/dev/phase1.md)
 VERSION="2.5.0"
 GIT_REVISION="4b1dae84b"
@@ -46,8 +50,8 @@ cmake --install "$BUILD"
 
 # caelestia4: what this build was made from, for Nexus > Plugins (the plugin uses Qt's private API: a Qt minor update
 # needs a rebuild, and the .so files don't say which Qt they were built with)
-printf '{"qt": "%s", "revision": "%s", "version": "%s", "built": "%s"}\n' \
+printf '{"qt": "%s", "revision": "%s", "version": "%s", "built": "%s", "source": "%s"}\n' \
   "$(/usr/lib/qt6/bin/qtpaths6 --qt-version 2>/dev/null || pacman -Q qt6-base | cut -d' ' -f2 | cut -d- -f1)" "$GIT_REVISION" "$VERSION" \
-  "$(date -Iseconds)" > "$PREFIX/lib/qt6/qml/Caelestia/caelestia4-build.json"
+  "$(date -Iseconds)" "$(source_id)" > "$PREFIX/lib/qt6/qml/Caelestia/caelestia4-build.json"
 
 echo "Installed Caelestia QML plugin to $PREFIX/lib/qt6/qml/Caelestia"

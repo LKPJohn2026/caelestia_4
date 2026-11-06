@@ -5,7 +5,8 @@
 # hyprlock take the lock back. hyprlock exits 0 after a good password, so only a failed exit restarts it.
 # hyprlock's output and the exits go to the journal (journalctl -t hyprlock -t hyprlock-guard): started from the shell
 # or hypridle, they were lost, and with them why it died.
-pidof hyprlock >/dev/null && exit 0
+# (this user's: another session's lock doesn't lock this one)
+pgrep -u "$(id -u)" -x hyprlock >/dev/null && exit 0
 "$(dirname "$(readlink -f "$0")")/hyprlock-strings.sh" 2>/dev/null
 for attempt in 1 2 3 4 5; do
     systemd-cat -t hyprlock hyprlock "$@" && exit 0

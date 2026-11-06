@@ -49,8 +49,8 @@ git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
 
 ```bash
 tools/build-caelestia-plugin.sh   # the Caelestia QML plugin, into ~/.local/lib/qt6/qml (no sudo)
-tools/install-main.sh             # the configs; backs up what it replaces to ~/.local/state/caelestia4/backup-*
-tools/uwsm-setup.sh               # the uwsm session: env, systemd user units, login entry
+tools/install-main.sh             # the configs and the uwsm session (tools/uwsm-setup.sh: env, user units, login entry);
+                                  # backs up what it replaces to ~/.local/state/caelestia4/backup-*
 ```
 
 Log out and pick **Hyprland (uwsm-managed)**. The shell runs as the `caelestia4-shell` user unit

@@ -11,8 +11,7 @@
 #  - app-graphical.slice drop-in: systemd-oomd kills the single app scope under sustained memory pressure
 #  - packaged units (hypridle, ydotool) are started by hypr/hyprland/execs.lua under uwsm; they can't take the
 #    condition
-#  - XDG autostart masked for this compositor only: with XDG_CURRENT_DESKTOP=Hyprland:KDE it would start
-#    Plasma's OnlyShowIn=KDE entries (plasmashell, powerdevil, kglobalacceld, polkit-kde-agent, …)
+#  - XDG autostart stays on, as on any desktop, except for the entries of what runs as a unit here (a second copy)
 # The plain "Hyprland" session keeps working as before (the config checks CAELESTIA4_UWSM).
 set -euo pipefail
 
@@ -77,8 +76,18 @@ if [[ -e /usr/share/wayland-sessions/hyprland.desktop ]]; then
   say "  sudo rm /usr/share/wayland-sessions/hyprland.desktop"
 fi
 
-systemctl --user mask wayland-session-xdg-autostart@hyprland.desktop.target >/dev/null
-say "XDG autostart masked for Hyprland (Plasma unaffected)"
+# what the units above run has an autostart entry too (a copy of the user's, if any, wins over the system's)
+mkdir -p "$CFG/autostart"
+hide() { # hide <unit that replaces it> <desktop entry>
+  [[ " ${enable[*]} " == *" $1 "* && -e "/etc/xdg/autostart/$2" && ! -e "$CFG/autostart/$2" ]] || return 0
+  printf '[Desktop Entry]\nType=Application\nName=%s\nHidden=true\n' "${2%.desktop}" > "$CFG/autostart/$2"
+}
+hide caelestia4-fcitx5.service org.fcitx.Fcitx5.desktop
+hide caelestia4-kdeconnectd.service org.kde.kdeconnect.daemon.desktop
+hide caelestia4-geoclue-agent.service geoclue-demo-agent.desktop
+if [[ "$(systemctl --user is-enabled wayland-session-xdg-autostart@hyprland.desktop.target 2>/dev/null)" == masked ]]; then
+  say "XDG autostart is masked for Hyprland (an earlier version did that). To have it: systemctl --user unmask wayland-session-xdg-autostart@hyprland.desktop.target"
+fi
 
 say "done. Log out and pick \"Hyprland (uwsm-managed)\" at the login screen."
 say "check: systemctl --user list-dependencies graphical-session.target | grep caelestia4"
