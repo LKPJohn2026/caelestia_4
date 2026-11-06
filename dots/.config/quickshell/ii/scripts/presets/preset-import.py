@@ -9,13 +9,21 @@ calendar, media, custom image, user card, world clock, resources, notes, timers,
 Widget positions stay in the preset's 1920x1080 coordinates (background.widgets.canvas); each screen scales the room
 around each widget to its own size, so widgets against an edge stay there on a 32:9 screen.
 
-Presets come from two places, browsed and installed one at a time: Blapples/wallpapers (plain names) and the community's
-pctrade/end4-pCpresets (installed as pctrade--<name>, as end4-pC does).
+Presets come from these places, browsed and installed one at a time: the community's pctrade/end4-pCpresets, the main
+repo (installed as pctrade--<name>, as end4-pC does), Blapples/wallpapers (plain names), and any GitHub repo you add
+(--add-source, installed as <owner>--<repo>--<name>). A preset of another repo that the main repo already has (the same
+preset file, the same preview.png, or the same name with a picture in common) isn't listed, unless it's installed.
 
   tools/preset-import.py --catalog [--refresh] [--json]
                                              every preset of both sources, installed or not (from a list kept 6 h in
                                              ~/.cache/caelestia4/preset-catalog.json; --refresh: fetched again now;
                                              offline: the list kept, with "error" said)
+  tools/preset-import.py --add-source LINK [--json]
+                                             a public GitHub repo's presets (presets/<name>/, else <name>/, each one
+                                             .json and a picture) added to the catalog, its duplicates skipped; kept in
+                                             ~/.local/state/caelestia4/preset-sources.json if it has any new one
+  tools/preset-import.py --remove-source OWNER/REPO
+                                             that repo out of the catalog (its installed presets stay)
   tools/preset-import.py --thumbs [NAME...]  the catalog's preview pictures, small, into ~/.cache/caelestia4/preset-thumbs
                                              ("thumb NAME" said as each one is ready)
   tools/preset-import.py --install NAME      that preset into the library (with the Blapples wallpapers it uses); not applied
@@ -59,12 +67,14 @@ GitHub allows 60 listings an hour without a token: GITHUB_TOKEN / GH_TOKEN, else
 one (never printed). For tests only: PRESET_IMPORT_PICTURES and PRESET_IMPORT_FACE stand for Pictures and ~/.face.
 """
 import argparse
+import concurrent.futures
 import contextlib
 import copy
 import datetime
 import fcntl
 import filecmp
 import hashlib
+import http.client as http_client
 import json
 import os
 import re
@@ -105,18 +115,29 @@ WIDGET_INFO = CACHE / "preset-widgets.json"  # the widgets of presets not instal
 THUMBS = CACHE / "preset-thumbs"
 STAGING = CACHE / "preset-staging"  # a preset being downloaded, before it goes into the library
 THUMB_WIDTH = 480
+ADDED_SOURCES = STATE.parent / "preset-sources.json"  # the repos added by link: [{repo, branch}]
+MAX_ADDED_PREVIEW = 50 << 20  # what a repo someone added may ask this computer to fetch
+MAX_ADDED_PRESET = 1 << 30
+MAX_ADDED_JSON = 5 << 20
+MAX_ADDED_FOLDERS = 500  # each one's .json is fetched to check it
+MAX_NAME_BYTES = 200  # a file name is 255 at most, and the library's has a prefix and temp names add to it
 BLAPPLES_PICS = PICTURES / "Wallpapers/Blapples"
 SWITCHWALL = CONFIG / "quickshell/ii/scripts/colors/switchwall.sh"
 IMAGE_TYPES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".avif"}
+VIDEO_TYPES = {".mp4", ".webm", ".mkv", ".mov", ".avi"}  # a wallpaper can be one (switchwall.sh)
 COMMUNITY = "pctrade--"  # the community's presets in the library (end4-pC names them so too)
 # where presets come from (end4-pC's PresetsOnline): Blapples' use pictures at the top of the repo by name, the
 # community's are whole in their folders; their authors are in a branch of their own
+REPO = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/(?!\.+$)[A-Za-z0-9._-]{1,100}")
+BRANCH = re.compile(r"[A-Za-z0-9._][A-Za-z0-9._/-]{0,200}")
 SOURCES = [
     {"id": "blapples", "repo": "Blapples/wallpapers", "branch": "main", "prefix": "", "rootWallpapers": True,
      "author": "Blapples"},
     {"id": "community", "repo": "pctrade/end4-pCpresets", "branch": "main", "prefix": COMMUNITY,
      "authors": "gallery-data"},
 ]
+
+MAIN_SOURCE = SOURCES[1]  # the main repo for presets: another repo's copy of one of its presets is a duplicate
 
 # end4-pC widgets this shell has (modules/caelestia/background/pcwidgets)
 WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "worldClock", "resources", "notes", "timers",
@@ -144,7 +165,20 @@ OWN_DEFAULTS = {"background.lockWall": "", "sidebar.bannerImage": "", "appearanc
 
 
 class NetError(Exception):
-    """GitHub couldn't be reached, or said no: one line, for the person and for Nexus"""
+    """GitHub couldn't be reached, or said no: one line, for the person and for Nexus (code: GitHub's, if it answered;
+    limited: its limit of listings)"""
+
+    def __init__(self, message, code=0, limited=False):
+        super().__init__(message)
+        self.code, self.limited = code, limited
+
+
+class SourceError(Exception):
+    """A repo that can't be added. code: for Nexus's own words"""
+
+    def __init__(self, code, message):
+        super().__init__(message)
+        self.code = code
 
 
 class Progress:
@@ -192,6 +226,7 @@ def held(lock_name, wait=True):
 
 
 def save(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
     # a tmp of this process's own: --thumbs and --catalog (no lock) may write the same cache file as an install
     tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     with open(tmp, "w", encoding="utf-8") as f:
@@ -218,7 +253,10 @@ def find_picture(name, dirs):
 
 
 def preset_json(pdir):
-    jsons = [p for p in pdir.glob("*.json") if p.name != "meta.json"]
+    jsons = [p for p in pdir.iterdir() if p.is_file() and p.suffix.lower() == ".json" and p.name != "meta.json"] \
+        if pdir.is_dir() else []
+    if len(jsons) > 1:  # renamed upstream with changes of yours in the old one: the one the repo has now
+        jsons = [p for p in jsons if (pdir / ".upstream" / p.name).is_file()] or jsons
     return jsons[0] if len(jsons) == 1 else None
 
 
@@ -228,13 +266,61 @@ def safe_name(name):
             and all(ord(c) >= 32 and c != "\x7f" for c in name))
 
 
+def added_source(repo, branch):
+    """A repo added by link, as SOURCES has them; None if the file's entry isn't one"""
+    if not (isinstance(repo, str) and isinstance(branch, str) and REPO.fullmatch(repo) and valid_branch(branch)):
+        return None
+    owner, name = repo.split("/")
+    return {"id": repo.lower(), "repo": repo, "branch": branch, "prefix": f"{owner}--{name}--", "author": owner,
+            "rootWallpapers": True, "added": True}
+
+
+def valid_branch(branch):
+    return bool(BRANCH.fullmatch(branch)) and ".." not in branch and not branch.endswith("/")
+
+
+def added_sources():
+    try:
+        entries = load(ADDED_SOURCES)
+    except (OSError, ValueError):
+        return []
+    found = [added_source(e.get("repo"), e.get("branch")) for e in entries if isinstance(e, dict)] \
+        if isinstance(entries, list) else []
+    return [s for s in found if s]
+
+
+def save_added_sources(added):
+    ADDED_SOURCES.parent.mkdir(parents=True, exist_ok=True)
+    save(ADDED_SOURCES, [{"repo": s["repo"], "branch": s["branch"]} for s in added])
+
+
+def all_sources():
+    return SOURCES + added_sources()
+
+
+def plain_name(name):
+    """A name from a repo someone added that's safe wherever a shell may meet it: double quotes in a generated script,
+    a path in a bash -c. Pictures' names only need the first (they're often full of symbols)"""
+    return safe_name(name) and not re.search(r'[$`"\\]', name) and len(name.encode()) <= MAX_NAME_BYTES
+
+
+def plain_folder(name):
+    return plain_name(name) and bool(re.fullmatch(r"[\w .+@-]+", name))
+
+
 def source_of(name):
-    return "community" if name.startswith(COMMUNITY) else "blapples"
+    # the longest prefix: pctrade's own other repos start as its community presets do
+    for src in sorted(added_sources(), key=lambda s: -len(s["prefix"])):
+        if name.startswith(src["prefix"]):
+            return src["id"]
+    if name.startswith(COMMUNITY):
+        return "community"
+    return "added" if "--" in name else "blapples"  # "added": of a repo taken out of the list since
 
 
 def title_of(name):
     """end4-pC's titles: the folder's name with spaces and capitals (pctrade--hu_tao: Hu Tao)"""
-    folder = name[len(COMMUNITY):] if name.startswith(COMMUNITY) else name
+    folder = name.rsplit("--", 1)[-1]
     return re.sub(r"\b\w", lambda m: m.group().upper(), re.sub(r"[-_]+", " ", folder)).strip()
 
 
@@ -283,8 +369,8 @@ def http(url, api=False, timeout=30):
             reset = e.headers.get("X-RateLimit-Reset", "")
             when = datetime.datetime.fromtimestamp(int(reset)).strftime("%H:%M") if reset.isdigit() else "an hour"
             raise NetError(f"GitHub's limit of listings is reached, try again after {when} "
-                           "(or sign in with gh auth login)") from None
-        raise NetError(f"GitHub said {e.code} {e.reason} for {urllib.parse.unquote(url.split('/', 3)[-1])}") from None
+                           "(or sign in with gh auth login)", e.code, limited=True) from None
+        raise NetError(f"GitHub said {e.code} {e.reason} for {urllib.parse.unquote(url.split('/', 3)[-1])}", e.code) from None
     except (urllib.error.URLError, OSError, ValueError) as e:
         reason = getattr(e, "reason", e)
         raise NetError(f"can't reach {urllib.parse.urlsplit(url).hostname} ({reason})") from None
@@ -294,7 +380,7 @@ def fetch(url, api=False):
     try:
         with http(url, api) as r:
             return r.read()
-    except OSError as e:  # cut off mid-way
+    except (OSError, http_client.HTTPException) as e:  # cut off mid-way
         raise NetError(f"can't reach {urllib.parse.urlsplit(url).hostname} ({e})") from None
 
 
@@ -304,7 +390,10 @@ def download(url, dest):
     try:
         with http(url, timeout=60) as r, open(part, "wb") as f:
             shutil.copyfileobj(r, f, 1 << 20)
-    except OSError as e:
+            length = r.headers.get("Content-Length")
+            if length and length.isdigit() and f.tell() != int(length):
+                raise OSError("cut off")
+    except (OSError, http_client.HTTPException) as e:
         part.unlink(missing_ok=True)
         raise NetError(f"can't download {dest.name} ({e})") from None
     except NetError:
@@ -314,7 +403,7 @@ def download(url, dest):
 
 
 def raw_url(src, path):
-    return f"https://raw.githubusercontent.com/{src['repo']}/{src['branch']}/{urllib.parse.quote(path)}"
+    return f"https://raw.githubusercontent.com/{src['repo']}/{urllib.parse.quote(src['branch'])}/{urllib.parse.quote(path)}"
 
 
 def git_sha(path):
@@ -334,8 +423,29 @@ def preview_of(images):
             or [i for i in others if not re.search("pfp|avatar|banner", i, re.I)] or others)[0]
 
 
-def list_source(src):
-    """One source's presets, from GitHub's tree of its repo (one API call): {folder files, json, preview}"""
+def entry_url(src, entry, fname):
+    return raw_url(src, f"{entry.get('path') or 'presets/' + entry['folder']}/{fname}")
+
+
+def looks_like_preset(src, entry):
+    """A repo someone added: is this folder's .json a preset (end4-pC's config: a "background")? Only a folder that
+    can't be read for good (gone) says no: any other failure stops the listing"""
+    if entry["files"][entry["json"]]["size"] > MAX_ADDED_JSON:
+        return False
+    try:
+        doc = json.loads(fetch(entry_url(src, entry, entry["json"])))
+    except (ValueError, RecursionError):
+        return False
+    except NetError as e:
+        if e.code == 404:
+            return False
+        raise
+    return isinstance(doc, dict) and isinstance(doc.get("background"), dict)
+
+
+def list_source(src, known=None):
+    """One source's presets, from GitHub's tree of its repo (one API call): {folder files, json, preview}.
+    known: the source's last list (a repo someone added: a .json checked then isn't fetched again)"""
     url = f"https://api.github.com/repos/{src['repo']}/git/trees/{urllib.parse.quote(src['branch'])}?recursive=1"
     try:
         tree = json.loads(fetch(url, api=True))
@@ -343,22 +453,44 @@ def list_source(src):
         raise NetError(f"{src['repo']}: GitHub's answer isn't a list") from None
     if not isinstance(tree.get("tree"), list):
         raise NetError(f"{src['repo']}: GitHub's answer isn't a list")
-    groups, root = {}, {}
+    groups, root, top = {}, {}, {}
     for e in tree["tree"]:
-        parts = e.get("path", "").split("/") if e.get("type") == "blob" else []
+        parts = e.get("path", "").split("/") if e.get("type") == "blob" and e.get("mode") != "120000" else []
         info = {"size": e.get("size", 0), "sha": e.get("sha", "")}
         if len(parts) == 1 and src.get("rootWallpapers") and safe_name(parts[0]) \
                 and Path(parts[0]).suffix.lower() in IMAGE_TYPES:
             root[parts[0]] = info
         elif len(parts) == 3 and parts[0] == "presets" and safe_name(parts[1]) and safe_name(parts[2]):
             groups.setdefault(parts[1], {})[parts[2]] = info  # deeper files aren't the preset's: left out
+        elif len(parts) == 2 and src.get("added") and safe_name(parts[0]) and safe_name(parts[1]):
+            top.setdefault(parts[0], {})[parts[1]] = info
+    layout = "presets/"
+    if not groups and src.get("added"):  # no presets/ folder: <name>/ at the top of the repo
+        groups, layout = top, ""
+    if src.get("added"):
+        groups = {folder: {f: i for f, i in files.items() if plain_name(f)} for folder, files in groups.items()
+                  if plain_folder(folder) and len((src["prefix"] + folder).encode()) <= MAX_NAME_BYTES}
+        root = {n: i for n, i in root.items() if plain_name(n)}
     presets = {}
     for folder, files in groups.items():
         jsons = [f for f in files if f.lower().endswith(".json") and f != "meta.json"]
         images = sorted(f for f in files if Path(f).suffix.lower() in IMAGE_TYPES)
         if len(jsons) == 1 and images and safe_name(src["prefix"] + folder):
-            presets[src["prefix"] + folder] = {"folder": folder, "files": files, "json": jsons[0],
-                                               "preview": preview_of(images)}
+            presets[src["prefix"] + folder] = {"folder": folder, "path": layout + folder, "files": files,
+                                               "json": jsons[0], "preview": preview_of(images)}
+    if src.get("added"):  # anything can look like a preset folder: its .json says
+        if len(presets) > MAX_ADDED_FOLDERS:
+            raise NetError(f"{src['repo']} has too many folders to check", 413)
+        seen = (known or {}).get("presets", {})
+
+        def checked(item):
+            name, entry = item
+            sha = entry["files"][entry["json"]]["sha"]
+            old = seen.get(name)
+            return name, (old and old["files"][old["json"]]["sha"] == sha) or looks_like_preset(src, entry)
+
+        with concurrent.futures.ThreadPoolExecutor(8) as pool:
+            presets = {n: presets[n] for n, ok in pool.map(checked, list(presets.items())) if ok}
     authors = {}
     if src.get("authors"):  # not there: no authors, the list is still good
         try:
@@ -371,17 +503,44 @@ def list_source(src):
             "truncated": bool(tree.get("truncated"))}
 
 
+def good_entry(p):
+    def good_file(i):
+        return isinstance(i, dict) and isinstance(i.get("sha"), str) and isinstance(i.get("size"), int)
+    return (isinstance(p, dict) and isinstance(p.get("folder"), str) and isinstance(p.get("files"), dict)
+            and all(good_file(i) for i in p["files"].values())
+            and p.get("json") in p["files"] and p.get("preview") in p["files"])
+
+
+def load_catalog():
+    """The list kept, without anything in it that isn't what a listing writes (fetched again then)"""
+    try:
+        cache = load(CATALOG)
+        sources = cache["sources"]
+        if not isinstance(sources, dict):
+            raise ValueError
+    except (OSError, ValueError, KeyError, TypeError, RecursionError):
+        return {"version": 1, "sources": {}}
+    for sid, s in list(sources.items()):
+        if not isinstance(s, dict) or not isinstance(s.get("presets", {}), dict) \
+                or not isinstance(s.get("root", {}), dict) or not isinstance(s.get("authors", {}), dict) \
+                or not all(good_entry(p) for p in s.get("presets", {}).values()):
+            del sources[sid]
+            continue
+        if not isinstance(s.get("fetched", 0), (int, float)):
+            s.pop("fetched")
+        failed = s.get("failed")
+        if failed is not None and not (isinstance(failed, dict) and isinstance(failed.get("at", 0), (int, float))
+                                       and isinstance(failed.get("error", ""), str)):
+            s.pop("failed")
+    return cache
+
+
 def catalog(refresh=False, by_source=False):
     """(both sources' lists, an error or ""): a source listed less than 6 h ago isn't asked again; one that can't be
     reached keeps its last list, and isn't asked again for 10 min. by_source: the errors as {source id: error}"""
-    try:
-        cache = load(CATALOG)
-        if not isinstance(cache.get("sources"), dict):
-            raise ValueError
-    except (OSError, ValueError, AttributeError):
-        cache = {"version": 1, "sources": {}}
+    cache = load_catalog()
     errors, changed = {}, False
-    for src in SOURCES:
+    for src in all_sources():
         have = cache["sources"].get(src["id"])
         if not refresh and have and time.time() - have.get("fetched", 0) < CATALOG_AGE:
             continue
@@ -390,9 +549,14 @@ def catalog(refresh=False, by_source=False):
             errors[src["id"]] = failed.get("error", "")  # a network that drops packets: not 30 s for each listing
             continue
         try:
-            cache["sources"][src["id"]] = list_source(src)
+            cache["sources"][src["id"]] = list_source(src, have)
         except NetError as e:
             errors[src["id"]] = str(e) if src["repo"] in str(e) else f"{src['repo']}: {e}"
+            cache["sources"].setdefault(src["id"], {})["failed"] = {"at": int(time.time()), "error": errors[src["id"]]}
+        except Exception as e:  # noqa: BLE001: whatever a repo someone added holds, the others stay listed
+            if not src.get("added"):
+                raise
+            errors[src["id"]] = f"{src['repo']}: {type(e).__name__}"
             cache["sources"].setdefault(src["id"], {})["failed"] = {"at": int(time.time()), "error": errors[src["id"]]}
         changed = True
     if changed:
@@ -401,9 +565,46 @@ def catalog(refresh=False, by_source=False):
     return cache, errors if by_source else "; ".join(dict.fromkeys(e for e in errors.values() if e))
 
 
+def same_name(folder):
+    """A folder's name as two repos might each spell it: Asuka_V2, asuka-v2 (and pctrade--Asuka_V2, in a fork)"""
+    return re.sub(r"[\W_]+", "", folder.removeprefix(COMMUNITY).lower())
+
+
+def duplicates(cache):
+    """{preset: the preset it's a copy of}: each other repo's against the main repo's and those before it, never against
+    its own. A copy has the same preset file, the same preview.png, or the same name and a picture in common. A name alone
+    says nothing (Blapples' asa_mitaka and pctrade's are different presets; many names are like Nord or Black), and nor
+    does a picture alone (the main repo's own different presets share wallpapers)"""
+    shas, names, dup = {}, {}, {}
+    for src in [MAIN_SOURCE] + [s for s in all_sources() if s is not MAIN_SOURCE]:
+        new_shas, new_names = {}, {}
+        for name, p in sorted(((cache["sources"].get(src["id"]) or {}).get("presets") or {}).items()):
+            files = p["files"]
+            keys = [files[p["json"]]["sha"]]
+            if p["preview"].lower() == "preview.png":  # not a wallpaper picked to stand in for one
+                keys.append(files[p["preview"]]["sha"])
+            pics = {i["sha"] for f, i in files.items() if Path(f).suffix.lower() in IMAGE_TYPES
+                    and not re.fullmatch(r"previews?(-lock)?\.png", f, re.I)}
+            nick = same_name(p["folder"])
+            first = next((shas[k] for k in keys if k in shas), None) \
+                or next((n for n, other in names.get(nick, []) if other & pics), None)
+            if first and src is not MAIN_SOURCE:
+                dup[name] = first
+                continue
+            for k in keys:
+                new_shas.setdefault(k, name)
+            if nick:
+                new_names.setdefault(nick, []).append((name, pics))
+        for k, v in new_shas.items():
+            shas.setdefault(k, v)
+        for k, v in new_names.items():
+            names.setdefault(k, []).extend(v)
+    return dup
+
+
 def find_entry(cache, name):
     """(source, its list, the preset's entry) for a preset in the catalog, else None"""
-    for src in SOURCES:
+    for src in all_sources():
         listed = cache["sources"].get(src["id"])
         if listed and name in listed.get("presets", {}):
             return src, listed, listed["presets"][name]
@@ -419,7 +620,8 @@ def thumb_of(name):
 
 def widgets_of(preset):
     """(the widgets a preset has on that this shell has, those it hasn't)"""
-    pw = preset.get("background", {}).get("widgets", {}) if isinstance(preset, dict) else {}
+    bg = preset.get("background") if isinstance(preset, dict) else None
+    pw = bg.get("widgets", {}) if isinstance(bg, dict) else {}
     on = [k for k, v in pw.items() if isinstance(v, dict) and v.get("enable")] if isinstance(pw, dict) else []
     return [k for k in on if k in WIDGETS], [k for k in on if k not in WIDGETS]
 
@@ -427,17 +629,19 @@ def widgets_of(preset):
 def widget_info():
     try:
         info = load(WIDGET_INFO)
-        return info if isinstance(info, dict) else {}
+        return {k: v for k, v in info.items() if isinstance(v, dict)} if isinstance(info, dict) else {}
     except (OSError, ValueError):
         return {}
 
 
 def catalog_entries(cache):
     """Every preset, as --catalog lists them: the sources' and any installed one they don't list (yours, or gone)"""
-    info, entries = widget_info(), {}
-    for src in SOURCES:
+    info, entries, dup = widget_info(), {}, duplicates(cache)
+    for src in all_sources():
         listed = cache["sources"].get(src["id"]) or {}
         for name, p in listed.get("presets", {}).items():
+            if name in dup and not preset_json(LIBRARY / name):  # the main repo has it: only yours stays listed
+                continue
             entries[name] = {"name": name, "title": title_of(name), "source": src["id"],
                              "author": src.get("author") or listed.get("authors", {}).get(name, ""),
                              "_json_sha": p["files"][p["json"]]["sha"]}
@@ -467,8 +671,9 @@ def show_catalog(refresh, as_json):
     entries = catalog_entries(cache)
     fetched = [s["fetched"] for s in cache["sources"].values() if "fetched" in s]
     if as_json:
-        print(json.dumps({"presets": entries, "fetched": min(fetched) if fetched else 0, "error": error},
-                         ensure_ascii=False))
+        added = [{"repo": s["repo"], "count": sum(e["source"] == s["id"] for e in entries)} for s in added_sources()]
+        print(json.dumps({"presets": entries, "fetched": min(fetched) if fetched else 0, "error": error,
+                          "sources": added}, ensure_ascii=False))
         return
     for e in entries:
         print(f"{'*' if e['installed'] else ' '} {e['name']:32} {e['source']:9} {e['author']}")
@@ -481,17 +686,21 @@ def make_thumb(name, src, entry):
     """The preset's preview, 480 px wide, into the thumbs (from the library when it's installed)"""
     THUMBS.mkdir(parents=True, exist_ok=True)
     fname = entry["preview"]
+    if src.get("added") and entry["files"][fname]["size"] > MAX_ADDED_PREVIEW:
+        raise OSError(f"its preview is too big ({fname})")
     local = LIBRARY / name / fname
     tmp = None
     if not local.is_file():
         tmp = THUMBS / f".{name}.{os.getpid()}.src{Path(fname).suffix.lower()}"
-        download(raw_url(src, f"presets/{entry['folder']}/{fname}"), tmp)
+        download(entry_url(src, entry, fname), tmp)
         local = tmp
     out, part = THUMBS / f"{name}.jpg", THUMBS / f".{name}.{os.getpid()}.part.jpg"
     try:
         made = False
         if shutil.which("magick"):
-            made = subprocess.run(["magick", f"{local}[0]", "-auto-orient", "-resize", f"{THUMB_WIDTH}x>",
+            # a repo someone added: read as the picture its name says, never as whatever else magick can read
+            coder = {".jpg": "jpeg", ".jpeg": "jpeg"}.get(Path(fname).suffix.lower(), Path(fname).suffix.lower()[1:])
+            made = subprocess.run(["magick", f"{coder + ':' if src.get('added') else ''}{local}[0]", "-auto-orient", "-resize", f"{THUMB_WIDTH}x>",
                                    "-quality", "82", f"jpg:{part}"], capture_output=True, timeout=120).returncode == 0
         elif shutil.which("ffmpeg"):
             made = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(local), "-frames:v", "1",
@@ -517,7 +726,9 @@ def thumbs(names):
     if not any(s.get("presets") for s in cache["sources"].values()):
         sys.exit(f"no catalog: {error or 'nothing listed'}")
     info, failed = widget_info(), 0
-    wanted = names or [n for s in SOURCES for n in sorted((cache["sources"].get(s["id"]) or {}).get("presets", {}))]
+    dup = duplicates(cache)
+    wanted = names or [n for s in all_sources() for n in sorted((cache["sources"].get(s["id"]) or {}).get("presets", {}))
+                       if n not in dup]
     for name in wanted:
         found = find_entry(cache, name)
         if not found:
@@ -533,7 +744,7 @@ def thumbs(names):
             sha = entry["files"][entry["json"]]["sha"]
             is_installed = (LIBRARY / name).is_dir() and preset_json(LIBRARY / name)
             if not is_installed and info.get(name, {}).get("sha") != sha:  # what it has on, for the list, before it's installed
-                widgets, missing = widgets_of(json.loads(fetch(raw_url(src, f"presets/{entry['folder']}/{entry['json']}"))))
+                widgets, missing = widgets_of(json.loads(fetch(entry_url(src, entry, entry["json"]))))
                 info[name] = {"sha": sha, "widgets": widgets, "missing": missing}
                 CACHE.mkdir(parents=True, exist_ok=True)
                 save(WIDGET_INFO, info)
@@ -591,6 +802,12 @@ def sync_preset(src_dir, dst_dir):
         elif upstream_changed:  # said once, when there's an update it doesn't take
             print(f"  - kept your changes: {dst_dir.name}/{src.name} (the upstream version: {old})")
         shutil.copy2(src, old)
+    for old in sorted(base.iterdir()):  # gone upstream (renamed, say): out of here too, unless changed here
+        if not (src_dir / old.name).is_file():
+            dst = dst_dir / old.name
+            if dst.is_file() and filecmp.cmp(dst, old, shallow=False):
+                dst.unlink()
+            old.unlink()
 
 
 def referenced_pictures(*docs):
@@ -623,7 +840,10 @@ def install(name, cache):
     staging.mkdir(parents=True)
     try:
         files = sorted(entry["files"].items())
+        total = sum(i["size"] for _, i in files)
         got = 0
+        if src.get("added") and total > MAX_ADDED_PRESET:  # before its pictures are known, what's listed
+            raise NetError(f"{name} is too big to install")
         for i, (fname, info) in enumerate(files, 1):
             here = [p for p in (dst / ".upstream" / fname, dst / fname) if p.is_file()]
             same = next((p for p in here if p.stat().st_size == info["size"] and git_sha(p) == info["sha"]), None)
@@ -631,7 +851,7 @@ def install(name, cache):
                 shutil.copy2(same, staging / fname)
                 continue
             print(f"  {i}/{len(files)} {fname}", flush=True)
-            download(raw_url(src, f"presets/{entry['folder']}/{fname}"), staging / fname)
+            download(entry_url(src, entry, fname), staging / fname)
             got += 1
         walls = 0
         if src.get("rootWallpapers"):
@@ -639,12 +859,19 @@ def install(name, cache):
             for fname in (entry["json"], "meta.json"):
                 try:
                     docs.append(load(staging / fname))
-                except (OSError, ValueError):
+                except (OSError, ValueError, RecursionError):
                     pass
             wanted = sorted(n for n in referenced_pictures(*docs) if n in listed.get("root", {}) and n not in entry["files"])
+            total += sum(listed["root"][n]["size"] for n in wanted)
+            if src.get("added") and total > MAX_ADDED_PRESET:
+                raise NetError(f"{name} is too big to install")
             for n in wanted:
-                out = BLAPPLES_PICS / n
-                if out.is_file() and out.stat().st_size == listed["root"][n]["size"]:
+                # another repo's picture of the same name isn't Blapples': it goes with the preset
+                out = staging / n if src.get("added") else BLAPPLES_PICS / n
+                have = dst / n if src.get("added") else out
+                if have.is_file() and have.stat().st_size == listed["root"][n]["size"]:
+                    if have != out:
+                        shutil.copy2(have, out)
                     continue
                 print(f"  wallpaper {n}", flush=True)
                 BLAPPLES_PICS.mkdir(parents=True, exist_ok=True)
@@ -680,11 +907,130 @@ def update(name):
             continue
         try:
             install(n, cache)
-        except NetError as e:
+        except (NetError, OSError) as e:
             print(f"  - {n}: {e}", file=sys.stderr)
             failed.append(n)
     if failed:
         sys.exit(f"not updated: {', '.join(failed)}")
+
+
+def parse_link(link):
+    """(owner/repo, the branches it may name) from what was typed: a GitHub link of any page of the repo, git@..., or
+    owner/repo. A /tree/ path may hold more than the branch (a folder), and a branch may hold a /: list_added tries them"""
+    link = link.strip()
+    if not link:
+        raise SourceError("bad_link", "give a link to a GitHub repo")
+    if m := re.fullmatch(r"(?:ssh://)?git@github\.com[:/](.+)", link, re.I):
+        path = m.group(1)
+    elif "://" in link or re.match(r"(www\.)?[\w-]+\.[a-z]{2,}/", link, re.I):
+        url = urllib.parse.urlsplit(link if "://" in link else "https://" + link)
+        if (url.hostname or "").lower() not in ("github.com", "www.github.com"):
+            raise SourceError("not_github", f"only GitHub repos can be added, not {url.hostname}")
+        if url.scheme not in ("https", "http", "ssh", "git"):
+            raise SourceError("bad_link", f"not a link to a GitHub repo: {link}")
+        path = urllib.parse.unquote(url.path)
+    else:
+        path = link
+    parts = [p for p in path.split("/") if p]
+    if len(parts) < 2:
+        raise SourceError("bad_link", f"not a link to a GitHub repo: {link}")
+    repo = f"{parts[0]}/{parts[1].removesuffix('.git')}"
+    if not REPO.fullmatch(repo):
+        raise SourceError("bad_link", f"not a link to a GitHub repo: {link}")
+    tree = parts[3:] if len(parts) > 3 and parts[2] == "tree" else []
+    return repo, [b for b in ("/".join(tree[:i]) for i in range(1, min(len(tree), 3) + 1)) if valid_branch(b)]
+
+
+def net_problem(e):
+    return SourceError("limit" if e.limited else "network", str(e))
+
+
+def list_added(src, wanted):
+    """The repo's list: from the shortest of the branches the link may name (git can't have both a and a/b), else from
+    its default branch"""
+    for branch in [*wanted, src["branch"]]:
+        s = {**src, "branch": branch}
+        try:
+            return s, list_source(s)
+        except NetError as e:
+            if e.code == 409:  # an empty repo has no tree
+                return s, {"presets": {}}
+            if e.code == 413:
+                raise SourceError("too_many", str(e)) from None
+            if e.code != 404:
+                raise net_problem(e) from None
+        except RecursionError:
+            raise SourceError("no_presets", f"{src['repo']}: GitHub's answer can't be read") from None
+    raise SourceError("not_found", f"{src['repo']} has no branch {src['branch']}")
+
+
+def add_source(link):
+    """A repo's presets into the catalog, against the main repo's list as it is now: what the result says"""
+    repo, wanted = parse_link(link)
+    known = {s["repo"].lower() for s in all_sources()}
+    if repo.lower() in known:
+        raise SourceError("already", f"{repo} is in the list already")
+    try:
+        meta = json.loads(fetch(f"https://api.github.com/repos/{repo}", api=True))
+        if not isinstance(meta, dict):
+            raise ValueError
+    except (ValueError, RecursionError):
+        raise SourceError("network", f"{repo}: GitHub's answer isn't a repo") from None
+    except NetError as e:
+        if e.code == 404:
+            raise SourceError("not_found", f"no public repo {repo} on GitHub") from None
+        raise net_problem(e) from None
+    if meta.get("private"):  # its pictures couldn't be fetched
+        raise SourceError("private", f"{repo} is private")
+    # moved: its name now
+    full = meta.get("full_name") if isinstance(meta.get("full_name"), str) and REPO.fullmatch(meta["full_name"]) else repo
+    if full.lower() in known:
+        raise SourceError("already", f"{full} is in the list already")
+    default = meta.get("default_branch")
+    src = added_source(full, default if isinstance(default, str) else "main")
+    if not src:
+        raise SourceError("bad_link", f"not a link to a GitHub repo: {link}")
+    src, listed = list_added(src, wanted)
+    if not listed["presets"]:
+        raise SourceError("no_presets", f"{full} has no presets (each one a folder with one .json and a picture)")
+
+    cache, _ = catalog()
+    stale = False
+    try:  # compared with what the main repo has now, not with a list hours old
+        cache["sources"][MAIN_SOURCE["id"]] = list_source(MAIN_SOURCE)
+    except NetError as e:
+        stale = True
+        if not (cache["sources"].get(MAIN_SOURCE["id"]) or {}).get("presets"):
+            raise net_problem(e) from None
+    cache["sources"][src["id"]] = listed
+    added = added_sources() + [src]
+    save_added_sources(added)  # duplicates() and the list below go by the file
+    dup = duplicates(cache)
+    new = sorted(n for n in listed["presets"] if n not in dup)
+    if not new:  # nothing to show: not kept
+        save_added_sources(added[:-1])
+        del cache["sources"][src["id"]]
+    CACHE.mkdir(parents=True, exist_ok=True)
+    save(CATALOG, cache)
+    return {"ok": True, "repo": full, "total": len(listed["presets"]), "added": len(new), "names": new,
+            "skipped": [{"name": n, "of": dup[n]} for n in sorted(listed["presets"]) if n in dup],
+            "saved": bool(new), "stale": stale}
+
+
+def remove_source(repo):
+    added = added_sources()
+    kept = [s for s in added if s["repo"].lower() != repo.strip().lower()]
+    if len(kept) == len(added):
+        sys.exit(f"no repo {repo} in the list")
+    save_added_sources(kept)
+    gone = repo.strip().lower()
+    try:
+        cache = load_catalog()
+        if cache["sources"].pop(gone, None) is not None:
+            save(CATALOG, cache)
+    except OSError:
+        pass
+    print(f"{repo}: out of the list (its installed presets stay)")
 
 
 def uninstall(name):
@@ -1068,8 +1414,12 @@ def set_wallpaper(path, mode=None, scheme=None, accent=""):
         # its upscale question (notify-send) waits in the background: on a pipe of ours it would keep a reader (Nexus,
         # `| tail`) waiting for the answer, so its errors go through a file
         with tempfile.TemporaryFile("w+") as err:
-            r = subprocess.run([str(SWITCHWALL), *run, *opts], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                               stderr=err, check=False, timeout=120)
+            try:
+                r = subprocess.run([str(SWITCHWALL), *run, *opts], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                   stderr=err, check=False, timeout=120)
+            except subprocess.TimeoutExpired:
+                print(f"switchwall.sh {' '.join(run)}: no answer in 2 min", file=sys.stderr)
+                continue
             err.seek(0)
             if r.returncode:
                 print(f"switchwall.sh {' '.join(run)}: exit {r.returncode}\n{err.read()}", file=sys.stderr)
@@ -1083,27 +1433,40 @@ def apply(preset_arg, args):
     if not pdir.is_dir():
         sys.exit(f"no preset {preset_arg} (installed ones: tools/preset-import.py --list)")
     pdir = pdir.resolve()
-    meta = load(pdir / "meta.json") if (pdir / "meta.json").is_file() else {}
-    js = preset_json(pdir)
-    if not js:
-        sys.exit(f"{pdir}: expected one preset .json next to meta.json")
-    preset = load(js)
+    def as_dict(v):
+        return v if isinstance(v, dict) else {}
+
+    # read as data from someone else: anything of the wrong kind is as good as not there
+    try:
+        meta = as_dict(load(pdir / "meta.json")) if (pdir / "meta.json").is_file() else {}
+        js = preset_json(pdir)
+        if not js:
+            sys.exit(f"{pdir}: expected one preset .json next to meta.json")
+        preset = as_dict(load(js))
+    except (ValueError, RecursionError) as e:
+        sys.exit(f"{pdir}: can't read it ({type(e).__name__})")
     name = pdir.name
     search = [pdir, (args.wallpapers or pdir.parent.parent).resolve(), BLAPPLES_PICS]
     search += [d for d in sorted(pdir.parent.iterdir()) if d.is_dir() and d != pdir]
 
-    pbg = preset.get("background", {})
-    pwidgets = pbg.get("widgets", {})
+    pbg = as_dict(preset.get("background"))
+    pwidgets = {k: v for k, v in as_dict(pbg.get("widgets")).items() if isinstance(v, dict)}
     applied, skipped = [], []
 
-    # pictures: copied next to each other in Pictures/Wallpapers/presets/<name>
-    out = PICTURES / "Wallpapers/presets" / name
+    # pictures: copied next to each other in Pictures/Wallpapers/presets/<name> (the shell's wallpaper browser has that
+    # path in a bash -c: nothing of a folder's name that a shell would act on)
+    out = PICTURES / "Wallpapers/presets" / re.sub(r"[^\w .+@-]", "_", name)
     def picture(path_or_name):
         if not path_or_name or not isinstance(path_or_name, str):
             return None
-        src = find_picture(Path(path_or_name).name, search)
+        pic = Path(path_or_name).name
+        # a picture, not any file; and not a name that does something in the scripts it goes through
+        if Path(pic).suffix.lower() not in IMAGE_TYPES | VIDEO_TYPES or not plain_name(pic):
+            skipped.append(f"not a picture: {pic}")
+            return None
+        src = find_picture(pic, search)
         if not src:
-            skipped.append(f"picture not found: {Path(path_or_name).name}")
+            skipped.append(f"picture not found: {pic}")
             return None
         if src.parent == BLAPPLES_PICS:
             return src  # already on this computer
@@ -1114,12 +1477,12 @@ def apply(preset_arg, args):
             shutil.copy2(src, dst)
         return dst
 
-    for w in meta.get("wallpapers", []):
+    for w in meta["wallpapers"] if isinstance(meta.get("wallpapers"), list) else []:
         picture(w)
     wallpaper = picture(pbg.get("wallpaperPath"))
     lockwall = picture(pbg.get("lockWall"))
-    avatar = picture(meta.get("avatar") or preset.get("profile", {}).get("avatarPicture"))
-    banner = picture(meta.get("banner") or preset.get("sidebar", {}).get("bannerImage"))
+    avatar = picture(meta.get("avatar") or as_dict(preset.get("profile")).get("avatarPicture"))
+    banner = picture(meta.get("banner") or as_dict(preset.get("sidebar")).get("bannerImage"))
 
     ii = load(II_CONFIG)
     widgets = ii.setdefault("background", {}).setdefault("widgets", {})
@@ -1148,14 +1511,23 @@ def apply(preset_arg, args):
 
     # the colours: the style, the accent colour they're made from (none: from the wallpaper) and light / dark. end4-pC
     # keeps light / dark out of presets, so meta.json "mode" (or --mode) says which one the preview was taken in
-    palette = preset.get("appearance", {}).get("palette", {})
+    palette = as_dict(as_dict(preset.get("appearance")).get("palette"))
     # "auto" (most presets) goes into the config too: switchwall.sh then picks the style from the wallpaper
     # (scheme_for_image.py) for an accent colour's scheme, as end-4 did for the preview; left as it was, the last
     # preset's style (a grey neutral, say) made it. It isn't passed as --type, which would also leave a named scheme
     # picked in Nexus (and Caelestia's smart scheme) for wallpaper colours
     scheme = palette.get("type") or "auto"
+    if not (isinstance(scheme, str) and re.fullmatch(r"auto|scheme-[a-z-]+", scheme)):
+        skipped.append(f"colour style {scheme!r}")
+        scheme = "auto"
     accent = palette.get("accentColor") or ""
+    if accent and not (isinstance(accent, str) and re.fullmatch(r"#?[0-9A-Fa-f]{6}", accent)):  # else: switchwall's picker
+        skipped.append(f"accent colour {accent!r}")
+        accent = ""
     mode = args.mode or meta.get("mode")
+    if mode and mode not in ("light", "dark"):
+        skipped.append(f"mode {mode!r}")
+        mode = None
     iipalette = ii.setdefault("appearance", {}).setdefault("palette", {})
     if scheme:
         iipalette["type"] = scheme
@@ -1170,7 +1542,7 @@ def apply(preset_arg, args):
     # one visualiser: the preset's (the visualizer widget, on or off), not Caelestia's bars as well
     sbg.setdefault("visualiser", {})["enabled"] = False
     applied.append("Caelestia visualiser off")
-    if pwidgets.get("clock", {}).get("enable"):
+    if as_dict(pwidgets.get("clock")).get("enable"):
         # one clock: the preset's, not Caelestia's desktop clock as well
         sbg.setdefault("desktopClock", {})["enabled"] = False
         applied.append("Caelestia desktop clock off")
@@ -1231,11 +1603,13 @@ def main():
     ap.add_argument("--install", metavar="NAME")
     ap.add_argument("--update", nargs="?", const=True, metavar="NAME")
     ap.add_argument("--uninstall", metavar="NAME")
+    ap.add_argument("--add-source", metavar="LINK")
+    ap.add_argument("--remove-source", metavar="OWNER/REPO")
     ap.add_argument("--enable", action="store_true")
     ap.add_argument("--disable", action="store_true")
     args = ap.parse_args()
     commands = [c for c in ("preset", "step", "workspace", "undo", "sync", "list", "save_layout", "forget", "catalog",
-                            "install", "update", "uninstall", "enable", "disable") if getattr(args, c)]
+                            "install", "update", "uninstall", "enable", "disable", "add_source", "remove_source") if getattr(args, c)]
     commands += ["thumbs"] if args.thumbs is not None else []
     if len(commands) > 1:
         ap.error(f"one at a time: {', '.join('--' + c.replace('_', '-') for c in commands)}")
@@ -1253,6 +1627,25 @@ def main():
 
     # downloads one after another (two of the same preset would share its staging folder), beside applies and switches
     try:
+        if args.add_source is not None or args.remove_source:
+            with held("preset-download.lock"):  # its list and the catalog: one change at a time
+                if args.remove_source:
+                    return remove_source(args.remove_source)
+                try:
+                    result = add_source(args.add_source)
+                except SourceError as e:
+                    if args.json:
+                        print(json.dumps({"ok": False, "code": e.code, "error": str(e)}, ensure_ascii=False))
+                        sys.exit(1)
+                    sys.exit(str(e))
+                if args.json:
+                    print(json.dumps(result, ensure_ascii=False))
+                else:
+                    print(f"{result['repo']}: {result['added']} of {result['total']} presets added, "
+                          f"{len(result['skipped'])} duplicates skipped")
+                    for d in result["skipped"]:
+                        print(f"  - {d['name']}: the same as {d['of']}")
+                return
         if args.install or args.update or args.sync is True:
             with held("preset-download.lock"):
                 if args.install:
@@ -1265,7 +1658,7 @@ def main():
                         sys.exit(f"no preset {args.install} in the catalog" + (f" ({error})" if error else ""))
                     return install(args.install, cache)
                 return update(None if args.update in (None, True) else args.update)
-    except NetError as e:
+    except (NetError, OSError) as e:
         sys.exit(str(e))
 
     # one at a time: an apply, an undo and a layout save each read preset-current and write the config, and a key held

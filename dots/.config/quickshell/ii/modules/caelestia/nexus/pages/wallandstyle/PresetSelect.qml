@@ -14,7 +14,8 @@ import qs.modules.caelestia.nexus.common
 
 // caelestia4: end4-pC presets: a wallpaper, desktop widgets, a lock screen wallpaper and an avatar each, applied by
 // scripts/presets/preset-import.py, which keeps a backup for Undo. Installed ones (the library) are applied with a
-// click; the gallery lists Blapples/wallpapers' and the community's (pctrade/end4-pCpresets), installed on demand.
+// click; the gallery lists the community's (pctrade/end4-pCpresets, the main repo), Blapples/wallpapers' and those of any
+// repo added by its link (a copy of a preset the main repo has is skipped), installed on demand.
 // "Use presets" off puts back your own desktop (--disable) and refuses presets until it's on again (--enable)
 PageBase {
     id: root
@@ -44,11 +45,57 @@ PageBase {
     property string catalogError
     property var thumbsTried: ({}) // name -> true: a preview asked for once (again after a refresh)
     property string search
-    property string sourceFilter: "all" // "all", "blapples", "community"
+    property string sourceFilter: "all" // "all", "blapples", "community", "added"
     property int shownCount: 24 // the gallery grows by this much with "Show more"
     property string installing // the preset being installed, offered to apply once it's in
     property string justInstalled
     property string toggleStatus // the last "Use presets" switch's outcome
+
+    // repos added by link (--add-source): the catalog's list of them, and what the last one came to
+    property var addedSources: [] // {repo, count}
+    property string addMessage
+    property string addSkipped
+    property bool addFailed
+    property string removing // the repo asked to be taken out, for the second click
+
+    // the words for why a repo couldn't be added (the script's own, in English, when it's something else)
+    function addError(code: string, error: string): string {
+        if (code === "bad_link")
+            return Tr.tr("That isn't a link to a GitHub repo");
+        if (code === "not_github")
+            return Tr.tr("Only GitHub repos can be added");
+        if (code === "already")
+            return Tr.tr("This repo is in the list already");
+        if (code === "not_found")
+            return Tr.tr("No public repo or branch at that link");
+        if (code === "private")
+            return Tr.tr("This repo is private: only public ones can be added");
+        if (code === "no_presets")
+            return Tr.tr("No presets there: each needs a folder with one .json and a picture");
+        if (code === "too_many")
+            return Tr.tr("This repo has too many folders to check");
+        if (code === "network") {
+            console.warn(`PresetSelect: --add-source: ${error}`);
+            return Tr.tr("GitHub couldn't be reached");
+        }
+        if (code === "limit")
+            return Tr.tr("GitHub's limit of listings is reached: try again in a while, or sign in with gh auth login");
+        return error || Tr.tr("The repo couldn't be added");
+    }
+
+    function addSource(link: string): void {
+        if (root.addProc.running || !link.trim())
+            return;
+        root.addMessage = Tr.tr("Comparing its presets with pctrade/end4-pCpresets…");
+        root.addSkipped = "";
+        root.addFailed = false;
+        root.addProc.command = [root.script, "--add-source", link.trim(), "--json"];
+        root.addProc.running = true;
+    }
+
+    function isAdded(p: var): bool {
+        return !!p && p.source !== "blapples" && p.source !== "community";
+    }
 
     // turned on or off from elsewhere (a terminal): what was said about the last switch is old
     onPresetsOnChanged: {
@@ -72,7 +119,9 @@ PageBase {
         const q = root.search.trim().toLowerCase();
         return root.catalogNames.filter(n => {
             const p = root.catalog[n];
-            if (!p || (root.sourceFilter !== "all" && p.source !== root.sourceFilter))
+            if (!p)
+                return false;
+            if (root.sourceFilter === "added" ? !root.isAdded(p) : root.sourceFilter !== "all" && p.source !== root.sourceFilter)
                 return false;
             return !q || `${p.title ?? ""} ${p.name} ${p.author ?? ""}`.toLowerCase().includes(q);
         });
@@ -230,6 +279,8 @@ PageBase {
                     // the same presets: the grid keeps its items (a preview arriving changes only its picture)
                     if (names.join("\n") !== root.catalogNames.join("\n"))
                         root.catalogNames = names;
+                    if (JSON.stringify(d.sources ?? []) !== JSON.stringify(root.addedSources))
+                        root.addedSources = d.sources ?? [];
                     root.fetched = d.fetched ?? 0;
                     root.catalogError = d.error ?? "";
                 } catch (e) {
@@ -250,6 +301,71 @@ PageBase {
             } else {
                 root.thumbsDue.restart();
             }
+        }
+    }
+
+    readonly property Process addProc: Process {
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let d;
+                try {
+                    d = JSON.parse(text);
+                } catch (e) {
+                    root.addFailed = true;
+                    root.addMessage = Tr.tr("The repo couldn't be added");
+                    return;
+                }
+                if (!d.ok) {
+                    root.addFailed = true;
+                    root.addMessage = root.addError(d.code ?? "", d.error ?? "");
+                    return;
+                }
+                root.addFailed = false;
+                const skipped = d.skipped ?? [];
+                // TRANSLATORS: %1 = a repo, %2 = presets added, %3 = duplicates skipped
+                let said = d.added > 0 ? Tr.tr("%1: %2 presets added, %3 duplicates skipped").arg(d.repo).arg(d.added).arg(skipped.length)
+                // TRANSLATORS: %1 = a repo, %2 = how many presets it has
+                : Tr.tr("%1: all %2 presets are already in the list, nothing added").arg(d.repo).arg(d.total);
+                if (d.stale)
+                    said += " " + Tr.tr("(compared with the list kept from before: GitHub couldn't be reached)");
+                root.addMessage = said;
+                // TRANSLATORS: %1 = the names of the presets left out
+                const shown = skipped.slice(0, 12).map(x => {
+                    const a = x.name.split("--").pop();
+                    const b = x.of.split("--").pop();
+                    return a === b ? a : `${a} (${b})`;
+                });
+                root.addSkipped = shown.length === 0 ? "" : Tr.tr("Skipped: %1").arg(shown.join(", "))
+                    // TRANSLATORS: %1 = how many more presets were left out
+                    + (skipped.length > shown.length ? " " + Tr.tr("and %1 more").arg(skipped.length - shown.length) : "");
+                if (d.added > 0) {
+                    sourceField.clear();
+                    searchField.clear();
+                    root.sourceFilter = "added";
+                    filterRow.active = filterRow.menuItems[3];
+                    root.shownCount = 24;
+                }
+            }
+        }
+        stderr: StdioCollector {
+            onStreamFinished: {
+                if (text.trim())
+                    console.warn(`PresetSelect: --add-source: ${text.trim()}`);
+            }
+        }
+        onExited: root.listCatalog(false)
+    }
+
+    readonly property Timer removeConfirm: Timer {
+        interval: 4000
+        onTriggered: root.removing = ""
+    }
+
+    // nothing added any more: the gallery isn't left showing an empty filter
+    onAddedSourcesChanged: {
+        if (root.addedSources.length === 0 && root.sourceFilter === "added" && !root.addProc.running) {
+            root.sourceFilter = "all";
+            filterRow.active = filterRow.menuItems[0];
         }
     }
 
@@ -415,13 +531,89 @@ PageBase {
                 }
             }
 
-            // the gallery: every preset of both sources, installed with a click
+            // the gallery: every preset of all sources, installed with a click
             SectionHeader {
                 text: Tr.tr("Gallery")
             }
 
+            // the address bar: a repo's link, Enter adds its presets that the list doesn't have yet
+            SearchBar {
+                id: sourceField
+
+                Layout.fillWidth: true
+                Layout.bottomMargin: Tokens.spacing.small
+
+                searchIcon.text: root.addProc.running ? "hourglass_top" : "link"
+                readOnly: root.addProc.running
+                placeholderText: Tr.tr("Add a repo: paste its GitHub link and press Enter")
+                font: Tokens.font.body.medium
+                onAccepted: root.addSource(text)
+                onTextChanged: {
+                    if (root.addFailed && !root.addProc.running) { // the next try: that one's error is old
+                        root.addFailed = false;
+                        root.addMessage = "";
+                    }
+                }
+            }
+
+            StyledText {
+                Layout.fillWidth: true
+                Layout.leftMargin: Tokens.padding.small
+                Layout.bottomMargin: Tokens.spacing.small
+                visible: root.addMessage !== ""
+                text: root.addMessage
+                color: root.addFailed ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                font: Tokens.font.label.medium
+                wrapMode: Text.Wrap
+            }
+
+            StyledText {
+                Layout.fillWidth: true
+                Layout.leftMargin: Tokens.padding.small
+                Layout.bottomMargin: Tokens.spacing.small
+                visible: root.addSkipped !== ""
+                text: root.addSkipped
+                color: Colours.palette.m3outline
+                font: Tokens.font.label.small
+                wrapMode: Text.Wrap
+            }
+
+            Repeater {
+                model: root.addedSources
+
+                RowButton {
+                    id: sourceRow
+
+                    required property var modelData
+                    required property int index
+
+                    Layout.fillWidth: true
+                    first: index === 0
+                    last: index === root.addedSources.length - 1
+                    disabled: root.runProc.running
+                    icon: root.removing === modelData.repo ? "delete_forever" : "link"
+                    text: modelData.repo
+                    // TRANSLATORS: %1 = how many presets of an added repo the gallery shows
+                    subtext: root.removing === modelData.repo ? Tr.tr("Click again to take it out of the list (installed presets stay)") : Tr.tr("%1 presets · click to remove the repo").arg(modelData.count)
+                    onClicked: {
+                        if (root.removing === sourceRow.modelData.repo) {
+                            root.removing = "";
+                            root.removeConfirm.stop();
+                            root.addMessage = "";
+                            root.addSkipped = "";
+                            root.addFailed = false;
+                            root.run(["--remove-source", sourceRow.modelData.repo], Tr.tr("Removing %1…").arg(sourceRow.modelData.repo), Tr.tr("Removed %1").arg(sourceRow.modelData.repo));
+                        } else {
+                            root.removing = sourceRow.modelData.repo;
+                            root.removeConfirm.restart();
+                        }
+                    }
+                }
+            }
+
             RowButton {
                 first: true
+                Layout.topMargin: root.addedSources.length > 0 ? Tokens.spacing.small : 0
                 disabled: root.catalogProc.running
                 icon: root.catalogProc.running || root.thumbsProc.running ? "hourglass_top" : "refresh"
                 text: root.catalogProc.running ? Tr.tr("Loading the gallery…") : Tr.tr("Refresh the gallery")
@@ -431,6 +623,8 @@ PageBase {
             }
 
             SelectRow {
+                id: filterRow
+
                 last: true
                 label: Tr.tr("Show")
                 // TRANSLATORS: %1 = how many gallery presets match the search and filter
@@ -448,6 +642,10 @@ PageBase {
                     MenuItem {
                         text: Tr.tr("Community")
                         value: "community"
+                    },
+                    MenuItem {
+                        text: Tr.tr("Added repos")
+                        value: "added"
                     }
                 ]
                 onSelected: item => {
@@ -457,6 +655,8 @@ PageBase {
             }
 
             SearchBar {
+                id: searchField
+
                 Layout.fillWidth: true
                 Layout.topMargin: Tokens.spacing.small
                 Layout.bottomMargin: Tokens.spacing.small
@@ -487,7 +687,7 @@ PageBase {
                         enabled: !root.runProc.running
                         opacity: enabled ? 1 : 0.6
                         source: preset.preview ?? ""
-                        badge: preset.installed ? Tr.tr("Installed") : preset.source === "community" ? Tr.tr("Community") : ""
+                        badge: preset.installed ? Tr.tr("Installed") : preset.source === "community" ? Tr.tr("Community") : root.isAdded(preset) ? Tr.tr("Added") : ""
                         // TRANSLATORS: %1 = a preset's name, %2 = who made it
                         text: preset.author ? Tr.tr("%1 · by %2").arg(preset.title || preset.name).arg(preset.author) : (preset.title || preset.name || "")
                         onClicked: {
