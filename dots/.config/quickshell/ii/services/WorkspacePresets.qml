@@ -17,7 +17,8 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property bool enabled: Config.options.background.workspacePresets
+    // caelestia4: and presets on (background.presetsEnabled): with them off the script refuses, and the desktop is yours
+    readonly property bool enabled: Config.options.background.workspacePresets && Config.options.background.presetsEnabled
     readonly property string script: FileUtils.trimFileProtocol(`${Directories.scriptPath}/presets/preset-import.py`)
     readonly property string stateDir: `${Quickshell.env("XDG_STATE_HOME") || `${Quickshell.env("HOME")}/.local/state`}/caelestia4`
     // a special workspace is never a monitor's active one: under it, the workspace beneath keeps its preset

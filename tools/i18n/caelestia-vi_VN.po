@@ -4560,3 +4560,183 @@ msgstr "Natri"
 msgctxt "chemical element"
 msgid "Potassium"
 msgstr "Kali"
+
+msgid "%1 (community)"
+msgstr "%1 (cộng đồng)"
+
+msgid "%1 installed: click one to apply it"
+msgstr "Đã cài %1: nhấn vào một preset để áp dụng"
+
+msgid "%1 is up to date"
+msgstr "%1 đã là bản mới nhất"
+
+msgid "%1 presets"
+msgstr "%1 preset"
+
+msgid "%1 · by %2"
+msgstr "%1 · của %2"
+
+msgid "A preset sets the wallpaper, widgets, colours, lock screen and avatar"
+msgstr "Preset đặt hình nền, widget, màu sắc, màn hình khóa và ảnh đại diện"
+
+msgid "All"
+msgstr "Tất cả"
+
+msgid "Apply %1"
+msgstr "Áp dụng %1"
+
+msgid "Applying a preset replaces these. With \"Save moves to the preset\" on, a widget added or removed here goes into the preset applied last."
+msgstr "Áp dụng một preset sẽ thay thế các widget này. Khi bật \"Lưu vị trí vào preset\", widget thêm hoặc gỡ ở đây sẽ được lưu vào preset áp dụng gần nhất."
+
+msgid "Blapples"
+msgstr "Blapples"
+
+msgid "Calendar"
+msgstr "Lịch"
+
+msgid "Community"
+msgstr "Cộng đồng"
+
+msgid "Every widget, Caelestia's clock and visualiser too"
+msgstr "Mọi widget, cả đồng hồ và hiệu ứng âm thanh của Caelestia"
+
+msgid "Fetched %1"
+msgstr "Đã tải lúc %1"
+
+msgid "From Blapples/wallpapers and pctrade/end4-pCpresets on GitHub"
+msgstr "Từ Blapples/wallpapers và pctrade/end4-pCpresets trên GitHub"
+
+msgid "Gallery"
+msgstr "Thư viện"
+
+msgid "Getting previews…"
+msgstr "Đang tải ảnh xem trước…"
+
+msgid "Image converter"
+msgstr "Chuyển đổi ảnh"
+
+msgid "Installed %1"
+msgstr "Đã cài %1"
+
+msgid "Installed presets are up to date"
+msgstr "Các preset đã cài đều là bản mới nhất"
+
+msgid "Installed: apply it now, or later from the installed ones"
+msgstr "Đã cài: áp dụng ngay, hoặc sau này từ danh sách đã cài"
+
+msgid "Installing %1…"
+msgstr "Đang cài %1…"
+
+msgid "Its style and placement: Desktop clock above"
+msgstr "Kiểu và vị trí: ở mục Đồng hồ trên màn nền phía trên"
+
+msgid "Its style: Audio visualiser above"
+msgstr "Kiểu: ở mục Hiệu ứng âm thanh phía trên"
+
+msgid "Loading the gallery…"
+msgstr "Đang tải thư viện…"
+
+msgid "Media player"
+msgstr "Trình phát nhạc"
+
+msgid "No preset matches"
+msgstr "Không có preset nào khớp"
+
+msgid "None yet: install some from the gallery below"
+msgstr "Chưa có: hãy cài vài preset từ thư viện bên dưới"
+
+msgid "Notes"
+msgstr "Ghi chú"
+
+msgid "Nothing listed yet: refresh the gallery (it needs the internet once)"
+msgstr "Chưa có gì: hãy làm mới thư viện (cần Internet một lần)"
+
+msgid "Off: your own wallpaper, widgets and colours; presets aren't applied"
+msgstr "Tắt: dùng hình nền, widget và màu của bạn; không áp dụng preset"
+
+msgid "Picture"
+msgstr "Hình ảnh"
+
+msgid "Picture card"
+msgstr "Thẻ hình ảnh"
+
+msgid "Presets are off: this is your own layout, kept until you change it."
+msgstr "Preset đang tắt: đây là bố cục của bạn, được giữ nguyên cho đến khi bạn thay đổi."
+
+msgid "Presets off: your own desktop is back"
+msgstr "Đã tắt preset: màn nền của bạn đã trở lại"
+
+msgid "Presets on"
+msgstr "Đã bật preset"
+
+msgid "Putting the last preset back…"
+msgstr "Đang áp dụng lại preset gần nhất…"
+
+msgid "Putting your own desktop back…"
+msgstr "Đang khôi phục màn nền của bạn…"
+
+msgid "Refresh the gallery"
+msgstr "Làm mới thư viện"
+
+msgid "Remove all from the desktop"
+msgstr "Gỡ tất cả khỏi màn nền"
+
+msgid "Search presets"
+msgstr "Tìm preset"
+
+msgid "Show"
+msgstr "Hiển thị"
+
+msgid "Show more (%1 left)"
+msgstr "Xem thêm (còn %1)"
+
+msgid "Sticker"
+msgstr "Nhãn dán"
+
+msgid "System resources"
+msgstr "Tài nguyên hệ thống"
+
+msgid "The gallery couldn't be read"
+msgstr "Không đọc được thư viện preset"
+
+msgid "Timers"
+msgstr "Hẹn giờ"
+
+msgid "To-do list"
+msgstr "Danh sách việc cần làm"
+
+msgid "Uninstall? Click again"
+msgstr "Gỡ cài đặt? Nhấn lần nữa"
+
+msgid "Uninstalled %1"
+msgstr "Đã gỡ %1"
+
+msgid "Uninstalling %1…"
+msgstr "Đang gỡ %1…"
+
+msgid "Update installed presets"
+msgstr "Cập nhật các preset đã cài"
+
+msgid "Updating %1…"
+msgstr "Đang cập nhật %1…"
+
+msgid "Updating…"
+msgstr "Đang cập nhật…"
+
+msgid "Use presets"
+msgstr "Dùng preset"
+
+msgid "User card"
+msgstr "Thẻ người dùng"
+
+msgid "Widgets on the desktop"
+msgstr "Widget trên màn nền"
+
+msgid "World clock"
+msgstr "Đồng hồ thế giới"
+
+msgid "Your changes to a preset are kept; pictures stay on this computer"
+msgstr "Các thay đổi của bạn trong preset được giữ lại; hình ảnh chỉ lưu trên máy này"
+
+msgid "Your own layout is shown: the widgets you pick in Wallpaper & style > Widgets on the desktop. Turn presets on to apply one again (the last one comes back)."
+msgstr "Đang hiển thị bố cục của bạn: các widget bạn chọn trong Hình nền & phong cách > Widget trên màn nền. Bật preset để áp dụng lại (preset gần nhất sẽ trở lại)."

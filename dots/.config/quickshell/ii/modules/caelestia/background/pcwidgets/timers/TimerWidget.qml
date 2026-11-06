@@ -44,11 +44,19 @@ AbstractBackgroundWidget {
         widget: root
         color: timerCard.bgColor
 
+        // caelestia4: a middle click (or Shift+right-click) resets; a plain right-click opens the widget's menu
         MouseArea {
             anchors.fill: parent
-            acceptedButtons: Qt.RightButton
+            acceptedButtons: Qt.RightButton | Qt.MiddleButton
             cursorShape: Qt.PointingHandCursor
-            onClicked: timerCard.onReset()
+            onClicked: mouse => {
+                if (mouse.button === Qt.MiddleButton || (mouse.modifiers & Qt.ShiftModifier)) {
+                    timerCard.onReset();
+                } else {
+                    const p = mapToItem(root, mouse.x, mouse.y);
+                    root.openContextMenu(p.x, p.y);
+                }
+            }
         }
 
         ColumnLayout {

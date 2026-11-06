@@ -59,8 +59,25 @@ AbstractWidget {
 
     draggable: placementStrategy === "free" && !Config.options.background.widgetsLocked
 
+    // caelestia4: off the desktop (Delete on a selected widget, or its menu's "Remove from desktop"); with
+    // background.saveToPreset, the preset applied last turns it off too (--save-layout)
     function requestDelete() {
         Config.options.background.widgets[root.configEntryName].enable = false
+        PresetLayout.requestSave()
+    }
+
+    // caelestia4: a right click opens the widget's menu at the cursor (WidgetContextMenu), made now and gone when it
+    // closes. The window takes the keyboard for it, as for a click on a widget: Esc closes it, and so does a window
+    // clicked (the keyboard going back to it)
+    function openContextMenu(x, y) {
+        const menu = contextMenuComponent.createObject(root, { widget: root })
+        if (!menu) return
+        GlobalStates.desktopWidgetKeyboardFocus = true
+        menu.popup(root, x, y)
+    }
+    Component {
+        id: contextMenuComponent
+        WidgetContextMenu {}
     }
     function restoreXYBinding() {
         root.x = Qt.binding(() => root.snapToDevice(root.targetX));
