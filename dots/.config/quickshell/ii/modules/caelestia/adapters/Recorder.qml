@@ -81,7 +81,7 @@ Singleton {
     Process {
         id: checkProc
 
-        command: ["pidof", "gpu-screen-recorder"] // not pgrep -x: names are cut to 15 characters
+        command: ["pgrep", "-u", Quickshell.env("USER"), "-f", "^(\\S*/)?gpu-screen-recorder( |$)"] // not pgrep -x: names are cut to 15 characters
         onExited: code => root.running = code === 0
     }
 

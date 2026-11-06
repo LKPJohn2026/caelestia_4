@@ -52,7 +52,14 @@ copy_if_missing() { # copy_if_missing <src> <dst>: only if dst missing or an emp
 }
 
 # ---- Caelestia plugin (user-local) ----
-[[ -d "$HOME/.local/lib/qt6/qml/Caelestia" ]] || "$REPO/tools/build-caelestia-plugin.sh"
+# caelestia4: built again when its source changed (the QML that comes with a pull can need its new properties)
+PLUGIN_STAMP="$HOME/.local/lib/qt6/qml/Caelestia/caelestia4-build.json"
+if [[ ! -d "$HOME/.local/lib/qt6/qml/Caelestia" ]]; then
+  "$REPO/tools/build-caelestia-plugin.sh"
+elif [[ "$(jq -r '.source // ""' "$PLUGIN_STAMP" 2>/dev/null)" != "$("$REPO/tools/build-caelestia-plugin.sh" --source-id)" ]]; then
+  say "the Caelestia plugin's source changed: building it"
+  "$REPO/tools/build-caelestia-plugin.sh" || warn "the Caelestia plugin wasn't rebuilt: the shell may miss what the new QML needs"
+fi
 
 # caelestia4: the shared-desktop marker (an account shared with Plasma) is gone with Plasma (docs/dev/kde-removal.md)
 mkdir -p "$CFG/caelestia4"; rm -f "$CFG/caelestia4/shared-desktop"
@@ -99,7 +106,7 @@ rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'worksp
 [[ -d "$CFG/hypr/custom" ]] || cp -a "$DOTS/hypr/custom" "$CFG/hypr/custom"
 # hypridle's timers: (re)create them from the saved settings when missing (5 / 10 / 15 min and lock before sleep by default)
 if [[ ! -f "$CFG/hypr/hypridle-timeouts.conf" ]]; then
-  read -r lockm offm sleepm lockb < <(jq -r '.caelestia.idle // {} | "\(.lockMinutes // 5) \(.screenOffMinutes // 10) \(.suspendMinutes // 0) \(.lockBeforeSleep // true)"' \
+  read -r lockm offm sleepm lockb < <(jq -r '.caelestia.idle // {} | "\(.lockMinutes // 5) \(.screenOffMinutes // 10) \(.suspendMinutes // 15) \(.lockBeforeSleep // true)"' \
     "$CFG/illogical-impulse/config.json" 2>/dev/null || echo "5 10 15 true")
   "$CFG/quickshell/ii/scripts/caelestia4/hypridle-timeouts.sh" "${lockm:-5}" "${offm:-10}" "${sleepm:-15}" "${lockb:-true}" \
     && say "created $CFG/hypr/hypridle-timeouts.conf (idle: lock ${lockm}m, screen off ${offm}m, suspend ${sleepm}m)"
@@ -230,8 +237,22 @@ if d.get("apps", {}).get("taskManager") == "plasma-systemmonitor --page-name Pro
     json.dump(d, open(p, "w"), indent=2)
 PY
 
+# caelestia4: Chromium and Electron pick their key store from the desktop's name, and an unknown one (Hyprland) gets the
+# unencrypted "basic" store: flags for those without a flags file of the user's (tools/keyring-switch.sh moved an old
+# KWallet's keys, a separate matter)
+for f in chrome code thorium; do copy_file_if_missing "$DOTS/$f-flags.conf" "$CFG/$f-flags.conf"; done
+for f in chromium brave brave-origin vesktop electron; do
+  [[ -e "$CFG/$f-flags.conf" ]] || printf '# caelestia4: keys in gnome-keyring (libsecret)\n--password-store=gnome-libsecret\n' > "$CFG/$f-flags.conf"
+done
+
 # ---- dirs caelestia-cli would normally create ----
 mkdir -p "$STATE/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"
 
 [[ -d "$BK" ]] && say "backups: $BK" || say "nothing needed backing up"
-say "done. Run tools/uwsm-setup.sh if you haven't, log out and pick 'Hyprland (uwsm-managed)' on the login screen."
+# caelestia4: the session's env and user units come with the update too
+if command -v uwsm >/dev/null && command -v uwsm-app >/dev/null; then
+  "$REPO/tools/uwsm-setup.sh" || warn "tools/uwsm-setup.sh failed: the session's units may be old"
+else
+  warn "uwsm is not installed: sudo pacman -S --needed uwsm, then tools/uwsm-setup.sh"
+fi
+say "done. Log out and pick 'Hyprland (uwsm-managed)' on the login screen."

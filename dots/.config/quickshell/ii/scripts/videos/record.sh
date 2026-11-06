@@ -19,9 +19,11 @@ PAUSED_FILE="${XDG_RUNTIME_DIR:-/tmp}/caelestia4-recording-paused"
 CUSTOM_PATH=$(jq -r '.screenRecord.savePath // empty' "$CONFIG_FILE" 2>/dev/null)
 RECORDING_DIR="${CUSTOM_PATH:-$(xdg-user-dir VIDEOS 2>/dev/null || echo "$HOME/Videos")}"
 
-# pidof, not pgrep -x / pkill -x: process names are cut to 15 characters ("gpu-screen-reco"), so -x never matches
-running() { pidof "$RECORDER" >/dev/null; }
-signal() { local pids; pids=$(pidof "$RECORDER") && kill "-$1" $pids; }
+# By command line, not pgrep -x / pkill -x: process names are cut to 15 characters ("gpu-screen-reco"), so -x never
+# matches. Only this user's: another session's recording isn't this one's to stop
+recorder_pids() { pgrep -u "$(id -u)" -f "^(\S*/)?$RECORDER( |\$)"; }
+running() { recorder_pids >/dev/null; }
+signal() { local pids; pids=$(recorder_pids) && kill "-$1" $pids; }
 
 REGION=""
 SOUND=0
