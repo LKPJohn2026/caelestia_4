@@ -97,6 +97,91 @@ PageBase {
     readonly property string desktopVisualiser: e4Vis.enable ? e4Vis.style : (Config.background.visualiser.enabled ? "caelestia" : "none")
     readonly property bool visualiserShader: ["mirror", "aurora", "dots", "ring"].includes(desktopVisualiser)
 
+    // caelestia4: end4-pC's desktop widgets, by hand (Widgets on the desktop): your own layout with presets off; with
+    // them on, a preset applied replaces it
+    readonly property var desktopWidgets: [
+        {
+            key: "clock",
+            name: Tr.tr("Clock"),
+            icon: "schedule"
+        },
+        {
+            key: "weather",
+            name: Tr.tr("Weather"),
+            icon: "partly_cloudy_day"
+        },
+        {
+            key: "calendar",
+            name: Tr.tr("Calendar"),
+            icon: "calendar_month"
+        },
+        {
+            key: "media",
+            name: Tr.tr("Media player"),
+            icon: "music_note"
+        },
+        {
+            key: "visualizer",
+            name: Tr.tr("Audio visualiser"),
+            icon: "graphic_eq"
+        },
+        {
+            key: "worldClock",
+            name: Tr.tr("World clock"),
+            icon: "public"
+        },
+        {
+            key: "resources",
+            name: Tr.tr("System resources"),
+            icon: "memory"
+        },
+        {
+            key: "userCard",
+            name: Tr.tr("User card"),
+            icon: "account_box"
+        },
+        {
+            key: "notes",
+            name: Tr.tr("Notes"),
+            icon: "sticky_note_2"
+        },
+        {
+            key: "todo",
+            name: Tr.tr("To-do list"),
+            icon: "checklist"
+        },
+        {
+            key: "timers",
+            name: Tr.tr("Timers"),
+            icon: "timer"
+        },
+        {
+            key: "customText",
+            name: Tr.tr("Text"),
+            icon: "text_fields"
+        },
+        {
+            key: "customImage",
+            name: Tr.tr("Picture"),
+            icon: "image"
+        },
+        {
+            key: "imageCard",
+            name: Tr.tr("Picture card"),
+            icon: "photo"
+        },
+        {
+            key: "sticker",
+            name: Tr.tr("Sticker"),
+            icon: "emoji_emotions"
+        },
+        {
+            key: "images",
+            name: Tr.tr("Image converter"),
+            icon: "transform"
+        }
+    ]
+
     readonly property list<MenuItem> visualiserItems: [
         MenuItem {
             text: "Caelestia"
@@ -803,6 +888,7 @@ PageBase {
                 root.e4Vis.enable = v !== "caelestia" && v !== "none";
                 if (root.e4Vis.enable)
                     root.e4Vis.style = v;
+                E4.PresetLayout.requestSave(); // on or off in the preset too, as the widget list below saves it
             }
         }
 
@@ -894,6 +980,7 @@ PageBase {
                     E4C.Config.options.background.widgets.clock.style = v;
                     E4C.Config.options.background.widgets.clock.styleLocked = v;
                 }
+                E4.PresetLayout.requestSave();
             }
         }
 
@@ -990,26 +1077,66 @@ PageBase {
             onToggled: E4C.Config.options.background.saveToPreset = checked
         }
 
+        // caelestia4: end4-pC's widgets put on or taken off the desktop by hand (PresetLayout.setWidgetEnabled: a new
+        // one isn't left under another, and with "Save moves to the preset" it goes into the preset too). The clock
+        // and the visualiser are the same settings as their sections above: one on here turns Caelestia's off
         SectionHeader {
-            text: Tr.tr("Weather widget")
+            text: Tr.tr("Widgets on the desktop")
         }
 
-        ToggleRow {
-            first: true
-            last: !E4C.Config.options.background.widgets.weather.enable
-            text: Tr.tr("Weather widget")
-            subtext: Tr.tr("end-4's weather card, separate from the clock; drag it when its placement is free")
-            value: E4C.Config.options.background.widgets.weather.enable
-            onToggled: E4C.Config.options.background.widgets.weather.enable = checked
+        StyledText {
+            Layout.fillWidth: true
+            Layout.leftMargin: Tokens.padding.small
+            Layout.bottomMargin: Tokens.spacing.small
+            text: E4C.Config.options.background.presetsEnabled ? Tr.tr("Applying a preset replaces these. With \"Save moves to the preset\" on, a widget added or removed here goes into the preset applied last.") : Tr.tr("Presets are off: this is your own layout, kept until you change it.")
+            color: Colours.palette.m3outline
+            font: Tokens.font.label.medium
+            wrapMode: Text.WordWrap
+        }
+
+        Repeater {
+            model: root.desktopWidgets
+
+            IconToggleRow {
+                required property var modelData
+                required property int index
+
+                first: index === 0
+                iconName: modelData.icon
+                text: modelData.name
+                subtext: modelData.key === "clock" ? Tr.tr("Its style and placement: Desktop clock above") : modelData.key === "visualizer" ? Tr.tr("Its style: Audio visualiser above") : modelData.key === "weather" ? Tr.tr("end-4's weather card, separate from the clock; drag it when its placement is free") : ""
+                value: E4C.Config.options.background.widgets[modelData.key].enable
+                onToggled: {
+                    // one clock, one visualiser: not Caelestia's as well
+                    if (checked && modelData.key === "clock")
+                        GlobalConfig.background.desktopClock.enabled = false;
+                    if (checked && modelData.key === "visualizer")
+                        GlobalConfig.background.visualiser.enabled = false;
+                    E4.PresetLayout.setWidgetEnabled(modelData.key, checked);
+                }
+            }
         }
 
         SelectRow {
             visible: E4C.Config.options.background.widgets.weather.enable
-            last: true
             label: Tr.tr("Weather placement")
             menuItems: root.placementItems
             active: root.placementItems.find(i => i.value === E4C.Config.options.background.widgets.weather.placementStrategy) ?? null
             onSelected: item => E4C.Config.options.background.widgets.weather.placementStrategy = item.value
+        }
+
+        RowButton {
+            last: true
+            disabled: !root.desktopWidgets.some(w => E4C.Config.options.background.widgets[w.key].enable) && !Config.background.desktopClock.enabled && !Config.background.visualiser.enabled
+            icon: "clear_all"
+            text: Tr.tr("Remove all from the desktop")
+            subtext: Tr.tr("Every widget, Caelestia's clock and visualiser too")
+            onClicked: {
+                GlobalConfig.background.desktopClock.enabled = false;
+                GlobalConfig.background.visualiser.enabled = false;
+                for (const w of root.desktopWidgets)
+                    E4.PresetLayout.setWidgetEnabled(w.key, false);
+            }
         }
 
         SectionHeader {

@@ -37,11 +37,7 @@ MouseArea {
 
     onClicked: (mouse) => {
         if (mouse.button === Qt.RightButton) {
-            Config.options.background.widgetsLocked = !Config.options.background.widgetsLocked
-            // caelestia4: say so, it is easy to do by accident (also Settings > Wallpaper & style > Desktop widgets)
-            Quickshell.execDetached(["notify-send", "-a", "Shell", "-t", "3000",
-                Config.options.background.widgetsLocked ? Translation.tr("Widgets locked") : Translation.tr("Widgets unlocked"),
-                Translation.tr("Right-click a widget to switch")])
+            root.openContextMenu(mouse.x, mouse.y)
         } else if (mouse.modifiers & Qt.ControlModifier) {
             root.selected = !root.selected
         } else {
@@ -82,6 +78,21 @@ MouseArea {
 
     function commitPosition() {}
     function requestDelete() {}
+
+    // caelestia4: a right click (x, y in the widget). A desktop widget opens its menu (AbstractBackgroundWidget);
+    // anything else on a canvas (the overlay's widgets) locks / unlocks the widgets straight away, as before
+    function openContextMenu(x, y) {
+        root.toggleWidgetsLocked()
+    }
+
+    // hint: the notification's second line (desktop widgets open a menu on right-click, overlay widgets switch)
+    function toggleWidgetsLocked(hint) {
+        Config.options.background.widgetsLocked = !Config.options.background.widgetsLocked
+        // caelestia4: say so, it is easy to do by accident (also Settings > Wallpaper & style > Desktop widgets)
+        Quickshell.execDetached(["notify-send", "-a", "Shell", "-t", "3000",
+            Config.options.background.widgetsLocked ? Translation.tr("Widgets locked") : Translation.tr("Widgets unlocked"),
+            hint || Translation.tr("Right-click a widget to switch")])
+    }
 
     Component.onCompleted: { var canvas = findCanvas(root.parent); if (canvas) canvas.registerWidget(root) }
 

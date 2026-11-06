@@ -66,7 +66,7 @@ Menu {
     background: Rectangle {
         implicitWidth: 190
         radius: Appearance.rounding.small + 4
-        color: Appearance.colors.colUiPopupBackground
+        color: Appearance.m3colors.m3surfaceContainer
         border.width: 1
         border.color: Appearance.colors.colLayer0Border
     }
