@@ -123,6 +123,30 @@ It rebuilds the Caelestia plugin when its source changed and updates the session
 those). XDG autostart was masked for this session by earlier versions, and stays so until you run
 `systemctl --user unmask wayland-session-xdg-autostart@hyprland.desktop.target`.
 
+If `git pull` says the histories diverged, one of two things happened:
+
+- You have commits of your own and the repo moved on: `git pull --rebase` as usual.
+- Your clone is from before 2026-11-06, when this repo's history was rewritten. It can't fast-forward, and merging would
+  bring the old history back, so don't merge. This list shows the commits that are really yours:
+
+  ```bash
+  git fetch origin
+  git log --cherry-pick --left-only --no-merges --oneline HEAD...origin/main
+  ```
+
+  Keep them on a branch, stash any uncommitted edits as the reset drops those too, then move to the new history:
+
+  ```bash
+  git branch backup-before-reset
+  git stash
+  git reset --hard origin/main
+  git submodule update --init --recursive
+  tools/install-main.sh
+  ```
+
+If a pull or update fails asking for a sign-in, GitHub may be limiting anonymous downloads for a while: try again later,
+or sign in with `gh auth login`.
+
 Maintainers: Caelestia is merged with `tools/sync-upstreams.sh`. end-4 is a vendored library since 2026-10-27, not an
 upstream to merge: `tools/sync-end4.sh` lists its new commits (and open PRs) since `tools/end4-reviewed`, `pick SHA`
 applies the chosen ones (changes to files removed here stay removed), `mark` records the review.

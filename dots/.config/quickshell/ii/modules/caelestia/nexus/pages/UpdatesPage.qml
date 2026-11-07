@@ -120,7 +120,7 @@ PageBase {
 
         InfoRow {
             first: true
-            icon: root.c4.error && !root.c4.branch ? "error" : (root.c4.behind ?? 0) > 0 ? "upgrade" : "check_circle"
+            icon: root.c4.error && !root.c4.branch ? "error" : root.c4.diverged ? "warning" : (root.c4.behind ?? 0) > 0 ? "upgrade" : "check_circle"
             label: !root.c4.path ? (SystemUpdates.errorText(root.c4.error) ?? Tr.tr("Not checked yet")) : (root.c4.behind ?? 0) > 0 ? Tr.trN("%n new commit", "%n new commits", root.c4.behind) : Tr.tr("Up to date")
             subtext: [root.c4.path ? `${root.c4.path} · ${root.c4.branch} → ${root.c4.upstream ?? ""}` : "", root.c4.dirty ? Tr.tr("uncommitted changes") : "", (root.c4.ahead ?? 0) > 0 ? Tr.trN("%n local commit not pushed", "%n local commits not pushed", root.c4.ahead) : "", root.c4.path ? (SystemUpdates.errorText(root.c4.error) ?? "") : ""].filter(s => s).join(" · ")
         }
@@ -141,8 +141,8 @@ PageBase {
             last: true
             icon: "download"
             text: Tr.tr("Update caelestia_4")
-            subtext: root.c4.dirty ? Tr.tr("Commit or stash the uncommitted changes first") : Tr.tr("git pull, then tools/install-main.sh, in a terminal")
-            disabled: root.checking || !root.c4.path || (root.c4.behind ?? 0) === 0 || root.c4.dirty
+            subtext: root.c4.diverged ? Tr.tr("This clone has commits of its own too, so git pull can't fast-forward: see Updating in docs/install.md") : root.c4.dirty ? Tr.tr("Commit or stash the uncommitted changes first") : Tr.tr("git pull, then tools/install-main.sh, in a terminal")
+            disabled: root.checking || !root.c4.path || (root.c4.behind ?? 0) === 0 || root.c4.dirty || !!root.c4.diverged
             onClicked: SystemUpdates.updateCaelestia4()
         }
     }
