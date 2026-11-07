@@ -13,6 +13,7 @@
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="$REPO/dots-extra/greetd"
+source "$(dirname "${BASH_SOURCE[0]}")/lib-require-dot-config.sh"
 CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
 say() { printf '\e[1;34m::\e[0m %s\n' "$*"; }

@@ -31,7 +31,7 @@ Singleton {
 
     Process {
         id: detectDownloadProc
-        command: ["bash", "-c", "pidof curl wget aria2c yt-dlp || ls ~/Downloads | grep -E '\.crdownload$|\.part$'"]
+        command: ["bash", "-c", "pidof curl wget aria2c yt-dlp || { d=$(xdg-user-dir DOWNLOAD 2>/dev/null); { [ -n \"$d\" ] && [ \"$d\" != \"$HOME\" ]; } || d=~/Downloads; ls \"$d\"; } | grep -E '\.crdownload$|\.part$'"]
         onExited: (exitCode, exitStatus) => {
             root.downloadRunning = (exitCode === 0);
         }

@@ -54,6 +54,10 @@ git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
 
 ## 2. Install
 
+The config has to be in `~/.config`: with `XDG_CONFIG_HOME` set to anywhere else the installers stop without changing
+anything. `XDG_CACHE_HOME` can be anywhere, and so can `XDG_STATE_HOME`, set the same in the session and for the
+installer, which links `~/.local/state/quickshell` and `caelestia` to it for what can only name those.
+
 ```bash
 tools/build-caelestia-plugin.sh   # the Caelestia QML plugin, into ~/.local/lib/qt6/qml (no sudo)
 tools/install-main.sh             # the configs and the uwsm session (tools/uwsm-setup.sh: env, user units, login entry);

@@ -98,10 +98,7 @@ hl.bind("SUPER + SHIFT + X", hl.dsp.global("quickshell:regionOcr"),
     { description = "Utilities: Character recognition >> clipboard" })
 hl.bind("SUPER + SHIFT + T", hl.dsp.global("quickshell:screenTranslate"),
     { description = "Utilities: Translate screen content" })
-hl.bind("SUPER + SHIFT + X", hl.dsp.exec_cmd(
-    qsIsAlive ..
-    " || pidof slurp || grim -g \"$(slurp $SLURP_ARGS)\" \"/tmp/ocr_image.png\" && tesseract \"/tmp/ocr_image.png\" stdout -l $(tesseract --list-langs | awk 'NR>1{print $1}' | tr '\\\\n' '+' | sed 's/\\\\+$/\\\\n/') | wl-copy && rm \"/tmp/ocr_image.png\""
-))
+hl.bind("SUPER + SHIFT + X", hl.dsp.exec_cmd(qsIsAlive .. " || pidof slurp || " .. hyprScripts .. "/ocr_region.sh"))
 --# Color picker
 hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"),
     { description = "Utilities: Pick color #RRGGBB >> clipboard" })

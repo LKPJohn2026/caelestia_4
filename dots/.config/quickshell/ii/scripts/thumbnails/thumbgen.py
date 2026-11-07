@@ -28,7 +28,7 @@ thumbnail_size_map = {
 factory = None
 logger.remove()
 logger.add(sys.stdout, level="INFO")
-logger.add("/tmp/thumbgen.log", level="DEBUG", rotation="100 MB")
+logger.add(f"{os.environ.get('XDG_RUNTIME_DIR') or '/tmp'}/caelestia4-thumbgen.log", level="DEBUG", rotation="10 MB") # caelestia4: this user's, in memory
 
 def make_thumbnail(fpath: str) -> bool:
     mtime = os.path.getmtime(fpath)

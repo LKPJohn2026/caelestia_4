@@ -36,7 +36,7 @@ export QT_QPA_PLATFORMTHEME=qtengine
 export XDG_MENU_PREFIX=arch-
 
 # end-4 Python virtual environment
-export ILLOGICAL_IMPULSE_VIRTUAL_ENV="$HOME/.local/state/quickshell/.venv"
+export ILLOGICAL_IMPULSE_VIRTUAL_ENV="${XDG_STATE_HOME:-$HOME/.local/state}/quickshell/.venv"
 
 # User-local Caelestia QML plugin (caelestia4-quickshell)
 export QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml"

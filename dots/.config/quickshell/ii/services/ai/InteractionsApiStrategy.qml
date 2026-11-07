@@ -1,4 +1,5 @@
 import QtQuick
+import qs.modules.common
 import qs.modules.common.functions as CF
 import "interactions.js" as Interactions
 
@@ -13,7 +14,7 @@ ApiStrategy {
     property var attachments: []
     property string endpoint
     property string body
-    readonly property string workDir: "/tmp/quickshell/ai/interactions"
+    readonly property string workDir: `${CF.FileUtils.trimFileProtocol(Directories.cache)}/ai/interactions` // caelestia4: on disk, an attachment's copies don't fit in the runtime directory's memory
 
     function buildEndpoint(model: AiModel): string {
         root.endpoint = model.endpoint;
@@ -68,7 +69,7 @@ ApiStrategy {
     function finalizeScriptContent(scriptContent: string): string {
         const q = s => `'${CF.StringUtils.shellSingleQuoteEscape(s)}'`;
         let s = "#!/usr/bin/env bash\n";
-        s += `dir=${q(root.workDir)}\nmkdir -p "$dir"\nrm -f "$dir"/att_*\n`;
+        s += `dir=${q(root.workDir)}\nmkdir -p -m 700 "$dir"\nrm -f "$dir"/att_*\n`;
         s += `cat > "$dir/request.json" <<'CAELESTIA4_JSON_EOF'\n${root.body}\nCAELESTIA4_JSON_EOF\n`;
         if (root.attachments.length > 0) {
             root.attachments.forEach((path, i) => {
@@ -96,7 +97,10 @@ ApiStrategy {
         } else {
             s += 'cp "$dir/request.json" "$dir/request.full.json"\n';
         }
+        // caelestia4: an empty body (disk full) is an error here, not a request. What it held is only for this request
+        s += '[ -s "$dir/request.full.json" ] || { echo "Could not build the request (disk full?)" >&2; rm -f "$dir"/att_* "$dir/attachments.json" "$dir/request.full.json"; exit 1; }\n';
         s += `curl --no-buffer -sS ${q(root.endpoint)} -H 'Content-Type: application/json' ${buildAuthorizationHeader("API_KEY")} --data-binary @"$dir/request.full.json"\n`;
+        s += 'status=$?\nrm -f "$dir"/att_* "$dir/attachments.json" "$dir/request.full.json"\nexit $status\n';
         return s;
     }
 }

@@ -9,7 +9,7 @@ mode="${2:-dark}"
 
 type=$(jq -r '.appearance.palette.type // "auto"' "${XDG_CONFIG_HOME:-$HOME/.config}/illogical-impulse/config.json" 2>/dev/null)
 if [[ "$type" == "auto" || -z "$type" ]]; then
-    venv=$(eval echo "${ILLOGICAL_IMPULSE_VIRTUAL_ENV:-$HOME/.local/state/quickshell/.venv}")
+    venv=$(eval echo "${ILLOGICAL_IMPULSE_VIRTUAL_ENV:-${XDG_STATE_HOME:-$HOME/.local/state}/quickshell/.venv}")
     type=$("$venv/bin/python3" "$(dirname "$0")/../../../../scripts/colors/scheme_for_image.py" "$img" 2>/dev/null | tr -d '\n')
     [[ "$type" == scheme-* ]] || type=scheme-tonal-spot
 fi
