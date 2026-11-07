@@ -4824,3 +4824,12 @@ msgstr "Biến thể bố cục"
 
 msgid "One per layout, comma separated, e.g. nodeadkeys,. Must match the layouts above"
 msgstr "Mỗi bố cục một biến thể, cách nhau bằng dấu phẩy, ví dụ nodeadkeys,. Phải khớp với các bố cục ở trên"
+
+msgid "%1 needs a sign-in"
+msgstr "%1 cần đăng nhập"
+
+msgid "Set it up in the window that opens, then connect again here"
+msgstr "Thiết lập trong cửa sổ vừa mở, rồi kết nối lại ở đây"
+
+msgid "Set it up with nmtui in a terminal, or install nm-connection-editor, then connect again here"
+msgstr "Thiết lập bằng nmtui trong terminal, hoặc cài nm-connection-editor, rồi kết nối lại ở đây"

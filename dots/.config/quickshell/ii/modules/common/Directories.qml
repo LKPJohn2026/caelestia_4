@@ -27,6 +27,7 @@ Singleton {
     property string coverArt: FileUtils.trimFileProtocol(`${Directories.cache}/media/coverart`)
     // caelestia4: this user's own, which another account can't have made first (screenshots, request scripts with keys)
     readonly property string tempBase: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia4-temp`
+    property string aiInteractions: FileUtils.trimFileProtocol(`${Directories.cache}/ai/interactions`)
     property string tempImages: `${tempBase}/media/images`
     property string booruPreviews: FileUtils.trimFileProtocol(`${Directories.cache}/media/boorus`)
     property string booruDownloads: FileUtils.trimFileProtocol(Directories.pictures  + "/homework")
@@ -64,6 +65,7 @@ Singleton {
         Quickshell.execDetached(["bash", "-c", `rm -rf '${latexOutput}'; mkdir -p '${latexOutput}'`])
         Quickshell.execDetached(["bash", "-c", `rm -rf '${cliphistDecode}'; mkdir -p '${cliphistDecode}'`])
         Quickshell.execDetached(["mkdir", "-p", `${aiChats}`])
+        Quickshell.execDetached(["rm", "-rf", `${aiInteractions}`]) // caelestia4: a request cut off by a crash leaves its body there
         Quickshell.execDetached(["mkdir", "-p", `${userActions}`])
         Quickshell.execDetached(["rm", "-rf", `${tempImages}`])
     }

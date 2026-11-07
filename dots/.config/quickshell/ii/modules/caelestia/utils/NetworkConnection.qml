@@ -1,6 +1,8 @@
 pragma Singleton
 
 import QtQuick
+import Quickshell
+import Caelestia.I18n
 import qs.modules.caelestia.adapters
 
 /**
@@ -39,6 +41,18 @@ QtObject {
      */
     function handleConnect(network, session, onPasswordNeeded): void {
         if (!network) {
+            return;
+        }
+
+        // caelestia4: before leaving the current network, which the setup may need. The saved list isn't refreshed by itself,
+        // and one made in the editor is what "connect again" comes back with
+        if (root.needsSetup(network)) {
+            Nmcli.loadSavedConnections(() => {
+                if (root.needsSetup(network))
+                    root.openEnterpriseSetup(network.ssid);
+                else
+                    root.handleConnect(network, session, onPasswordNeeded);
+            });
             return;
         }
 
@@ -96,6 +110,21 @@ QtObject {
         } else {
             Nmcli.connectToNetwork(network.ssid, "", network.bssid, null);
         }
+    }
+
+    // WPA-Enterprise (eduroam, a company's) needs a sign-in method and a user, which a password prompt can't ask for. Once
+    // set up in the editor it has a saved profile and connects like any other
+    function needsSetup(network): bool {
+        const security = network?.security ?? "";
+        return (security.includes("802.1X") || security.includes("WPA-EAP")) && !Nmcli.hasSavedProfile(network.ssid);
+    }
+
+    function openEnterpriseSetup(ssid: string): void {
+        const script = 'if command -v nm-connection-editor >/dev/null; then notify-send -a Shell -- "$1" "$2"; exec uwsm-app -- nm-connection-editor --create --type=802-11-wireless; fi; notify-send -a Shell -- "$1" "$3"';
+        Quickshell.execDetached(["bash", "-c", script, "_",
+            Tr.tr("%1 needs a sign-in").arg(ssid),
+            Tr.tr("Set it up in the window that opens, then connect again here"),
+            Tr.tr("Set it up with nmtui in a terminal, or install nm-connection-editor, then connect again here")]);
     }
 
     /**
