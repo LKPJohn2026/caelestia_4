@@ -80,7 +80,7 @@ Scope {
     Process {
         id: fingerprintCheckProc
         running: true
-        command: ["bash", "-c", "fprintd-list $(whoami)"]
+        command: ["bash", "-c", "LC_ALL=C LANGUAGE=C fprintd-list \"$(whoami)\""] // caelestia4: its message is matched below, in English
         stdout: StdioCollector {
             id: fingerprintOutputCollector
             onStreamFinished: {

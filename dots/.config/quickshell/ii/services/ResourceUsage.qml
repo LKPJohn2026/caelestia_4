@@ -190,7 +190,9 @@ Singleton {
         stdout: StdioCollector {
             id: outputCollector
             onStreamFinished: {
-                root.maxAvailableCpuString = (parseFloat(outputCollector.text) / 1000).toFixed(0) + " GHz"
+                const mhz = parseFloat(outputCollector.text); // caelestia4: no such line in a VM or on some ARM boards
+                if (!isNaN(mhz))
+                    root.maxAvailableCpuString = (mhz / 1000).toFixed(0) + " GHz"
             }
         }
     }

@@ -1,7 +1,7 @@
 # caelestia4: env of the uwsm Hyprland session, yours to change: tools/uwsm-setup.sh installs it if it's missing and then
 # keeps it (~/.config/uwsm/env-hyprland.d/). Mirrors ~/.config/hypr/custom/env.lua.
 
-# Hyprland picks a GPU by itself. Told only when the optional udev rule named the discrete one
+# Hyprland picks a GPU by itself. This is the only place that tells it, and only when the optional udev rule named the discrete one
 # (system/udev/99-caelestia4-dgpu.rules) and a monitor is on it
 if [ -e /dev/dri/nvidia-dgpu ]; then
     _card=$(basename "$(readlink -f /dev/dri/nvidia-dgpu)")
