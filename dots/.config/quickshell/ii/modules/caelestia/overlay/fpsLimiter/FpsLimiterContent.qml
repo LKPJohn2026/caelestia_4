@@ -19,6 +19,11 @@ OverlayBackground {
 
     property real padding: Tokens.padding.large
     property var currentState: FpsLimiterContent.State.Normal
+    property string errorText: Translation.tr("Enter a valid number")
+    // caelestia4: the limit is a line in MangoHud's config, read by MangoHud. Only a hint: a Flatpak's MangoHud reads the same
+    // file with nothing on this side to find, and writing it does no harm
+    property bool mangohudMissing: false
+    onVisibleChanged: if (visible) mangohudCheck.running = true
     implicitWidth: content.implicitWidth + (padding * 2)
     implicitHeight: content.implicitHeight + (padding * 2)
 
@@ -33,29 +38,21 @@ OverlayBackground {
     function applyLimit() {
         var fpsValue = parseInt(fpsField.text);
         if (isNaN(fpsValue) || fpsValue < 0) {
+            root.errorText = Translation.tr("Enter a valid number");
             root.currentState = FpsLimiterContent.State.Error;
             iconResetTimer.restart();
             fpsField.text = "";
             return;
         }
 
-        var cfgPaths = [
-            "~/.config/MangoHud/MangoHud.conf",
-        ]; // MangoHud config files
-
-        var updateCommands = cfgPaths.map(path => {
-            return "if grep -q '^fps_limit=' " + path + "; " +
-            "then sed -i 's/^fps_limit=.*/fps_limit=" + fpsValue + "/' " + path + "; " +
-            "else echo 'fps_limit=" + fpsValue + "' >> " + path + "; fi";
-        }).join("; ");
-
-        var cmd = updateCommands + "; pkill -SIGUSR2 mangohud";
-
-        fpsSetter.command = ["bash", "-c", cmd];
-        fpsSetter.startDetached();
-
-        root.currentState = FpsLimiterContent.State.Success;
-        iconResetTimer.restart();
+        // caelestia4: the outcome is the command's, so a limit that wasn't written doesn't show as done. pkill only tells
+        // a running MangoHud to reload: none running isn't a failure
+        fpsSetter.command = ["bash", "-c", `path="\${XDG_CONFIG_HOME:-$HOME/.config}/MangoHud/MangoHud.conf"
+            mkdir -p "$(dirname "$path")" || exit 1
+            if grep -qs '^fps_limit=' "$path"; then sed -i 's/^fps_limit=.*/fps_limit=${fpsValue}/' "$path" || exit 1
+            else { [ ! -s "$path" ] || [ -z "$(tail -c1 "$path")" ] || echo; echo 'fps_limit=${fpsValue}'; } >> "$path" || exit 1; fi
+            pkill -SIGUSR2 mangohud; exit 0`];
+        fpsSetter.running = true;
 
         // Clear the field after applying
         fpsField.text = "";
@@ -63,6 +60,19 @@ OverlayBackground {
 
     Process {
         id: fpsSetter
+        onExited: exitCode => {
+            root.errorText = Translation.tr("Couldn't save the limit");
+            root.currentState = exitCode === 0 ? FpsLimiterContent.State.Success : FpsLimiterContent.State.Error;
+            iconResetTimer.restart();
+            mangohudCheck.running = true;
+        }
+    }
+
+    Process {
+        id: mangohudCheck
+        running: true
+        command: ["bash", "-c", `command -v mangohud || [ -s "\${XDG_CONFIG_HOME:-$HOME/.config}/MangoHud/MangoHud.conf" ]`]
+        onExited: exitCode => root.mangohudMissing = exitCode !== 0
     }
 
     // caelestia4: Caelestia text field + round apply button (shows a check / cross for a second after applying)
@@ -77,7 +87,7 @@ OverlayBackground {
 
             Layout.preferredWidth: 200
             leadingIcon: "speed"
-            placeholderText: root.currentState === FpsLimiterContent.State.Error ? Translation.tr("Enter a valid number") : Translation.tr("FPS limit (0 = off)")
+            placeholderText: root.currentState === FpsLimiterContent.State.Error ? root.errorText : root.mangohudMissing ? Translation.tr("FPS limit (needs MangoHud)") : Translation.tr("FPS limit (0 = off)")
             inputMethodHints: Qt.ImhDigitsOnly
             focus: true
             onAccepted: root.applyLimit()

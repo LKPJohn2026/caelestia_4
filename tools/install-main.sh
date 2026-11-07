@@ -160,15 +160,11 @@ LUA
 fi
 # caelestia4: an earlier version wrote card1 when the udev rule was missing, wrong on most machines (see below)
 sed -i -e '/^-- caelestia4: render on the GPU that drives the monitor (RTX 5090)$/{N;/"\/dev\/dri\/card1"/d}' "$ENV" 2>/dev/null || true
-# caelestia4: Hyprland picks a GPU by itself. It's told only with two GPUs, when the optional udev rule named the discrete
-# one and a monitor is on it (cardN can't be written: the numbers can swap between boots)
-if ! grep -q 'AQ_DRM_DEVICES' "$ENV" 2>/dev/null && [[ -e /dev/dri/nvidia-dgpu ]] \
-  && grep -qsx connected "/sys/class/drm/$(basename "$(readlink -f /dev/dri/nvidia-dgpu)")"-*/status; then
-  cat >> "$ENV" <<'LUA'
-
--- caelestia4: render on the GPU that drives the monitor (system/udev/99-caelestia4-dgpu.rules names it)
-hl.env("AQ_DRM_DEVICES", "/dev/dri/nvidia-dgpu")
-LUA
+# caelestia4: which GPU Hyprland is told to use is decided at each login, in uwsm/env-hyprland.d/caelestia4-local.sh. An
+# earlier version also wrote it here, once, which stays after the monitor or the udev rule has gone. Only an env file that
+# has the check can take over (it's kept once installed, so an old one may not)
+if grep -qs 'AQ_DRM_DEVICES' "$CFG/uwsm/env-hyprland.d/caelestia4-local.sh"; then
+  sed -i -e '/^-- caelestia4: render on the GPU that drives the monitor/{N;/hl\.env("AQ_DRM_DEVICES", "\/dev\/dri\/nvidia-dgpu")/d}' "$ENV" 2>/dev/null || true
 fi
 
 # ---- matugen (colour generation) without the GTK templates (GTK css is shared with Plasma) ----

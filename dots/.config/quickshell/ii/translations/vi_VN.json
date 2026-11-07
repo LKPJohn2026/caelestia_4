@@ -1196,5 +1196,7 @@
   "Uptime": "Đã chạy /*keep*/",
   "Watch": "Xem /*keep*/",
   "Welcome back!": "Chào mừng trở lại! /*keep*/",
-  "and %1 more": "và %1 thông báo khác /*keep*/"
+  "and %1 more": "và %1 thông báo khác /*keep*/",
+  "FPS limit (needs MangoHud)": "Giới hạn FPS (cần MangoHud)",
+  "Couldn't save the limit": "Không lưu được giới hạn"
 }
