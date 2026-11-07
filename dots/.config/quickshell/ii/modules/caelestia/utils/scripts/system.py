@@ -19,11 +19,11 @@ PLUGIN_DIR = os.path.join(HOME, ".local/lib/qt6/qml/Caelestia")
 PLUGIN_STAMP = os.path.join(PLUGIN_DIR, "caelestia4-build.json")  # written by tools/build-caelestia-plugin.sh
 
 
-def run(cmd, timeout=60, cwd=None):
-    """(exit code, stdout); 127 when the program is missing, 124 on timeout"""
+def run(cmd, timeout=60, cwd=None, env=None, stderr=False):
+    """(exit code, stdout, or stderr with stderr=True); 127 when the program is missing, 124 on timeout"""
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, cwd=cwd)
-        return p.returncode, p.stdout
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, cwd=cwd, env=env)
+        return p.returncode, p.stderr if stderr else p.stdout
     except FileNotFoundError:
         return 127, ""
     except subprocess.TimeoutExpired:
@@ -68,25 +68,39 @@ def repo_path():
         return ""
 
 
+def fetch_error(path):
+    """Fetch without ever waiting for a password (this runs in the background: nobody could answer) and name what
+    went wrong. GitHub can ask for a sign-in on public repos too, for a while, when it sees unusual traffic."""
+    env = {**os.environ, "GIT_TERMINAL_PROMPT": "0", "GIT_ASKPASS": "false", "LC_ALL": "C", "LANGUAGE": "C"}  # C: git's words below
+    code, err = run(["git", "-C", path, "fetch", "--quiet"], timeout=60, env=env, stderr=True)
+    if code == 0:
+        return ""
+    if re.search(r"authentication (failed|required)|could not read (username|password)|terminal prompts disabled"
+                 r"|temporarily limiting|repository not found|error: (401|403|429)\b", err, re.I):
+        return "The server asked for a sign-in, often a temporary limit on bots: try again later, and if it lasts check the clone's remote. Showing the last fetch"
+    return "git fetch failed (offline?): showing the last fetch"
+
+
 def caelestia4_updates():
     path = repo_path()
     if not path:
         return {"path": "", "error": "clone not found (run tools/install-main.sh once)"}
     git = lambda *a, timeout=30: run(["git", "-C", path, *a], timeout=timeout)
-    fetch_code, _ = git("fetch", "--quiet", timeout=60)
+    error = fetch_error(path)
     _, branch = git("rev-parse", "--abbrev-ref", "HEAD")
     code, upstream = git("rev-parse", "--abbrev-ref", "@{u}")
     if code != 0:
         return {"path": path, "branch": branch.strip(), "error": "the branch has no upstream"}
     _, behind = git("rev-list", "--count", "HEAD..@{u}")
     _, ahead = git("rev-list", "--count", "@{u}..HEAD")
+    behind, ahead = int(behind.strip() or 0), int(ahead.strip() or 0)
     _, dirty = git("status", "--porcelain")
     _, log = git("log", "--format=%h%x09%cI%x09%s", "-n", "30", "HEAD..@{u}")
     commits = [dict(zip(("hash", "date", "subject"), l.split("\t", 2))) for l in log.splitlines() if l.count("\t") >= 2]
     return {
         "path": path, "branch": branch.strip(), "upstream": upstream.strip(),
-        "behind": int(behind.strip() or 0), "ahead": int(ahead.strip() or 0), "dirty": bool(dirty.strip()),
-        "commits": commits, "error": "" if fetch_code == 0 else "git fetch failed (offline?): showing the last fetch",
+        "behind": behind, "ahead": ahead, "diverged": behind > 0 and ahead > 0, "dirty": bool(dirty.strip()),
+        "commits": commits, "error": error,
     }
 
 

@@ -4809,3 +4809,12 @@ msgstr "Preset từ pctrade/end4-pCpresets"
 
 msgid "Refresh the presets"
 msgstr "Làm mới danh sách preset"
+
+msgid "The server asked for a sign-in, often a temporary limit on bots: try again later, and if it lasts check the clone's remote. Showing the last fetch"
+msgstr "Máy chủ yêu cầu đăng nhập, thường là giới hạn tạm thời với bot: hãy thử lại sau, và nếu vẫn lỗi thì kiểm tra remote của bản clone. Đang hiện lần fetch trước"
+
+msgid "git pull failed. If the server asked for a sign-in, try again later: see Updating in docs/install.md"
+msgstr "git pull thất bại. Nếu máy chủ yêu cầu đăng nhập, hãy thử lại sau: xem mục Updating trong docs/install.md"
+
+msgid "This clone has commits of its own too, so git pull can't fast-forward: see Updating in docs/install.md"
+msgstr "Bản clone này cũng có commit riêng nên git pull không fast-forward được: xem mục Updating trong docs/install.md"

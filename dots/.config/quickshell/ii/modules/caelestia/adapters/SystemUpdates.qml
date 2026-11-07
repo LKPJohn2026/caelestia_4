@@ -46,7 +46,8 @@ Singleton {
             "checkupdates failed (offline?)": Tr.tr("checkupdates failed (offline?)"),
             "clone not found (run tools/install-main.sh once)": Tr.tr("clone not found (run tools/install-main.sh once)"),
             "the branch has no upstream": Tr.tr("the branch has no upstream"),
-            "git fetch failed (offline?): showing the last fetch": Tr.tr("git fetch failed (offline?): showing the last fetch")
+            "git fetch failed (offline?): showing the last fetch": Tr.tr("git fetch failed (offline?): showing the last fetch"),
+            "The server asked for a sign-in, often a temporary limit on bots: try again later, and if it lasts check the clone's remote. Showing the last fetch": Tr.tr("The server asked for a sign-in, often a temporary limit on bots: try again later, and if it lasts check the clone's remote. Showing the last fetch")
         }[error] ?? error;
     }
 
@@ -66,7 +67,7 @@ Singleton {
 
     function updateCaelestia4(): void {
         if (caelestia4.path)
-            runInTerminal(`cd '${caelestia4.path}' && git pull --ff-only && tools/install-main.sh`);
+            runInTerminal(`cd '${caelestia4.path}' && { git pull --ff-only || { echo "${Tr.tr("git pull failed. If the server asked for a sign-in, try again later: see Updating in docs/install.md")}"; false; }; } && tools/install-main.sh`);
     }
 
     function since(): string {
