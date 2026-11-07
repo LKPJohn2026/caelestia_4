@@ -151,6 +151,11 @@ Maintainers: Caelestia is merged with `tools/sync-upstreams.sh`. end-4 is a vend
 upstream to merge: `tools/sync-end4.sh` lists its new commits (and open PRs) since `tools/end4-reviewed`, `pick SHA`
 applies the chosen ones (changes to files removed here stay removed), `mark` records the review.
 
+To stop personal data reaching a public push: `git config core.hooksPath tools/git-hooks`, and list one regex per line
+in `${XDG_CONFIG_HOME:-~/.config}/caelestia4/push-denylist`, never in the repo. `tools/git-hooks/pre-push` then checks
+what the remote's tracking refs don't have yet: names, emails, messages, tags, file names and added lines. It covers
+this clone only, and says in its header what it can't see.
+
 ## Undo
 
 - Other desktops keep working: log into them as usual. What's shared by the account: the flags files
