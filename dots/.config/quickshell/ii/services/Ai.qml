@@ -400,7 +400,7 @@ Singleton {
         }
     }
 
-    property string requestScriptFilePath: "/tmp/quickshell/ai/request.sh"
+    property string requestScriptFilePath: `${Directories.tempBase}/ai/request.sh`
     property string pendingFilePath: ""
 
     Component.onCompleted: {

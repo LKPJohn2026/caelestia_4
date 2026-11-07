@@ -1,7 +1,9 @@
 pragma Singleton
 
+import QtCore
 import QtQuick
 import Quickshell
+import qs.modules.common as E4C
 import Caelestia
 import Caelestia.Config
 
@@ -9,8 +11,9 @@ Singleton {
     id: root
 
     readonly property string home: Quickshell.env("HOME")
-    readonly property string pictures: Quickshell.env("XDG_PICTURES_DIR") || `${home}/Pictures`
-    readonly property string videos: Quickshell.env("XDG_VIDEOS_DIR") || `${home}/Videos`
+    // caelestia4: these folders have other names in other languages, and a session's environment rarely has the variables
+    readonly property string pictures: Quickshell.env("XDG_PICTURES_DIR") || toLocalFile(StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0])
+    readonly property string videos: Quickshell.env("XDG_VIDEOS_DIR") || toLocalFile(StandardPaths.standardLocations(StandardPaths.MoviesLocation)[0])
 
     readonly property string data: `${Quickshell.env("XDG_DATA_HOME") || `${home}/.local/share`}/caelestia`
     readonly property string state: `${Quickshell.env("XDG_STATE_HOME") || `${home}/.local/state`}/caelestia`
@@ -20,7 +23,7 @@ Singleton {
     readonly property string imagecache: `${cache}/imagecache`
     readonly property string notifimagecache: `${imagecache}/notifs`
     readonly property string wallsdir: Quickshell.env("CAELESTIA_WALLPAPERS_DIR") || absolutePath(GlobalConfig.paths.wallpaperDir)
-    readonly property string recsdir: Quickshell.env("CAELESTIA_RECORDINGS_DIR") || `${videos}/Recordings`
+    readonly property string recsdir: Quickshell.env("CAELESTIA_RECORDINGS_DIR") || (E4C.Config.options.screenRecord.savePath || videos).replace(/^~(?=\/|$)/, home) // caelestia4: where record.sh writes
     readonly property string libdir: Quickshell.env("CAELESTIA_LIB_DIR") || "/usr/lib/caelestia"
 
     function toLocalFile(path: url): string {

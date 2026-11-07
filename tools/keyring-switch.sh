@@ -13,6 +13,7 @@
 # unencrypted "basic" store, so the apps with a key are told explicitly.
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
+source "$(dirname "${BASH_SOURCE[0]}")/lib-require-dot-config.sh"
 CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
 say() { printf '\e[1;34m::\e[0m %s\n' "$*"; }
 owner() { local pid; pid=$(busctl --user status "$1" 2>/dev/null | sed -n 's/^PID=//p'); [[ -n "$pid" ]] && cat "/proc/$pid/comm" 2>/dev/null; }

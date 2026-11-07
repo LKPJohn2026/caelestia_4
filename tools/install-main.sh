@@ -7,6 +7,7 @@
 # Re-run safely to update after a `git pull` (tools/stage-for-test.sh is only for test users).
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$(dirname "${BASH_SOURCE[0]}")/lib-require-dot-config.sh"
 CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
 BK="$STATE/caelestia4/backup-$(date +%Y%m%d-%H%M%S)"
@@ -71,6 +72,20 @@ fi
 # caelestia4: the shared-desktop marker (an account shared with Plasma) is gone with Plasma (docs/dev/kde-removal.md)
 mkdir -p "$CFG/caelestia4"; rm -f "$CFG/caelestia4/shared-desktop"
 printf '%s\n' "$REPO" > "$CFG/caelestia4/repo" # caelestia4: where this clone is (Nexus > Updates checks it for new commits)
+
+# caelestia4: kitty's include, matugen's outputs and a few scripts can only name ~/.local/state: with the state elsewhere,
+# their folders there lead to it
+if [[ "$(realpath -m -- "$STATE")" != "$(realpath -m -- "$HOME/.local/state")" ]]; then
+  mkdir -p "$HOME/.local/state"
+  for dir in quickshell caelestia; do
+    mkdir -p "$STATE/$dir"
+    if [[ -L "$HOME/.local/state/$dir" || ! -e "$HOME/.local/state/$dir" ]]; then
+      ln -sfn "$STATE/$dir" "$HOME/.local/state/$dir"
+    else
+      warn "$HOME/.local/state/$dir is a real folder: move it to $STATE/$dir, then run this again (terminal colours would stay behind)"
+    fi
+  done
+fi
 
 # ---- Quickshell config (ours) ----
 backup "$CFG/quickshell/ii"

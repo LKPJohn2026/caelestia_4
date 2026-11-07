@@ -12,6 +12,7 @@ import qs.modules.common as E4C // caelestia4: end-4 Config / Directories
 import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
+import qs.modules.caelestia.utils
 
 StyledOverlayWidget {
     id: root
@@ -77,7 +78,7 @@ StyledOverlayWidget {
                 text: Translation.tr("Open recordings folder")
                 onClicked: {
                     GlobalStates.overlayOpen = false;
-                    Qt.openUrlExternally(`file://${E4C.Config.options.screenRecord.savePath}`);
+                    Qt.openUrlExternally(`file://${Paths.recsdir}`); // caelestia4: with ~ or an empty setting, too
                 }
             }
         }

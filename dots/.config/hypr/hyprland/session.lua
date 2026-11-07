@@ -6,10 +6,11 @@
 --    wrappers apply) or its original command line, and every new window of that app is moved to its saved workspace.
 --    Apps that restore their own windows (browsers, Electron apps) are launched once; apps listed in MULTI_INSTANCE
 --    (terminals, file managers) are launched once per saved window.
--- State: ~/.local/state/caelestia4/hypr-session.lua
+-- State: $XDG_STATE_HOME/caelestia4/hypr-session.lua (~/.local/state)
 -- Opt out: touch ~/.config/caelestia4/no-session-restore
 
-local STATE_DIR = HOME .. "/.local/state/caelestia4"
+local STATE_HOME = os.getenv("XDG_STATE_HOME")
+local STATE_DIR = ((STATE_HOME and STATE_HOME ~= "") and STATE_HOME or (HOME .. "/.local/state")) .. "/caelestia4"
 local STATE_FILE = STATE_DIR .. "/hypr-session.lua"
 local OPT_OUT = HOME .. "/.config/caelestia4/no-session-restore"
 

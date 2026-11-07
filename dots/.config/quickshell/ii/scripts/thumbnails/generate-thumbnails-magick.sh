@@ -96,7 +96,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 THUMBNAIL_SIZE="$(get_thumbnail_size "$SIZE_NAME")"
-CACHE_DIR="$HOME/.cache/thumbnails/$SIZE_NAME"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/thumbnails/$SIZE_NAME"
 
 if [ -z "$MODE" ] || [ -z "$TARGET" ]; then
     usage

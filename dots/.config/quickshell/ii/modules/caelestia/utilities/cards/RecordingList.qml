@@ -82,18 +82,18 @@ ColumnLayout {
             anchors.rightMargin: Tokens.spacing.small
             spacing: Tokens.spacing.extraSmall
 
-            Component.onCompleted: baseName = modelData.baseName
+            Component.onCompleted: baseName = modelData.name.replace(/\.mp4$/, "") // caelestia4: the file's own baseName stops at the time's first dot
 
             StyledText {
                 Layout.fillWidth: true
                 Layout.rightMargin: Tokens.spacing.extraSmall
                 text: {
                     const time = recording.baseName;
-                    const matches = time.match(/^recording_(\d{4})(\d{2})(\d{2})_(\d{2})-(\d{2})-(\d{2})/);
+                    const matches = time.match(/^recording_(\d{4})-?(\d{2})-?(\d{2})_(\d{2})[-.](\d{2})[-.](\d{2})/);
                     if (!matches)
                         return time;
-                    const date = new Date(...matches.slice(1));
-                    date.setMonth(date.getMonth() - 1); // Woe (months start from 0)
+                    const [year, month, day, hour, minute, second] = matches.slice(1).map(Number);
+                    const date = new Date(year, month - 1, day, hour, minute, second); // caelestia4: months start from 0
                     const dateStr = date.toLocaleDateString(Tr.locale, Locale.ShortFormat); // caelestia4: the shell's language, like the time next to it
                     const timeStr = Tr.formatDateTime(date, Units.twelveHourClock ? "h:mm a" : "hh:mm");
                     // TRANSLATORS: %1 = date, %2 = time
