@@ -11,10 +11,14 @@ fail=0
 hypr=../../hypr
 defined() { sed -nE 's/^[[:space:]]*\$([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*=.*/\1/p' "$@" | sort -u; }
 # Comments and cmd[...] lines (shell code with variables of its own) aside; the rest of the list is hyprlock's own
-used=$(sed -E 's/(^|[[:space:]])#.*$//; /cmd\[/d' "$hypr/hyprlock.conf" | grep -oE '\$[A-Za-z_][A-Za-z0-9_]*' | tr -d '$' | sort -u |
+used=$(sed -E 's/(^|[[:space:]])#.*$//; /cmd\[/d' "$hypr/hyprlock.conf" "$hypr/hyprlock/layout-full.conf" "$hypr/hyprlock/layout-compact.conf" | grep -oE '\$[A-Za-z_][A-Za-z0-9_]*' | tr -d '$' | sort -u |
     grep -vxE 'ATTEMPTS|FAIL|LAYOUT|HOME|TIME|TIME12|USER|DESC|MONITOR|PAMPROMPT|PAMFAIL|FPRINTPROMPT|FPRINTFAIL|PROMPT[0-9]*' || true)
 template=../../matugen/templates/hyprland/hyprlock-colors.conf
-for var in $(comm -23 <(printf '%s\n' "$used") <(defined "$hypr/hyprlock.conf" "$hypr/hyprlock/colors.conf" "$hypr/hyprlock/strings.conf")); do
+# hyprlock-layout.sh shares one password field between the two layouts when the screens differ
+field() { sed -n '/^input-field {/,/^}/p' "$1"; }
+[[ -n "$(field "$hypr/hyprlock/layout-full.conf")" && "$(field "$hypr/hyprlock/layout-full.conf")" == "$(field "$hypr/hyprlock/layout-compact.conf")" ]] ||
+  { echo "LINT: the input-field of hyprlock/layout-full.conf and layout-compact.conf must be the same"; fail=1; }
+for var in $(comm -23 <(printf '%s\n' "$used") <(defined "$hypr/hyprlock.conf" "$hypr/hyprlock/layout-full.conf" "$hypr/hyprlock/colors.conf" "$hypr/hyprlock/strings.conf")); do
   echo "LINT: hyprlock.conf uses \$$var, which nothing installed defines"; fail=1
 done
 for var in $(comm -3 <(defined "$hypr/hyprlock/colors.conf") <(defined "$template")); do

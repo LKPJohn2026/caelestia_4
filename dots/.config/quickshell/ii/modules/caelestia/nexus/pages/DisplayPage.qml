@@ -12,7 +12,7 @@ import qs.modules.caelestia.nexus.common
 
 // caelestia4: Nexus > Display (upstream has it commented out as a TODO): per-monitor resolution / refresh rate / scale /
 // rotation and adaptive sync, as end-4's Settings app (Display). Apply changes the monitor live (hl.monitor via
-// hyprctl), then a 15 s countdown: Keep saves to ~/.config/hypr/monitors.lua (scripts/caelestia4/monitors-save.sh),
+// hyprctl), then a 15 s countdown: Keep saves to ~/.config/hypr/monitors.lua (scripts/caelestia4/monitors-save.py),
 // anything else restores the previous setup, so a mode the screen can't show fixes itself.
 PageBase {
     id: root
@@ -86,7 +86,7 @@ PageBase {
     function keep(): void {
         countdownTimer.stop();
         countdown = 0;
-        Quickshell.execDetached([Quickshell.shellPath("scripts/caelestia4/monitors-save.sh")]);
+        Quickshell.execDetached([Quickshell.shellPath("scripts/caelestia4/monitors-save.py")]);
         pending = ({});
         previous = null;
         E4.HyprlandData.updateMonitors();

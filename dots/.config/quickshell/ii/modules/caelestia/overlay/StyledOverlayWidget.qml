@@ -56,12 +56,28 @@ AbstractOverlayWidget {
     hoverEnabled: true
     property bool resizable: true
     property bool resizing: false
+    // caelestia4: a resize goes from what is on screen (not the saved values, which may not fit here) through these, which
+    // x, y and the size read: assigning to those would end their bindings, and with them the fit to the screen
+    property var resizeStart: null
+    property bool resizeMoved: false
+    property real resizeX: 0
+    property real resizeY: 0
+    property real resizeWidth: 0
+    property real resizeHeight: 0
     property int resizeXDirection: getXResizeDirection(mouseX)
     property int resizeYDirection: getYResizeDirection(mouseY)
     draggable: GlobalStates.overlayOpen
     drag.target: undefined
-    animateXPos: !dragHandler.active
-    animateYPos: !dragHandler.active
+    // caelestia4: not while the window first gets its size either, or a widget fitted to this screen slides there on each opening
+    readonly property real canvasWidth: root.parent?.width ?? 0
+    property bool placed: false
+    onCanvasWidthChanged: root.settle()
+    function settle() {
+        if (canvasWidth > 0 && !placed)
+            Qt.callLater(() => { root.placed = true; });
+    }
+    animateXPos: placed && !dragHandler.active && !resizing
+    animateYPos: placed && !dragHandler.active && !resizing
     z: dragHandler.active ? 2 : 1
     cursorShape: {
         if (dragHandler.active) return root.resizing ? cursorShape : Qt.ArrowCursor;
@@ -81,8 +97,13 @@ AbstractOverlayWidget {
     }
 
     // Positioning & sizing
-    x: Math.round(persistentStateEntry.x) // Round or it'll be blurry
-    y: Math.round(persistentStateEntry.y) // Round or it'll be blurry
+    // caelestia4: the saved position comes from whichever screen it was set on (or the defaults, made for a large one):
+    // keep the widget on this one. Only for showing it: the saved values stay until the widget is moved
+    function fitted(position: real, size: real, available: real): real {
+        return available > 0 ? Math.max(0, Math.min(position, available - size)) : position;
+    }
+    x: Math.round(resizing ? resizeX : fitted(persistentStateEntry.x, width, canvasWidth)) // Round or it'll be blurry
+    y: Math.round(resizing ? resizeY : fitted(persistentStateEntry.y, height, root.parent?.height ?? 0)) // Round or it'll be blurry
     pinned: persistentStateEntry.pinned
     clickthrough: persistentStateEntry.clickthrough
     drag {
@@ -110,6 +131,7 @@ AbstractOverlayWidget {
     Component.onCompleted: {
         reportPinnedState();
         reportClickableState();
+        settle();
     }
 
     Connections {
@@ -131,6 +153,12 @@ AbstractOverlayWidget {
             return;
         }
         // Resizing setup
+        root.resizeStart = { x: root.x, y: root.y, width: contentContainer.implicitWidth, height: contentContainer.implicitHeight };
+        root.resizeX = root.x;
+        root.resizeY = root.y;
+        root.resizeWidth = contentContainer.implicitWidth;
+        root.resizeHeight = contentContainer.implicitHeight;
+        root.resizeMoved = false;
         root.resizing = true;
         root.resizeXDirection = getXResizeDirection(event.x);
         root.resizeYDirection = getYResizeDirection(event.y);
@@ -142,16 +170,32 @@ AbstractOverlayWidget {
     }
     onPositionChanged: (event) => {
         if (!resizing) return;
-        contentContainer.implicitWidth = Math.max(root.persistentStateEntry.width + dragHandler.xAxis.activeValue * root.resizeXDirection, root.minimumWidth);
-        contentContainer.implicitHeight = Math.max(root.persistentStateEntry.height + dragHandler.yAxis.activeValue * root.resizeYDirection, root.minimumHeight);
+        const start = root.resizeStart;
+        const roomed = (size, room) => room > 0 ? Math.min(size, room) : size;
+        const newWidth = roomed(Math.max(start.width + dragHandler.xAxis.activeValue * root.resizeXDirection, root.minimumWidth), contentContainer.roomX);
+        const newHeight = roomed(Math.max(start.height + dragHandler.yAxis.activeValue * root.resizeYDirection, root.minimumHeight), contentContainer.roomY);
+        if (newWidth !== start.width || newHeight !== start.height)
+            root.resizeMoved = true;
         const negativeXDrag = root.resizeXDirection === -1;
         const negativeYDrag = root.resizeYDirection === -1;
-        const wantedX = root.persistentStateEntry.x + (negativeXDrag ? dragHandler.xAxis.activeValue : 0)
-        const wantedY = root.persistentStateEntry.y + (negativeYDrag ? dragHandler.yAxis.activeValue : 0)
-        const negativeXDragLimit = root.persistentStateEntry.x + root.persistentStateEntry.width - contentContainer.implicitWidth;
-        const negativeYDragLimit = root.persistentStateEntry.y + root.persistentStateEntry.height - contentContainer.implicitHeight;
-        root.x = negativeXDrag ? Math.min(wantedX, negativeXDragLimit) : wantedX;
-        root.y = negativeYDrag ? Math.min(wantedY, negativeYDragLimit) : wantedY;
+        const wantedX = start.x + (negativeXDrag ? dragHandler.xAxis.activeValue : 0)
+        const wantedY = start.y + (negativeYDrag ? dragHandler.yAxis.activeValue : 0)
+        const negativeXDragLimit = start.x + start.width - newWidth;
+        const negativeYDragLimit = start.y + start.height - newHeight;
+        root.resizeWidth = newWidth;
+        root.resizeHeight = newHeight;
+        root.resizeX = negativeXDrag ? Math.min(wantedX, negativeXDragLimit) : wantedX;
+        root.resizeY = negativeYDrag ? Math.min(wantedY, negativeYDragLimit) : wantedY;
+    }
+    onReleased: root.finishResize()
+    // Also what the DragHandler taking over the press looks like, and that's when a resize really starts: it isn't active yet
+    onCanceled: Qt.callLater(() => {
+        if (!dragHandler.active) root.finishResize();
+    })
+    function finishResize() {
+        if (!resizing) return;
+        if (resizeMoved) savePosition(resizeX, resizeY, resizeWidth, resizeHeight);
+        resizing = false;
     }
     DragHandler {
         id: dragHandler
@@ -159,8 +203,8 @@ AbstractOverlayWidget {
         target: (root.draggable && !root.resizing) ? root : null
         onActiveChanged: { // Handle drag release
             if (!active) {
-                root.resizing = false;
-                root.savePosition();
+                if (root.resizing) root.finishResize();
+                else root.savePosition();
             }
         }
         xAxis.minimum: 0
@@ -181,7 +225,7 @@ AbstractOverlayWidget {
         persistentStateEntry.clickthrough = !persistentStateEntry.clickthrough;
     }
 
-    function savePosition(xPos = root.x, yPos = root.y, width = contentContainer.implicitWidth, height = contentContainer.implicitHeight) {
+    function savePosition(xPos = root.x, yPos = root.y, width = persistentStateEntry.width, height = persistentStateEntry.height) {
         persistentStateEntry.x = Math.round(xPos);
         persistentStateEntry.y = Math.round(yPos);
         persistentStateEntry.width = Math.round(width);
@@ -191,9 +235,7 @@ AbstractOverlayWidget {
     function center() {
         const targetX = (root.parent.width - contentColumn.width) / 2 - root.resizeMargin
         const targetY = (root.parent.height - contentContainer.height) / 2 - titleBar.implicitHeight + border.border.width - root.resizeMargin
-        root.x = targetX
-        root.y = targetY
-        root.savePosition(targetX, targetY)
+        root.savePosition(targetX, targetY) // x and y follow it
     }
 
     visible: GlobalStates.overlayOpen || actuallyPinned
@@ -308,8 +350,19 @@ AbstractOverlayWidget {
                 Layout.margins: root.fancyBorders ? root.padding : 0
                 Layout.topMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                implicitWidth: Math.max(root.persistentStateEntry.width, root.minimumWidth)
-                implicitHeight: Math.max(root.persistentStateEntry.height, root.minimumHeight)
+                // caelestia4: and no larger than this screen
+                readonly property real roomX: (root.parent?.width ?? 0) - root.resizeMargin * 2 - (root.fancyBorders ? root.padding * 2 : 0)
+                readonly property real roomY: (root.parent?.height ?? 0) - root.resizeMargin * 2 - titleBar.implicitHeight - (root.fancyBorders ? root.padding : 0)
+                implicitWidth: {
+                    if (root.resizing) return root.resizeWidth;
+                    const wanted = Math.max(root.persistentStateEntry.width, root.minimumWidth);
+                    return roomX > 0 ? Math.min(wanted, roomX) : wanted;
+                }
+                implicitHeight: {
+                    if (root.resizing) return root.resizeHeight;
+                    const wanted = Math.max(root.persistentStateEntry.height, root.minimumHeight);
+                    return roomY > 0 ? Math.min(wanted, roomY) : wanted;
+                }
                 children: [root.contentItem]
             }
         }

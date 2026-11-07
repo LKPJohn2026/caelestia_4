@@ -277,7 +277,12 @@ PanelWindow {
             root.action = root.mouseButton === Qt.RightButton ? RegionSelection.SnipAction.Edit : RegionSelection.SnipAction.Copy;
 
         const screenshotDir = E4C.Config.options.screenSnip.savePath !== "" ? E4C.Config.options.screenSnip.savePath : "";
-        const command = E4U.ScreenshotAction.getCommand(root.regionX * root.monitorScale, root.regionY * root.monitorScale, root.regionWidth * root.monitorScale, root.regionHeight * root.monitorScale, root.screenshotPath, root.getScreenshotAction(), screenshotDir);
+        // A screenshot is cropped from this screen's image, in its pixels; a recording takes the region as slurp gives it,
+        // in layout coordinates across all screens
+        const pixels = root.isRecording ? 1 : root.monitorScale;
+        const offsetX = root.isRecording ? root.monitorOffsetX : 0;
+        const offsetY = root.isRecording ? root.monitorOffsetY : 0;
+        const command = E4U.ScreenshotAction.getCommand(root.regionX * pixels + offsetX, root.regionY * pixels + offsetY, root.regionWidth * pixels, root.regionHeight * pixels, root.screenshotPath, root.getScreenshotAction(), screenshotDir);
         Quickshell.execDetached(command);
         if (root.isRecording) {
             root.phase = RegionSelection.Phase.Post;

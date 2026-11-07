@@ -9,6 +9,8 @@
 pgrep -u "$(id -u)" -x hyprlock >/dev/null && exit 0
 "$(dirname "$(readlink -f "$0")")/hyprlock-strings.sh" 2>/dev/null
 for attempt in 1 2 3 4 5; do
+    # Each time: what drops a hyprlock is usually a screen coming and going
+    "$(dirname "$(readlink -f "$0")")/hyprlock-layout.sh" 2>/dev/null
     systemd-cat -t hyprlock hyprlock "$@" && exit 0
     status=$?
     # Hyprland's log is in $XDG_RUNTIME_DIR, which a reboot (the usual way out of a dead lock) clears
