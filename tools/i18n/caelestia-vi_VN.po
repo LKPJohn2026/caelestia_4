@@ -2901,12 +2901,6 @@ msgstr "Kiểm tra ngay"
 msgid "Update everything"
 msgstr "Cập nhật tất cả"
 
-msgid "Runs %1 in a terminal (repo and AUR packages)"
-msgstr "Chạy %1 trong terminal (gói repo và AUR)"
-
-msgid "Runs pacman -Syu in a terminal"
-msgstr "Chạy pacman -Syu trong terminal"
-
 msgid "Arch packages (%1)"
 msgstr "Gói Arch (%1)"
 
@@ -2958,8 +2952,8 @@ msgstr "Module QML"
 msgid "Rebuild"
 msgstr "Build lại"
 
-msgid "makepkg in packaging/caelestia4-quickshell, in a terminal (asks for sudo)"
-msgstr "makepkg trong packaging/caelestia4-quickshell, trong terminal (sẽ hỏi sudo)"
+msgid "makepkg in packaging/caelestia4-quickshell, in a terminal"
+msgstr "makepkg trong packaging/caelestia4-quickshell, trong terminal"
 
 msgid "tools/build-caelestia-plugin.sh, then reinstalls it with the shell stopped"
 msgstr "tools/build-caelestia-plugin.sh, rồi cài lại khi shell đã dừng"
@@ -4839,3 +4833,30 @@ msgstr "Thiết lập trong cửa sổ vừa mở, rồi kết nối lại ở �
 
 msgid "Set it up with nmtui in a terminal, or install nm-connection-editor, then connect again here"
 msgstr "Thiết lập bằng nmtui trong terminal, hoặc cài nm-connection-editor, rồi kết nối lại ở đây"
+
+
+
+
+
+
+
+msgid "Ask for the password when updating"
+msgstr "Hỏi mật khẩu khi cập nhật"
+
+msgid "Update without a password"
+msgstr "Cập nhật không cần mật khẩu"
+
+msgid "On: any program under this account can run pacman as root"
+msgstr "Đang bật: mọi chương trình dưới tài khoản này đều chạy được pacman với quyền root"
+
+msgid "Running in a terminal…"
+msgstr "Đang chạy trong terminal…"
+
+msgid "No questions; AUR build scripts aren't reviewed"
+msgstr "Không hỏi gì; không xem lại script build của AUR"
+
+msgid "The password once, then no questions; AUR build scripts aren't reviewed"
+msgstr "Hỏi mật khẩu một lần rồi không hỏi gì nữa; không xem lại script build của AUR"
+
+msgid "Off: on, any program under this account can run pacman as root"
+msgstr "Đang tắt: nếu bật, mọi chương trình dưới tài khoản này đều chạy được pacman với quyền root"

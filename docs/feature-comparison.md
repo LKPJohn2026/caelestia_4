@@ -132,6 +132,7 @@ Status legend:
 | The rest of end-4 Settings | ✅ added 2026-10-27 | Panels > Assistant, Dock, Overview & overlay, Keybind cheatsheet; rows on the Taskbar, Dashboard, Launcher, Utilities, Notifications, Audio, Hyprland, Apps, Language & region, Services and Wallpaper & style pages. Every end-4 Settings row has a Nexus place (same keys); only "Use an image file" (switchwall.sh's picker) is left out |
 | Plugin config coverage | ✅ | 136 of the plugin's 200 config keys have a Nexus row (upstream's Nexus: 101), none that upstream has is missing. Without rows: `lock.*` and `general.idle.*` (hyprlock / hypridle instead) and hand-edited lists (workspace icons, `launcher.actions`, tray `iconSubs`) |
 | One Nexus window | ✅ 2026-10-27 | opening it again focuses the open window (upstream PR #2208 only blocks the second one) |
+| Updating repo + AUR packages with no questions or password (optional sudo rule), in one click | ✅ added | shaped after Omarchy's update: `scripts/caelestia4/system-update.sh`, `tools/update-sudo-rule.sh` |
 
 ---
 

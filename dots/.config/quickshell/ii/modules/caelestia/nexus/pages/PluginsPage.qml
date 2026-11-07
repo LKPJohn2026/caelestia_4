@@ -127,7 +127,7 @@ PageBase {
                     last: true
                     icon: "build"
                     text: Tr.tr("Rebuild")
-                    subtext: comp.modelData.name === "Quickshell" ? Tr.tr("makepkg in packaging/caelestia4-quickshell, in a terminal (asks for sudo)") : Tr.tr("tools/build-caelestia-plugin.sh, then reinstalls it with the shell stopped")
+                    subtext: comp.modelData.name === "Quickshell" ? Tr.tr("makepkg in packaging/caelestia4-quickshell, in a terminal") : Tr.tr("tools/build-caelestia-plugin.sh, then reinstalls it with the shell stopped")
                     disabled: !root.repo
                     onClicked: root.inTerminal(root.rebuildCommand(comp.modelData))
                 }
