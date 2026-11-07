@@ -13,7 +13,10 @@ Singleton {
     readonly property string home: Quickshell.env("HOME")
     // caelestia4: these folders have other names in other languages, and a session's environment rarely has the variables
     readonly property string pictures: Quickshell.env("XDG_PICTURES_DIR") || toLocalFile(StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0])
-    readonly property string videos: Quickshell.env("XDG_VIDEOS_DIR") || toLocalFile(StandardPaths.standardLocations(StandardPaths.MoviesLocation)[0])
+    readonly property string videos: {
+        const dir = (Quickshell.env("XDG_VIDEOS_DIR") || toLocalFile(StandardPaths.standardLocations(StandardPaths.MoviesLocation)[0])).replace(/\/$/, "");
+        return dir === home ? `${home}/Videos` : dir; // as record.sh: the home folder means none is set
+    }
 
     readonly property string data: `${Quickshell.env("XDG_DATA_HOME") || `${home}/.local/share`}/caelestia`
     readonly property string state: `${Quickshell.env("XDG_STATE_HOME") || `${home}/.local/state`}/caelestia`

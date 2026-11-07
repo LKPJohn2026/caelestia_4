@@ -20,6 +20,7 @@ CUSTOM_PATH=$(jq -r '.screenRecord.savePath // empty' "$CONFIG_FILE" 2>/dev/null
 case "$CUSTOM_PATH" in "~" | "~/"*) CUSTOM_PATH="$HOME${CUSTOM_PATH#\~}" ;; esac
 # xdg-user-dir says the home folder for a folder that isn't set: Videos then, as the shell's list expects
 VIDEOS_DIR=$(xdg-user-dir VIDEOS 2>/dev/null)
+VIDEOS_DIR="${VIDEOS_DIR%/}"
 [[ -n "$VIDEOS_DIR" && "$VIDEOS_DIR" != "$HOME" ]] || VIDEOS_DIR="$HOME/Videos"
 RECORDING_DIR="${CUSTOM_PATH:-$VIDEOS_DIR}"
 

@@ -308,7 +308,7 @@ Third review 2026-10-27: no new commits in end-4, the Caelestia shell, dotfiles 
   actions as buttons on the selected or hovered row (pin / unpin, copy, delete); favourites stay at the end and
   `;#fav` lists only them. No error before the first pin (the PR logs one on every refresh)
 - Don't apply: #3720 (startup speed: only the Caelestia family loads here, the config is read in under 1 s),
-  #3714 (802.1X Wi-Fi: no Wi-Fi on this machine), #3718 (Super+P projector flyout: one monitor, Nexus > Display)
+  #3714 (802.1X Wi-Fi: such a network now opens nm-connection-editor rather than a password prompt), #3718 (Super+P projector flyout: one monitor, Nexus > Display)
 
 Fourth review 2026-10-27: still no new commits anywhere, no PR updated since. Open PRs looked at again:
 - Taken: shell #2100 (the file dialog's sidebar pins and folder icons follow the XDG user dirs: this machine's are

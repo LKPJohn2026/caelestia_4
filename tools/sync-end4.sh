@@ -11,7 +11,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 MARK=tools/end4-reviewed
-git fetch -q upstream
+git remote get-url upstream >/dev/null 2>&1 || git remote add --no-tags upstream https://github.com/end-4/dots-hyprland.git # a fresh clone
+git fetch -q --no-tags upstream # its tags stay out of this clone, and out of a push of tags
 reviewed=$(cat "$MARK" 2>/dev/null || git merge-base HEAD upstream/main)
 
 review() {

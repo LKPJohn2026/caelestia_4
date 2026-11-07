@@ -7,7 +7,7 @@
 # Re-run safely to update after a `git pull` (tools/stage-for-test.sh is only for test users).
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "$(dirname "${BASH_SOURCE[0]}")/lib-require-dot-config.sh"
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib-require-dot-config.sh"
 CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
 BK="$STATE/caelestia4/backup-$(date +%Y%m%d-%H%M%S)"
@@ -78,12 +78,17 @@ printf '%s\n' "$REPO" > "$CFG/caelestia4/repo" # caelestia4: where this clone is
 if [[ "$(realpath -m -- "$STATE")" != "$(realpath -m -- "$HOME/.local/state")" ]]; then
   mkdir -p "$HOME/.local/state"
   for dir in quickshell caelestia; do
-    mkdir -p "$STATE/$dir"
     if [[ -L "$HOME/.local/state/$dir" || ! -e "$HOME/.local/state/$dir" ]]; then
+      mkdir -p "$STATE/$dir"
       ln -sfn "$STATE/$dir" "$HOME/.local/state/$dir"
     else
       warn "$HOME/.local/state/$dir is a real folder: move it to $STATE/$dir, then run this again (terminal colours would stay behind)"
     fi
+  done
+else
+  # A link left by such an install, to a folder that's gone, would stop this script further down
+  for dir in quickshell caelestia; do
+    if [[ -L "$HOME/.local/state/$dir" && ! -e "$HOME/.local/state/$dir" ]]; then rm -f -- "$HOME/.local/state/$dir"; fi
   done
 fi
 
@@ -288,7 +293,7 @@ mkdir -p "$HOME/.local/share/icons"; cp -n "$REPO/dots/.local/share/icons/illogi
 II="$CFG/illogical-impulse/config.json"
 if [[ ! -f "$II" ]]; then
   mkdir -p "$(dirname "$II")"
-  # lock.useHyprlock: hyprlock survives the G95NC dropping off DP 2.1 on wake (the in-shell lock can lose its surface)
+  # lock.useHyprlock: hyprlock survives a screen dropping off DP on wake (the in-shell lock can lose its surface)
   printf '{\n  "panelFamily": "caelestia",\n  "conflictKiller": { "autoKillTrays": false, "autoKillNotificationDaemons": false },\n  "lock": { "useHyprlock": true }\n}\n' > "$II"
   say "created $II (panelFamily: caelestia)"
 fi

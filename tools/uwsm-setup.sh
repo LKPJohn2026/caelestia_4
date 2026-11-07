@@ -17,7 +17,7 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-source "$(dirname "${BASH_SOURCE[0]}")/lib-require-dot-config.sh"
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/lib-require-dot-config.sh"
 CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
 TARGET=wayland-session@hyprland.desktop.target
 say() { printf '\033[1;34m::\033[0m %s\n' "$*"; }

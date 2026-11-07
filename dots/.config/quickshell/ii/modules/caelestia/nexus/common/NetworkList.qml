@@ -62,8 +62,9 @@ ItemList {
 
         onClicked: {
             if (!modelData.active) {
+                const handedToSetup = NetworkConnection.needsSetup(modelData); // caelestia4: nothing to wait for on this row then
                 NetworkConnection.handleConnect(modelData);
-                currentSelected = true;
+                currentSelected = !handedToSetup;
                 root.networkSelected(modelData);
             } else {
                 // Active network: open its detail/settings sub-page.
