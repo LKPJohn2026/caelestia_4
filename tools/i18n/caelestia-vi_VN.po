@@ -4403,8 +4403,8 @@ msgid "Focus <Direction>"
 msgstr "Đến không gian làm việc <Direction>"
 
 msgctxt "keybind: Workspace"
-msgid "Toggle scratchpad / hide special"
-msgstr "Ẩn/hiện scratchpad / ẩn không gian đặc biệt"
+msgid "Show or hide a special workspace"
+msgstr "Hiện hoặc ẩn một workspace đặc biệt"
 
 msgctxt "keybind: Session"
 msgid "Lock"
@@ -4860,3 +4860,7 @@ msgstr "Hỏi mật khẩu một lần rồi không hỏi gì nữa; không xem 
 
 msgid "Off: on, any program under this account can run pacman as root"
 msgstr "Đang tắt: nếu bật, mọi chương trình dưới tài khoản này đều chạy được pacman với quyền root"
+
+# TRANSLATORS: %1 = workspace name
+msgid "Workspace: %1"
+msgstr "Không gian làm việc: %1"
