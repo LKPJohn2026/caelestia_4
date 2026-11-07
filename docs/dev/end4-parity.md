@@ -340,7 +340,7 @@ restored from disk with missing fields).
   by end-4's configurator to `hypr/hyprland/shellOverrides/main.lua`, which loads last), hypridle timers
   (`scripts/caelestia4/hypridle-timeouts.sh` → `~/.config/hypr/hypridle-timeouts.conf`, sourced by
   `hypridle.conf`; restarts hypridle as unit or Hyprland child), monitors (`hl.monitor` live + 15 s keep/revert,
-  `scripts/caelestia4/monitors-save.sh` → `monitors.lua`, previous kept as `.bak`).
+  `scripts/caelestia4/monitors-save.py` → `monitors.lua`, previous kept as `.bak`).
 - New: ~60 Caelestia options (bar, status icons, dashboard, launcher, notifications, OSD, toasts, transparency,
   scales, frame, fonts), ~27 Hyprland options (gaps, borders, rounding, opacity, blur, shadows, animations, layout,
   keyboard layouts/options/repeat, pointer speed/accel, natural scroll, follow mouse, VRR, background fps),

@@ -83,7 +83,7 @@ if [[ $FULLSCREEN -eq 1 ]]; then
     args+=(-w "$name" -f "${rate:-60}")
 else
     if [[ -n "$REGION" ]]; then
-        # end-4 / slurp "X,Y WxH" -> gpu-screen-recorder "WxH+X+Y"
+        # end-4 / slurp "X,Y WxH" -> gpu-screen-recorder "WxH+X+Y": layout coordinates across all screens, as slurp gives
         if [[ "$REGION" =~ ^(-?[0-9]+),(-?[0-9]+)\ ([0-9]+)x([0-9]+)$ ]]; then
             REGION="${BASH_REMATCH[3]}x${BASH_REMATCH[4]}+${BASH_REMATCH[1]}+${BASH_REMATCH[2]}"
         fi
@@ -94,7 +94,8 @@ else
     # Frame rate of the fastest monitor the region touches
     rate=$(jq -r --arg r "$REGION" '
         ($r | capture("(?<w>[0-9]+)x(?<h>[0-9]+)\\+(?<x>-?[0-9]+)\\+(?<y>-?[0-9]+)") | map_values(tonumber)) as $g
-        | [.[] | select(.x < $g.x + $g.w and .x + .width / .scale > $g.x and .y < $g.y + $g.h and .y + .height / .scale > $g.y)
+        | [.[] | (if .transform % 2 == 1 then [.height, .width] else [.width, .height] end) as [$w, $h]
+               | select(.x < $g.x + $g.w and .x + $w / .scale > $g.x and .y < $g.y + $g.h and .y + $h / .scale > $g.y)
                | .refreshRate | round] | max // 60' <<<"$monitors")
     args+=(-w region -region "$REGION" -f "${rate:-60}")
 fi
