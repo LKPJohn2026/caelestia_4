@@ -20,6 +20,22 @@ fi
 fams=("$@"); [[ $# -eq 0 ]] && fams=(CaelestiaFamily)
 T=$(mktemp -d "${TMPDIR:-/tmp}/c4-compile.XXXXXX"); trap 'kill "${SWAY_PID:-}" 2>/dev/null; rm -rf "$T"' EXIT
 rsync -a --exclude '.git' dots/.config/quickshell/ii/ "$T/ii/"
+# A linked worktree, fresh clone or git archive has its submodules empty, and with shapes/*.js missing Qt 6.12's type
+# loader segfaults on this tree instead of reporting an error. Fill the throwaway copy at the pinned commit, from the
+# objects the main checkout already has (no network, the tree is left alone); stop if there is no way to.
+while read -r key path; do
+  [[ "$path" == dots/.config/quickshell/ii/* ]] || continue
+  [[ -n "$(ls -A "$path" 2>/dev/null)" ]] && continue
+  name=${key#submodule.}; name=${name%.path}
+  mod="$(git rev-parse --git-common-dir 2>/dev/null)/modules/$name"
+  sha=$(git rev-parse ":$path" 2>/dev/null)
+  if [[ -z "$sha" ]] || ! git -C "$mod" cat-file -e "$sha^{commit}" 2>/dev/null; then
+    echo "compile-check: submodule $path is empty and its pinned commit isn't available here."
+    echo "In a git checkout run: git submodule update --init -- $path"
+    exit 2
+  fi
+  git -C "$mod" archive "$sha" | tar -x -C "$T/ii/${path#dots/.config/quickshell/ii/}"
+done < <(git config -f .gitmodules --get-regexp '\.path$')
 mkdir -p "$T/home"/{.config,.local/state,.cache,.local/share} "$T/run"; chmod 700 "$T/run"
 : > "$T/sway.conf"
 export -n WAYLAND_DISPLAY DISPLAY HYPRLAND_INSTANCE_SIGNATURE
@@ -48,12 +64,15 @@ ShellRoot {
     Component.onCompleted: console.log("COMPILE-CHECK $fam status=" + c.status + (c.status === Component.Error ? " " + c.errorString() : ""))
 }
 QML
-  out=$("${base_env[@]}" WAYLAND_DISPLAY="$WL" QT_QPA_PLATFORM=wayland QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml" \
-        dbus-run-session -- timeout 25 qs -p "$T/ii/shell.qml" --no-color 2>&1)
+  # QS_DISABLE_CRASH_HANDLER: its crash reporter is a window on the compositor we're connected to, and it would hold
+  # this pipe open until someone closed it. A crash leaves a coredump and shows up as the message below instead.
+  out=$("${base_env[@]}" WAYLAND_DISPLAY="$WL" QT_QPA_PLATFORM=wayland QML_IMPORT_PATH="$HOME/.local/lib/qt6/qml" QS_DISABLE_CRASH_HANDLER=1 \
+        dbus-run-session -- timeout 25 qs -p "$T/ii/shell.qml" --no-color 2>&1); qs_status=$?
   if grep -q "COMPILE-CHECK $fam status=1" <<<"$out"; then
     echo "compile-check $fam: OK"
   else
     echo "compile-check $fam: FAIL"; grep -E 'ERROR|caused by|COMPILE-CHECK|is not a type|non-existent' <<<"$out" | tail -12; rc=1
+    (( qs_status > 128 && qs_status < 255 )) && echo "  qs was killed by signal $((qs_status - 128)) (see: coredumpctl list quickshell)"
   fi
 done
 exit $rc
