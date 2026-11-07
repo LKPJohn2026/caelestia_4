@@ -73,7 +73,7 @@ Scope {
     GlobalShortcut {
         name: "searchToggleRelease"
         description: "Toggles search on release"
-        onPressed: GlobalStates.superReleaseMightTrigger = true
+        // keybinds.lua binds this on release only; GlobalStates' workspaceNumber re-arms it when Super goes down
         onReleased: {
             if (!GlobalStates.superReleaseMightTrigger) {
                 GlobalStates.superReleaseMightTrigger = true;

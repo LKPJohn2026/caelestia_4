@@ -4576,6 +4576,12 @@ msgstr "%1 · của %2"
 msgid "A preset sets the wallpaper, widgets, colours, lock screen and avatar"
 msgstr "Preset đặt hình nền, widget, màu sắc, màn hình khóa và ảnh đại diện"
 
+msgid "With presets on, the screen's top edge doesn't open the dashboard: Super+M does."
+msgstr "Khi bật preset, cạnh trên màn hình không mở bảng điều khiển: hãy dùng Super+M."
+
+msgid "Off while presets are on: Super+M opens the dashboard"
+msgstr "Tắt khi đang bật preset: dùng Super+M để mở bảng điều khiển"
+
 msgid "All"
 msgstr "Tất cả"
 

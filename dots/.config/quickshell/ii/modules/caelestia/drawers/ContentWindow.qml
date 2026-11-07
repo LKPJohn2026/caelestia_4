@@ -12,6 +12,7 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.bar
+import qs.modules.common as E4C // caelestia4: keep
 
 StyledWindow {
     id: root
@@ -120,7 +121,9 @@ StyledWindow {
                 return true;
             if (s.assistant) // caelestia4
                 return true;
-            if (!conf.dashboard.showOnHover && s.dashboard && conf.dashboard.enabled)
+            // caelestia4: presets on leave no hover to close it (Interactions.qml): a click outside does. Not over a
+            // fullscreen app: the panel isn't reachable there, and the grab would take the app's next click
+            if ((!conf.dashboard.showOnHover || (E4C.Config.options.background.presetsEnabled && !root.hasFullscreen)) && s.dashboard && conf.dashboard.enabled)
                 return true;
             if (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1)
                 return true;
