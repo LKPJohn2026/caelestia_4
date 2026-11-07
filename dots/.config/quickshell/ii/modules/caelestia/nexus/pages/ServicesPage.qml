@@ -53,7 +53,7 @@ PageBase {
 
     readonly property string configDir: Quickshell.env("XDG_CONFIG_HOME") || `${Quickshell.env("HOME")}/.config`
     // Every option the Hyprland and Display pages set (end-4's Settings Advanced page resets the same)
-    readonly property list<string> hyprKeys: ["general:gaps_in", "general:gaps_out", "general:border_size", "decoration:rounding", "decoration:active_opacity", "decoration:inactive_opacity", "decoration:dim_inactive", "decoration:blur:enabled", "decoration:blur:size", "decoration:blur:passes", "decoration:shadow:enabled", "animations:enabled", "general:layout", "general:resize_on_border", "misc:focus_on_activate", "dwindle:preserve_split", "input:kb_layout", "input:kb_options", "input:repeat_delay", "input:repeat_rate", "input:sensitivity", "input:accel_profile", "input:natural_scroll", "input:touchpad:natural_scroll", "input:follow_mouse", "misc:vrr", "misc:render_unfocused_fps"]
+    readonly property list<string> hyprKeys: ["general:gaps_in", "general:gaps_out", "general:border_size", "decoration:rounding", "decoration:active_opacity", "decoration:inactive_opacity", "decoration:dim_inactive", "decoration:blur:enabled", "decoration:blur:size", "decoration:blur:passes", "decoration:shadow:enabled", "animations:enabled", "general:layout", "general:resize_on_border", "misc:focus_on_activate", "dwindle:preserve_split", "input:kb_layout", "input:kb_variant", "input:kb_options", "input:repeat_delay", "input:repeat_rate", "input:sensitivity", "input:accel_profile", "input:natural_scroll", "input:touchpad:natural_scroll", "input:follow_mouse", "misc:vrr", "misc:render_unfocused_fps"]
 
     title: Tr.tr("Services")
 

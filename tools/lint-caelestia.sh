@@ -6,6 +6,20 @@
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../dots/.config/quickshell/ii"
 fail=0
+# hyprlock's variables must all exist before the first colours are generated, and the template that generates them
+# must keep them too: an undefined one leaves the lock screen with broken colours
+hypr=../../hypr
+defined() { sed -nE 's/^[[:space:]]*\$([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*=.*/\1/p' "$@" | sort -u; }
+# Comments and cmd[...] lines (shell code with variables of its own) aside; the rest of the list is hyprlock's own
+used=$(sed -E 's/(^|[[:space:]])#.*$//; /cmd\[/d' "$hypr/hyprlock.conf" | grep -oE '\$[A-Za-z_][A-Za-z0-9_]*' | tr -d '$' | sort -u |
+    grep -vxE 'ATTEMPTS|FAIL|LAYOUT|HOME|TIME|TIME12|USER|DESC|MONITOR|PAMPROMPT|PAMFAIL|FPRINTPROMPT|FPRINTFAIL|PROMPT[0-9]*' || true)
+template=../../matugen/templates/hyprland/hyprlock-colors.conf
+for var in $(comm -23 <(printf '%s\n' "$used") <(defined "$hypr/hyprlock.conf" "$hypr/hyprlock/colors.conf" "$hypr/hyprlock/strings.conf")); do
+  echo "LINT: hyprlock.conf uses \$$var, which nothing installed defines"; fail=1
+done
+for var in $(comm -3 <(defined "$hypr/hyprlock/colors.conf") <(defined "$template")); do
+  echo "LINT: \$$var is in only one of hyprlock/colors.conf and its matugen template"; fail=1
+done
 while IFS= read -r -d '' f; do
   if grep -q '^pragma Singleton' "$f"; then
     p=$(grep -bo '^pragma Singleton' "$f" | head -1 | cut -d: -f1)

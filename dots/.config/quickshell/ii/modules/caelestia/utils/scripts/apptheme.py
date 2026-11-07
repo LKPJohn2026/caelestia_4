@@ -114,7 +114,11 @@ def zen_profiles():
 # ---------------------------------------------------------------- apply (every colour change)
 
 def apply():
-    colours, mode = read_palette()
+    try:
+        colours, mode = read_palette()
+    except FileNotFoundError:  # a new account: the first wallpaper or scheme writes them, and brings this script back
+        print("no colours generated yet: app themes follow at the first scheme change")
+        return
     if not CLI:
         apply_cli_part(colours, mode)
 

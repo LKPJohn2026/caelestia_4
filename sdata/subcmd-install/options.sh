@@ -1,11 +1,11 @@
 # Handle args for subcmd: install
 # shellcheck shell=bash
 showhelp(){
-printf "Syntax: $0 install [OPTIONS]...
+printf "Syntax: $0 ${SUBCMD_NAME} [OPTIONS]...
 
-Idempotent installation for dotfiles.
+A step of end-4's installer. caelestia_4's files come from tools/install-main.sh: see docs/install.md.
 
-Options for install:
+Options:
   -h, --help                Print this help message and exit
   -f, --force               (Dangerous) Force mode without any confirm
   -F, --fisrtrun            Act like it is the first run
@@ -13,27 +13,11 @@ Options for install:
       --skip-allgreeting    Skip the whole process greeting
       --skip-alldeps        Skip the whole process installing dependency
       --skip-allsetups      Skip the whole process setting up permissions/services etc
-      --skip-allfiles       Skip the whole process copying configuration files
       --ignore-outdate      Ignore outdate checking for community supported \"dist-*\".
   -s, --skip-sysupdate      Skip system package upgrade e.g. \"sudo pacman -Syu\"
       --skip-plasmaintg     Skip installing plasma-browser-integration
-      --skip-backup         Skip backup conflicting files
-      --skip-quickshell     Skip installing the config for Quickshell
-      --skip-hyprland       Skip installing the config for Hyprland
-      --skip-hyprland-entry Skip installing the entry config for Hyprland
-      --skip-fish           Skip installing the config for Fish
-      --skip-fontconfig     Skip installing the config for fontconfig
-      --skip-miscconf       Skip copying the dirs and files to \".configs\" except for
-                            Quickshell, Fish and Hyprland
-      --core                Alias of --skip-{plasmaintg,fish,miscconf,fontconfig}
-      --fontset <set>       Use a set of pre-defined font and config (currently only fontconfig).
-                            Possible values of <set>: $(ls -A ${REPO_ROOT}/dots-extra/fontsets)
 ${STY_CYAN}
 New features (experimental):
-      --exp-files             Use yaml-based config for the third step copying files.
-                              This feature is ${STY_YELLOW}still on early stage${STY_CYAN},
-                              feedback and contribution welcomed,
-                              see https://github.com/end-4/dots-hyprland/issues/2137 for details.
       --via-nix               Use Nix and Home-manager to install dependencies.
                               This feature is ${STY_RED}working in progress${STY_CYAN}. Contribution is welcomed,
                               see https://github.com/end-4/dots-hyprland/issues/1061 for details.

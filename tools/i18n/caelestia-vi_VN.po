@@ -4818,3 +4818,9 @@ msgstr "git pull thất bại. Nếu máy chủ yêu cầu đăng nhập, hãy t
 
 msgid "This clone has commits of its own too, so git pull can't fast-forward: see Updating in docs/install.md"
 msgstr "Bản clone này cũng có commit riêng nên git pull không fast-forward được: xem mục Updating trong docs/install.md"
+
+msgid "Layout variants"
+msgstr "Biến thể bố cục"
+
+msgid "One per layout, comma separated, e.g. nodeadkeys,. Must match the layouts above"
+msgstr "Mỗi bố cục một biến thể, cách nhau bằng dấu phẩy, ví dụ nodeadkeys,. Phải khớp với các bố cục ở trên"
