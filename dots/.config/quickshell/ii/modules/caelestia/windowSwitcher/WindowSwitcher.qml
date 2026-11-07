@@ -37,16 +37,19 @@ Scope {
     readonly property int cardWidth: 320
 
     function build(reverse: bool): void {
-        const wsKey = id => id < 0 ? 100000 - id : id;
-        const list = E4.HyprlandData.windowList.filter(w => w.mapped && !w.hidden && w.workspace && w.workspace.id !== -1).sort((a, b) => wsKey(a.workspace.id) - wsKey(b.workspace.id) || a.at[0] - b.at[0] || a.at[1] - b.at[1]);
+        // Numbered workspaces by number, then named ones, then specials, each by name: since Hyprland 0.57 only the
+        // numbered ones have an id
+        const rank = w => w.workspace.name.startsWith("special:") ? 2 : typeof w.workspace.id === "number" && w.workspace.id > 0 ? 0 : 1;
+        const wsOrder = (a, b) => rank(a) - rank(b) || (rank(a) === 0 ? a.workspace.id - b.workspace.id : a.workspace.name.localeCompare(b.workspace.name));
+        const list = E4.HyprlandData.windowList.filter(w => w.mapped && !w.hidden && w.workspace?.name && w.workspace.id !== -1).sort((a, b) => wsOrder(a, b) || a.at[0] - b.at[0] || a.at[1] - b.at[1]);
         const current = list.findIndex(w => w.focusHistoryID === 0);
         const previous = list.findIndex(w => w.focusHistoryID === 1);
-        const activeWs = Hyprland.focusedMonitor?.activeWorkspace?.id;
+        const activeWs = Hyprland.focusedMonitor?.activeWorkspace?.name;
         cards = list.map(w => ({
                     address: w.address,
                     title: w.title || w.class,
                     wsName: w.workspace.name.replace(/^special:/, ""),
-                    otherWs: w.workspace.id !== activeWs,
+                    otherWs: w.workspace.name !== activeWs,
                     toplevel: Hyprland.toplevels.values.find(t => `0x${t.address}` === w.address)?.wayland ?? null,
                     icon: Quickshell.iconPath(E4.AppSearch.guessIcon(w.class), "image-missing")
                 }));

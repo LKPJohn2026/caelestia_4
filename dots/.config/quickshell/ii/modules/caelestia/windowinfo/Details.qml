@@ -68,7 +68,11 @@ ColumnLayout {
     Detail {
         icon: "workspaces"
         // TRANSLATORS: %1 = workspace name, %2 = workspace id
-        text: Tr.tr("Workspace: %1 (%2)").arg(root.client?.workspace.name ?? -1).arg(root.client?.workspace.id ?? -1)
+        // (only numbered workspaces have a number since Hyprland 0.57: not special or named ones)
+        text: {
+            const ws = root.client?.workspace;
+            return ws && ws.id > 0 ? Tr.tr("Workspace: %1 (%2)").arg(ws.name).arg(ws.id) : Tr.tr("Workspace: %1").arg(ws?.name ?? -1);
+        }
         color: Colours.palette.m3secondary
     }
 

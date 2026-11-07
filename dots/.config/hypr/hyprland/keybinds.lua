@@ -324,8 +324,9 @@ for i = 1, 4 do
     hl.bind(keycombos[i], hl.dsp.focus({ workspace = prefix[i] .. "1" }))
 end
 --## Special
--- caelestia4: hides whichever special workspace is shown (music, communication...), else toggles the scratchpad
-hl.bind("SUPER + S", function() require("hyprland.specialws").toggle("specialws")() end, { description = "Workspace: Toggle scratchpad / hide special" })
+-- caelestia4: hides whichever special workspace is shown (music, communication...), else shows the scratchpad, or the
+-- special workspace used last when the scratchpad is empty
+hl.bind("SUPER + S", function() require("hyprland.specialws").toggle("specialws")() end, { description = "Workspace: Show or hide a special workspace" })
 hl.bind("SUPER + mouse:275", hl.dsp.workspace.toggle_special("special"))
 for i = 1, 4 do
     local key = { "BracketLeft", "BracketRight", "Up", "Down" }
@@ -389,7 +390,7 @@ hl.bind("SUPER + I", hl.dsp.exec_cmd(settingsApp), { description = "App: Setting
 hl.bind("CTRL + SHIFT + ALT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
 
 -- caelestia4: Caelestia's special workspaces; each opens its app on first use (specialws.lua, apps in
--- ~/.config/caelestia/cli.json "toggles"). Super+S still toggles the scratchpad.
+-- ~/.config/caelestia/cli.json "toggles"). Super+S shows the last one used when the scratchpad is empty.
 local specialws = require("hyprland.specialws")
 hl.bind("CTRL + SHIFT + Escape", specialws.toggle("sysmon"), { description = "Workspace: System monitor (btop)" })
 hl.bind("CTRL + SUPER + M", specialws.toggle("music"), { description = "Workspace: Music" })

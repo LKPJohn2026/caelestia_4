@@ -101,6 +101,11 @@ Singleton {
         return toplevels.values.filter(t => t.workspace && t.workspace.id === ws && !isToplevelIgnored(t, ignoredTags));
     }
 
+    // Special workspaces by name: they have no number since Hyprland 0.57 (Quickshell gives each id -1)
+    function toplevelsForWsName(name: string, ignoredTags = []): list<HyprlandToplevel> {
+        return toplevels.values.filter(t => t.workspace && t.workspace.name === name && !isToplevelIgnored(t, ignoredTags));
+    }
+
     function isToplevelIgnored(toplevel: HyprlandToplevel, ignoredTags = []): bool {
         const ipc = toplevel?.lastIpcObject;
         if (!ipc?.class || !ipc.mapped)
