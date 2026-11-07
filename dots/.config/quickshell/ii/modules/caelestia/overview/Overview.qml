@@ -537,7 +537,7 @@ Scope {
     GlobalShortcut {
         name: "overviewAltTabCommit"
         description: "Alt released: switch to the selected workspace (only while Alt+Tabbing)"
-        onPressed: root.commitAltTab()
+        onReleased: root.commitAltTab() // a release bind sends only a released event, never pressed
     }
 
     IpcHandler {
