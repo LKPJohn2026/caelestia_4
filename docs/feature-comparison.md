@@ -45,7 +45,7 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | Screen frame (border) with drawers that grow out of it | ✅ C | |
-| Edge hover: top = dashboard, right = sidebar, left = launcher/assistant | ✅ C | |
+| Edge hover: top = dashboard, right = sidebar, left = launcher/assistant | ✅ C | with presets on, the top edge opens no dashboard (Super+M does) |
 | Background blur, transparency, rounding tokens | ✅ C | |
 
 ### Dashboard (top)

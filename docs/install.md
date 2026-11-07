@@ -26,7 +26,14 @@ git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
    ```bash
    ./setup install-deps
    ```
-   See [the illogical-impulse wiki](https://ii.clsty.link/en/ii-qs/01setup/) for what they contain.
+   See [the illogical-impulse wiki](https://ii.clsty.link/en/ii-qs/01setup/) for what they contain. This step also
+   installs this fork's own metapackage, `illogical-impulse-caelestia4`: what the Caelestia shell needs beyond end-4's
+   (the plugin's build tools, `bluez`, `btop`, `ddcutil`, `socat`…). `tools/install-main.sh` warns if it's missing. To
+   install or update only that one (its dependency `qt6-m3shapes-git` is in the AUR, which `makepkg` can't fetch):
+   ```bash
+   yay -S --needed qt6-m3shapes-git
+   (cd sdata/dist-arch/illogical-impulse-caelestia4 && makepkg -si)
+   ```
 3. **Quickshell** built for your Qt version. `packaging/caelestia4-quickshell` pins a known-good commit and replaces
    end-4's `illogical-impulse-quickshell-git` (accept the removal when pacman asks):
    ```bash

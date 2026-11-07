@@ -10,6 +10,10 @@ import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 PageBase {
     id: root
 
+    // caelestia4: presets on = the top edge opens no dashboard (drawers/Interactions.qml)
+    readonly property bool presetsOn: E4C.Config.options.background.presetsEnabled
+    readonly property string presetsOffText: Tr.tr("Off while presets are on: Super+M opens the dashboard")
+
     title: Tr.tr("Dashboard")
     isSubPage: true
 
@@ -34,7 +38,8 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
+            disabled: root.presetsOn
+            subtext: root.presetsOn ? root.presetsOffText : Tr.tr("Reveal when the cursor reaches the screen edge")
             value: Config.dashboard.showOnHover
             onToggled: GlobalConfig.dashboard.showOnHover = checked
         }
@@ -130,7 +135,7 @@ PageBase {
             first: true
             last: true
             label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the dashboard opens")
+            subtext: root.presetsOn ? root.presetsOffText : Tr.tr("Pixels dragged before the dashboard opens")
             value: Config.dashboard.dragThreshold
             from: 0
             to: 200

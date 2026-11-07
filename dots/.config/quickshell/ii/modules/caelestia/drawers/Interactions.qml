@@ -6,6 +6,7 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.bar as Bar
 import qs.modules.caelestia.bar.popouts as BarPopouts
+import qs.modules.common as E4C // caelestia4: keep
 
 CustomMouseArea {
     id: root
@@ -23,6 +24,8 @@ CustomMouseArea {
     property bool osdShortcutActive
     property bool utilitiesShortcutActive
     property bool sidebarShortcutActive
+    // caelestia4: presets on = the top edge opens no dashboard, by hover or drag; Super+M still does
+    readonly property bool presetsOn: E4C.Config.options.background.presetsEnabled
 
     function withinPanelHeight(panel: Item, x: real, y: real): bool {
         const panelY = root.borderThickness + panel.y;
@@ -212,7 +215,7 @@ CustomMouseArea {
         }
 
         // Show dashboard on hover
-        const showDashboard = Config.dashboard.showOnHover && inTopPanel(panels.dashboard, x, y);
+        const showDashboard = !presetsOn && Config.dashboard.showOnHover && inTopPanel(panels.dashboard, x, y);
 
         // Always update visibility based on hover if not in shortcut mode
         if (!dashboardShortcutActive) {
@@ -224,7 +227,7 @@ CustomMouseArea {
 
         // Show/hide dashboard on drag (for touchscreen devices)
         if (pressed && inTopPanel(panels.dashboard, dragStart.x, dragStart.y) && withinPanelWidth(panels.dashboard, x, y)) {
-            if (dragY > Config.dashboard.dragThreshold)
+            if (dragY > Config.dashboard.dragThreshold && !presetsOn)
                 screenState.dashboard = true;
             else if (dragY < -Config.dashboard.dragThreshold)
                 screenState.dashboard = false;
@@ -255,7 +258,8 @@ CustomMouseArea {
         function onLauncherChanged() {
             // If launcher is hidden, clear shortcut flags for dashboard and OSD
             if (!root.screenState.launcher) {
-                root.dashboardShortcutActive = false;
+                if (!root.presetsOn) // caelestia4: no hover to hand it over to
+                    root.dashboardShortcutActive = false;
                 root.osdShortcutActive = false;
                 root.utilitiesShortcutActive = false;
                 root.sidebarShortcutActive = false;
@@ -278,7 +282,7 @@ CustomMouseArea {
             if (root.screenState.dashboard) {
                 // Dashboard became visible, immediately check if this should be shortcut mode
                 const inDashboardArea = root.inTopPanel(root.panels.dashboard, root.mouseX, root.mouseY);
-                if (!inDashboardArea) {
+                if (!inDashboardArea || root.presetsOn) { // presets on: only a shortcut opens it, wherever the mouse is
                     root.dashboardShortcutActive = true;
                 }
             } else {

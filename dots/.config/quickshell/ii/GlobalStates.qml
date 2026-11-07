@@ -41,6 +41,9 @@ Singleton {
         description: "Hold to show workspace numbers, release to show icons"
 
         onPressed: {
+            // caelestia4: a new press, a new chance: when an interrupted Super's release was cancelled, nothing else resets it.
+            // Before superDown: Workspaces stops its timer when this changes
+            root.superReleaseMightTrigger = true
             root.superDown = true
         }
         onReleased: {

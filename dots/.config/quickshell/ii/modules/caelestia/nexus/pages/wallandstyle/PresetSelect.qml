@@ -439,6 +439,17 @@ PageBase {
                 wrapMode: Text.WordWrap
             }
 
+            StyledText {
+                Layout.fillWidth: true
+                Layout.leftMargin: Tokens.padding.small
+                Layout.bottomMargin: Tokens.spacing.small
+                visible: root.presetsOn && Config.dashboard.enabled
+                text: Tr.tr("With presets on, the screen's top edge doesn't open the dashboard: Super+M does.")
+                color: Colours.palette.m3outline
+                font: Tokens.font.label.medium
+                wrapMode: Text.WordWrap
+            }
+
             RowButton {
                 first: true
                 disabled: root.runProc.running || root.presets.length === 0
