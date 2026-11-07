@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+"""caelestia4: refuse a push whose new objects contain anything in a private denylist.
+
+The list is $XDG_CONFIG_HOME/caelestia4/push-denylist: one Python regex per line, case ignored, ^ and $ matching each
+line, blank lines and # comments skipped, spaces around a pattern ignored. It stays out of the repo. Matches are
+reported by place and list line, never by value, so the output is safe to share.
+
+Checked: ref names; tags (names, taggers, messages, nested ones too); commits' names, emails and messages; file names;
+added lines, binary files as text and with NUL bytes dropped (UTF-16). Not checked: compressed content, and commits
+that this remote's tracking refs already have. A first push to a remote checks its whole history. Anything that can't
+be checked refuses the push. `git push --no-verify` skips all of this."""
+import os, re, subprocess, sys
+
+ZERO = re.compile(r"^0+$")
+ENV = {**os.environ, "GIT_NO_REPLACE_OBJECTS": "1"}
+
+
+class Refuse(Exception):
+    pass
+
+
+def git(*args):
+    return subprocess.run(["git", "-c", "core.quotePath=false", *args], env=ENV, stdin=subprocess.DEVNULL,
+                          stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True).stdout
+
+
+def text(data):
+    return data.decode("utf-8", "surrogateescape")
+
+
+def header_value(line):
+    """A tag's or commit's header line without its keyword and timestamp, which are git's words, not data"""
+    return re.sub(rb" \d+ [-+]\d+$", b"", re.sub(rb"^(author|committer|tagger|tag|encoding) ", b"", line))
+
+
+def load_patterns():
+    """[(list line, compiled regex)], or None when there's no list at all"""
+    path = os.path.join(os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"), "caelestia4/push-denylist")
+    if not os.path.lexists(path):
+        print(f"pre-push: no denylist at {path}: nothing checked", file=sys.stderr)
+        return None
+    if not os.path.isfile(path):
+        raise Refuse(f"{path} isn't a file")
+    with open(path, "rb") as f:
+        lines = text(f.read()).splitlines()
+    patterns = []
+    for number, line in enumerate(lines, 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        try:
+            patterns.append((number, re.compile(line, re.I | re.M)))
+        except re.error:
+            raise Refuse(f"line {number} of {path} isn't a valid regex") from None
+    if not patterns:
+        print(f"pre-push: {path} has no patterns: nothing checked", file=sys.stderr)
+        return None
+    return patterns
+
+
+class Scan:
+    def __init__(self, patterns):
+        self.patterns = patterns
+        self.hits = {}  # (what, list line) -> set of places
+
+    def matches(self, value):
+        return any(p.search(value) for _, p in self.patterns)
+
+    def place(self, name):
+        # A place that is itself a match, or that git still had to quote, can't be shown
+        return "(a file name)" if name.startswith('"') or self.matches(name) else name
+
+    def check(self, what, place, data):
+        values = [text(data)]
+        if b"\0" in data:
+            values.append(text(data.replace(b"\0", b"")))
+        for number, pattern in self.patterns:
+            if any(pattern.search(v) for v in values):
+                self.hits.setdefault((what, number), set()).add(place)
+
+    def tag(self, sha):
+        """Follow the tags down to what they point at; return that object's sha"""
+        while (kind := git("cat-file", "-t", sha).strip()) == b"tag":
+            raw = git("cat-file", "tag", sha)
+            head, _, message = raw.partition(b"\n\n")
+            target, kept = None, []
+            for line in head.split(b"\n"):
+                if line.startswith(b"object "):
+                    target = line.split()[1].decode()
+                elif not line.startswith(b"type "):
+                    kept.append(header_value(line))
+            what = f"tag {sha[:9]}"
+            self.check(what, "(tag details)", b"\n".join(kept))
+            self.check(what, "(tag message)", message)
+            sha = target
+        if kind != b"commit":
+            raise Refuse(f"a ref points at a {kind.decode()}, which this check doesn't read")
+        return sha
+
+    def commit(self, sha):
+        what = f"commit {sha[:9]}"
+        head, _, message = git("cat-file", "commit", sha).partition(b"\n\n")
+        kept, skipping = [], False
+        for line in head.split(b"\n"):
+            if line.startswith(b" "):  # a header's continuation
+                if not skipping:
+                    kept.append(line)
+                continue
+            skipping = line.startswith((b"gpgsig", b"tree ", b"parent "))
+            if not skipping:
+                kept.append(header_value(line))
+        self.check(what, "(commit details)", b"\n".join(kept))
+        self.check(what, "(commit message)", message)
+
+        # Against the first parent: for a merge, what it brings in. --no-renames: a moved file's new path is an added name
+        common = ["diff-tree", "-r", "--root", "--diff-merges=first-parent", "--no-renames", "--format=", sha]
+        names = git(*common, "-z", "--name-only", "--diff-filter=d").split(b"\0")
+        for name in filter(None, names):
+            self.check(what, "(a file name)", name)
+
+        path, in_hunk = "", False
+        for line in git(*common, "-p", "--text", "--no-color", "--no-ext-diff", "--src-prefix=a/", "--dst-prefix=b/").split(b"\n"):
+            if line.startswith(b"diff --git "):
+                in_hunk = False
+            elif not in_hunk and line.startswith(b"+++ "):
+                path = self.place(re.sub(r'^("?)b/', r"\1", text(line[4:])))
+            elif line.startswith(b"@@ "):
+                in_hunk = True
+            elif in_hunk and line.startswith(b"+"):
+                self.check(what, path, line[1:])
+
+    def push(self, remote, lines):
+        for line in lines:
+            _, local_sha, remote_ref, remote_sha = line.split()
+            if ZERO.match(local_sha):
+                continue  # deleting a ref adds nothing
+            self.check("a ref name", "(ref name)", remote_ref.encode())
+            tip = self.tag(local_sha)
+            revs = [tip]
+            if not ZERO.match(remote_sha):
+                try:
+                    revs.append("^" + git("rev-parse", "--verify", "--quiet", remote_sha + "^{commit}").decode().strip())
+                except subprocess.CalledProcessError:
+                    pass  # after a force push from elsewhere: not here, so it excludes nothing
+            for sha in git("rev-list", *revs, "--not", f"--remotes={remote}").decode().split():
+                self.commit(sha)
+
+
+def main():
+    patterns = load_patterns()
+    if patterns is None:
+        return 0
+    scan = Scan(patterns)
+    scan.push(sys.argv[1] if len(sys.argv) > 1 else "", sys.stdin.read().splitlines())
+    for (what, number), places in sorted(scan.hits.items()):
+        print(f"pre-push: {what}: denylist line {number} in: {' '.join(sorted(places))}", file=sys.stderr)
+    if scan.hits:
+        print("pre-push: push refused. Fix those commits, or the denylist.", file=sys.stderr)
+        return 1
+    return 0
+
+
+try:
+    sys.exit(main())
+except Refuse as e:
+    print(f"pre-push: {e}: push refused", file=sys.stderr)
+except Exception as e:  # never let an unread object through; the type alone can't show a value
+    print(f"pre-push: couldn't check ({type(e).__name__}): push refused", file=sys.stderr)
+sys.exit(1)
