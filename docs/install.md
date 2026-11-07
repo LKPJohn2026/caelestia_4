@@ -130,6 +130,26 @@ turned off again in each new Hyprland session.
 
 ## Updating
 
+**Packages:** Nexus > Updates > *Update everything* (or the bar's updates popout) runs
+`~/.config/quickshell/ii/scripts/caelestia4/system-update.sh` in a terminal, with no questions: repo packages, then AUR
+packages, then this repo's Qt packages and the Caelestia plugin if Qt moved to a new minor release. After such a rebuild
+it restarts the shell, unless a window is fullscreen, the screen is locked or your clone has local changes, when a
+notification tells you to. The terminal closes by itself on success and stays open on a failure; the log is `~/.local/state/caelestia4/update.log`. For
+no password either, once:
+
+```bash
+sudo tools/update-sudo-rule.sh enable
+```
+
+> [!WARNING]
+> Both skip a safeguard. AUR packages are built and installed without you seeing their build scripts, and a malicious one
+> can run code as root. The password rule is close to root for every program under your account, because `pacman -U`
+> installs any package. `sudo tools/update-sudo-rule.sh disable` turns the rule off.
+
+Some things still stop the update for you to look at, like a package conflict that would need removing something.
+
+**caelestia_4 itself:**
+
 ```bash
 git pull --recurse-submodules
 tools/install-main.sh

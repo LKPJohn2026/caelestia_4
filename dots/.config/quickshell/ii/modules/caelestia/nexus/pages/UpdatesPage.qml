@@ -12,7 +12,7 @@ import qs.modules.caelestia.nexus.common
 
 // caelestia4: Nexus > Updates (upstream has only a placeholder): pending Arch repo and AUR updates and new commits
 // for this caelestia_4 clone, from SystemUpdates (shared with the bar's updates icon and popout). Updating runs in a
-// terminal (sudo prompts, yay's questions); a check follows when the terminal closes.
+// terminal that answers everything itself (scripts/caelestia4/system-update.sh); a check follows when it closes.
 PageBase {
     id: root
 
@@ -25,6 +25,8 @@ PageBase {
     readonly property bool checking: SystemUpdates.checking
 
     title: Tr.tr("Updates")
+
+    Component.onCompleted: SystemUpdates.checkPasswordless()
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -52,12 +54,20 @@ PageBase {
         }
 
         RowButton {
-            last: true
             icon: "download"
             text: Tr.tr("Update everything")
-            subtext: root.data.aur?.helper ? Tr.tr("Runs %1 in a terminal (repo and AUR packages)").arg(root.data.aur.helper) : Tr.tr("Runs pacman -Syu in a terminal")
-            disabled: root.checking || root.total === 0
+            subtext: SystemUpdates.terminalOpen ? Tr.tr("Running in a terminal…") : SystemUpdates.passwordlessUpdates ? Tr.tr("No questions; AUR build scripts aren't reviewed") : Tr.tr("The password once, then no questions; AUR build scripts aren't reviewed")
+            disabled: root.checking || root.total === 0 || SystemUpdates.terminalOpen
             onClicked: SystemUpdates.updatePackages()
+        }
+
+        RowButton {
+            last: true
+            icon: SystemUpdates.passwordlessUpdates ? "lock_open" : "lock"
+            text: SystemUpdates.passwordlessUpdates ? Tr.tr("Ask for the password when updating") : Tr.tr("Update without a password")
+            subtext: SystemUpdates.passwordlessUpdates ? Tr.tr("On: any program under this account can run pacman as root") : Tr.tr("Off: on, any program under this account can run pacman as root")
+            disabled: !root.c4.path || SystemUpdates.terminalOpen
+            onClicked: SystemUpdates.setPasswordlessUpdates(!SystemUpdates.passwordlessUpdates)
         }
 
         SectionHeader {

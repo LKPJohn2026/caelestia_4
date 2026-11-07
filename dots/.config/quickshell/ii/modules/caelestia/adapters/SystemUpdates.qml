@@ -19,6 +19,9 @@ Singleton {
 
     property var data: ({})
     readonly property bool checking: checkProc.running
+    readonly property bool terminalOpen: terminalProc.running
+    property bool passwordlessChecked
+    property bool passwordlessUpdates // pacman runs with no password (the rule of tools/update-sudo-rule.sh, or another)
     readonly property string checked: data.checked ?? ""
     readonly property var repoPackages: data.repo?.packages ?? []
     readonly property var aurPackages: data.aur?.packages ?? []
@@ -57,17 +60,34 @@ Singleton {
 
     // In the default terminal (uwsm -T), kept open at the end; a check follows once it's closed
     function runInTerminal(command: string): void {
+        if (terminalProc.running) // (the Process would queue it, and run it when that terminal closes)
+            return;
         terminalProc.command = ["uwsm-app", "-T", "--", "bash", "-c", `${command}; echo; read -rp "${Tr.tr("Done. Press Enter to close.")}"`];
         terminalProc.running = true;
     }
 
+    // Asks nothing (scripts/caelestia4/system-update.sh) and closes by itself unless something failed
     function updatePackages(): void {
-        runInTerminal(aurHelper || "sudo pacman -Syu");
+        if (terminalProc.running)
+            return;
+        terminalProc.command = ["uwsm-app", "-T", "--", Quickshell.shellPath("scripts/caelestia4/system-update.sh")];
+        terminalProc.running = true;
+    }
+
+    // tools/update-sudo-rule.sh, which has to ask for the password to give up asking for it
+    function setPasswordlessUpdates(on: bool): void {
+        if (caelestia4.path)
+            runInTerminal(`sudo '${caelestia4.path}/tools/update-sudo-rule.sh' ${on ? "enable" : "disable"}`);
     }
 
     function updateCaelestia4(): void {
         if (caelestia4.path)
             runInTerminal(`cd '${caelestia4.path}' && { git pull --ff-only || { echo "${Tr.tr("git pull failed. If the server asked for a sign-in, try again later: see Updating in docs/install.md")}"; false; }; } && tools/install-main.sh`);
+    }
+
+    // Asked of sudo itself, only where it's shown: when pacman does need a password, every try is an alert in sudo's log
+    function checkPasswordless(): void {
+        passwordlessProc.running = true;
     }
 
     function since(): string {
@@ -116,7 +136,23 @@ Singleton {
         id: terminalProc
 
         // uwsm-app -T returns when the terminal window closes
-        onExited: root.refresh()
+        onExited: {
+            root.refresh();
+            if (root.passwordlessChecked)
+                root.checkPasswordless();
+        }
+    }
+
+    Process {
+        id: passwordlessProc
+
+        command: ["sudo", "-n", "-k", "/usr/bin/pacman", "--version"]
+        stdout: StdioCollector {}
+        stderr: StdioCollector {}
+        onExited: code => {
+            root.passwordlessUpdates = code === 0;
+            root.passwordlessChecked = true;
+        }
     }
 
     // A failed check (e.g. the network not back yet after waking) is tried again in 5 minutes, not at the next interval
