@@ -2,7 +2,7 @@
 groups=(illogical-impulse)
 pkgname=illogical-impulse-caelestia4
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc='Caelestia shell dependencies of caelestia_4'
 arch=(any)
 license=(None)
@@ -19,6 +19,8 @@ depends=(
   qt6-shadertools
   # the shell and its scripts
   archlinux-xdg-menu # kbuildsycoca's menu (dots/.config/uwsm/env-hyprland)
+  bluez # Nexus > Bluetooth and the bar's
+  bluez-utils
   btop # the task manager
   ddcutil # external monitors' brightness
   python-gobject # the tray watcher and the system file dialog

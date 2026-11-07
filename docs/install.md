@@ -41,7 +41,12 @@ git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
    ```bash
    for p in qtengine wormhole atlas cli; do (cd "packaging/caelestia4-$p" && makepkg -Csi); done
    ```
-5. Optional, enables the matching features:
+5. **The services the shell talks to**, if they aren't on yet. Nexus and the bar show no Bluetooth or networks without
+   them. If another network service runs here (systemd-networkd, iwd alone, dhcpcd), turn that off first:
+   ```bash
+   sudo systemctl enable --now bluetooth NetworkManager
+   ```
+6. Optional, enables the matching features:
    - `gpu-screen-recorder` — screen recording with pause
    - `mpvpaper` — video wallpapers
    - `thunar thunar-volman tumbler gvfs` — a file manager to fall back on without Atlas

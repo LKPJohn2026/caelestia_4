@@ -124,6 +124,12 @@ PageBase {
         }
 
         HyprTextRow {
+            key: "input:kb_variant"
+            label: Tr.tr("Layout variants")
+            subtext: Tr.tr("One per layout, comma separated, e.g. nodeadkeys,. Must match the layouts above")
+        }
+
+        HyprTextRow {
             key: "input:kb_options"
             label: Tr.tr("Layout options")
             subtext: Tr.tr("XKB options, e.g. grp:alt_shift_toggle, caps:escape")

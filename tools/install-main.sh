@@ -23,15 +23,22 @@ done
 [[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" != masked ]] \
   || warn "gnome-keyring is masked for this user (from the KWallet days): tools/keyring-switch.sh prepare unmasks it"
 # caelestia4: the shapes library is a git submodule, which a plain `git clone` leaves empty: the bar and the widgets
-# wouldn't load
+# wouldn't load. A pull can also move it to another version, which `git pull` alone doesn't check out: it follows then,
+# but work of your own on top of the recorded version stays where it is.
 SHAPES="dots/.config/quickshell/ii/modules/common/widgets/shapes"
-if [[ ! -f "$REPO/$SHAPES/material-shapes.js" ]]; then
-  git -C "$REPO" submodule update --init -- "$SHAPES" 2>/dev/null || true
-  [[ -f "$REPO/$SHAPES/material-shapes.js" ]] || {
-    echo "$SHAPES is empty, and the submodule couldn't be fetched: use a git clone (git clone --recursive), not a zip." >&2
-    exit 1
-  }
+shapes_status=$(git -C "$REPO" submodule status -- "$SHAPES" 2>/dev/null || true)
+if [[ "$shapes_status" != " "* ]] && ! { [[ "$shapes_status" == "+"* ]] && git -C "$REPO/$SHAPES" merge-base --is-ancestor \
+    "$(git -C "$REPO" rev-parse "HEAD:$SHAPES")" HEAD 2>/dev/null; }; then
+  if git -C "$REPO" submodule update --init -- "$SHAPES" 2>/dev/null; then
+    say "brought $SHAPES to this commit's version"
+  else
+    warn "the submodule $SHAPES couldn't be brought to this commit's version: run git submodule update --init"
+  fi
 fi
+[[ -f "$REPO/$SHAPES/material-shapes.js" ]] || {
+  echo "$SHAPES is empty, and the submodule couldn't be fetched: use a git clone (git clone --recursive), not a zip." >&2
+  exit 1
+}
 "$REPO/tools/lint-caelestia.sh"
 
 backup() { # backup <path>
@@ -79,12 +86,20 @@ python3 "$CFG/quickshell/ii/modules/caelestia/utils/scripts/apptheme.py" setup |
 # end-4 Python venv (end-4's installer makes it; ours didn't): terminal colours from the wallpaper
 # (generate_colors_material.py), screen translator sign-in (google-auth), image regions / text colours (opencv).
 # Python 3.12 as end-4 pins it (uv fetches it); locked deps from sdata/uv/requirements.txt.
+# The stamp is written only after an install that worked: python alone doesn't mean its packages got there
 VENV="${XDG_STATE_HOME:-$HOME/.local/state}/quickshell/.venv"
-if [[ -x "$VENV/bin/python" ]]; then
+VENV_STAMP="$VENV/.caelestia4-requirements"
+VENV_WANT=$(sha256sum "$REPO/sdata/uv/requirements.txt" | cut -d' ' -f1)
+if [[ -x "$VENV/bin/python" && "$(cat "$VENV_STAMP" 2>/dev/null)" == "$VENV_WANT" ]]; then
   say "kept existing $VENV"
 elif command -v uv >/dev/null; then
-  UV_NO_MODIFY_PATH=1 uv venv --prompt .venv "$VENV" -p 3.12 \
-    && VIRTUAL_ENV="$VENV" uv pip install -r "$REPO/sdata/uv/requirements.txt" && say "created $VENV"
+  if { [[ -x "$VENV/bin/python" ]] || UV_NO_MODIFY_PATH=1 uv venv --prompt .venv "$VENV" -p 3.12; } \
+    && VIRTUAL_ENV="$VENV" uv pip install -r "$REPO/sdata/uv/requirements.txt"; then
+    printf '%s\n' "$VENV_WANT" > "$VENV_STAMP"
+    say "$VENV is ready"
+  else
+    warn "end-4's Python venv isn't complete (no network, or a package failed to build): re-run this script to try again"
+  fi
 else
   warn "uv not installed: end-4's Python venv not created (sudo pacman -S uv, then re-run)"
 fi
@@ -102,6 +117,15 @@ rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'worksp
 # caelestia4: settings-app Hyprland options live here (written by the shell); never overwrite them
 [[ -f "$CFG/hypr/hyprland/shellOverrides/main.lua" ]] || { mkdir -p "$CFG/hypr/hyprland/shellOverrides"; cp "$DOTS/hypr/hyprland/shellOverrides/main.lua" "$CFG/hypr/hyprland/shellOverrides/main.lua"; }
 [[ -f "$CFG/hypr/hyprlock/colors.conf" ]] || cp "$DOTS/hypr/hyprlock/colors.conf" "$CFG/hypr/hyprlock/colors.conf"
+# Variables a colours file from an older version lacks: the lock screen uses them all (the next scheme change rewrites it)
+append_line() { # append_line <file> <text>: on a line of its own; a file that can't be written is only reported
+  { [[ ! -s "$1" || -z "$(tail -c1 "$1")" ]] || printf '\n' >> "$1"; printf '%s\n' "$2" >> "$1"; } 2>/dev/null \
+    || warn "couldn't update $1"
+}
+while IFS= read -r line; do
+  var=${line%%=*}; var=${var%% *}
+  grep -q "^[[:space:]]*${var}[[:space:]]*=" "$CFG/hypr/hyprlock/colors.conf" || append_line "$CFG/hypr/hyprlock/colors.conf" "$line"
+done < <(grep '^\$' "$DOTS/hypr/hyprlock/colors.conf")
 [[ -f "$CFG/hypr/hyprlock/lockwall.conf" ]] || cp "$DOTS/hypr/hyprlock/lockwall.conf" "$CFG/hypr/hyprlock/lockwall.conf"
 [[ -d "$CFG/hypr/custom" ]] || cp -a "$DOTS/hypr/custom" "$CFG/hypr/custom"
 # hypridle's timers: (re)create them from the saved settings when missing (5 / 10 / 15 min and lock before sleep by default)
@@ -110,6 +134,19 @@ if [[ ! -f "$CFG/hypr/hypridle-timeouts.conf" ]]; then
     "$CFG/illogical-impulse/config.json" 2>/dev/null || echo "5 10 15 true")
   "$CFG/quickshell/ii/scripts/caelestia4/hypridle-timeouts.sh" "${lockm:-5}" "${offm:-10}" "${sleepm:-15}" "${lockb:-true}" \
     && say "created $CFG/hypr/hypridle-timeouts.conf (idle: lock ${lockm}m, screen off ${offm}m, suspend ${sleepm}m)"
+fi
+# The keyboard from localectl when it isn't plain US (general.lua's default): the first login and the lock screen's
+# password need the right one. Once only: what's in custom/general.lua or set in Nexus stays.
+keyboard=$(localectl status 2>/dev/null || true)
+kb_layout=$(sed -n 's/^ *X11 Layout: *//p' <<<"$keyboard")
+kb_variant=$(sed -n 's/^ *X11 Variant: *//p' <<<"$keyboard")
+kb_options=$(sed -n 's/^ *X11 Options: *//p' <<<"$keyboard")
+if [[ "$kb_layout" =~ ^[a-zA-Z0-9_,-]+$ && "$kb_variant" =~ ^[a-zA-Z0-9_,-]*$ && "$kb_options" =~ ^[a-zA-Z0-9_,:-]*$ ]] \
+  && [[ "$kb_layout" != us || -n "$kb_variant$kb_options" ]] \
+  && ! grep -qs 'kb_layout' "$CFG/hypr/custom/general.lua"; then
+  append_line "$CFG/hypr/custom/general.lua" "-- caelestia4: this machine's keyboard, from localectl at install
+hl.config({ input = { kb_layout = \"$kb_layout\", kb_variant = \"$kb_variant\", kb_options = \"$kb_options\" } })"
+  say "keyboard layout: $kb_layout${kb_variant:+ ($kb_variant)}"
 fi
 ENV="$CFG/hypr/custom/env.lua"
 if ! grep -q 'QML_IMPORT_PATH' "$ENV" 2>/dev/null; then
@@ -187,9 +224,24 @@ copy_file_if_missing "$DOTS/caelestia/shell.json" "$CFG/caelestia/shell.json" # 
 # Session menu: Caelestia's defaults are `logout` (a shell builtin, nothing to run) and `hibernate` (no such program):
 # log out through uwsm and hibernate through systemd, unless the user set these
 python3 - "$CFG/caelestia/shell.json" <<'PY'
-import json, shutil, sys
+import json, shutil, subprocess, sys
 p = sys.argv[1]
 d = json.load(open(p))
+# caelestia4: Caelestia's monospace default isn't packaged here (CaskaydiaCove NF): JetBrains Mono NF comes with
+# end-4's fonts. Without this, text like the keybind list falls back to a proportional font.
+fonts = subprocess.run(["fc-list", ":", "family"], capture_output=True, text=True).stdout
+level, font_changed = d, False
+for key in ("appearance", "font", "mono"):
+    level = level.get(key, {}) if isinstance(level, dict) else None
+if isinstance(level, dict) and "family" not in level and "CaskaydiaCove" not in fonts:
+    parent = d
+    for key in ("appearance", "font", "mono"):
+        parent = parent.setdefault(key, {})
+        if not isinstance(parent, dict):  # a value of the user's in another form stays
+            break
+    else:
+        parent["family"] = "JetBrains Mono NF"
+        font_changed = True
 # caelestia4: Atlas as the shell's file manager (Caelestia's default is Thunar), unless the user picked one
 apps = d.setdefault("general", {}).setdefault("apps", {})
 changed = apps.get("explorer", ["atlas"]) == ["atlas"] and not shutil.which("atlas")
@@ -198,7 +250,7 @@ if changed or "explorer" not in apps:  # not built (packaging/caelestia4-atlas):
     changed = True
 cmds = d.setdefault("session", {}).setdefault("commands", {})
 want = {"logout": ["uwsm", "stop"], "hibernate": ["systemctl", "hibernate"]}
-if changed or any(k not in cmds for k in want):
+if font_changed or changed or any(k not in cmds for k in want):
     for k, v in want.items():
         cmds.setdefault(k, v)
     json.dump(d, open(p, "w"), indent=4)
@@ -216,7 +268,7 @@ if "iconThemeDark" not in t and "iconTheme" not in t:
     t.update(enableGtk=True, enableQt=True, iconThemeDark="breeze-dark", iconThemeLight="breeze")
     json.dump(d, open(p, "w"), indent=4)
 PY
-command -v caelestia >/dev/null || warn "caelestia-cli is not installed (yay -S caelestia-cli): colours fall back to end-4's matugen"
+command -v caelestia >/dev/null || warn "caelestia-cli is not installed (step 4 of docs/install.md, packaging/caelestia4-cli): colours fall back to end-4's matugen"
 mkdir -p "$HOME/.local/share/icons"; cp -n "$REPO/dots/.local/share/icons/illogical-impulse.svg" "$HOME/.local/share/icons/" 2>/dev/null || true
 
 # ---- end-4 shell config: start in the caelestia family; never auto-kill KDE daemons ----
@@ -238,15 +290,21 @@ if d.get("apps", {}).get("taskManager") == "plasma-systemmonitor --page-name Pro
 PY
 
 # caelestia4: Chromium and Electron pick their key store from the desktop's name, and an unknown one (Hyprland) gets the
-# unencrypted "basic" store: flags for those without a flags file of the user's (tools/keyring-switch.sh moved an old
+# unencrypted "basic" store. Flags files get it too when they name no store (tools/keyring-switch.sh moved an old
 # KWallet's keys, a separate matter)
 # An account with a KWallet keeps its keys there until it's moved: the flag alone would lock its apps out of them
 if [[ -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwalletd/kdewallet.kwl" && ! -e "$CFG/brave-flags.conf" && ! -e "$CFG/chrome-flags.conf" ]]; then
   warn "this account has a KWallet: tools/keyring-switch.sh moves its keys and sets the browsers' key store"
 else
   for f in chrome code thorium; do copy_file_if_missing "$DOTS/$f-flags.conf" "$CFG/$f-flags.conf"; done
-  for f in chromium brave brave-origin vesktop electron; do
-    [[ -e "$CFG/$f-flags.conf" ]] || printf '# caelestia4: keys in gnome-keyring (libsecret)\n--password-store=gnome-libsecret\n' > "$CFG/$f-flags.conf"
+  for f in chrome code thorium chromium brave brave-origin vesktop electron; do
+    flags="$CFG/$f-flags.conf"
+    grep -qsE '^[[:space:]]*--?password-store' "$flags" && continue
+    # A file that's already there, on an account with a KWallet: only tools/keyring-switch.sh may change its store
+    [[ -e "$flags" && -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwalletd/kdewallet.kwl" ]] && continue
+    backup "$flags"
+    append_line "$flags" "# caelestia4: keys in gnome-keyring (libsecret)
+--password-store=gnome-libsecret"
   done
 fi
 

@@ -4,10 +4,10 @@
 # and keyboard layout, builds the files, checks the greeter's Hyprland config, then asks for sudo to install them:
 #   /etc/greetd/config.toml       greetd: Hyprland (as "greeter") with ReGreet in it
 #   /etc/greetd/hyprland.lua      that Hyprland: your monitors and scale, no logo / news / animations
-#   /etc/greetd/regreet.toml      ReGreet: adw-gtk3, Breeze icons, Bibata cursor, Google Sans Flex, Vietnamese clock
+#   /etc/greetd/regreet.toml      ReGreet: adw-gtk3, Breeze icons, Bibata cursor, Google Sans Flex, your locale's clock
 #   /etc/greetd/regreet.css       Caelestia's style (dots-extra/greetd/regreet.css.in) in the scheme's colours
 #   /etc/greetd/background.*      a copy of the wallpaper (the greeter can't read your home folder)
-#   /etc/pam.d/greetd             + pam_kwallet5 (and pam_gnome_keyring, inert until phase 3)
+#   /etc/pam.d/greetd             greetd's own + pam_gnome_keyring
 #   /usr/local/share/fonts/caelestia4/  Google Sans Flex for every user (tools/fonts-install.sh)
 # It doesn't switch the login manager; it prints the command for that. Re-run it to refresh colours / wallpaper.
 set -euo pipefail
@@ -18,6 +18,10 @@ STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
 say() { printf '\e[1;34m::\e[0m %s\n' "$*"; }
 [[ "$(id -u)" -ne 0 ]] || { echo "Run as your user, not root." >&2; exit 1; }
 for c in greetd regreet Hyprland; do command -v "$c" >/dev/null || { echo "$c is not installed (pacman -S greetd greetd-regreet)" >&2; exit 1; }; done
+# The PAM file below is Arch's layout. Replacing it on anything else would lock everyone out of the login screen.
+for f in /etc/pam.d/greetd /etc/pam.d/system-local-login /usr/lib/security/pam_securetty.so; do
+  [[ -e "$f" ]] || { echo "$f is missing: this script's PAM file is for Arch. Nothing was changed." >&2; exit 1; }
+done
 
 OUT="${XDG_RUNTIME_DIR:-/tmp}/caelestia4-greetd"
 mkdir -p "$OUT"
@@ -26,7 +30,15 @@ python3 - "$SRC" "$OUT" "$CFG" "$STATE" "${AQ_DRM_DEVICES:-}" <<'PY'
 import json, os, re, shutil, subprocess, sys
 src, out, cfg, state, aq = sys.argv[1:]
 
-scheme = json.load(open(os.path.join(state, "caelestia/scheme.json")))
+# The scheme, or a neutral dark one before any was generated (re-run after that for your colours)
+needed = set(re.findall(r"@([A-Za-z]+)@", open(os.path.join(src, "regreet.css.in")).read())) | {"background"}
+try:
+    scheme = json.load(open(os.path.join(state, "caelestia/scheme.json")))
+    if not needed <= set(scheme["colours"]):
+        raise ValueError
+except (OSError, ValueError, KeyError, TypeError):
+    scheme = json.load(open(os.path.join(src, "default-scheme.json")))
+    print("no complete colour scheme yet: using a neutral dark one")
 dark = scheme.get("mode", "dark") == "dark"
 colours = scheme["colours"]
 
@@ -37,11 +49,26 @@ except OSError:  # none saved yet: Hyprland's defaults
     mon = ""
 monitors = "\n".join(re.findall(r"hl\.monitor\(\{.*?\}\)", mon, re.S)) or 'hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })'
 
-layout = json.loads(subprocess.run(["hyprctl", "getoption", "input:kb_layout", "-j"], capture_output=True, text=True).stdout or "{}").get("str") or "us"
+# The session's keyboard; outside a session (a TTY, SSH), the machine's
+try:
+    layout = json.loads(subprocess.run(["hyprctl", "getoption", "input:kb_layout", "-j"], capture_output=True, text=True).stdout).get("str")
+except (OSError, ValueError, AttributeError):
+    layout = ""
+if not layout:
+    try:
+        found = re.search(r"X11 Layout: *(\S+)", subprocess.run(["localectl", "status"], capture_output=True, text=True).stdout)
+    except OSError:
+        found = None
+    layout = found.group(1) if found else "us"
 locale = (os.environ.get("LC_TIME") or os.environ.get("LANG") or "en_US.UTF-8").split(".")[0]
 
 # Wallpaper: end-4's path, or its first-frame thumbnail for a video
-bg = json.load(open(os.path.join(cfg, "illogical-impulse/config.json"))).get("background", {})
+try:
+    shell_config = json.load(open(os.path.join(cfg, "illogical-impulse/config.json")))
+    shell_config = shell_config if isinstance(shell_config, dict) else {}
+except (OSError, ValueError):
+    shell_config = {}
+bg = shell_config.get("background") or {}
 wall = bg.get("wallpaperPath", "")
 if re.search(r"\.(mp4|webm|mkv|avi|mov)$", wall, re.I):
     wall = bg.get("thumbnailPath", "")
@@ -63,10 +90,7 @@ def fill(name, values):
 open(os.path.join(out, "hyprland.lua"), "w").write(fill("hyprland.lua.in", {
     "MONITORS": monitors, "BACKGROUND": colours["background"], "KB_LAYOUT": layout}))
 # In the shell's language (its catalogue), else the locale's
-try:
-    ui = json.load(open(os.path.join(cfg, "illogical-impulse/config.json"))).get("language", {}).get("ui", "auto")
-except (OSError, ValueError):
-    ui = "auto"
+ui = (shell_config.get("language") or {}).get("ui", "auto")
 if ui == "auto":
     ui = (os.environ.get("LC_MESSAGES") or os.environ.get("LANG") or "").split(".")[0]
 try:
