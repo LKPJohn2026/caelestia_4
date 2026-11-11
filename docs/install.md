@@ -1,88 +1,105 @@
 # Installing caelestia_4
 
 The result is a **Hyprland (uwsm-managed)** session on the login screen running the Caelestia-design shell on end-4's
-illogical-impulse. It doesn't need KDE Plasma: it provides the login screen, key store, tray and Qt / GTK theming itself
-(see below). Nothing here needs root except installing packages, the fonts and the login screen.
+illogical-impulse. It doesn't need KDE Plasma: it brings its own login screen, key store, tray and Qt / GTK theming
+(see [Without Plasma](#without-plasma)).
 
-**Arch-based systems with systemd only** (`sdata/dist-*` for other distros come from end-4 and don't cover this fork).
+**Arch-based systems with systemd only** (Arch, CachyOS, EndeavourOS…, x86_64). The `sdata/dist-*` folders for other
+distros come from end-4 and don't cover this fork.
 
 > [!WARNING]
 > Read the scripts before running them. Take a snapshot first if your system supports it (`snapper`, Timeshift…).
 
-Clone with its submodule (`tools/install-main.sh` fetches it if you didn't; a zip of the repo won't work):
+## 1. Install
+
+One command, as your user (not root; it asks for sudo when it needs it):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/LKPJohn2026/caelestia_4/main/install.sh)
+```
+
+It clones the repo to `~/.local/share/caelestia_4` (`C4_DIR=… ` before the command to put it elsewhere) and runs its
+`install.sh`. Or clone it yourself, with its submodule (a zip of the repo won't work):
 
 ```bash
 git clone --recursive https://github.com/LKPJohn2026/caelestia_4.git
+cd caelestia_4
+./install.sh
 ```
 
-## 1. Dependencies (Arch / CachyOS)
+`./install.sh --dry-run` prints every command without running any, `./install.sh --list-deps` the packages it would
+install, `./install.sh -h` the other options. Everything it prints goes to `~/.local/state/caelestia4/install-*.log`.
 
-1. **Hyprland ≥ 0.55** (the config is Lua) and **uwsm**:
-   ```bash
-   sudo pacman -S --needed hyprland uwsm
-   ```
-2. **end-4's dependency metapackages** (local PKGBUILDs in `sdata/dist-arch`; they pull some AUR packages, so read
-   them). Only the dependency step of end-4's installer, which copies no configs:
-   ```bash
-   ./setup install-deps
-   ```
-   See [the illogical-impulse wiki](https://ii.clsty.link/en/ii-qs/01setup/) for what they contain. This step also
-   installs this fork's own metapackage, `illogical-impulse-caelestia4`: what the Caelestia shell needs beyond end-4's
-   (the plugin's build tools, `bluez`, `btop`, `ddcutil`, `socat`…). `tools/install-main.sh` warns if it's missing. To
-   install or update only that one (its dependency `qt6-m3shapes-git` is in the AUR, which `makepkg` can't fetch):
-   ```bash
-   yay -S --needed qt6-m3shapes-git
-   (cd sdata/dist-arch/illogical-impulse-caelestia4 && makepkg -si)
-   ```
-3. **Quickshell** built for your Qt version. `packaging/caelestia4-quickshell` pins a known-good commit and replaces
-   end-4's `illogical-impulse-quickshell-git` (accept the removal when pacman asks):
-   ```bash
-   cd packaging/caelestia4-quickshell && makepkg -Csi
-   ```
-   Quickshell and the Caelestia plugin use Qt's private API: **rebuild both after every Qt minor update**
-   (`makepkg -Cf` here, then `tools/build-caelestia-plugin.sh`).
-4. **The packages built from this repo**: the Qt theme (qtengine), the Open / Save dialogs (Wormhole), the file manager
-   (Atlas) and caelestia-cli, which makes the colour scheme (wallpaper colours and preset schemes) and themes btop,
-   nvtop, Zed and Spotify. Without Atlas the shell uses the file manager it finds; without the CLI, colours fall back to
-   end-4's matugen.
-   ```bash
-   for p in qtengine wormhole atlas cli; do (cd "packaging/caelestia4-$p" && makepkg -Csi); done
-   ```
-5. **The services the shell talks to**, if they aren't on yet. Nexus and the bar show no Bluetooth or networks without
-   them. If another network service runs here (systemd-networkd, iwd alone, dhcpcd), turn that off first:
-   ```bash
-   sudo systemctl enable --now bluetooth NetworkManager
-   ```
-6. Optional, enables the matching features:
-   - `gpu-screen-recorder` — screen recording with pause
-   - `mpvpaper` — video wallpapers
-   - `thunar thunar-volman tumbler gvfs` — a file manager to fall back on without Atlas
-   - `spotify-launcher` + `spicetify-cli` (AUR) — Spotify with the Caelestia theme
+What it does, in order, asking before anything you might not want:
 
-## 2. Install
+1. Checks the system (Arch-based, systemd, x86_64, 8 GB free, your user session) and updates it (`pacman -Syu`), with
+   `base-devel` and `git`.
+2. Uses `yay` or `paru` for the AUR packages; with neither, asks to build `yay-bin`.
+3. Asks to remove what would conflict: other builds of the packages it makes itself (end-4's
+   `illogical-impulse-quickshell-git` or another Quickshell, caelestia-cli, qtengine, Atlas, Wormhole, the Bibata cursor),
+   PulseAudio and its modules (PipeWire replaces it), and what the AUR packages conflict with (`darkly` for
+   `darkly-bin`, `yq` for `go-yq`…). pacman replaces each in the same transaction that installs what replaces it, so a
+   build or download that fails leaves it in place, and pacman refuses when another package still needs the old one.
+4. Installs the dependencies (below) and builds this repo's packages. A re-run skips the ones already at their version,
+   except the ones using Qt's private API when Qt moved to a new minor release (those are built again).
+5. Turns on Bluetooth and NetworkManager. If another network service runs here (systemd-networkd, iwd alone, dhcpcd,
+   connman), NetworkManager stays off and it tells you how to switch: Nexus and the bar show no networks without it.
+6. Installs the fonts no package has (`tools/fonts-install.sh`) and the configs (`tools/install-main.sh`, no sudo,
+   backs up what it replaces to `~/.local/state/caelestia4/backup-*`).
+7. The login screen: if you have one (SDDM, GDM, LightDM…), it stays. With none, it asks to set up **greetd +
+   ReGreet** (`tools/greetd-setup.sh`). `--no-login` skips this step.
 
-The config has to be in `~/.config`: with `XDG_CONFIG_HOME` set to anywhere else the installers stop without changing
+Reboot (or log out) and pick **Hyprland (uwsm-managed)**. The shell runs as the `caelestia4-shell` user unit
+(`systemctl --user restart caelestia4-shell`, or Ctrl+Super+R). After the first login, `tools/greetd-setup.sh` again
+gives the login screen your colours and wallpaper.
+
+The configs have to be in `~/.config`: with `XDG_CONFIG_HOME` set to anywhere else the installers stop without changing
 anything. `XDG_CACHE_HOME` can be anywhere, and so can `XDG_STATE_HOME`, set the same in the session and for the
 installer, which links `~/.local/state/quickshell` and `caelestia` to it for what can only name those.
 
-```bash
-tools/build-caelestia-plugin.sh   # the Caelestia QML plugin, into ~/.local/lib/qt6/qml (no sudo)
-tools/install-main.sh             # the configs and the uwsm session (tools/uwsm-setup.sh: env, user units, login entry);
-                                  # backs up what it replaces to ~/.local/state/caelestia4/backup-*
-```
-
-Two steps that need sudo (each says what it does first):
-
-```bash
-tools/fonts-install.sh            # fonts no package provides (the lock screen's, the presets')
-tools/greetd-setup.sh             # optional: the login screen (greetd + ReGreet), once the session has its colours
-```
-
-Log out and pick **Hyprland (uwsm-managed)**. The shell runs as the `caelestia4-shell` user unit
-(`systemctl --user restart caelestia4-shell`, or Ctrl+Super+R).
-
 `install-main.sh` never overwrites your own files: `~/.config/hypr/custom/`, `monitors.lua`, `workspaces.lua` and the
 configs of apps it themes (btop, cava, fastfetch, Zen…) are only created when missing.
+
+## 2. What gets installed
+
+All of it comes from PKGBUILDs in this repo, which you can read first. `./install.sh --list-deps` prints the exact list.
+
+| | What | From |
+|---|---|---|
+| **Session** | Hyprland ≥ 0.55 (the config is Lua), uwsm, hypridle, hyprlock, hyprpicker, hyprsunset, xdg-desktop-portal-hyprland | repos |
+| **end-4's dependencies** | metapackages in `sdata/dist-arch/illogical-impulse-*`: audio (PipeWire, cava…), backlight, basic tools, fonts and themes, hyprland, kde (`gnome-keyring`, NetworkManager), portals, Python, screen capture (grim, slurp, gpu-screen-recorder…), toolkit, widgets, MicroTeX, the Bibata cursor | repos + AUR |
+| **This fork's** | `sdata/dist-arch/illogical-impulse-caelestia4`: the plugin's build tools, `bluez`, `btop`, `ddcutil`, `socat`, `uwsm`… | repos + AUR |
+| **Built here** | `packaging/caelestia4-*`: Quickshell pinned to a known-good commit, the Qt theme (qtengine), the Open / Save dialogs (Wormhole), the file manager (Atlas), caelestia-cli (colour schemes, app themes); and the Caelestia QML plugin, into `~/.local/lib/qt6/qml` | built with `makepkg` |
+| **From the AUR** | `breeze-plus`, `darkly-bin`, `libcava`, `otf-space-grotesk`, `python-materialyoucolor`, `qt6-m3shapes-git`, `ttf-readex-pro`, `ttf-rubik-vf`, `ttf-twemoji` (and `wlogout` on plain Arch; CachyOS has it) | yay / paru |
+| **Login screen** (only without one) | `greetd`, `greetd-regreet` | repos |
+| **Services** | `bluetooth`, `NetworkManager` | enabled |
+
+About 1.5 GB of downloads and 6 GB of disk (it checks for 8 GB free). Quickshell and the Caelestia plugin use Qt's private API: **after every Qt minor
+update, both are built again**: `./install.sh` notices it (as does Nexus > Updates, see [Updating](#updating));
+`./install.sh --rebuild` builds everything of this repo again regardless.
+
+Optional, enables the matching features:
+
+- `mpvpaper` — video wallpapers
+- `thunar thunar-volman tumbler gvfs` — a file manager to fall back on without Atlas
+- `spotify-launcher` + `spicetify-cli` (AUR) — Spotify with the Caelestia theme
+
+### Install by hand
+
+What `install.sh` runs, for when you'd rather do each step yourself. The AUR packages (the row above) can't be fetched
+by `makepkg -s`: install them with an AUR helper first. `./install.sh --list-deps` lists them for this system.
+
+```bash
+sudo pacman -Syu --needed base-devel git
+yay -S --needed --asdeps $(./install.sh --list-deps | sed -n '/^# from the AUR/,/^# built/{/^#/d;p}')
+for m in audio backlight basic fonts-themes kde portal python screencapture toolkit widgets hyprland caelestia4 \
+         microtex-git bibata-modern-classic-bin; do (cd "sdata/dist-arch/illogical-impulse-$m" && makepkg -Csi); done
+for p in quickshell qtengine wormhole atlas cli; do (cd "packaging/caelestia4-$p" && makepkg -Csi); done
+sudo systemctl enable --now bluetooth NetworkManager
+tools/fonts-install.sh            # sudo: fonts no package provides (the lock screen's, the presets')
+tools/install-main.sh             # no sudo: the plugin, the configs and the uwsm session
+tools/greetd-setup.sh             # optional, sudo: the login screen (greetd + ReGreet)
+```
 
 ## 3. One-time choices after the first login
 
@@ -151,8 +168,9 @@ Some things still stop the update for you to look at, like a package conflict th
 **caelestia_4 itself:**
 
 ```bash
+cd ~/.local/share/caelestia_4   # or your clone
 git pull --recurse-submodules
-tools/install-main.sh
+./install.sh
 ```
 
 It rebuilds the Caelestia plugin when its source changed and updates the session's env and units (log out and in for
@@ -177,7 +195,7 @@ If `git pull` says the histories diverged, one of two things happened:
   git stash
   git reset --hard origin/main
   git submodule update --init --recursive
-  tools/install-main.sh
+  ./install.sh
   ```
 
 If a pull or update fails asking for a sign-in, GitHub may be limiting anonymous downloads for a while: try again later,
@@ -206,8 +224,8 @@ docs/dev/kde-removal.md has how Plasma was replaced. What it provided, and what 
 
 | Plasma had | Here |
 |---|---|
-| Login screen (plasmalogin) | greetd + ReGreet in a Hyprland of its own: `tools/greetd-setup.sh` (re-run it to refresh its colours / wallpaper) |
-| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by greetd's PAM; `tools/keyring-switch.sh` moves an existing KWallet's keys |
+| Login screen (plasmalogin) | greetd + ReGreet in a Hyprland of its own: `tools/greetd-setup.sh` (re-run it to refresh its colours / wallpaper), or the login screen you already have |
+| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by the login screen's PAM; `tools/keyring-switch.sh` moves an existing KWallet's keys |
 | Tray registry (kded6) | `caelestia4-sni-watcher` (docs/uwsm.md) |
 | Qt theme / colours | qtengine (`packaging/caelestia4-qtengine`) + Darkly, colours from caelestia-cli (cli.json enableQt) |
 | GTK theme / colours | adw-gtk3 + caelestia-cli's gtk.css (enableGtk) |

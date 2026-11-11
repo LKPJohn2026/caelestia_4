@@ -43,15 +43,18 @@ distros come from end-4 and don't cover what this fork adds, so they aren't a su
 It was developed on one machine (NVIDIA with an AMD iGPU, one ultrawide monitor at 1.5× scale). Other GPUs, several
 monitors, laptops and small screens are meant to work but are less tested: please report what doesn't.
 
-You need: Hyprland ≥ 0.55, uwsm, a Quickshell build matching your Qt (the `caelestia4-quickshell` PKGBUILD pins one),
-end-4's dependency metapackages and this fork's (`sdata/dist-arch`, with `./setup install-deps`), and the packages built
-from `packaging/`.
-
 ## Install
 
-See **[docs/install.md](docs/install.md)**. In short: install the dependencies, build the Caelestia plugin, run
-`tools/install-main.sh` (no sudo, backs up what it replaces), run `tools/uwsm-setup.sh`, then pick
-**Hyprland (uwsm-managed)** on the login screen.
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/LKPJohn2026/caelestia_4/main/install.sh)
+```
+
+or, from a clone (`git clone --recursive`), `./install.sh`. It installs the dependencies (repo and AUR, with yay or
+paru; it offers to build yay-bin), builds this repo's packages (Quickshell, the Qt theme, Wormhole, Atlas, caelestia-cli,
+the Caelestia plugin), installs the configs (no sudo, backs up what it replaces) and, if there's no login screen yet,
+offers greetd + ReGreet. Then reboot and pick **Hyprland (uwsm-managed)**. `./install.sh --dry-run` shows every command
+first, `--list-deps` the packages. Details, the steps by hand, updating and undoing:
+**[docs/install.md](docs/install.md)**.
 
 ## Documentation
 
