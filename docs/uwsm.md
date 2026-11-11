@@ -23,7 +23,7 @@ Then log out and pick **Hyprland (uwsm-managed)**.
 | Settings app, task manager, mixer, Bluetooth/network apps, recordings, `$` run commands | children of the shell | own unit each via `AppLauncher.exec` (survive a shell restart) |
 | fcitx5, KDE Connect (+ indicator) | `custom/execs.lua` | `caelestia4-fcitx5`, `caelestia4-kdeconnectd`, `caelestia4-kdeconnect-indicator` |
 | hypridle, ydotoold | exec | packaged `hypridle`, `ydotool` units, started by `execs.lua` |
-| Apps (keybinds via `launch_first_available.sh`, launcher, dock, session restore) | children of Hyprland / the shell | own unit each (`uwsm-app --`), app-graphical.slice |
+| Apps (keybinds via `launch_first_available.sh`, launcher, session restore) | children of Hyprland / the shell | own unit each (`uwsm-app --`), app-graphical.slice |
 | XDG autostart | not run | runs, except the entries of what's a unit here (`tools/uwsm-setup.sh` hides them in `~/.config/autostart`) |
 | Logout | logind Terminate | same (Caelestia session menu uses logind; uwsm-compatible). Don't use Hyprland's `exit`. |
 

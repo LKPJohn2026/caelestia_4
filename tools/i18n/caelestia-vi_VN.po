@@ -9,12 +9,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgid " · right-click to pin"
-msgstr " · chuột phải để ghim"
-
-msgid " · right-click to unpin"
-msgstr " · chuột phải để bỏ ghim"
-
 msgid "%1 (muted)"
 msgstr "%1 (đã tắt tiếng)"
 
@@ -117,9 +111,6 @@ msgstr "Chống chói"
 
 msgid "Apps"
 msgstr "Ứng dụng"
-
-msgid "Apps · right-click for workspace overview"
-msgstr "Ứng dụng · chuột phải để xem tổng quan không gian làm việc"
 
 msgid "Audio input changed"
 msgstr "Đã đổi thiết bị âm thanh vào"
@@ -438,9 +429,6 @@ msgstr "Vào"
 
 msgid "It needs a service account key with the Cloud Vision and Cloud Translation APIs enabled. Paste the key's JSON with the key button below."
 msgstr "Cần khóa tài khoản dịch vụ đã bật Cloud Vision API và Cloud Translation API. Dán JSON của khóa bằng nút khóa bên dưới."
-
-msgid "Keep dock shown"
-msgstr "Luôn hiện dock"
 
 msgid "Key"
 msgstr "Khóa"
@@ -936,9 +924,6 @@ msgstr "Bỏ ghim"
 
 msgid "Unpin (stop reserving space)"
 msgstr "Bỏ ghim (thôi giữ chỗ)"
-
-msgid "Unpin dock"
-msgstr "Bỏ ghim dock"
 
 msgid "Up %1"
 msgstr "Đã chạy %1"
@@ -3416,7 +3401,7 @@ msgstr "Hẹn giờ khi rảnh, màn hình khoá, pin"
 msgid "Windows, keyboard, mouse, rendering"
 msgstr "Cửa sổ, bàn phím, chuột, kết xuất"
 
-# caelestia4: Nexus step 4 (the rest of end-4 Settings: assistant, dock, overview, cheatsheet, launcher search,
+# caelestia4: Nexus step 4 (the rest of end-4 Settings: assistant, overview, cheatsheet, launcher search,
 # services, sound, games, wallpaper extras)
 msgid "Task manager"
 msgstr "Trình quản lý tác vụ"
@@ -3492,9 +3477,6 @@ msgstr "Trợ lý"
 
 msgid "AI, anime tab, work safety"
 msgstr "AI, tab anime, an toàn nơi làm việc"
-
-msgid "Dock"
-msgstr "Dock"
 
 msgid "Overview & overlay"
 msgstr "Tổng quan & lớp phủ"
@@ -3870,27 +3852,6 @@ msgstr "Ký hiệu cho nút chuột"
 
 msgid "One key per box"
 msgstr "Mỗi phím một ô"
-
-msgid "Keep shown after login"
-msgstr "Vẫn hiện sau khi đăng nhập"
-
-msgid "Off: the dock stays hidden until you reveal it"
-msgstr "Tắt: dock ẩn cho đến khi bạn gọi nó ra"
-
-msgid "Reveal at the bottom edge"
-msgstr "Hiện ở mép dưới"
-
-msgid "Show on empty workspaces"
-msgstr "Hiện trên không gian làm việc trống"
-
-msgid "Icon size (px)"
-msgstr "Cỡ biểu tượng (px)"
-
-msgid "Pinned apps"
-msgstr "Ứng dụng đã ghim"
-
-msgid "App IDs, comma separated (e.g. atlas, kitty)"
-msgstr "ID ứng dụng, cách nhau bằng dấu phẩy (vd. atlas, kitty)"
 
 msgid "Workspace overview"
 msgstr "Tổng quan không gian làm việc"

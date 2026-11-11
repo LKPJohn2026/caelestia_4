@@ -4,7 +4,7 @@ pragma ComponentBehavior: Bound
 // Icon resolution, best first:
 //  1. the stream's application.icon-name, if the icon theme has it
 //  2. the icon of the window that owns the stream: walk the stream's process parents up to a pid that
-//     has a Hyprland window, and resolve that window class like the dock does (end-4 AppSearch). This
+//     has a Hyprland window, and resolve that window class like the bar's workspace icons do (end-4 AppSearch). This
 //     handles Chromium/Electron apps, whose audio comes from a child process and whose icon-name is
 //     generic (Brave Origin reports "brave-browser", which isn't installed)
 //  3. a desktop entry matching the binary / application name

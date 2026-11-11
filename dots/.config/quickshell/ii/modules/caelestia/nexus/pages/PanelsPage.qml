@@ -59,24 +59,17 @@ PageBase {
         }
 
         NavRow {
-            icon: "call_to_action"
-            text: Tr.tr("Dock")
-            subtext: E4C.Config.options.caelestia.dock.enable ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(15)
-        }
-
-        NavRow {
             icon: "grid_view"
             text: Tr.tr("Overview & overlay")
             subtext: Tr.tr("Alt+Tab, Super+G")
-            onClicked: root.nState.openSubPage(16)
+            onClicked: root.nState.openSubPage(15)
         }
 
         NavRow {
             icon: "keyboard"
             text: Tr.tr("Keybind cheatsheet")
             subtext: "Super+/"
-            onClicked: root.nState.openSubPage(17)
+            onClicked: root.nState.openSubPage(16)
         }
 
         NavRow {

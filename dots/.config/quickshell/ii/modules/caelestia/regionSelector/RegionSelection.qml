@@ -120,7 +120,7 @@ PanelWindow {
         const topLayers = layersOfThisMonitor?.levels["2"];
         if (!topLayers)
             return [];
-        // Not the bar / dock / frame (caelestia-* layers are the shell's own drawers and frame)
+        // Not end-4's bar / dock or the frame (caelestia-* layers are the shell's own drawers and frame)
         return topLayers.filter(layer => !(layer.namespace.includes(":bar") || layer.namespace.includes(":verticalBar") || layer.namespace.includes(":dock") || layer.namespace.startsWith("caelestia-"))).map(layer => ({
                     at: [layer.x - root.monitorOffsetX, layer.y - root.monitorOffsetY],
                     size: [layer.w, layer.h],

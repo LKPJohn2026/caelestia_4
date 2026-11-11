@@ -109,13 +109,6 @@ Singleton {
                     property bool enable: true
                     property string classes: "^(steam_app_\\d+|gamescope)$" // window classes treated as games (regex)
                 }
-                property JsonObject dock: JsonObject { // Caelestia-style dock (pinned apps: dock.pinnedApps)
-                    property bool enable: true
-                    property bool pinnedOnStartup: false // keep the dock shown (and reserve space)
-                    property bool hoverToReveal: true // reveal when the pointer touches the bottom edge
-                    property bool revealOnEmptyWorkspace: true
-                    property int iconSize: 40
-                }
             }
 
             property JsonObject policies: JsonObject {
@@ -538,18 +531,6 @@ Singleton {
             property JsonObject crosshair: JsonObject {
                 // Valorant crosshair format. Use https://www.vcrdb.net/builder
                 property string code: "0;P;d;1;0l;10;0o;2;1b;0"
-            }
-
-            property JsonObject dock: JsonObject {
-                property bool enable: false
-                property bool monochromeIcons: true
-                property real height: 60
-                property real hoverRegionHeight: 2
-                property bool pinnedOnStartup: false
-                property bool hoverToReveal: true // When false, only reveals on empty workspace
-                property list<string> pinnedApps: [ // IDs of pinned entries
-                    "atlas", "kitty",] // caelestia4: Atlas is the file manager here
-                property list<string> ignoredAppRegexes: []
             }
 
             property JsonObject interactions: JsonObject {

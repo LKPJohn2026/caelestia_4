@@ -5,7 +5,6 @@
 //    workspace grid in Caelestia style on Windows-style Alt+Tab; Super+Tab is the window switcher (windowSwitcher).
 //  - Assistant drawer (assistant/Wrapper.qml) hosts end-4's left-sidebar content (AI, translator) in the frame.
 //  - end-4 modules reused as-is (re-skinned in Phase 7): overlay, wallpaper selector, lock.
-//  - Dock (modules/caelestia/dock): Caelestia-style dock with end-4's dock features (caelestia.dock.enable).
 //  - KeybindBridge routes end-4's session / right-sidebar / media keys to the Caelestia drawers.
 import QtQuick
 import Quickshell
@@ -14,7 +13,6 @@ import qs.modules.common
 import qs.modules.caelestia
 import qs.modules.caelestia.background as CBackground
 import qs.modules.caelestia.drawers as CDrawers
-import qs.modules.caelestia.dock as CDock
 import qs.modules.caelestia.osk as COsk
 import qs.modules.caelestia.cheatsheet as CCheatsheet
 import qs.modules.caelestia.overview as COverview
@@ -39,7 +37,6 @@ Scope {
     PanelLoader { component: BackgroundMute {} } // mute games while unfocused (caelestia.backgroundMute)
     PanelLoader { component: COverview.Overview {} } // workspaces grid on Alt+Tab (end-4 data, Caelestia style)
     PanelLoader { component: CWindowSwitcher.WindowSwitcher {} } // Super+Tab window switcher (end-4 PR #3693, Caelestia style)
-    PanelLoader { extraCondition: Config.options.caelestia.dock.enable; component: CDock.Dock {} }
     PanelLoader { component: COsk.Osk {} } // on-screen keyboard (end-4 logic, Caelestia style)
     PanelLoader { component: CRegion.RegionSelector {} } // screenshot / Lens / OCR / record (end-4 logic, Caelestia style)
     PanelLoader { component: CTranslator.ScreenTranslator {} } // screen translator (end-4 Google Cloud logic, Caelestia style)

@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// caelestia4: one place where the shell starts apps (Caelestia launcher, end-4 launcher search, docks, run commands).
+// caelestia4: one place where the shell starts apps (Caelestia launcher, end-4 launcher search, run commands).
 // uwsm-only (the plain Hyprland session is no longer supported): every launch goes through uwsm-app, so each app gets
 // its own systemd unit in app-graphical.slice instead of living in the shell's unit (where a shell restart would kill
 // it). Terminal apps also go through uwsm: it reads Terminal=true from the desktop entry and starts the default

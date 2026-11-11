@@ -129,7 +129,7 @@ Status legend:
 | Display (upstream: commented-out TODO) | ✅ added 2026-10-27 | per monitor resolution / refresh rate, scale, rotation with a 15 s keep-or-revert, saved to monitors.lua; VRR |
 | Power & idle (not in upstream) | ✅ added 2026-10-27 | hypridle lock / screen off / sleep timers, lock before sleep, hyprlock, battery warning and hibernate levels (as end-4 Settings) |
 | Wallpaper & style extras | ✅ added 2026-10-27 | panel / layer opacity, Caelestia's size scales (text, roundness, spacing, padding, animation), screen frame, fonts, desktop clock (Caelestia's or end-4's); Panels > On-screen display (osd.*). Upstream's Nexus has no rows for these keys |
-| The rest of end-4 Settings | ✅ added 2026-10-27 | Panels > Assistant, Dock, Overview & overlay, Keybind cheatsheet; rows on the Taskbar, Dashboard, Launcher, Utilities, Notifications, Audio, Hyprland, Apps, Language & region, Services and Wallpaper & style pages. Every end-4 Settings row has a Nexus place (same keys); only "Use an image file" (switchwall.sh's picker) is left out |
+| The rest of end-4 Settings | ✅ added 2026-10-27 | Panels > Assistant, Overview & overlay, Keybind cheatsheet; rows on the Taskbar, Dashboard, Launcher, Utilities, Notifications, Audio, Hyprland, Apps, Language & region, Services and Wallpaper & style pages. Every end-4 Settings row has a Nexus place (same keys); only "Use an image file" (switchwall.sh's picker) is left out |
 | Plugin config coverage | ✅ | 136 of the plugin's 200 config keys have a Nexus row (upstream's Nexus: 101), none that upstream has is missing. Without rows: `lock.*` and `general.idle.*` (hyprlock / hypridle instead) and hand-edited lists (workspace icons, `launcher.actions`, tray `iconSubs`) |
 | One Nexus window | ✅ 2026-10-27 | opening it again focuses the open window (upstream PR #2208 only blocks the second one) |
 | Updating repo + AUR packages with no questions or password (optional sudo rule), in one click | ✅ added | shaped after Omarchy's update: `scripts/caelestia4/system-update.sh`, `tools/update-sudo-rule.sh` |
@@ -154,7 +154,7 @@ Status legend:
 | Gestures: 4-finger workspace swipe, 4-finger up/down | ✅ | + 3-finger move / pinch fullscreen (end-4) |
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
 | App themes: foot, fish, starship, fastfetch, btop | ✅ | foot, fish, starship themed; btop + fastfetch now too (apptheme.py) |
-| File manager: Thunar (manifest component) | ✅ 2026-10-27 | Atlas (AstraSuite, Caelestia's tokens, colours from scheme.json; `packaging/caelestia4-atlas`) opens folders, Super+E, Caelestia `apps.explorer`, dock pins; Thunar stays as the fallback |
+| File manager: Thunar (manifest component) | ✅ 2026-10-27 | Atlas (AstraSuite, Caelestia's tokens, colours from scheme.json; `packaging/caelestia4-atlas`) opens folders, Super+E, Caelestia `apps.explorer`; Thunar stays as the fallback |
 | Open / Save dialogs (Caelestia: whatever portal the desktop has) | ✅ 2026-10-27 | Wormhole's FileChooser (`packaging/caelestia4-wormhole`) in the Hyprland session, KDE's as the fallback. Only that interface: Wormhole's Inhibit / GlobalShortcuts are stubs and its Camera grants access without asking; Background / Clipboard / Usb / Wallpaper are pinned to kde so its UseIn key doesn't pick them |
 | App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ✅ partly | apptheme.py after every colour change: btop, cava, Zed, Zen, Brave, Cursor/VS Code/VSCodium (scheme.json), Thunar (gtk-3.0/thunar.css), Spotify (spicetify color.ini, live via `spicetify watch -s`), nvim (colorscheme watches scheme.json), micro ("simple" = terminal palette). Not here: Firefox (no profile yet) |
 
@@ -168,7 +168,7 @@ Status legend:
 | Bar extras: resources, media, weather, utility buttons, clock & battery popups, unread count | 🔁 Equivalent | dashboard tabs, utilities drawer, status icons |
 | Screen corners + hot corners | 🔁 Equivalent | Caelestia frame + edge hover |
 | Background widgets: cookie / digital / daily / pixel clock, quote, weather, calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter, image card, sticker, text, presets, parallax wallpaper | ✅ E→C | end4-pC's widgets (pctrade/end4-pC 6f461b4, modules/caelestia/background/pcwidgets) on the Caelestia background: Settings > Desktop > Desktop clock (Caelestia / Cookie / Digital / Off), placement free / least busy / most busy, quote; positions are kept on a canvas (a preset's 1920x1080) and scaled to each screen keeping edges, and widgets are drawn larger by the screen's height over the canvas's (background.widgets.scale) so they take the share of the screen they take in the preview; end4-pC presets in Nexus > Wallpaper & style > Presets or scripts/presets/preset-import.py (tools/preset-import.py): two lists: the main repo's (pctrade/end4-pCpresets, installed as `pctrade--NAME`) and the third parties': Blapples/wallpapers and any public GitHub repo added in the address bar (`--add-source LINK`, `--remove-source`, installed as `OWNER--REPO--NAME`; a preset the main repo already has, by the same preset file, the same preview.png or the same name with a picture in common, is skipped) presets, installed on demand (`--catalog`, `--thumbs`, `--install NAME`, `--update`, `--uninstall NAME`; pictures stay local only), `NAME` applies one (widgets, visualiser, wallpaper, lock wallpaper, avatar), `--undo`; a "Use presets" switch (`--disable` puts your own desktop back and refuses presets, `--enable` applies the last one again); Wallpaper & style > Widgets on the desktop picks the widgets by hand, and a widget's right-click menu locks the widgets or removes it; workspace parallax with zoom and widget factor |
-| Dock (pinned apps, open windows, previews) | ✅ E→C | Caelestia-style dock with end-4's features |
+| Dock (pinned apps, open windows, previews) | ❌ removed 2026-11-10 | it was ported (Caelestia style, end-4's features) and taken out: the bar's workspaces and the launcher cover it |
 | Lock screen (QML) | 🔁 Equivalent | hyprlock (end-4 option `useHyprlock`) |
 | Media controls popup | 🔁 Equivalent | dashboard media tab |
 | Notification popups | 🔁 Equivalent | Caelestia notifications |
@@ -238,7 +238,7 @@ moving the backend to Caelestia; colours / wallpapers / recorder / idle inhibito
 the vendored plugin is at 29fcf69a and the wallpaper is drawn by Caelestia's renderer (applying still goes through
 end-4's switchwall.sh, videos through mpvpaper). Step 3: caelestia-cli makes the colours (wallpaper or preset), end-4 gets them
 through its postHook (`scheme.py bridge`); btop / nvtop / Zed / Spotify are themed by caelestia-cli itself. end-4-only
-features (assistant, overlay, region tools, dock, todo / timer, settings app…) keep their end-4 services.
+features (assistant, overlay, region tools, todo / timer, settings app…) keep their end-4 services.
 
 Still open (review 2026-10-22):
 
