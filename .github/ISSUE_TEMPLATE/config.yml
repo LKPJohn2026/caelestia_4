@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and help
+    url: https://github.com/LKPJohn2026/caelestia_4/discussions
+    about: How do I…, is this normal, how to set something up. Issues are for bugs and feature requests.
+  - name: Security problem
+    url: https://github.com/LKPJohn2026/caelestia_4/security/advisories/new
+    about: Report it privately, not in a public issue.
+  - name: Bug that also happens on end-4's dots
+    url: https://github.com/end-4/dots-hyprland/issues
+    about: Report it upstream; the fix will reach this fork too.
+  - name: Bug that also happens in Caelestia
+    url: https://github.com/caelestia-dots/shell/issues
+    about: Report it upstream; the fix will reach this fork too.

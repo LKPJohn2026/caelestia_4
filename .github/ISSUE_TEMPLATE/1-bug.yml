@@ -1,0 +1,124 @@
+name: Bug report
+description: Something in caelestia_4 is broken.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. This is a one-person fork: a report with the diagnose output and clear steps is usually fixed; one without them usually can't be looked at.
+        Please [search the issues](https://github.com/LKPJohn2026/caelestia_4/issues?q=is%3Aissue) first, including closed ones, and read [SCOPE.md](https://github.com/LKPJohn2026/caelestia_4/blob/main/SCOPE.md).
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you report
+      options:
+        - label: I searched existing issues, open and closed.
+          required: true
+        - label: I read SCOPE.md.
+          required: true
+        - label: I updated to the latest `main` and rebooted or restarted the shell.
+        - label: I ticked these boxes without reading them.
+
+  - type: dropdown
+    id: gpu
+    attributes:
+      label: GPU
+      options:
+        - NVIDIA
+        - AMD
+        - Intel
+        - NVIDIA + another GPU (hybrid / laptop)
+        - AMD + Intel (hybrid)
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: monitors
+    attributes:
+      label: Monitors
+      options:
+        - One
+        - Several
+        - Laptop screen only
+        - Laptop screen + external
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: Install
+      options:
+        - Fresh install with tools/install-main.sh
+        - Updated an older install
+        - I changed files the installer put there (not only ~/.config/hypr/custom)
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnose
+    attributes:
+      label: Output of ./diagnose
+      description: |
+        In your clone of this repository run `./diagnose`, then paste `diagnose.result` between the two `<details>` lines below (it stays folded).
+        Read it before posting. It has your git branch and changed files, package versions, GPU and monitor models, and environment variables; your home folder is already shown as `~`.
+      value: |
+        <details><summary>diagnose</summary>
+
+        ```
+        (paste here)
+        ```
+
+        </details>
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens, and what you expected
+      description: Screenshots or a short recording help a lot for anything visual.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open …
+        2. Press …
+        3. …
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        The shell's log since boot: `LANG=C journalctl --user -u caelestia4-shell.service -b -o cat --no-pager | tail -n 200 | sed "s#$HOME#~#g"`
+        For a crash or freeze, also Hyprland's: `LANG=C journalctl --user -u 'wayland-wm@*' -b -o cat --no-pager | tail -n 100 | sed "s#$HOME#~#g"`
+        Read them before posting and remove anything private: your user name, names of files, networks or people, and any API key or token.
+      value: |
+        <details><summary>logs</summary>
+
+        ```
+        (paste here)
+        ```
+
+        </details>
+
+  - type: dropdown
+    id: upstream
+    attributes:
+      label: Does it also happen upstream?
+      options:
+        - I don't know
+        - No, only in caelestia_4
+        - Yes, on end-4's dots or in Caelestia too
+    validations:
+      required: true

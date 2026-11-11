@@ -1,0 +1,46 @@
+name: Feature request
+description: An idea for caelestia_4.
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read [SCOPE.md](https://github.com/LKPJohn2026/caelestia_4/blob/main/SCOPE.md) first. Open questions and rough ideas fit better in [Discussions](https://github.com/LKPJohn2026/caelestia_4/discussions).
+        If the feature exists in end-4's dots or in Caelestia and is missing here, say which: those are the easiest to bring over.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you ask
+      options:
+        - label: I searched existing issues and discussions.
+          required: true
+        - label: I read SCOPE.md, and this fits it.
+          required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What you'd like
+      description: What it should do, and what you'd use it for.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where does it come from?
+      options:
+        - It's new
+        - It exists in end-4's dots
+        - It exists in Caelestia
+        - Another project (say which below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: Screenshots, links, how other projects do it, whether you'd like to write it yourself.

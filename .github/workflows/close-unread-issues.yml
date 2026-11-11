@@ -1,0 +1,26 @@
+# The bug form has a box "I ticked these boxes without reading them": an issue that ticks it is closed with a short
+# comment, so a report written with the form actually read can be opened again.
+# Runs on `issues` (no pull-request code is ever checked out); the issue body is only read by the `if:` expression,
+# never put into a shell command.
+name: Close issues that skipped the form
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  close:
+    if: contains(github.event.issue.body, '- [X] I ticked these boxes without reading them')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$NUMBER" --body "This issue ticked *I ticked these boxes without reading them*, so it was closed automatically. Please read the form and the linked pages, then open a new issue: a report with the \`./diagnose\` output and clear steps is much more likely to be fixed. Ticked it by mistake? Fix the description and leave a comment, and it will be reopened."
+          gh issue close "$NUMBER" --reason "not planned"

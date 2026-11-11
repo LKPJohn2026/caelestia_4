@@ -4,7 +4,7 @@
 
 > [!IMPORTANT]
 > This is an **unofficial, personal fork**. It is not affiliated with or endorsed by end-4 or the Caelestia project.
-> Please **do not report problems with this fork upstream**: open an issue here instead. All the good ideas below are
+> Please **do not report problems of this fork upstream**: open an issue here instead. All the good ideas below are
 > theirs; the bugs in how they were put together are mine.
 
 ## What it is
@@ -59,6 +59,15 @@ See **[docs/install.md](docs/install.md)**. In short: install the dependencies, 
 - [docs/uwsm.md](docs/uwsm.md) — how the uwsm session is set up
 - [docs/feature-comparison.md](docs/feature-comparison.md) — what came from where, what's still partial
 - [docs/dev/](docs/dev/) — development notes: the original plan, phase logs, end-4 parity notes, install log
+
+## Help, bugs and contributing
+
+- **Questions**: [Discussions](https://github.com/LKPJohn2026/caelestia_4/discussions).
+- **Bugs**: [open an issue](https://github.com/LKPJohn2026/caelestia_4/issues/new/choose) with the output of
+  `./diagnose`. If it also happens on end-4's dots or in Caelestia, report it to them instead.
+- **What this fork covers**, and what it won't take: [SCOPE.md](SCOPE.md).
+- **Pull requests**: [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md).
+- **Security problems**: privately, see [.github/SECURITY.md](.github/SECURITY.md).
 
 ## Credits
 

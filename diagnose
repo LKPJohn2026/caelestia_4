@@ -59,18 +59,32 @@ _check_quickshell_version() {
   pacman -Q | grep -E 'quickshell|qt6-base'
 }
 _check_PKGBUILD_version() {
-  pacman -Q | grep '^illogical-impulse-'
+  pacman -Q | grep -E '^(illogical-impulse|caelestia4)-'
+}
+# caelestia4: what bug reports need most often
+_check_session_versions() {
+  pacman -Q | grep -E '^(hyprland|uwsm|qt6-base|greetd|greetd-regreet|mesa|nvidia-utils|nvidia(-open)?(-dkms)?|linux[a-z0-9-]*-nvidia[a-z0-9-]*) '
+}
+_check_gpus() {
+  lspci -k | grep -A3 -E 'VGA|3D controller|Display controller'
+}
+# names, sizes, scale and model; no serial numbers
+_check_monitors() {
+  hyprctl -j monitors all | jq -r '.[] | "\(.name): \(.width)x\(.height)@\(.refreshRate) scale \(.scale) transform \(.transform) disabled \(.disabled) - \(.make) \(.model)"'
+}
+_check_shell_service() {
+  systemctl --user is-active caelestia4-shell.service
 }
 
 e "Checking git repo info"
 x git remote get-url origin
 x git rev-parse HEAD
-x git status
+x git status --short --branch --untracked-files=no
 x git submodule status --recursive
 
 e "Checking distro"
 x _check_distro_id
-x cat os-release
+x cat /etc/os-release
 #x _check_distro 
 
 e "Checking variables"
@@ -81,7 +95,7 @@ x declare -p XDG_STATE_HOME # ~/.local/state
 x declare -p ILLOGICAL_IMPULSE_VIRTUAL_ENV # $XDG_STATE_HOME/quickshell/.venv
 
 e "Checking directories/files"
-x ls -l ~/.local/state/quickshell/.venv
+x ls -ln ~/.local/state/quickshell/.venv
 
 #e "Checking command existence"
 #commands=(yay pacman zypper apt dnf yum)
@@ -94,6 +108,19 @@ e "Checking versions"
 x Hyprland --version
 x _check_quickshell_version
 x _check_PKGBUILD_version
+x _check_session_versions
+x uname -r
+
+e "Checking hardware and session"
+x _check_gpus
+x _check_monitors
+x _check_shell_service
+x declare -p XDG_CURRENT_DESKTOP
+x declare -p UWSM_FINALIZE_VARNAMES
+
+# caelestia4: the result goes into a public issue: no home path (it has the user name) and no credentials in a
+# remote URL (https://user:token@...)
+sed -i -e "s#${HOME}#~#g" -e 's#://[^/@[:space:]]*@#://#g' "$output_file"
 
 e "Finished. Output saved as \"$output_file\"."
 if ! command -v curl 2>&1 >>/dev/null ;then echo "\"curl\" not found, pastebin upload unavailable.";exit;fi
