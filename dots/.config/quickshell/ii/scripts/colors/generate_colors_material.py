@@ -74,7 +74,9 @@ if args.path is not None:
     wsize_new, hsize_new = calculate_optimal_size(wsize, hsize, args.size)
     if wsize_new < wsize or hsize_new < hsize:
         image = image.resize((wsize_new, hsize_new), Image.Resampling.BICUBIC)
-    colors = QuantizeCelebi(list(image.getdata()), 128)
+    # caelestia4: getdata() is deprecated in Pillow 13 (gone in 14); get_flattened_data() is new in 12.1
+    pixels = image.get_flattened_data() if hasattr(image, "get_flattened_data") else image.getdata()
+    colors = QuantizeCelebi(list(pixels), 128)
     argb = Score.score(colors)[0]
 
     if args.cache is not None:
