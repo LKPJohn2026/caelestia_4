@@ -2,7 +2,7 @@
 groups=(illogical-impulse)
 pkgname=illogical-impulse-caelestia4
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Caelestia shell dependencies of caelestia_4'
 arch=(any)
 license=(None)
@@ -17,6 +17,8 @@ depends=(
   pkgconf
   qt6-m3shapes-git
   qt6-shadertools
+  # the session
+  uwsm # every app and the shell are its units (docs/uwsm.md)
   # the shell and its scripts
   archlinux-xdg-menu # kbuildsycoca's menu (dots/.config/uwsm/env-hyprland)
   bluez # Nexus > Bluetooth and the bar's

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Install caelestia_4 as a Hyprland session for the CURRENT user on an account that also uses Plasma.
-# No sudo. Never runs end-4's installer (it would overwrite kdeglobals, fish, app style, GTK, …).
+# Install caelestia_4's configs for the CURRENT user (./install.sh runs it after the packages; on its own it needs them
+# installed already). No sudo. Never runs end-4's installer (it would overwrite kdeglobals, fish, app style, GTK, …).
 # - Backs up every path it replaces to ~/.local/state/caelestia4/backup-<time>/
 # - Never overwrites existing user configs for fuzzel/kitty/foot/wlogout/portals (copies only if missing/empty)
 # - Keeps ~/.config/hypr/custom/, monitors.lua, workspaces.lua on re-runs
@@ -17,6 +17,10 @@ warn() { printf '\033[33m!!\033[0m %s\n' "$*"; }
 
 # ---- preflight ----
 [[ "$(id -u)" -ne 0 ]] || { echo "Run as your user, not root." >&2; exit 1; }
+# These do the copying: without one, the script would stop half way through with the configs half replaced
+for c in rsync jq git python3; do
+  command -v "$c" >/dev/null || { echo "$c is missing (sudo pacman -S --needed $c), nothing was changed." >&2; exit 1; }
+done
 for p in hyprland caelestia4-quickshell caelestia4-qtengine caelestia4-wormhole qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets illogical-impulse-caelestia4; do
   pacman -Q "$p" >/dev/null 2>&1 || warn "package $p not installed (install it first; see docs/install.md)"
 done
@@ -60,13 +64,21 @@ copy_if_missing() { # copy_if_missing <src> <dst>: only if dst missing or an emp
 }
 
 # ---- Caelestia plugin (user-local) ----
-# caelestia4: built again when its source changed (the QML that comes with a pull can need its new properties)
+# caelestia4: built again when its source changed (the QML that comes with a pull can need its new properties), when it
+# was built for another Qt minor release (it uses Qt's private API), or when ./install.sh --rebuild asks
 PLUGIN_STAMP="$HOME/.local/lib/qt6/qml/Caelestia/caelestia4-build.json"
+PLUGIN_FAILED=0
+qt_minor_of() { sed -nE 's/^([0-9]+\.[0-9]+).*/\1/p' <<<"$1"; }
+plugin_qt=$(qt_minor_of "$(jq -r '.qt // ""' "$PLUGIN_STAMP" 2>/dev/null)")
+qt_now=$(qt_minor_of "$(pacman -Q qt6-base 2>/dev/null | awk '{print $2}')")
 if [[ ! -d "$HOME/.local/lib/qt6/qml/Caelestia" ]]; then
   "$REPO/tools/build-caelestia-plugin.sh"
+elif [[ "${C4_REBUILD_PLUGIN:-}" == 1 || ( -n "$plugin_qt" && -n "$qt_now" && "$plugin_qt" != "$qt_now" ) ]]; then
+  say "building the Caelestia plugin again (built for Qt ${plugin_qt:-?}, Qt ${qt_now:-?} here)"
+  "$REPO/tools/build-caelestia-plugin.sh" || { PLUGIN_FAILED=1; warn "the Caelestia plugin wasn't rebuilt: the shell won't load it until it is (tools/build-caelestia-plugin.sh), so it isn't restarted"; }
 elif [[ "$(jq -r '.source // ""' "$PLUGIN_STAMP" 2>/dev/null)" != "$("$REPO/tools/build-caelestia-plugin.sh" --source-id)" ]]; then
   say "the Caelestia plugin's source changed: building it"
-  "$REPO/tools/build-caelestia-plugin.sh" || warn "the Caelestia plugin wasn't rebuilt: the shell may miss what the new QML needs"
+  "$REPO/tools/build-caelestia-plugin.sh" || { PLUGIN_FAILED=1; warn "the Caelestia plugin wasn't rebuilt: the shell may miss what the new QML needs, so it isn't restarted"; }
 fi
 
 # caelestia4: the shared-desktop marker (an account shared with Plasma) is gone with Plasma (docs/dev/kde-removal.md)
@@ -96,9 +108,12 @@ fi
 backup "$CFG/quickshell/ii"
 mkdir -p "$CFG/quickshell"
 rsync -a --delete --exclude '.git' "$DOTS/quickshell/ii/" "$CFG/quickshell/ii/"
-# caelestia4: the shell doesn't hot-reload (Quickshell.watchFiles = false, see shell.qml): restart it to pick up
-# the new files, if it's running as a unit
-systemctl --user try-restart caelestia4-shell.service 2>/dev/null || true
+# caelestia4: the shell doesn't hot-reload (Quickshell.watchFiles = false, see shell.qml): restart it, if it's running
+# as a unit, once everything it reads (its files, config.json, shell.json, the units) is in place. On exit, so a step
+# failing below doesn't leave the running shell on the old code with the new files on disk.
+# Not when the plugin didn't build: a restart would load the new QML without it (the running shell still has the old one).
+restart_shell() { ((PLUGIN_FAILED)) || systemctl --user try-restart caelestia4-shell.service 2>/dev/null || true; }
+trap restart_shell EXIT
 # caelestia4: Caelestia's app themes (btop / fastfetch / cava configs, Zen userChrome, the Caelestia extension in
 # Cursor / VS Code / VSCodium); never replaces a file it didn't create. Colours then follow every scheme change.
 python3 "$CFG/quickshell/ii/modules/caelestia/utils/scripts/apptheme.py" setup || warn "app themes setup failed"

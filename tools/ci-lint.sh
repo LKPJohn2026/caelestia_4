@@ -61,7 +61,7 @@ fi
 echo "== shellcheck (this fork's scripts)"
 if ! command -v shellcheck >/dev/null; then missing shellcheck
 else
-  mapfile -d '' scripts < <(tracked 'tools/*.sh' 'tools/tests/**/*.sh' 'dots/.config/quickshell/ii/scripts/caelestia4/*.sh' 'dots-extra/**/*.sh')
+  mapfile -d '' scripts < <(tracked install.sh 'tools/*.sh' 'tools/tests/**/*.sh' 'dots/.config/quickshell/ii/scripts/caelestia4/*.sh' 'dots-extra/**/*.sh')
   shellcheck --severity=warning -- "${scripts[@]}" || fail=1
   echo "${#scripts[@]} files"
 fi

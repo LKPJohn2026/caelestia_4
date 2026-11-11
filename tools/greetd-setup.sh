@@ -24,8 +24,10 @@ for f in /etc/pam.d/greetd /etc/pam.d/system-local-login /usr/lib/security/pam_s
   [[ -e "$f" ]] || { echo "$f is missing: this script's PAM file is for Arch. Nothing was changed." >&2; exit 1; }
 done
 
-OUT="${XDG_RUNTIME_DIR:-/tmp}/caelestia4-greetd"
-mkdir -p "$OUT"
+# A new directory each run: a fixed name in /tmp could be made by another user first, and these files go to /etc as root;
+# a reused one would also still hold a previous run's background.*
+OUT=$(mktemp -d "${XDG_RUNTIME_DIR:-/tmp}/caelestia4-greetd.XXXXXX")
+trap 'rm -r -- "$OUT"' EXIT # it holds a copy of the wallpaper, in RAM
 
 python3 - "$SRC" "$OUT" "$CFG" "$STATE" "${AQ_DRM_DEVICES:-}" <<'PY'
 import json, os, re, shutil, subprocess, sys
@@ -129,9 +131,15 @@ cp "$SRC/pam-greetd" "$OUT/pam-greetd"
 
 say "checking the greeter's Hyprland config"
 Hyprland --verify-config -c "$OUT/hyprland.lua" 2>&1 | tail -3
-say "files to install are in $OUT"
 
 say "installing (sudo)"
+# A greetd set up by something else: its config kept next to it (this fork's has the greeter's Hyprland in it), under a
+# new name when an earlier one was kept already
+if [[ -e /etc/greetd/config.toml ]] && ! grep -qs '/etc/greetd/hyprland.lua' /etc/greetd/config.toml; then
+  keep=/etc/greetd/config.toml.caelestia4-orig
+  [[ -e "$keep" ]] && keep="$keep.$(date +%Y%m%d-%H%M%S)"
+  sudo cp /etc/greetd/config.toml "$keep" && say "kept the old /etc/greetd/config.toml as $keep"
+fi
 sudo install -Dm644 "$OUT/config.toml" /etc/greetd/config.toml
 sudo install -Dm644 "$OUT/hyprland.lua" /etc/greetd/hyprland.lua
 sudo install -Dm644 "$OUT/regreet.toml" /etc/greetd/regreet.toml
