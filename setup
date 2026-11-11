@@ -51,6 +51,11 @@ case $1 in
       printf "${STY_RED}caelestia_4 supports Arch-based systems only${STY_RST} (this one: ${OS_DISTRO_ID}). See docs/install.md.\n"
       exit 1
     fi
+    # caelestia4: systemd only, as ./install.sh (uwsm and the shell's units need it); end-4's OpenRC / dinit setup is gone
+    if [[ ! -d /run/systemd/system ]]; then
+      printf "${STY_RED}caelestia_4 needs systemd${STY_RST} (uwsm and the shell's units run on it). See docs/install.md.\n"
+      exit 1
+    fi
     SUBCMD_NAME=$1
     SUBCMD_DIR=./sdata/subcmd-install
     shift;;
