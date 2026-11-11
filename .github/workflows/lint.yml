@@ -23,9 +23,16 @@ jobs:
         with:
           persist-credentials: false
       - name: Tools
+        # Ubuntu's mirrors fail now and then (DNS, a mirror down): apt retries each download, and the whole step is
+        # tried 3 times a minute apart before the job fails
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq lua5.4 jq shellcheck
+          for attempt in 1 2 3; do
+            sudo apt-get -o Acquire::Retries=5 update -qq &&
+              sudo apt-get -o Acquire::Retries=5 install -y -qq lua5.4 jq shellcheck && exit 0
+            echo "::warning::apt-get failed (attempt $attempt of 3)"
+            [ "$attempt" -lt 3 ] && sleep 60
+          done
+          exit 1
       - name: tools/ci-lint.sh
         env:
           CI: "true"
