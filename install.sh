@@ -314,8 +314,30 @@ if ((${#missing_repo[@]})); then
   run sudo pacman -S --needed --asdeps "${NOCONFIRM[@]}" "${ASK[@]}" "${missing_repo[@]}" \
     || die "installing the repo packages failed (a package that conflicts with one of them is still needed by another, see above)"
 else say "repo packages: all there"; fi
+# import_aur_keys <pkg...>: the PGP keys these AUR packages' sources are signed with (validpgpkeys in their .SRCINFO),
+# from the first keyserver that answers. Left to makepkg, the key comes from gpg's default keyserver only
+# (keyserver.ubuntu.com), and when that one is down the whole step fails.
+import_aur_keys() {
+  local q='' p base k ks bases=() keys=()
+  for p in "$@"; do q+="&arg[]=$p"; done
+  mapfile -t bases < <(curl -fsS --max-time 30 "https://aur.archlinux.org/rpc/v5/info?${q#&}" 2>/dev/null |
+    command grep -o '"PackageBase":"[^"]*"' | cut -d'"' -f4 | sort -u)
+  for base in "${bases[@]}"; do
+    mapfile -t -O "${#keys[@]}" keys < <(curl -fsS --max-time 30 "https://aur.archlinux.org/cgit/aur.git/plain/.SRCINFO?h=$base" 2>/dev/null |
+      awk '$1 == "validpgpkeys" { print $3 }')
+  done
+  for k in $(printf '%s\n' "${keys[@]}" | sort -u); do
+    gpg --batch --list-keys "$k" >/dev/null 2>&1 && continue
+    if $DRY; then say "would fetch the PGP key $k (keys.openpgp.org, else keyserver.ubuntu.com)"; continue; fi
+    for ks in hkps://keys.openpgp.org hkps://keyserver.ubuntu.com hkps://pgp.mit.edu; do
+      timeout 60 gpg --batch --keyserver "$ks" --recv-keys "$k" >/dev/null 2>&1 && { say "PGP key $k from ${ks#hkps://}"; continue 2; }
+    done
+    warn "couldn't fetch the PGP key $k from any keyserver: the AUR package signed with it may fail to build"
+  done
+}
 if ((${#missing_aur[@]})); then
   say "from the AUR (built on this machine): ${missing_aur[*]}"
+  import_aur_keys "${missing_aur[@]}"
   aur_install "${missing_aur[@]}" || die "building the AUR packages failed (network, a PKGBUILD changed upstream, or a conflict, see above): run this again"
 else say "AUR packages: all there"; fi
 # Until the metapackages of step 6 are installed, nothing depends on the packages above: anything that cleans orphans
