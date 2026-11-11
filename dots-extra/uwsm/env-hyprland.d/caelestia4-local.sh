@@ -1,3 +1,4 @@
+# shellcheck shell=sh
 # caelestia4: env of the uwsm Hyprland session, yours to change: tools/uwsm-setup.sh installs it if it's missing and then
 # keeps it (~/.config/uwsm/env-hyprland.d/). Mirrors ~/.config/hypr/custom/env.lua.
 

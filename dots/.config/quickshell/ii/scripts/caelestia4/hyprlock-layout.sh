@@ -35,7 +35,7 @@ square="${XDG_CACHE_HOME:-$HOME/.cache}/caelestia4/lock-face.png"
 if [[ -s "$face" ]]; then
     if [[ ! -s "$square" || "$face" -nt "$square" ]]; then
         mkdir -p "$(dirname "$square")"
-        timeout 3 magick "$face[0]" -auto-orient -gravity center -extent '%[fx:min(w,h)]x%[fx:min(w,h)]' "PNG:$square.$$" 2>/dev/null &&
+        timeout 3 magick "${face}[0]" -auto-orient -gravity center -extent '%[fx:min(w,h)]x%[fx:min(w,h)]' "PNG:$square.$$" 2>/dev/null &&
             mv -f -- "$square.$$" "$square" || { rm -f -- "$square.$$" "$square"; }
     fi
     if [[ -s "$square" ]]; then

@@ -12,7 +12,7 @@ The title becomes the commit message: "Area: what changed".
 <!-- What you ran and what you checked. "It works" is not enough; say also what you couldn't test
 (another GPU, several monitors, a laptop...). -->
 
-- [ ] `tools/lint-caelestia.sh` passes
+- [ ] `tools/ci-lint.sh` passes
 - [ ] `tools/compile-check.sh` passes (shell changes)
 - [ ] I restarted the shell and its journal has no new warnings (shell changes)
 

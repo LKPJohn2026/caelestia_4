@@ -1,0 +1,57 @@
+# Issues waiting for the reporter (label needs-info): after 7 days without activity they are marked stale, after 7
+# more they are closed. Any new comment restarts the 7 days; only the reporter's takes needs-info off, and reopens the
+# issue if it was closed this way. Nothing else is ever closed for being old.
+# Runs on `schedule` and `issue_comment` (no pull-request code is checked out); the comment text is never read.
+name: Waiting for the reporter
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    if: github.event_name != 'issue_comment'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      actions: write # actions/stale keeps where it stopped in the Actions cache
+    steps:
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
+        with:
+          only-labels: needs-info
+          days-before-issue-stale: 7
+          days-before-issue-close: 7
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
+          stale-issue-label: stale
+          stale-issue-message: >
+            This issue is waiting for an answer from the reporter (see the question above). Without one it will be
+            closed in 7 days. It can always be reopened with the missing details.
+          close-issue-message: >
+            Closed because the details asked for didn't come. Comment with them and it will be reopened.
+          close-issue-reason: not_planned
+
+  answered:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      !github.event.issue.pull_request &&
+      github.event.comment.user.login == github.event.issue.user.login &&
+      contains(github.event.issue.labels.*.name, 'needs-info')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Take needs-info off
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          CLOSED_STALE: ${{ github.event.issue.state == 'closed' && contains(github.event.issue.labels.*.name, 'stale') }}
+        run: |
+          if [ "$CLOSED_STALE" = true ]; then gh issue reopen "$NUMBER"; fi
+          gh issue edit "$NUMBER" --remove-label needs-info
+          gh issue edit "$NUMBER" --remove-label stale || true # only there after 7 days

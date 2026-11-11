@@ -3,7 +3,7 @@
 # Usage: tools/check-settings-pages.sh [page.qml ...]   (paths relative to the ii config; default: modules/settings/c4/*Page.qml)
 set -uo pipefail
 ii="${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/ii"
-cd "$ii"
+cd "$ii" || exit 1
 pages=("$@"); ((${#pages[@]})) || mapfile -t pages < <(ls modules/settings/c4/*Page.qml 2>/dev/null)
 list=$(printf '"%s",' "${pages[@]}")
 cat > zz-pagecheck.qml <<QML

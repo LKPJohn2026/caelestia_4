@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # caelestia4: sourced by the tools that install into the config. The desktop's own files look in ~/.config (Hyprland's Lua
 # config, hyprlock's includes): anywhere else it wouldn't start, or a tool would stop halfway.
 if [[ -n "${XDG_CONFIG_HOME:-}" && "$(realpath -m -- "$XDG_CONFIG_HOME")" != "$(realpath -m -- "$HOME/.config")" ]]; then

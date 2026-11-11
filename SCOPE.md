@@ -45,5 +45,5 @@ answer before writing a new module, a new dependency or a change to how install 
 4. Does it touch anything outside `$HOME` (sudo, `/etc`, PAM, a system service)? If so, it has to be opt-in, shown
    before it runs, and reversible.
 
-Requests declined because of this page are labelled `wontfix` with a link here. That is about this fork's size, not
+Requests declined because of this page are labelled `out-of-scope` with a link here. That is about this fork's size, not
 about the idea.

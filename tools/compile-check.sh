@@ -11,7 +11,7 @@
 # windows, shortcuts or services); HOME/XDG and D-Bus stay sandboxed.
 # Usage: tools/compile-check.sh [Family ...]   (default: CaelestiaFamily)
 set -uo pipefail
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 2
 HOST_WL=""
 if ! command -v sway >/dev/null; then
   [[ -n "${WAYLAND_DISPLAY:-}" && -n "${XDG_RUNTIME_DIR:-}" ]] || { echo "compile-check: needs sway or a running Wayland session"; exit 2; }

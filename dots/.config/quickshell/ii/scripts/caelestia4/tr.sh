@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # caelestia4: translations for shell scripts, from the shell's own catalogue (translations/<lang>.json, English keys).
 # Source it, then: tr_ "Saved to %1" "$path". The language is the shell's (language.ui), else the locale's, read at the
 # first string, so a script that prints nothing costs nothing. tools/i18n-missing.py checks the strings.

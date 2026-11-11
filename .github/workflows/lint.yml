@@ -1,0 +1,32 @@
+# tools/ci-lint.sh on every push to main and every pull request. It only reads the files: the job has read-only
+# access and no secrets, so pull requests from forks run it the same way.
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.4 jq shellcheck
+      - name: tools/ci-lint.sh
+        env:
+          CI: "true"
+        run: tools/ci-lint.sh

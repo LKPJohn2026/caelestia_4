@@ -22,7 +22,8 @@ first: it says what the fork covers and when to ask before writing code.
 - **Anything outside `$HOME`** (sudo, `/etc`, PAM, system services) must be opt-in, print what it will do before
   doing it, and have a way back.
 - **Test it on your machine**, and say in the pull request what you tested and what you couldn't. For shell changes:
-  - `tools/lint-caelestia.sh`
+  - `tools/ci-lint.sh`: the checks CI runs on every pull request (Lua, JSON and Python syntax, shellcheck,
+    `tools/lint-caelestia.sh`)
   - `tools/compile-check.sh` (it compiles the shell's QML in a sandbox, without running it; it needs `rsync`,
     `dbus-run-session`, and `sway` or a running Wayland session)
   - restart the shell and check its log:

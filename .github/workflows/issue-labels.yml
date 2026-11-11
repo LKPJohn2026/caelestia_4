@@ -1,0 +1,31 @@
+# Labels from the bug form's answers: GPU NVIDIA -> nvidia, several monitors -> multi-monitor, also upstream ->
+# upstream-check. The body is only read by grep from an environment variable, never run as code.
+name: Label new issues
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  label:
+    # the bug form's headings (the title's [Bug] can be edited away)
+    if: contains(github.event.issue.body, '### GPU') && contains(github.event.issue.body, '### Monitors')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Labels from the form
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          # an issue form answer is the line after its "### Label" heading and a blank line
+          answer() { printf '%s\n' "$BODY" | tr -d '\r' | awk -v h="### $1" '$0 == h { getline; getline; print; exit }'; }
+          labels=()
+          case "$(answer GPU)" in NVIDIA*) labels+=(nvidia) ;; esac
+          case "$(answer Monitors)" in Several|"Laptop screen + external") labels+=(multi-monitor) ;; esac
+          case "$(answer 'Does it also happen upstream?')" in Yes*) labels+=(upstream-check) ;; esac
+          for l in "${labels[@]}"; do gh issue edit "$NUMBER" --add-label "$l"; done
