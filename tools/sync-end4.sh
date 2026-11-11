@@ -3,7 +3,7 @@
 # 2026-10-27: the shell is Caelestia's; what's left of end-4 is the services, scripts and Hyprland config it runs on).
 # Its new commits are reviewed and picked one by one instead of merged:
 #   tools/sync-end4.sh [review]    upstream commits since the last review, with the files each touches that still
-#                                  exist here (kept) and the ones removed here; open upstream PRs if gh is set up
+#                                  exist here (kept), removed here, or new upstream; open upstream PRs if gh is set up
 #   tools/sync-end4.sh pick SHA... apply those commits ("Picked from" names each); files removed here stay removed
 #   tools/sync-end4.sh mark [SHA]  record upstream/main (or SHA) as reviewed (tools/end4-reviewed; commit it)
 # Commits use this repo's git identity (git config user.name / user.email).
@@ -15,21 +15,41 @@ git remote get-url upstream >/dev/null 2>&1 || git remote add --no-tags upstream
 git fetch -q --no-tags upstream # its tags stay out of this clone, and out of a push of tags
 reviewed=$(cat "$MARK" 2>/dev/null || git merge-base HEAD upstream/main)
 
+# end-4 code removed here on purpose (2026-11: Arch-family only, no other distros or end-4's file installer).
+# A pick keeps these removed even when an upstream commit adds a new file under them.
+removed_prefixes=(
+  sdata/dist-fedora/ sdata/dist-gentoo/ sdata/dist-nix/ sdata/uv/shell.nix
+  sdata/subcmd-exp-merge/ sdata/subcmd-exp-update/ sdata/subcmd-uninstall/
+  sdata/subcmd-install/0.greeting.sh sdata/subcmd-install/3.files
+  sdata/dist-arch/illogical-impulse-quickshell-git/ sdata/dist-arch/outdate-detect-mode
+  sdata/dist-arch/previous_dependencies.conf sdata/dist-arch/uninstall-deps.sh
+  dots-extra/via-nix/ dots-extra/fedora/
+)
+is_removed() {
+  local p
+  for p in "${removed_prefixes[@]}"; do [[ $1 == "$p"* ]] && return 0; done
+  return 1
+}
+
 review() {
   local n
   n=$(git rev-list --count "$reviewed..upstream/main")
   echo "end-4 commits since the last review ($(git log -1 --format='%h %cs' "$reviewed")): $n"
   git log --reverse --format='%H %h %cs %s' "$reviewed..upstream/main" | while read -r full short date subject; do
-    local kept=() gone=()
+    local kept=() gone=() new=()
     while IFS= read -r f; do
       [[ -z "$f" ]] && continue
-      if [[ -e "$f" ]]; then kept+=("$f"); else gone+=("$f"); fi
+      # removed: under the list above, or upstream had it at the last review and it's gone here (removed earlier)
+      if [[ -e "$f" ]]; then kept+=("$f")
+      elif is_removed "$f" || git cat-file -e "$reviewed:$f" 2>/dev/null; then gone+=("$f")
+      else new+=("$f"); fi
     done < <(git diff-tree --no-commit-id --name-only -r "$full")
     echo
     echo "$short $date $subject"
     # if, not &&: a false test as the loop's last command would fail the pipeline and end the script (set -e, pipefail)
-    if ((${#kept[@]})); then printf '    kept:    %s\n' "${kept[@]}"; fi
-    if ((${#gone[@]})); then printf '    removed: %s\n' "${gone[@]}"; fi
+    if ((${#kept[@]})); then printf '    kept:         %s\n' "${kept[@]}"; fi
+    if ((${#gone[@]})); then printf '    removed:      %s\n' "${gone[@]}"; fi
+    if ((${#new[@]})); then printf '    new upstream: %s\n' "${new[@]}"; fi
   done
   if command -v gh >/dev/null && gh auth status >/dev/null 2>&1; then
     echo
@@ -57,6 +77,10 @@ pick() {
         git diff --name-only --diff-filter=U; exit 1
       fi
     fi
+    # A new file under code removed here applies without a conflict: keep it out too
+    while IFS= read -r f; do
+      if is_removed "$f"; then git rm -q -f -- "$f" && echo "kept removed: $f"; fi
+    done < <(git diff --cached --name-only --diff-filter=A)
     if git diff --cached --quiet; then
       git cherry-pick --quit 2>/dev/null || true
       echo "skipped ${sha:0:9}: nothing to apply (already here, or it only touches files removed here)"

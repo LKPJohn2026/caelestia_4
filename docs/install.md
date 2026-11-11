@@ -4,8 +4,7 @@ The result is a **Hyprland (uwsm-managed)** session on the login screen running 
 illogical-impulse. It doesn't need KDE Plasma: it brings its own login screen, key store, tray and Qt / GTK theming
 (see [Without Plasma](#without-plasma)).
 
-**Arch-based systems with systemd only** (Arch, CachyOS, EndeavourOS…, x86_64). The `sdata/dist-*` folders for other
-distros come from end-4 and don't cover this fork.
+**Arch-based systems with systemd only** (Arch, CachyOS, EndeavourOS…, x86_64). Other distros aren't supported.
 
 > [!WARNING]
 > Read the scripts before running them. Take a snapshot first if your system supports it (`snapper`, Timeshift…).

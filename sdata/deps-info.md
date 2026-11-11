@@ -183,37 +183,11 @@ replaced by Caelestia's own (Nexus, the bar, the Quickshell polkit agent).
   - Used in Hyprland config.
 - `libqalculate`
   - Used in Quickshell config, providing math ability in searchbar.
-  - Note that `qalc` is the needed executable. In Arch Linux [libqalculate](https://archlinux.org/packages/extra/x86_64/libqalculate) provides it, but in Fedora [qalculate](https://packages.fedoraproject.org/pkgs/libqalculate/qalculate/fedora-43.html#files) does and [libqalculate](https://packages.fedoraproject.org/pkgs/libqalculate/libqalculate/fedora-43.html#files) does not.
+  - Note that `qalc` is the needed executable. On Arch, [libqalculate](https://archlinux.org/packages/extra/x86_64/libqalculate) provides it.
 
 
 # Actual packages
-## illogical-impulse-quickshell-git
-- Pinned commit.
-- Also with extra dependencies (mainly Qt things) needed by the illogical-impulse Quickshell config.
-
-Extra dependencies.
-- `qt6-base`
-- `qt6-declarative`
-- `qt6-5compat`
-- `qt6-avif-image-plugin`
-- `qt6-imageformats`
-- `qt6-multimedia`
-- `qt6-positioning`
-- `qt6-quicktimeline`
-- `qt6-sensors`
-- `qt6-svg`
-- `qt6-tools`
-- `qt6-translations`
-- `qt6-virtualkeyboard`
-- `qt6-wayland`
-- `kirigami`
-- `kdialog`
-- `syntax-highlighting`
-- `vulkan-headers`
-- `libdrm`
-- `cpptrace`
-- `jemalloc`
-- `mesa`
+Quickshell isn't one of these in caelestia_4: it is built from `packaging/caelestia4-quickshell`.
 
 ## illogical-impulse-bibata-modern-classic-bin
 - [source](https://github.com/ful1e5/Bibata_Cursor)

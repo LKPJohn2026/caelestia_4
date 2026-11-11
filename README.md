@@ -37,8 +37,7 @@ A feature-by-feature comparison with both upstreams is in [docs/feature-comparis
 ## Status and requirements
 
 Supported on **Arch-based systems with systemd**, **Hyprland 0.55+** (the Lua config) and **uwsm**. It doesn't need KDE
-Plasma (greetd + ReGreet, gnome-keyring, its own tray watcher and Qt / GTK theming). The `sdata/dist-*` folders for other
-distros come from end-4 and don't cover what this fork adds, so they aren't a supported way to install it.
+Plasma (greetd + ReGreet, gnome-keyring, its own tray watcher and Qt / GTK theming). Other distros aren't supported.
 
 It was developed on one machine (NVIDIA with an AMD iGPU, one ultrawide monitor at 1.5× scale). Other GPUs, several
 monitors, laptops and small screens are meant to work but are less tested: please report what doesn't.

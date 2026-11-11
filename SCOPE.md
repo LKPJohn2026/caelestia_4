@@ -18,8 +18,8 @@ requests go where they can be fixed, and so that nobody spends a weekend on a pu
 
 ## Out of scope
 
-- **Other distributions.** The `sdata/dist-*` folders other than `dist-arch` come from end-4 and don't install what
-  this fork adds. Pull requests that make the fork work elsewhere can be discussed first in Discussions.
+- **Other distributions.** Only Arch-based systems are supported. Pull requests that make the fork work elsewhere can
+  be discussed first in Discussions.
 - **Other compositors, and Hyprland's old `.conf` syntax.**
 - **Sessions without uwsm.**
 - **Login.** The supported login screen is greetd with ReGreet (`tools/greetd-setup.sh`), or any display manager you

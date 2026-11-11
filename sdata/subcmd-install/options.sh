@@ -3,7 +3,7 @@
 showhelp(){
 printf "Syntax: $0 ${SUBCMD_NAME} [OPTIONS]...
 
-A step of end-4's installer. caelestia_4's files come from tools/install-main.sh: see docs/install.md.
+A step of end-4's installer. caelestia_4 is installed by ./install.sh: see docs/install.md.
 
 Options:
   -h, --help                Print this help message and exit
@@ -16,8 +16,8 @@ Options:
 "
 }
 # caelestia4: the help lists only what install-deps and install-setups use. The other options belong to
-# end-4's greeting and install-files steps, which this fork doesn't run (--ignore-outdate only applies to
-# the non-Arch dist-* scripts): they are still accepted so old command lines work, with a warning.
+# end-4's greeting and install-files steps, which this fork doesn't run, or to its check of other-distro
+# dist-* folders (--ignore-outdate): they are still accepted so old command lines work, with a warning.
 ignored_option(){
   printf "${STY_YELLOW}[$0]: Ignoring \"$1\": it does nothing for \"${SUBCMD_NAME}\" in caelestia_4.${STY_RST}\n"
 }
@@ -58,7 +58,8 @@ while true ; do
     --skip-allsetups) SKIP_ALLSETUPS=true;shift;;
     -s|--skip-sysupdate) SKIP_SYSUPDATE=true;shift;;
     --skip-plasmaintg) SKIP_PLASMAINTG=true;shift;;
-    --core) SKIP_PLASMAINTG=true;SKIP_FISH=true;SKIP_FONTCONFIG=true;SKIP_MISCCONF=true;shift;;
+    # caelestia4: --core also skipped end-4's fish, fontconfig and misc config files, which install-files copied
+    --core) SKIP_PLASMAINTG=true;shift;;
     -F|--firstrun|--skip-allgreeting|--skip-allfiles|--ignore-outdate|--skip-backup|--skip-hyprland|--skip-hyprland-entry|--skip-fish|--skip-quickshell|--skip-fontconfig|--skip-miscconf|--exp-files)
       ignored_option "$1";shift;;
     # caelestia4: dependencies come from pacman and the AUR here (./setup only runs on Arch), so Nix would

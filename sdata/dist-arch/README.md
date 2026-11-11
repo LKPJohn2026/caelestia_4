@@ -1,11 +1,9 @@
 # Install scripts for Arch Linux
 
-- See also [Install scripts | illogical-impulse](https://ii.clsty.link/en/dev/inst-script/)
+caelestia_4 is installed by `install.sh` (see [docs/install.md](../../docs/install.md)), which reads its dependencies
+from these PKGBUILDs. `./setup install-deps` builds them through `install-deps.sh`.
 
-## Old Dependency Installation Method
-The old deps install method mainly involved `./sdata/dependencies.conf` (which has been removed now).
-
-## Current Dependency Installation
+## Dependency Installation
 Local PKGBUILDs under `./sdata/dist-arch/` are used to install dependencies.
 
 The mechanism is introduced by [Makrennel](https://github.com/Makrennel) in [PR#570](https://github.com/end-4/dots-hyprland/pull/570).
@@ -13,7 +11,6 @@ The mechanism is introduced by [Makrennel](https://github.com/Makrennel) in [PR#
 Why is this awesome?
 - It makes it possible to control version since some packages may involve breaking changes from time to time.
 - It makes the dependency trackable for package manager, so that you always know why you have installed some package.
-- As a result, it enables a workable uninstall process.
 
 The PKGBUILDs contains two forms of dependencies:
 - Package name written in dependencies, like a "meta" package.
