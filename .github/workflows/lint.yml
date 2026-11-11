@@ -17,18 +17,25 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Tools
-        # Ubuntu's mirrors fail now and then (DNS, a mirror down): apt retries each download, and the whole step is
-        # tried 3 times a minute apart before the job fails
+        # Only what the runner image lacks (it usually has jq and shellcheck, not luac). Ubuntu's mirrors fail now and
+        # then (DNS, a mirror down): apt retries each download, each apt-get is cut off after 3 minutes, and the step
+        # is tried 3 times a minute apart before the job fails
         run: |
+          need=()
+          command -v luac5.4 >/dev/null || command -v luac >/dev/null || need+=(lua5.4)
+          command -v jq >/dev/null || need+=(jq)
+          command -v shellcheck >/dev/null || need+=(shellcheck)
+          [ "${#need[@]}" -eq 0 ] && { echo "all tools there"; exit 0; }
+          echo "installing: ${need[*]}"
           for attempt in 1 2 3; do
-            sudo apt-get -o Acquire::Retries=5 update -qq &&
-              sudo apt-get -o Acquire::Retries=5 install -y -qq lua5.4 jq shellcheck && exit 0
+            timeout 180 sudo apt-get -o Acquire::Retries=5 update -qq &&
+              timeout 180 sudo apt-get -o Acquire::Retries=5 install -y -qq "${need[@]}" && exit 0
             echo "::warning::apt-get failed (attempt $attempt of 3)"
             [ "$attempt" -lt 3 ] && sleep 60
           done
