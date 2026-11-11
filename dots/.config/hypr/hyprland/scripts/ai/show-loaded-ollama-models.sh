@@ -32,10 +32,14 @@ while [ "$#" -gt 0 ]; do
       shift 1
       ;;
     -u|--ollama_url)
+      # caelestia4: without a value "shift 2" fails and the loop never ends
+      [ "$#" -ge 2 ] || { echo "$1 needs a value" >&2; exit 1; }
       ollama_url=$2
       shift 2
       ;;
     -p|--port)
+      # caelestia4: without a value "shift 2" fails and the loop never ends
+      [ "$#" -ge 2 ] || { echo "$1 needs a value" >&2; exit 1; }
       port=$2
       shift 2
       ;;
@@ -71,9 +75,12 @@ compare_running_models_and_modelfiles() {
 }
 
 get_running_model_paths() {
-    blobs=$(ps aux | grep -- '--model' | grep -v grep | grep -Po '(?<=--model\s).*' | cut -d ' ' -f1)
-    if [ -z "$blobs" ]; then
-        echo -e "\n\n Warning: No running Ollama models detected!\n"
+    # caelestia4: one element per running model (a plain assignment put them all in one), and the warning on stderr so
+    # -j still prints JSON
+    mapfile -t blobs < <(ps aux | grep -- '--model' | grep -v grep | grep -Po '(?<=--model\s).*' | cut -d ' ' -f1)
+    if [ "${#blobs[@]}" -eq 0 ]; then
+        echo -e "\n\n Warning: No running Ollama models detected!\n" >&2
+        [ -n "$json_out" ] && echo "[]"
         exit 0
     fi
 }

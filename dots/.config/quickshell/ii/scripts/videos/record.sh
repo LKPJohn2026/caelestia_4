@@ -13,7 +13,7 @@
 source "$(dirname "$(readlink -f "$0")")/../caelestia4/tr.sh"
 
 RECORDER=gpu-screen-recorder
-CONFIG_FILE="$HOME/.config/illogical-impulse/config.json"
+CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/illogical-impulse/config.json" # caelestia4: honour XDG_CONFIG_HOME
 PAUSED_FILE="${XDG_RUNTIME_DIR:-/tmp}/caelestia4-recording-paused"
 
 CUSTOM_PATH=$(jq -r '.screenRecord.savePath // empty' "$CONFIG_FILE" 2>/dev/null)

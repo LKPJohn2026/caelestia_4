@@ -4,12 +4,16 @@ end-4 strings: Translation.tr("...") -> dots/.config/quickshell/ii/translations/
 Caelestia strings: Tr.tr / Tr.trCtx / Tr.trN -> tools/i18n/caelestia-<lang>.po (compiled into the Caelestia plugin)
 Usage: tools/i18n-missing.py [lang=vi_VN] [--json OUT]   (prints counts; --json writes {"end4": [...], "caelestia": [...]})
 """
-import glob, json, os, re, sys
+import argparse, glob, json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QML = os.path.join(ROOT, "dots/.config/quickshell/ii")
-lang = next((a for a in sys.argv[1:] if not a.startswith("--") and "/" not in a), "vi_VN")
-out = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
+# argparse, so the --json value (out.json, no slash) is never taken for the language
+ap = argparse.ArgumentParser(description="List UI strings with no translation yet.")
+ap.add_argument("lang", nargs="?", default="vi_VN")
+ap.add_argument("--json", metavar="OUT", help='write {"end4": [...], "caelestia": [...]} to OUT')
+args = ap.parse_args()
+lang, out = args.lang, args.json
 
 S = r'"((?:[^"\\]|\\.)*)"'
 pat_e4 = re.compile(r'Translation\.tr\(\s*' + S)
@@ -35,7 +39,7 @@ for f in [*glob.glob(QML + "/scripts/**/*.sh", recursive=True), *glob.glob(HYPRL
     e4.update(unesc(x) for x in pat_sh.findall(s) if not x.startswith("$"))
     e4.update(pat_py.findall(s))
 for f, keys in {os.path.join(QML, "scripts/caelestia4/hyprlock-strings.sh"): re.compile(r'line \w+ "([^"]+)"'),
-                os.path.join(ROOT, "tools/greetd-setup.py"): pat_py, os.path.join(ROOT, "tools/greetd-setup.sh"): pat_py}.items():
+                os.path.join(ROOT, "tools/greetd-setup.sh"): pat_py}.items():
     if os.path.exists(f):
         e4.update(keys.findall(open(f, errors="ignore").read()))
 

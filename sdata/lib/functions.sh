@@ -4,6 +4,15 @@
 # shellcheck shell=bash
 
 function try { "$@" || true; }
+# caelestia4: v(), x() and pause() ask on stdin. When it is not a terminal or has hit EOF, read
+# fails at once with an empty answer, so their "ask again" loops never ended (x() repeated the
+# failing command forever). Stop instead: nobody is there to answer. A last answer without a
+# newline still counts.
+function read_answer_failed(){
+  echo
+  echo -e "${STY_RED}[$0]: Could not read an answer (stdin is not a terminal or has ended). Run it from a terminal. Exiting...${STY_RST}"
+  exit 1
+}
 function v(){
   echo -e "####################################################"
   echo -e "${STY_BLUE}[$0]: Next command:${STY_RST}"
@@ -16,7 +25,7 @@ function v(){
       echo "  e = Exit now"
       echo "  s = Skip this command (NOT recommended - your setup might not work correctly)"
       echo "  yesforall = Yes and don't ask again; NOT recommended unless you really sure"
-      local p; read -p "====> " p
+      local p; read -p "====> " p || [[ -n "$p" ]] || read_answer_failed
       case $p in
         [yY]) echo -e "${STY_BLUE}OK, executing...${STY_RST}" ;break ;;
         [eE]) echo -e "${STY_BLUE}Exiting...${STY_RST}" ;exit ;break ;;
@@ -40,7 +49,7 @@ function x(){
     echo "  r = Repeat this command (DEFAULT)"
     echo "  e = Exit now"
     echo "  i = Ignore this error and continue (your setup might not work correctly)"
-    local p; read -p " [R/e/i]: " p
+    local p; read -p " [R/e/i]: " p || [[ -n "$p" ]] || read_answer_failed
     case $p in
       [iI]) echo -e "${STY_BLUE}Alright, ignore and continue...${STY_RST}";cmdstatus=2;;
       [eE]) echo -e "${STY_BLUE}Alright, will exit.${STY_RST}";break;;
@@ -64,7 +73,7 @@ function showfun(){
 function pause(){
   if [ ! "$ask" == "false" ];then
     printf "${STY_FAINT}${STY_SLANT}"
-    local p; read -p "(Ctrl-C to abort, Enter to proceed)" p
+    local p; read -p "(Ctrl-C to abort, Enter to proceed)" p || [[ -n "$p" ]] || read_answer_failed
     printf "${STY_RST}"
   fi
 }

@@ -4,15 +4,33 @@ import re
 import os
 import tempfile
 
+# caelestia4: what Lua reads as a number. Python's float() also takes "inf", "nan", "+1" and "1_000", which Lua
+# would read as a variable or a syntax error, so those are quoted like any other string.
+LUA_NUMBER = re.compile(r'-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?')
+LUA_NAME = re.compile(r'[A-Za-z_][A-Za-z0-9_]*')
+
+def lua_string(value):
+    """caelestia4: a Lua string literal. A quote, backslash or newline in the value (a keyboard option, a path) would
+    otherwise end the string early and break the whole overrides file, so Hyprland would load none of it."""
+    out = []
+    for ch in value:
+        if ch in ('\\', '"'):
+            out.append('\\' + ch)
+        elif ch == '\n':
+            out.append('\\n')
+        elif ord(ch) < 32 or ord(ch) == 127:
+            out.append(f'\\{ord(ch):03d}')
+        else:
+            out.append(ch)
+    return '"' + ''.join(out) + '"'
+
 def format_value(value):
     """Format value: quote strings, leave numbers and booleans as-is"""
     if value in ('true', 'false'):
         return value
-    try:
-        float(value)
+    if LUA_NUMBER.fullmatch(value):
         return value
-    except ValueError:
-        return f'"{value}"'
+    return lua_string(value)
 
 def build_nested_structure(key_parts, value):
     """Recursively build nested structure from key parts"""
@@ -47,7 +65,7 @@ def edit_hyprland_config(file_path, set_args, reset_args):
         if len(key_parts) > 1:
             # Build pattern to match nested structure
             pattern_parts = [rf'\s*{re.escape(part)}\s*=' for part in key_parts]
-            nested_pattern = '\{'.join(pattern_parts)
+            nested_pattern = r'\{'.join(pattern_parts)  # caelestia4: raw string ('\{' is an invalid escape)
             patterns[k] = re.compile(rf'^\s*hl\.config\(\{{\s*{nested_pattern}')
         else:
             patterns[k] = re.compile(rf'^\s*hl\.config\(\{{\s*{re.escape(main_key)}\s*=')
@@ -112,7 +130,9 @@ def edit_hyprland_config(file_path, set_args, reset_args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Edit a Hyprland config file. Subkeys use colon (:) for nesting.")
-    parser.add_argument("--file", default="~/.config/hypr/hyprland.conf", help="Path to the Hyprland config file (default: ~/.config/hypr/hyprland.conf).")
+    # caelestia4: Hyprland reads Lua here (hyprland.lua requires hyprland.shellOverrides.main), not hyprland.conf
+    default_file = os.path.join(os.environ.get("XDG_CONFIG_HOME") or "~/.config", "hypr/hyprland/shellOverrides/main.lua")
+    parser.add_argument("--file", default=default_file, help="Path to the Hyprland config file (default: $XDG_CONFIG_HOME/hypr/hyprland/shellOverrides/main.lua).")
     
     parser.add_argument("--set", nargs=2, action="append", metavar=("KEY", "VALUE"), help="Set a configuration key to a value.")
     parser.add_argument("--reset", action="append", metavar="KEY", help="Remove a configuration key.")
@@ -131,6 +151,13 @@ if __name__ == "__main__":
         else:
             set_args.append((key, value))
     
+    # caelestia4: key parts become Lua table keys (and the patterns that find them), so only plain names
+    bad_keys = [k for k, _ in set_args] + reset_args
+    bad_keys = [k for k in bad_keys if not all(LUA_NAME.fullmatch(part) for part in k.split(':'))]
+    if bad_keys:
+        print(f"Error: Not a config key: {', '.join(bad_keys)}")
+        raise SystemExit(1)
+
     if not set_args and not reset_args:
         print("Error: Must specify at least one key to set or reset.")
     else:

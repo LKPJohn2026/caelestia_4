@@ -19,36 +19,34 @@ Singleton {
     readonly property string configuratorScriptPath: Quickshell.shellPath("scripts/hyprland/hyprconfigurator.py")
     readonly property string shellOverridesPath: FileUtils.trimFileProtocol(`${Directories.config}/hypr/hyprland/shellOverrides/main.lua`)
 
+    // caelestia4: the arguments as a list, not a bash -c line. Values come from text fields (keyboard options, a
+    // shader path): a quote ended the bash string early, and $(...) or a backtick in one ran as a command.
+    function run(args: var) {
+        Quickshell.execDetached([root.configuratorScriptPath, "--file", root.shellOverridesPath].concat(args))
+    }
+
     function set(key: string, value: var) {
-        Quickshell.execDetached(["bash", "-c", //
-            `${root.configuratorScriptPath} --file ${root.shellOverridesPath} --set "${key}" "${value}"` //
-        ])
+        root.run(["--set", String(key), String(value)])
     }
     
     function setMany(entries: var) {
-        let args = ""
+        let args = []
         for (let key in entries) {
-            args += `--set "${key}" "${entries[key]}" `
+            args.push("--set", String(key), String(entries[key]))
         }
-        Quickshell.execDetached(["bash", "-c", //
-            `${root.configuratorScriptPath} --file ${root.shellOverridesPath} ${args}` //
-        ])
+        root.run(args)
     }
     
     function reset(key: string) {
-        Quickshell.execDetached(["bash", "-c", //
-            `${root.configuratorScriptPath} --file ${root.shellOverridesPath} --reset "${key}"` //
-        ])
+        root.run(["--reset", String(key)])
     }
     
     function resetMany(keys: list<string>) {
-        let args = ""
+        let args = []
         for (let i = 0; i < keys.length; i++) {
-            args += `--reset "${keys[i]}" `
+            args.push("--reset", String(keys[i]))
         }
-        Quickshell.execDetached(["bash", "-c", //
-            `${root.configuratorScriptPath} --file ${root.shellOverridesPath} ${args}` //
-        ])
+        root.run(args)
     }
 
     Connections {

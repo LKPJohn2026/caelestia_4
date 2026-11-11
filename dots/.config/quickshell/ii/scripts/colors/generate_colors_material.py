@@ -64,7 +64,8 @@ transparent = (args.transparency == 'transparent')
 if args.path is not None:
     image = Image.open(args.path)
 
-    if image.format == "GIF":
+    # caelestia4: a still GIF has no second frame (seek(1) raised EOFError and no colours were made)
+    if image.format == "GIF" and getattr(image, "n_frames", 1) > 1:
         image.seek(1)
 
     if image.mode in ["L", "P"]:
@@ -84,6 +85,8 @@ if args.path is not None:
         if(hct.chroma < 20):
             args.scheme = 'neutral'
 elif args.color is not None:
+    # caelestia4: switchwall.sh and the config take the colour with or without '#'; hex_to_argb needs it
+    args.color = '#' + args.color.strip().lstrip('#')
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)
 
@@ -144,7 +147,7 @@ if args.termscheme is not None:
 
     primary_color_argb = hex_to_argb(material_colors['primary_paletteKeyColor'])
     for color, val in term_source_colors.items():
-        if(args.scheme == 'monochrome') :
+        if args.scheme in ('monochrome', 'scheme-monochrome'):  # caelestia4: switchwall.sh passes scheme-monochrome
             term_colors[color] = val
             continue
         if args.blend_bg_fg and color == "term0":

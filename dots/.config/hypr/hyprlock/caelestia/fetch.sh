@@ -8,7 +8,7 @@ d=$((s / 86400)) h=$((s % 86400 / 3600)) m=$((s % 3600 / 60))
 up="$(tr_ "%1 min" "$m")"
 ((h)) && up="$(tr_ "%1 h" "$h") $up"
 ((d)) && up="$(tr_ "%1 d" "$d") $up"
-printf '<b>%s@%s</b>\n' "$USER" "$(hostname)"
+printf '<b>%s@%s</b>\n' "$USER" "${HOSTNAME:-$(cat /proc/sys/kernel/hostname)}" # hostname(1) is in inetutils, not always installed
 row "$(tr_ "OS")" "$PRETTY_NAME"
 row "$(tr_ "Kernel")" "$(uname -r)"
 printf '<span alpha="70%%">WM</span>      Hyprland\n'

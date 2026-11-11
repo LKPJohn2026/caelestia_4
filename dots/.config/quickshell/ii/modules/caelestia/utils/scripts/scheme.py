@@ -306,6 +306,10 @@ def take(args, flag, valued=True):
     if not valued:
         del args[i]
         return True
+    # A flag last on the line (or followed by another flag) has no value: say so instead of an IndexError traceback
+    # or taking the next flag as the value
+    if i + 1 >= len(args) or args[i + 1].startswith("--"):
+        raise SystemExit(f"{flag} needs a value")
     value = args[i + 1]
     del args[i:i + 2]
     return value

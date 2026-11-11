@@ -4,7 +4,7 @@
 # Its new commits are reviewed and picked one by one instead of merged:
 #   tools/sync-end4.sh [review]    upstream commits since the last review, with the files each touches that still
 #                                  exist here (kept) and the ones removed here; open upstream PRs if gh is set up
-#   tools/sync-end4.sh pick SHA... cherry-pick (-x) those commits; their changes to files removed here stay removed
+#   tools/sync-end4.sh pick SHA... apply those commits ("Picked from" names each); files removed here stay removed
 #   tools/sync-end4.sh mark [SHA]  record upstream/main (or SHA) as reviewed (tools/end4-reviewed; commit it)
 # Commits use this repo's git identity (git config user.name / user.email).
 set -euo pipefail
@@ -27,8 +27,9 @@ review() {
     done < <(git diff-tree --no-commit-id --name-only -r "$full")
     echo
     echo "$short $date $subject"
-    ((${#kept[@]})) && printf '    kept:    %s\n' "${kept[@]}"
-    ((${#gone[@]})) && printf '    removed: %s\n' "${gone[@]}"
+    # if, not &&: a false test as the loop's last command would fail the pipeline and end the script (set -e, pipefail)
+    if ((${#kept[@]})); then printf '    kept:    %s\n' "${kept[@]}"; fi
+    if ((${#gone[@]})); then printf '    removed: %s\n' "${gone[@]}"; fi
   done
   if command -v gh >/dev/null && gh auth status >/dev/null 2>&1; then
     echo
@@ -69,8 +70,11 @@ pick() {
 }
 
 mark() {
-  git rev-parse --verify -q "${1:-upstream/main}^{commit}" > "$MARK"
-  echo "reviewed up to $(git log -1 --format='%h %cs %s' "$(cat "$MARK")") ($MARK: commit it)"
+  # Resolved before the file is written, so a bad SHA leaves the last mark in place instead of an empty one
+  local sha
+  sha=$(git rev-parse --verify -q "${1:-upstream/main}^{commit}") || { echo "not a commit: ${1:-upstream/main}" >&2; exit 1; }
+  echo "$sha" > "$MARK"
+  echo "reviewed up to $(git log -1 --format='%h %cs %s' "$sha") ($MARK: commit it)"
 }
 
 cmd=${1:-review}

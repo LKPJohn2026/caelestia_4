@@ -103,8 +103,19 @@ OWN = STATE.parent / "preset-own.json"  # your own desktop, for presets off: onl
 OWN_FACE = STATE.parent / "preset-own.face"  # and your own avatar (none: there was no ~/.face)
 CAELESTIA_SCHEME = STATE_HOME / "caelestia/scheme.json"  # caelestia-cli's scheme: its "mode" is light / dark now
 BUSY = 75  # --workspace while another apply runs: EX_TEMPFAIL, the shell asks again
+
+
+def _xdg_pictures() -> str:
+    # xdg-user-dir is in xdg-user-dirs, which a minimal install may lack: without it, ~/Pictures (as
+    # random-wallpaper.sh does) instead of failing at import, before any argument is read
+    try:
+        return subprocess.run(["xdg-user-dir", "PICTURES"], capture_output=True, text=True).stdout.strip()
+    except OSError:
+        return ""
+
+
 PICTURES = Path(os.environ.get("PRESET_IMPORT_PICTURES")  # PRESET_IMPORT_PICTURES: tests only
-                or subprocess.run(["xdg-user-dir", "PICTURES"], capture_output=True, text=True).stdout.strip()
+                or _xdg_pictures()
                 or HOME / "Pictures")
 LIBRARY = Path(os.environ.get("XDG_DATA_HOME", HOME / ".local/share")) / "caelestia4/presets"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "caelestia4"

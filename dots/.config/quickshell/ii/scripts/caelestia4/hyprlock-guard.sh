@@ -15,8 +15,11 @@ for attempt in 1 2 3 4 5; do
     status=$?
     # Hyprland's log is in $XDG_RUNTIME_DIR, which a reboot (the usual way out of a dead lock) clears
     mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4"
-    cp "$(ls -t "$XDG_RUNTIME_DIR"/hypr/*/hyprland.log | head -1)" "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4/hyprland-lockfail.log" 2>/dev/null
-    logger -t hyprlock-guard "hyprlock exited with $status, starting it again ($attempt/5); Hyprland's log saved to ~/.local/state/caelestia4/hyprland-lockfail.log"
+    # This Hyprland's log, not the newest one (another session's or a nested Hyprland's could be newer)
+    saved="Hyprland's log not saved (couldn't copy $XDG_RUNTIME_DIR/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-}/hyprland.log)"
+    cp "$XDG_RUNTIME_DIR/hypr/${HYPRLAND_INSTANCE_SIGNATURE:-}/hyprland.log" "${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4/hyprland-lockfail.log" 2>/dev/null &&
+        saved="Hyprland's log saved to ${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4/hyprland-lockfail.log"
+    logger -t hyprlock-guard "hyprlock exited with $status, starting it again ($attempt/5); $saved"
     sleep 1
 done
 logger -t hyprlock-guard "hyprlock failed 5 times; recover from a TTY (docs/install.md, Lock screen)"

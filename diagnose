@@ -10,7 +10,7 @@ STY_RED='\e[31m'
 STY_RST='\e[00m'
 
 cd "$(dirname "$0")";export base="$(pwd)"
-output_file=diagnose.result;rm $output_file
+output_file=diagnose.result;rm -f -- "$output_file" # caelestia4: no error on the first run
 export LANG=C;export LC_ALL=C
 case $(whoami) in
   root)echo -e "${STY_RED}[$0]: This script is NOT to be executed with sudo or as root. Aborting...${STY_RST}";exit 1;;
@@ -70,7 +70,12 @@ _check_gpus() {
 }
 # names, sizes, scale and model; no serial numbers
 _check_monitors() {
-  hyprctl -j monitors all | jq -r '.[] | "\(.name): \(.width)x\(.height)@\(.refreshRate) scale \(.scale) transform \(.transform) disabled \(.disabled) - \(.make) \(.model)"'
+  # caelestia4: outside Hyprland hyprctl prints an error, not JSON; say so instead of a jq parse error
+  local json
+  if ! json=$(hyprctl -j monitors all 2>&1) || ! jq -e 'type == "array"' >/dev/null 2>&1 <<< "$json"; then
+    echo "hyprctl failed: $json"; return 1
+  fi
+  jq -r '.[] | "\(.name): \(.width)x\(.height)@\(.refreshRate) scale \(.scale) transform \(.transform) disabled \(.disabled) - \(.make) \(.model)"' <<< "$json"
 }
 _check_shell_service() {
   systemctl --user is-active caelestia4-shell.service
@@ -119,8 +124,12 @@ x declare -p XDG_CURRENT_DESKTOP
 x declare -p UWSM_FINALIZE_VARNAMES
 
 # caelestia4: the result goes into a public issue: no home path (it has the user name) and no credentials in a
-# remote URL (https://user:token@...)
-sed -i -e "s#${HOME}#~#g" -e 's#://[^/@[:space:]]*@#://#g' "$output_file"
+# remote URL (https://user:token@...). Also /home/<user> when HOME is elsewhere, and the user name as a whole path
+# component anywhere else (/run/media/<user>, /mnt/<user>/...). Names are escaped so a dot in them matches only a dot
+_re() { printf '%s' "$1" | sed 's/[][\\.*^$#/]/\\&/g'; }
+user_re=$(_re "${USER:-$(id -un)}")
+sed -i -e "s#$(_re "$HOME")#~#g" -e ":a" -e "s#/${user_re}\\([/[:space:]:\"',;)]\\|\$\\)#/<user>\\1#g" -e "ta" \
+  -e 's#://[^/@[:space:]]*@#://#g' "$output_file"
 
 e "Finished. Output saved as \"$output_file\"."
 if ! command -v curl 2>&1 >>/dev/null ;then echo "\"curl\" not found, pastebin upload unavailable.";exit;fi

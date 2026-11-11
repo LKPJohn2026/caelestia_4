@@ -7,7 +7,8 @@
 # 3) the closest shape / any landscape. Servers filter where they can (Wallhaven `resolutions=`, `ratios=`,
 # `atleast=`; Moebooru `width:>= height:>=`); for Moebooru the shape is ranked in a batch of 100 random posts.
 # Saved to <Pictures>/Wallpapers/random_wallpaper[-1].<ext> like end-4's scripts (alternating, so the new file never
-# replaces the one in use), then applied with switchwall.sh. One status line per step; exit 2 = nothing matched.
+# replaces the one in use), then applied with switchwall.sh. One status line per step; exit 2 = nothing matched,
+# 1 = failed (site unreachable, download or switchwall.sh).
 # DRYRUN=1 stops before downloading.
 set -uo pipefail
 source=${1:-wallhaven} minw=${2:-0} minh=${3:-0} rw=${4:-0} rh=${5:-0}
@@ -16,6 +17,9 @@ dir="$(xdg-user-dir PICTURES 2>/dev/null || echo "$HOME/Pictures")/Wallpapers"
 cfg="${XDG_CONFIG_HOME:-$HOME/.config}/illogical-impulse/config.json"
 switchwall="$(dirname "$0")/../colors/switchwall.sh"
 mkdir -p "$dir"
+# One line per request ("try", and "fail" when curl failed): the requests run in subshells, so a file counts them
+net=$(mktemp) || exit 1
+trap 'rm -f -- "$net"' EXIT
 
 gcd() { local a=$1 b=$2; while (( b )); do local t=$b; b=$((a % b)); a=$t; done; echo "$a"; }
 ratio="" target=0
@@ -29,11 +33,13 @@ tier=""
 
 echo "Searching $source…"
 wallhaven() { # wallhaven <extra query> -> "path WxH"
-  curl -fsS -m 20 -A "$ua" "https://wallhaven.cc/api/v1/search?categories=110&purity=100&sorting=random$1" \
+  echo try >> "$net"
+  { curl -fsS -m 20 -A "$ua" "https://wallhaven.cc/api/v1/search?categories=110&purity=100&sorting=random$1" || echo fail >> "$net"; } \
     | jq -r '.data[0] // empty | "\(.path) \(.resolution)"'
 }
 moebooru() { # moebooru <host> <tags> <limit> <jq filter on the post list> -> "url WxH tier"
-  curl -fsS -m 20 -A "$ua" -G "https://$1/post.json" --data-urlencode "tags=rating:safe order:random $2" --data-urlencode "limit=$3" \
+  echo try >> "$net"
+  { curl -fsS -m 20 -A "$ua" -G "https://$1/post.json" --data-urlencode "tags=rating:safe order:random $2" --data-urlencode "limit=$3" || echo fail >> "$net"; } \
     | jq -r "$4 // empty | \"\\(.file_url) \\(.width)x\\(.height) \\(.t // \"\")\""
 }
 
@@ -64,6 +70,9 @@ case "$source" in
 esac
 
 if [[ -z "${link:-}" ]]; then
+  # Every request failed: the network or the site is down, which isn't "nothing matched"
+  tries=$(command grep -c try "$net") fails=$(command grep -c fail "$net")
+  (( tries > 0 && fails == tries )) && { echo "Can't reach $source"; exit 1; }
   (( minw > 0 )) && echo "No wallpaper of ${minw}×${minh} or larger on $source right now" || echo "$source returned nothing"
   exit 2
 fi
@@ -77,5 +86,5 @@ path="$dir/random_wallpaper.$ext"
 echo "Downloading ${size/x/×} ($tier)…"
 curl -fsS -m 120 -A "$ua" -o "$path" "$link" || { echo "Download failed"; exit 1; }
 echo "Applying…"
-"$switchwall" --image "$path" >/dev/null 2>&1
+"$switchwall" --image "$path" >/dev/null 2>&1 || { echo "Couldn't apply the wallpaper (switchwall.sh failed)"; exit 1; }
 echo "Done: ${size/x/×} from $source ($tier)"

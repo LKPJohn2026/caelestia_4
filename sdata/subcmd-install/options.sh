@@ -8,20 +8,18 @@ A step of end-4's installer. caelestia_4's files come from tools/install-main.sh
 Options:
   -h, --help                Print this help message and exit
   -f, --force               (Dangerous) Force mode without any confirm
-  -F, --fisrtrun            Act like it is the first run
   -c, --clean               Clean the build cache first
-      --skip-allgreeting    Skip the whole process greeting
       --skip-alldeps        Skip the whole process installing dependency
       --skip-allsetups      Skip the whole process setting up permissions/services etc
-      --ignore-outdate      Ignore outdate checking for community supported \"dist-*\".
   -s, --skip-sysupdate      Skip system package upgrade e.g. \"sudo pacman -Syu\"
       --skip-plasmaintg     Skip installing plasma-browser-integration
-${STY_CYAN}
-New features (experimental):
-      --via-nix               Use Nix and Home-manager to install dependencies.
-                              This feature is ${STY_RED}working in progress${STY_CYAN}. Contribution is welcomed,
-                              see https://github.com/end-4/dots-hyprland/issues/1061 for details.
-${STY_RST}"
+"
+}
+# caelestia4: the help lists only what install-deps and install-setups use. The other options belong to
+# end-4's greeting and install-files steps, which this fork doesn't run (--ignore-outdate only applies to
+# the non-Arch dist-* scripts): they are still accepted so old command lines work, with a warning.
+ignored_option(){
+  printf "${STY_YELLOW}[$0]: Ignoring \"$1\": it does nothing for \"${SUBCMD_NAME}\" in caelestia_4.${STY_RST}\n"
 }
 
 cleancache(){
@@ -56,31 +54,21 @@ while true ; do
     -c|--clean) shift;;
     ## Ones without parameter
     -f|--force) ask=false;shift;;
-    -F|--firstrun) INSTALL_FIRSTRUN=true;shift;;
-    --skip-allgreeting) SKIP_ALLGREETING=true;shift;;
     --skip-alldeps) SKIP_ALLDEPS=true;shift;;
     --skip-allsetups) SKIP_ALLSETUPS=true;shift;;
-    --skip-allfiles) SKIP_ALLFILES=true;shift;;
     -s|--skip-sysupdate) SKIP_SYSUPDATE=true;shift;;
-    --ignore-outdate) IGNORE_OUTDATE_CHECK=true;shift;;
     --skip-plasmaintg) SKIP_PLASMAINTG=true;shift;;
-    --skip-backup) SKIP_BACKUP=true;shift;;
-    --skip-hyprland) SKIP_HYPRLAND=true;shift;;
-    --skip-hyprland-entry) SKIP_HYPRLAND_ENTRY=true;shift;;
-    --skip-fish) SKIP_FISH=true;shift;;
-    --skip-quickshell) SKIP_QUICKSHELL=true;shift;;
-    --skip-fontconfig) SKIP_FONTCONFIG=true;shift;;
-    --skip-miscconf) SKIP_MISCCONF=true;shift;;
     --core) SKIP_PLASMAINTG=true;SKIP_FISH=true;SKIP_FONTCONFIG=true;SKIP_MISCCONF=true;shift;;
-    --exp-files) EXPERIMENTAL_FILES_SCRIPT=true;shift;;
-    --via-nix) INSTALL_VIA_NIX=true;shift;;
-    
+    -F|--firstrun|--skip-allgreeting|--skip-allfiles|--ignore-outdate|--skip-backup|--skip-hyprland|--skip-hyprland-entry|--skip-fish|--skip-quickshell|--skip-fontconfig|--skip-miscconf|--exp-files)
+      ignored_option "$1";shift;;
+    # caelestia4: dependencies come from pacman and the AUR here (./setup only runs on Arch), so Nix would
+    # install a second, unmatched set next to them
+    --via-nix)
+      printf "${STY_RED}[$0]: \"--via-nix\" isn't supported: caelestia_4 installs its dependencies with pacman and yay on Arch.${STY_RST}\n"
+      exit 1;;
+
     ## Ones with parameter
-    --fontset)
-    if [[ -d "${REPO_ROOT}/dots-extra/fontsets/$2" ]];
-      then echo "Using fontset \"$2\".";FONTSET_DIR_NAME="$2";shift 2
-      else echo "Wrong argument for $1.";exit 1
-    fi;;
+    --fontset) ignored_option "$1";shift 2;;
 
     ## Ending
     --) shift;break ;;

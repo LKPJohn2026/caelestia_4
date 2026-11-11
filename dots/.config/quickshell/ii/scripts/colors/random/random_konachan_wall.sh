@@ -27,17 +27,33 @@ CACHE_DIR="$XDG_CACHE_HOME/quickshell"
 STATE_DIR="$XDG_STATE_HOME/quickshell"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# caelestia4: say why nothing changed instead of handing switchwall a missing or partial file
+fail() {
+    echo "[random_konachan_wall.sh] $1" >&2
+    notify-send -a "Wallpaper switcher" "Random wallpaper" "$1"
+    exit 1
+}
+
 mkdir -p "$PICTURES_DIR/Wallpapers"
 page=$((1 + RANDOM % 1000));
-illogicalImpulseConfigPath="$HOME/.config/illogical-impulse/config.json"
+illogicalImpulseConfigPath="$XDG_CONFIG_HOME/illogical-impulse/config.json" # caelestia4: honour XDG_CONFIG_HOME
 userAgent=$(jq -r '.networking.userAgent // empty' "$illogicalImpulseConfigPath" 2>/dev/null)
-response=$(curl -A "$userAgent" "https://konachan.net/post.json?tags=rating%3Asafe&limit=1&page=$page")
-link=$(echo "$response" | jq '.[0].file_url' -r);
+response=$(curl -fsSL -A "$userAgent" "https://konachan.net/post.json?tags=rating%3Asafe&limit=1&page=$page") ||
+    fail "Couldn't reach konachan.net"
+link=$(echo "$response" | jq -r '.[0].file_url // empty' 2>/dev/null)
+[[ "$link" =~ ^https?:// ]] || fail "konachan.net sent no image link"
 ext=$(echo "$link" | awk -F. '{print $NF}')
+ext=${ext%%[?#]*}
+[[ "$ext" =~ ^[A-Za-z0-9]{1,5}$ ]] || fail "konachan.net sent a link with no file type: $link"
 downloadPath="$PICTURES_DIR/Wallpapers/random_wallpaper.$ext"
 currentWallpaperPath=$(jq -r '.background.wallpaperPath' "$illogicalImpulseConfigPath")
 if [ "$downloadPath" == "$currentWallpaperPath" ]; then
     downloadPath="$PICTURES_DIR/Wallpapers/random_wallpaper-1.$ext"
 fi
-curl -A "$userAgent" "$link" -o "$downloadPath"
+# caelestia4: download beside it and move into place, so a failed download leaves the old file alone
+if ! curl -fsSL -A "$userAgent" "$link" -o "$downloadPath.part" || [[ ! -s "$downloadPath.part" ]]; then
+    rm -f -- "$downloadPath.part"
+    fail "Couldn't download $link"
+fi
+mv -f -- "$downloadPath.part" "$downloadPath"
 "$SCRIPT_DIR/../switchwall.sh" --image "$downloadPath"

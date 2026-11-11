@@ -14,4 +14,8 @@ if [[ ! -s "$cache" || $(( $(date +%s) - $(stat -c %Y "$cache") )) -gt 1800 ]]; 
 fi
 [[ -s "$cache" ]] || { tr_ "No weather data"; echo; exit 0; }
 IFS='|' read -r temp cond loc < "$cache"
-printf '<span font_size="xx-large">%s</span>\n<span alpha="70%%">%s · %s</span>\n' "$(echo "$temp" | xargs)" "$(echo "$cond" | xargs)" "${loc%%,*}"
+# Trims and squeezes spaces like xargs did, which failed on a quote (a condition or place with an apostrophe), and
+# escapes what Pango would read as markup, like media.sh
+squeeze() { local -a w; read -ra w <<< "$1"; local IFS=' '; printf '%s' "${w[*]}"; }
+esc() { sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g'; }
+printf '<span font_size="xx-large">%s</span>\n<span alpha="70%%">%s · %s</span>\n' "$(squeeze "$temp" | esc)" "$(squeeze "$cond" | esc)" "$(printf '%s' "${loc%%,*}" | esc)"

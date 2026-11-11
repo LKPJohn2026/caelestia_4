@@ -18,7 +18,7 @@ for pass in nvidia sysfs; do
             [[ $(cat "$dev/vendor" 2>/dev/null) == 0x10de ]] || continue
             gpu=$(nvidia-smi --id="$(basename "$(readlink -f "$dev")")" --query-gpu=utilization.gpu,temperature.gpu,memory.used --format=csv,noheader,nounits 2>/dev/null |
                 awk -F', ' 'NR == 1 && $1 ~ /^[0-9]+$/ {printf "%s%%", $1
-                    if ($2 ~ /^[0-9]+$/) printf " · %s°C", $2
+                    if ($2 ~ /^[0-9]+(\.[0-9]+)?$/) printf " · %d°C", int($2 + 0.5) # some drivers give decimals
                     if ($3 ~ /^[0-9]+$/) printf " · %.1f GiB", $3/1024}') # it prints its errors here too
         else
             busy=$(cat "$dev/gpu_busy_percent" 2>/dev/null) || continue

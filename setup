@@ -20,7 +20,6 @@ Syntax:
 Subcommands (caelestia_4 is installed by tools/install-main.sh: see docs/install.md):
   install-deps   Run the install step \"1. Install dependencies\"
   install-setups Run the install step \"2. Setup for permissions/services etc\"
-  resetfirstrun  Reset firstrun state.
 
   virtmon        (For dev only) Create virtual monitors for testing multi-monitors.
   checkdeps      (For dev only) Check whether pkgs exist in AUR or repos of Arch.
@@ -36,12 +35,13 @@ ${STY_BOLD}${STY_CYAN}Access ${STY_UNDERLINE}https://ii.clsty.link${STY_RST} ${S
 case $1 in
   # Global help
   ""|help|--help|-h)showhelp_global;exit;;
-  # caelestia4: end-4's installer gives a session with no shell here and overwrites configs this fork keeps
-  install|install-files|exp-update|exp-merge|uninstall)
+  # caelestia4: end-4's installer gives a session with no shell here and overwrites configs this fork keeps.
+  # resetfirstrun only reset the state of end-4's install-files, which this fork doesn't run.
+  install|install-files|exp-update|exp-merge|uninstall|resetfirstrun)
     printf "${STY_RED}\"$1\" is end-4's and isn't for caelestia_4.${STY_RST} See docs/install.md: tools/install-main.sh installs and\nupdates it, and its \"Undo\" section removes it. Only \"./setup install-deps\" and \"./setup install-setups\" apply.\n"
     exit 1;;
   # Correct subcommand
-  resetfirstrun|checkdeps|virtmon)
+  checkdeps|virtmon)
     SUBCMD_NAME=$1
     SUBCMD_DIR=./sdata/subcmd-$1
     shift;;

@@ -34,16 +34,34 @@ class TranslationManager:
         patterns = [
             r'Translation\.tr\s*\(\s*(["\'])(((?!\1)[^\\]|\\.)*)(\1)\s*\)',  # Double or single quotes with escape support
             r'Translation\.tr\s*\(\s*`([^`]*(?:\\.[^`]*)*?)`\s*\)',          # Backticks (template strings)
+            # caelestia4: the fork's QML calls Tr.tr("text") / Tr.trCtx("text", "context") / Tr.trN("text", ...), and
+            # the same text is a key in these files too, so without these the cleaner deletes the fork's strings.
+            r'\bTr\.tr(?:Marked)?\s*\(\s*(["\'])(((?!\1)[^\\]|\\.)*)(\1)\s*\)',
+            r'\bTr\.tr(?:Ctx|N|CtxN)\s*\(\s*(["\'])(((?!\1)[^\\]|\\.)*)(\1)\s*,',
+        ]
+        # caelestia4: shell scripts translate with tr_ "text" (scripts/caelestia4/tr.sh), and hyprlock-strings.sh
+        # passes its keys as `line name "text"`. A first character of $ is a variable, not a key.
+        shell_patterns = [
+            r'\btr_\s+"((?:[^"\\]|\\.)*)"',
+            r'^\s*line\s+\w+\s+"((?:[^"\\]|\\.)*)"',
         ]
         
-        # Search all .qml and .js files
-        file_extensions = ['*.qml', '*.js']
+        # Search all .qml and .js files (and .sh for tr_)
+        file_extensions = ['*.qml', '*.js', '*.sh']
         
         for ext in file_extensions:
             for file_path in self.source_dir.rglob(ext):
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
+
+                    if ext == '*.sh':
+                        for pattern in shell_patterns:
+                            for text in re.findall(pattern, content, re.MULTILINE):
+                                if text and not text.startswith('$'):
+                                    # Inside "..." bash only unescapes \$ \` \" and \\
+                                    translatable_texts.add(re.sub(r'\\([$`"\\])', r'\1', text).strip())
+                        continue
                         
                     for pattern in patterns:
                         matches = re.findall(pattern, content, re.MULTILINE | re.DOTALL)

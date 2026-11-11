@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import calendar
+import os
 import sys
 import json
 import google.auth.transport.requests
@@ -31,8 +32,16 @@ def get_token(json_str):
         sys.exit(1)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        sys.stderr.write("Usage: python3 get_token.py '<json_string>'\n")
+    # caelestia4: the key comes from $SERVICE_KEY_CONTENT or stdin ("-" or no argument). An argument is still taken,
+    # but any process can read another's arguments in /proc, and this is a private key.
+    key = os.environ.pop("SERVICE_KEY_CONTENT", "")
+    if not key:
+        if len(sys.argv) >= 2 and sys.argv[1] != "-":
+            key = sys.argv[1]
+        elif len(sys.argv) >= 2 or not sys.stdin.isatty():
+            key = sys.stdin.read()
+    if not key.strip():
+        sys.stderr.write("Usage: SERVICE_KEY_CONTENT='<json_string>' token_from_key.py, or the JSON on stdin\n")
         sys.exit(1)
     
-    get_token(sys.argv[1])
+    get_token(key)

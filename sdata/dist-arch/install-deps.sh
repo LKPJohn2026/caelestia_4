@@ -66,8 +66,9 @@ if ! command -v yay >/dev/null 2>&1;then
   v install-yay
 fi
 
-showfun implicitize_old_dependencies
-v implicitize_old_dependencies
+# caelestia4: not called. It marks as dependencies every package listed in previous_dependencies.conf
+# that the user installed explicitly, so pacman -Qdt and a later cleanup could remove packages they
+# chose themselves. The function above stays as the reference its NOTE describes.
 
 # https://github.com/end-4/dots-hyprland/issues/581
 # yay -Bi is kinda hit or miss, instead cd into the relevant directory and manually source and install deps
@@ -77,8 +78,14 @@ install-local-pkgbuild() {
 
   x pushd $location
 
-  source ./PKGBUILD
-  x yay -S --sudoloop $installflags --asdeps "${depends[@]}"
+  # caelestia4: read depends in a subshell. Sourcing the PKGBUILD here left its depends (and every
+  # other variable and function) in the installer's shell, so a PKGBUILD without depends installed
+  # the previous one's. With no depends, yay -S has nothing to install and would fail.
+  local -a pkg_depends=()
+  readarray -t pkg_depends < <(unset depends; source ./PKGBUILD >/dev/null && if (( ${#depends[@]} > 0 )); then printf '%s\n' "${depends[@]}"; fi)
+  if (( ${#pkg_depends[@]} > 0 )); then
+    x yay -S --sudoloop $installflags --asdeps "${pkg_depends[@]}"
+  fi
   # man makepkg:
   # -A, --ignorearch: Ignore a missing or incomplete arch field in the build script.
   # -s, --syncdeps: Install missing dependencies using pacman. When build-time or run-time dependencies are not found, pacman will try to resolve them.
@@ -94,7 +101,9 @@ metapkgs=(./sdata/dist-arch/illogical-impulse-{audio,backlight,basic,fonts-theme
 metapkgs+=(./sdata/dist-arch/illogical-impulse-hyprland)
 metapkgs+=(./sdata/dist-arch/illogical-impulse-caelestia4)
 metapkgs+=(./sdata/dist-arch/illogical-impulse-microtex-git)
-metapkgs+=(./sdata/dist-arch/illogical-impulse-quickshell-git)
+# caelestia4: not end-4's illogical-impulse-quickshell-git. This fork's Quickshell is
+# packaging/caelestia4-quickshell, which conflicts with and replaces it; ./install.sh builds it
+# (see docs/install.md). Installing end-4's here would remove that one.
 metapkgs+=(./sdata/dist-arch/illogical-impulse-bibata-modern-classic-bin)
 
 for i in "${metapkgs[@]}"; do
@@ -136,7 +145,9 @@ case $SKIP_PLASMAINTG in
       echo -e "${STY_YELLOW}Install it? [y/N]${STY_RST}"
       read -p "====> " p
     else
-      p=y
+      # caelestia4: force mode doesn't pull this in: without KDE it is ~600MiB the user never chose
+      echo -e "${STY_YELLOW}[$0]: Force mode: not installing \"plasma-browser-integration\" (optional; install it with pacman if you want it).${STY_RST}"
+      p=n
     fi
     case $p in
       y) x sudo pacman -S --needed --noconfirm plasma-browser-integration ;;

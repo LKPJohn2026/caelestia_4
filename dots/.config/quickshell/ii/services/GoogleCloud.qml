@@ -57,10 +57,10 @@ Singleton {
             return;
         }
         tokenProc.runSequence([(() => { // prep token fetcher
+                // caelestia4: the key stays in the environment, which only this user can read; token_from_key.py
+                // reads it there (it used to be expanded into an argument, readable by any process in /proc)
                 tokenProc.environment.SERVICE_KEY_CONTENT = JSON.stringify(root.keyContent);
-                tokenProc.command = [ //
-                    "bash", "-c" //
-                    , `${tokenForKeyScriptPath} "$SERVICE_KEY_CONTENT"`];
+                tokenProc.command = [root.tokenForKeyScriptPath];
             }), //
             [], // run token fetcher
             ((out) => {

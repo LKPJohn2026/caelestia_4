@@ -7,6 +7,8 @@ VMON_POSITION=auto
 VMON_SCALE=1
 VMON_EXTRA=""
 WAYVNC_LOGLEVEL=${WAYVNC_LOGLEVEL:-quiet}
+# caelestia4: wayvnc runs here without a password, so by default only this machine can connect
+VNC_LISTEN_ADDRESS=127.0.0.1
 
 showhelp(){
 echo -e "Syntax: $0 virtmon [OPTIONS]
@@ -19,6 +21,10 @@ Options:
   -d, --daemon     Run in background
       --no-guard   Disable hypr_mon_guard. Tip: this process can
                    also be terminated using ${STY_BOLD}pkill hypr_mon_guard${STY_RST}
+      --listen <addr>
+                   Address wayvnc listens on, by default ${STY_UNDERLINE}$VNC_LISTEN_ADDRESS${STY_RST} (this machine only).
+                   ${STY_UNDERLINE}0.0.0.0${STY_RST} lets other devices connect. There is no password:
+                   anyone who can reach the port sees and controls the monitor.
 
 For the syntax of following options, see also Hyprland Wiki:
   https://wiki.hypr.land/Configuring/Monitors
@@ -41,13 +47,13 @@ Note 2:
   You can run this subcommand multiple times to create multiple virtual monitor. To do this, use ${STY_UNDERLINE}-d${STY_RST} to run wayvnc in background and repeat again, or just open extra terminal/shell and run the subcommand again.
 
 Note 3:
-  If you do not have a spare device connected to the same network, it's still possible to test multi-monitor by using VNC client on this device, in which case the <IP> should be ${STY_UNDERLINE}localhost${STY_RST} or ${STY_UNDERLINE}127.0.0.1${STY_RST}.
+  By default only a VNC client on this device can connect, with ${STY_UNDERLINE}127.0.0.1${STY_RST} as the <IP>. To use a spare device on the same network, add ${STY_UNDERLINE}--listen 0.0.0.0${STY_RST} (only on a network you trust).
 "
 }
 # `man getopt` to see more
 para=$(getopt \
   -o hcd \
-  -l help,clean,daemon,no-guard,res:,fps:,pos:,sca:,ext: \
+  -l help,clean,daemon,no-guard,listen:,res:,fps:,pos:,sca:,ext: \
   -n "$0" -- "$@")
 [ $? != 0 ] && echo "$0: Error when getopt, please recheck parameters." && exit 1
 #####################################################################################
@@ -66,6 +72,7 @@ while true ; do
     -c|--clean) CLEAN_TESTER_MONITORS=true;shift;;
     -d|--daemon) RUNNING_IN_BACKGROUND=true;shift;;
     --no-guard) DISABLE_HYPR_MON_GUARD=true;shift;;
+    --listen) VNC_LISTEN_ADDRESS="$2";shift 2;;
     --res) VMON_RESOLUTION="$2";shift 2;;
     --fps) VMON_FPS="$2";shift 2;;
     --pos) VMON_POSITION="$2";shift 2;;

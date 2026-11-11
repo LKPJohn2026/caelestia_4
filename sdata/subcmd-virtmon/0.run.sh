@@ -68,10 +68,19 @@ printf "${STY_BLUE}Resolution: ${STY_UNDERLINE}${STY_INVERT}${VMON_RESOLUTION}$e
 printf "${STY_BLUE}Frame rate: ${STY_UNDERLINE}${STY_INVERT}${VMON_FPS}$e"
 printf "${STY_CYAN}Use a VNC client to connect to the virtual monitor.$e"
 printf "${STY_BLUE}Port: ${STY_UNDERLINE}${STY_INVERT}$vnc_port$e"
-printf "${STY_BLUE}IP: use a suitable one from below:$e"
-printf ${STY_PURPLE}
-LANG=C LC_ALL=C ip -o addr show up | grep -v -E 'docker|veth|virbr' | awk '{split($4,a,"/"); print $2"\t"a[1]}'
-printf ${STY_RST}
+case "${VNC_LISTEN_ADDRESS}" in
+  # caelestia4: bound to one address, that is the one to use
+  127.*|::1|localhost) printf "${STY_BLUE}IP: ${STY_UNDERLINE}${STY_INVERT}${VNC_LISTEN_ADDRESS}$e"
+    printf "${STY_BLUE}  (this device only; use --listen 0.0.0.0 to connect from another one)$e";;
+  0.0.0.0|::)
+    printf "${STY_BLUE}IP: use a suitable one from below:$e"
+    printf ${STY_PURPLE}
+    LANG=C LC_ALL=C ip -o addr show up | grep -v -E 'docker|veth|virbr' | awk '{split($4,a,"/"); print $2"\t"a[1]}'
+    printf ${STY_RST}
+    printf "${STY_RED}No password: anyone on these networks who can reach the port can see and control it.$e";;
+  *) printf "${STY_BLUE}IP: ${STY_UNDERLINE}${STY_INVERT}${VNC_LISTEN_ADDRESS}$e"
+    printf "${STY_RED}No password: anyone who can reach this address and port can see and control it.$e";;
+esac
 printf "${STY_CYAN}Hint:$e"
 printf "${STY_GREEN}  The VNC client will ask you about server address,$e"
 printf "${STY_GREEN}  either joined as <IP>:<Port> or separately.$e"
@@ -80,11 +89,11 @@ printf "${STY_YELLOW}=========================================$e"
 
 if [ "$RUNNING_IN_BACKGROUND" = true ];then
   echo "wayvnc now running in background. Run again with --clean to cleanup."
-  nohup wayvnc ${WAYVNC_EX_ARGS} --socket=$tester_socket -f=${VMON_FPS} -o=${vmon_tester} --log-level=${WAYVNC_LOGLEVEL} 0.0.0.0 $vnc_port > $(mktemp) 2>&1 &
+  nohup wayvnc ${WAYVNC_EX_ARGS} --socket=$tester_socket -f=${VMON_FPS} -o=${vmon_tester} --log-level=${WAYVNC_LOGLEVEL} "${VNC_LISTEN_ADDRESS}" $vnc_port > $(mktemp) 2>&1 &
   disown
 else
   echo "wayvnc now running, press Ctrl-C to quit."
-  wayvnc ${WAYVNC_EX_ARGS} --socket=$tester_socket -f=${VMON_FPS} -o=${vmon_tester} --log-level=${WAYVNC_LOGLEVEL} 0.0.0.0 $vnc_port
+  wayvnc ${WAYVNC_EX_ARGS} --socket=$tester_socket -f=${VMON_FPS} -o=${vmon_tester} --log-level=${WAYVNC_LOGLEVEL} "${VNC_LISTEN_ADDRESS}" $vnc_port
   echo "wayvnc stopped. Cleaning..."
   hyprctl output remove "${vmon_tester}"
 fi

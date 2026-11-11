@@ -10,7 +10,7 @@ If you do not know the answer, simply say 'No info available'. \
 Only respond for the appropriate case and use as little text as possible.\
 The content:"
 
-first_loaded_model=$("$(dirname "$0")/show-loaded-ollama-models.sh" -j | jq -r '.[0].model' 2>/dev/null) || first_loaded_model=""
+first_loaded_model=$("$(dirname "$0")/show-loaded-ollama-models.sh" -j | jq -r '.[0].model // empty' 2>/dev/null) || first_loaded_model=""
 model=${first_loaded_model:-"llama3.2"}
 
 # Parse command-line arguments
@@ -31,7 +31,15 @@ prompt_json=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg content "$content
 # Make the API call with the specified or default model
 api_payload=$(jq -n --arg model "$model" --argjson prompt "$prompt_json" --argjson stream false \
     '{model: $model, prompt: $prompt, stream: $stream}')
-response=$(curl -s http://localhost:11434/api/generate -d "$api_payload" | jq -r '.response' 2>/dev/null)
+# caelestia4: say why there is no answer (server down, model not pulled) instead of an empty or "null" notification
+if ! reply=$(curl -s http://localhost:11434/api/generate -d "$api_payload"); then
+    response="Could not reach Ollama at localhost:11434. Is it running?"
+elif err=$(jq -r '.error // empty' <<< "$reply" 2>/dev/null) && [[ -n "$err" ]]; then
+    response="Ollama ($model): $err"
+else
+    response=$(jq -r '.response // empty' <<< "$reply" 2>/dev/null)
+    [[ -n "$response" ]] || response="No answer from Ollama ($model)"
+fi
 
 # Check if content is a single line and no longer than 30 characters
 if [[ ${#content} -le 30 && "$content" != *$'\n'* ]]; then
