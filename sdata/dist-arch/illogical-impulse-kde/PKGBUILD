@@ -7,7 +7,7 @@ arch=(any)
 license=(None)
 # caelestia4: Bluetooth / network / polkit / settings are Caelestia's (Nexus, the bar, the Quickshell polkit agent), so
 # bluedevil, plasma-nm, polkit-kde-agent, dolphin and systemsettings are gone with Plasma. Install this only once
-# KWallet's keys are in gnome-keyring (docs/dev/kde-removal.md, phase 3): both claim org.freedesktop.secrets
+# KWallet's keys are in gnome-keyring: both claim org.freedesktop.secrets
 depends=(
   gnome-keyring
   networkmanager

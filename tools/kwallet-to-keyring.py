@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""caelestia4: copy every KWallet secret into gnome-keyring's login keyring (docs/dev/kde-removal.md, phase 3).
+"""caelestia4: copy every KWallet secret into gnome-keyring's login keyring.
 
   tools/kwallet-to-keyring.py --dry-run   list what would be written (never the values)
   tools/kwallet-to-keyring.py --write     write it, each item read back and compared; only when gnome-keyring owns

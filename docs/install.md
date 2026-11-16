@@ -219,7 +219,7 @@ this clone only, and says in its header what it can't see.
 
 ## Without Plasma
 
-docs/dev/kde-removal.md has how Plasma was replaced. What it provided, and what does it here:
+What Plasma provided, and what does it here:
 
 | Plasma had | Here |
 |---|---|

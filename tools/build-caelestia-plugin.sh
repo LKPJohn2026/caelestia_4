@@ -13,7 +13,7 @@ PREFIX="${PREFIX:-$HOME/.local}"
 source_id() { git -C "$REPO_ROOT" rev-parse HEAD:third_party/caelestia-shell/plugin HEAD:tools/i18n 2>/dev/null | tr '\n' ' ' | sed 's/ $//'; }
 [[ "${1:-}" == --source-id ]] && { source_id; exit 0; }
 
-# Vendored: caelestia-dots/shell main 4b1dae84 (v2.5.0+50, 2026-10-25); before that 2e1c51fa (v2.5.0+48), 29fcf69a (v2.5.0+39), 21a75375 (v2.5.0+20); originally v2.5.0 -> d999d487 (docs/dev/phase1.md)
+# Vendored: caelestia-dots/shell main 4b1dae84 (v2.5.0+50, 2026-10-25); before that 2e1c51fa (v2.5.0+48), 29fcf69a (v2.5.0+39), 21a75375 (v2.5.0+20); originally v2.5.0 -> d999d487
 VERSION="2.5.0"
 GIT_REVISION="4b1dae84b"
 

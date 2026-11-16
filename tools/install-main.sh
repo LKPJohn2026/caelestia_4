@@ -24,7 +24,7 @@ done
 for p in hyprland caelestia4-quickshell caelestia4-qtengine caelestia4-wormhole qt6-m3shapes-git illogical-impulse-kde illogical-impulse-widgets illogical-impulse-caelestia4; do
   pacman -Q "$p" >/dev/null 2>&1 || warn "package $p not installed (install it first; see docs/install.md)"
 done
-# caelestia4: gnome-keyring is the Secret Service since the move off KWallet (docs/dev/kde-removal.md, phase 3)
+# caelestia4: gnome-keyring is the Secret Service since the move off KWallet
 [[ "$(systemctl --user is-enabled gnome-keyring-daemon.socket 2>/dev/null)" != masked ]] \
   || warn "gnome-keyring is masked for this user (from the KWallet days): tools/keyring-switch.sh prepare unmasks it"
 # caelestia4: the shapes library is a git submodule, which a plain `git clone` leaves empty: the bar and the widgets
@@ -81,7 +81,7 @@ elif [[ "$(jq -r '.source // ""' "$PLUGIN_STAMP" 2>/dev/null)" != "$("$REPO/tool
   "$REPO/tools/build-caelestia-plugin.sh" || { PLUGIN_FAILED=1; warn "the Caelestia plugin wasn't rebuilt: the shell may miss what the new QML needs, so it isn't restarted"; }
 fi
 
-# caelestia4: the shared-desktop marker (an account shared with Plasma) is gone with Plasma (docs/dev/kde-removal.md)
+# caelestia4: the shared-desktop marker (an account shared with Plasma) is gone with Plasma
 mkdir -p "$CFG/caelestia4"; rm -f "$CFG/caelestia4/shared-desktop"
 printf '%s\n' "$REPO" > "$CFG/caelestia4/repo" # caelestia4: where this clone is (Nexus > Updates checks it for new commits)
 

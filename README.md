@@ -60,7 +60,6 @@ first, `--list-deps` the packages. Details, the steps by hand, updating and undo
 - [docs/install.md](docs/install.md) — install, update, undo
 - [docs/uwsm.md](docs/uwsm.md) — how the uwsm session is set up
 - [docs/feature-comparison.md](docs/feature-comparison.md) — what came from where, what's still partial
-- [docs/dev/](docs/dev/) — development notes: the original plan, phase logs, end-4 parity notes, install log
 
 ## Help, bugs and contributing
 

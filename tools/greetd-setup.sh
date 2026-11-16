@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# caelestia4: set up greetd + ReGreet as the login screen (Plasma's login manager goes with Plasma:
-# docs/dev/kde-removal.md, phase 2). Run as your user, not root: it reads your session's monitors, scheme, wallpaper
+# caelestia4: set up greetd + ReGreet as the login screen (Plasma's login manager goes with Plasma).
+# Run as your user, not root: it reads your session's monitors, scheme, wallpaper
 # and keyboard layout, builds the files, checks the greeter's Hyprland config, then asks for sudo to install them:
 #   /etc/greetd/config.toml       greetd: Hyprland (as "greeter") with ReGreet in it
 #   /etc/greetd/hyprland.lua      that Hyprland: your monitors and scale, no logo / news / animations

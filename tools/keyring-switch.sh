@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# caelestia4: move the Secret Service from KWallet to gnome-keyring (docs/dev/kde-removal.md, phase 3). Run as your
+# caelestia4: move the Secret Service from KWallet to gnome-keyring. Run as your
 # user. KWallet stays the source until the end: nothing is removed from it.
 #   tools/keyring-switch.sh prepare   KWallet's Secret Service off (kwalletrc), gnome-keyring unmasked, the Secret
 #                                     portal on gnome-keyring. Then log out and in: PAM creates gnome-keyring's

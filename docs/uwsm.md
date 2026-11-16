@@ -49,7 +49,7 @@ Settings > Apps > Terminal; installed with `kitty.desktop` if missing). Quickshe
 `caelestia4-shell`) and owns `org.kde.StatusNotifierWatcher`; the shell is only the tray host. Registrations live in
 the watcher, so they survive shell restarts (Electron apps such as Claude never re-register). It must start first:
 with no watcher, Quickshell takes the name itself, and a watcher started later fails (exit 1). It replaced kded6's
-watcher module (2026-10-27, plasma-workspace goes with Plasma: docs/dev/kde-removal.md). Before that, kded6 had to
+watcher module (2026-10-27, plasma-workspace goes with Plasma). Before that, kded6 had to
 start first for the same reason: D-Bus-activated later by a KDE app, it took the watcher over mid-session.
 
 ## Login screen

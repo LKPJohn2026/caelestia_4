@@ -23,8 +23,8 @@ if command -v fcitx5 >/dev/null 2>&1; then
     export SDL_IM_MODULE=fcitx
 fi
 
-# No KDE in XDG_CURRENT_DESKTOP since Plasma went (2026-10-28): the keys moved from KWallet to gnome-keyring
-# (docs/dev/kde-removal.md, phase 3). Chromium / Electron pick their key store from it and an unknown desktop gets
+# No KDE in XDG_CURRENT_DESKTOP since Plasma went (2026-10-28): the keys moved from KWallet to gnome-keyring.
+# Chromium / Electron pick their key store from it and an unknown desktop gets
 # the unencrypted "basic" store, so Brave, Vesktop and Claude are given --password-store=gnome-libsecret (their
 # flags files / launcher) by tools/keyring-switch.sh finish.
 export XDG_CURRENT_DESKTOP=Hyprland

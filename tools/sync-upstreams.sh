@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bring in newer upstream code, then rebuild and smoke-test. (docs/dev/PLAN.md Phase 10)
+# Bring in newer upstream code, then rebuild and smoke-test.
 #   tools/sync-upstreams.sh caelestia <tag>             move third_party/caelestia-shell to a new tag
 # end-4 is not merged: it is a vendored library whose commits are reviewed and picked with tools/sync-end4.sh.
 # Before running: take a snapshot (sudo snapper create -d "caelestia_4 sync ...").

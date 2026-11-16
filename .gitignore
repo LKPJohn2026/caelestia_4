@@ -29,3 +29,6 @@ sdata/dist-arch/*/*.pkg.tar.*
 third_party/caelestia-shell/plugin/src/Caelestia/I18n/trs/
 packaging/caelestia4-cli/caelestia-cli/
 packaging/caelestia4-qtengine/qtengine/
+
+# caelestia4: private development notes, kept on this machine only
+/docs/dev/

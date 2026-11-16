@@ -7,7 +7,7 @@ hl.on("hyprland.start", function ()
         return
     end
     -- packaged units, started here (they can't take the uwsm-only condition); KWallet's PAM unit is gone with Plasma
-    -- (the keys are in gnome-keyring, which PAM unlocks itself: docs/dev/kde-removal.md)
+    -- (the keys are in gnome-keyring, which PAM unlocks itself)
     hl.exec_cmd("systemctl --user start hypridle.service ydotool.service")
     hl.exec_cmd("$HOME/.config/hypr/custom/scripts/__restore_video_wallpaper.sh")
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
