@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""caelestia4: wallpapers at the screen's own resolution. A still smaller than the screen (in device pixels: 3840x2160
-for a 2560x1440 screen at 1.5x) is upscaled by Upscayl's AI (upscayl-bin, its 4x models) and one larger is downscaled,
-to the smallest size that covers the screen, the whole picture kept (a 16:9 one on a wider screen: as wide as the
+"""caelestia4: wallpapers at the screen's own resolution. A still smaller than the screen (in device pixels: its logical
+size times its scale, read at runtime) is upscaled by Upscayl's AI (upscayl-bin, its 4x models) and one larger is downscaled,
+to the smallest size that covers the screen, the whole picture kept (one narrower than the screen: as wide as the
 screen, and taller). Only a copy that Qt couldn't load (over MAX_PIXELS: tall pictures, such as a portrait phone photo
 on a wide screen) loses the ends of its long side, kept centred. The copy goes to ~/.cache/caelestia4/wallpaper-fit,
 the original stays as it is; index.json says which copy is whose, and the shell shows the copy once it's there
@@ -9,8 +9,8 @@ the original stays as it is; index.json says which copy is whose, and the shell 
 Caelestia's renderer never upscales (its texture is at most the picture's own size, stretched when drawn), so this is
 what makes it sharp.
 
-The renderer fills the screen as "cover": what doesn't fit the screen's shape is cut off (a 16:9 picture on a 32:9
-screen loses a quarter at the top and one at the bottom). The other modes make a copy of exactly the screen's size:
+The renderer fills the screen as "cover": what doesn't fit the screen's shape is cut off (a picture narrower than
+the screen loses some at the top and the bottom). The other modes make a copy of exactly the screen's size:
   cover         the above (default)
   contain-blur  the whole picture, as high (or as wide) as the screen, on a blurred, dimmed copy of itself
   seam          the same, widened (or heightened) first by seam carving (ImageMagick's -liquid-rescale): the parts with
@@ -55,9 +55,9 @@ MAX_SIDE = 65_000
 RETRIES = 2  # an upscale that fell back to Lanczos is tried again on the next runs, this many times
 MODES = ("cover", "contain-blur", "seam")
 SEAM_MAX = 2.0  # seam carving past twice the width (or height) bends and repeats what it keeps
-SEAM_TIMEOUT = 600  # a 16:9 4K picture widened to twice its width takes ~25 s
+SEAM_TIMEOUT = 600  # a large picture widened to SEAM_MAX takes well under this
 BLUR_SHRINK = 8  # the background is blurred at 1/8 of the screen's size and scaled up: the same look, ~60x faster
-# upscayl-bin can stall on a picture (one ran for 50 minutes at 2x on a 5000x1803 PNG): past this, Lanczos instead
+# upscayl-bin can stall on a picture (one ran for 50 minutes at 2x on a large PNG): past this, Lanczos instead
 UPSCAYL_TIMEOUT = 300
 
 

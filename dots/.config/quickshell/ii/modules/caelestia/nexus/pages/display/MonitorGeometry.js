@@ -1,8 +1,8 @@
 .pragma library
 
 // caelestia4: the maths behind Display > Arrangement (MonitorLayout.qml), kept apart so it can be tested without a
-// screen. All sizes and positions are Hyprland's layout units (logical pixels: a 2560 x 1440 screen at 200 % is
-// 1280 x 720 wide in the layout). A rect is { x, y, w, h }.
+// screen. All sizes and positions are Hyprland's layout units (logical pixels: a screen at 200 % takes half its
+// device pixels in the layout). A rect is { x, y, w, h }.
 
 // The share of an edge two screens must have in common so the pointer can cross between them
 const MIN_SHARED = 50;

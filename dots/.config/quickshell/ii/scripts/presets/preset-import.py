@@ -6,8 +6,8 @@ preset can't set commands like apps.*): the desktop widgets end4-pC and this she
 calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter, visualizer) at the preset's positions, the colours
 (style, accent colour, light / dark), the wallpaper, the lock screen wallpaper, the banner (on the user card) and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
 
-Widget positions stay in the preset's 1920x1080 coordinates (background.widgets.canvas); each screen scales the room
-around each widget to its own size, so widgets against an edge stay there on a 32:9 screen.
+Widget positions stay in the preset's own coordinates (background.widgets.canvas); each screen scales the room
+around each widget to its own size, so widgets against an edge stay there on any screen shape.
 
 Presets come from pctrade/end4-pCpresets, the main repo (installed as pctrade--<name>, as end4-pC does), and from third
 parties, browsed and installed one at a time: Blapples/wallpapers (plain names; it can be taken out too) and any GitHub
@@ -154,7 +154,7 @@ WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "
 # end4-pC's visualizer defaults: most presets keep only enable and a place, and a style left from the preset before
 # (an aurora, a ring) mustn't stay on
 VISUALIZER_DEFAULTS = {"z": -1000, "style": "bars", "colorSource": "theme", "sensitivity": 1, "height": 260, "ringSize": 380}
-# the size end4-pC presets are made on: their widget x / y are pixels on a 1920x1080 screen
+# the canvas end4-pC presets are authored on (the preset format's, not a screen's): widget x / y are pixels on it
 PRESET_CANVAS = {"width": 1920, "height": 1080}
 # what moving, resizing and turning a desktop widget with the mouse changes (--save-layout): where it is, which one is on
 # top, its size (a step or pixels) and angle, and whether a strip of cards stands up

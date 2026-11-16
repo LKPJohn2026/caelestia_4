@@ -23,7 +23,7 @@ PageBase {
     title: Tr.tr("Wallpaper & style")
 
     readonly property WallTransitions wt: WallTransitions {}
-    // caelestia4: a short window (the page under 700 px, as on a 1280x720 screen): a smaller preview and pills, so the
+    // caelestia4: a short window (the page under 700 px): a smaller preview and pills, so the
     // settings under them show without scrolling
     readonly property bool shortWindow: flickable.height > 0 && flickable.height < 700
 
@@ -48,7 +48,7 @@ PageBase {
                 const cWidth = root.cappedWidth;
                 if (!screen)
                     return 0; // caelestia4: as above
-                // caelestia4: at most half the page's height, a third in a short window (1280x720), so the pills, the
+                // caelestia4: at most half the page's height, a third in a short window, so the pills, the
                 // transition and the first settings show under it
                 return Math.min(Math.round(cWidth * 0.4), cWidth / screen.width * screen.height, Math.max(120, Math.round(root.flickable.height * (root.shortWindow ? 0.3 : 0.5))));
             }

@@ -473,7 +473,7 @@ QtObject {
                 route: "appearance/sources",
                 section: Tr.mark("Fit to the screen"),
                 title: Tr.mark("Other shapes"),
-                desc: Tr.mark("A wallpaper whose shape isn't the screen's (16:9 on 32:9)"),
+                desc: Tr.mark("A wallpaper whose shape isn't the screen's (wider or taller)"),
                 keywords: [Tr.mark("fit"), Tr.mark("aspect ratio"), Tr.mark("crop"), Tr.mark("blur"), Tr.mark("ultrawide"), Tr.mark("stretch")],
                 type: "enum",
                 options: [

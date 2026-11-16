@@ -64,7 +64,7 @@ PageBase {
         return `${m.width}x${m.height}@${m.refreshRate.toFixed(2)}`;
     }
 
-    // caelestia4: "1280x720@60.00" as the mode menu shows it: "1280 × 720 · 60 Hz"
+    // caelestia4: "WxH@RATE" as the mode menu shows it: "W × H · RATE Hz"
     function prettyMode(mode: string): string {
         const [res, hz] = mode.replace(/Hz$/, "").split("@");
         return hz ? `${res.replace("x", " × ")}  ·  ${Math.round(Number(hz))} Hz` : res.replace("x", " × ");
@@ -320,7 +320,7 @@ PageBase {
                 readonly property real curScale: p.scale ?? modelData.scale
                 readonly property int curTransform: p.transform ?? modelData.transform
 
-                // One MenuItem per mode the monitor reports (availableModes, e.g. "1920x1080@60.00Hz")
+                // One MenuItem per mode the monitor reports (availableModes, "WxH@RATEHz")
                 readonly property list<MenuItem> modeItems: (modelData.availableModes ?? []).map(s => {
                     const [res, hz] = s.replace(/Hz$/, "").split("@");
                     return root.menuItemComp.createObject(monitor, {
@@ -347,7 +347,7 @@ PageBase {
                     label: Tr.tr("Resolution & refresh rate")
                     menuItems: monitor.modeItems
                     active: monitor.modeItems.find(i => i.value === monitor.mode) ?? null
-                    // caelestia4: a mode not in the list (a custom one) reads like the menu's, not "1280x720@60.00"
+                    // caelestia4: a mode not in the list (a custom one) reads like the menu's, not "WxH@RATE"
                     fallbackText: root.prettyMode(monitor.mode)
                     onSelected: item => root.setPending(monitor.modelData.name, "mode", item.value)
                 }

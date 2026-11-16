@@ -42,7 +42,7 @@ PageBase {
         return path.slice(path.lastIndexOf("/") + 1);
     }
 
-    // caelestia4: a short window (the page under 700 px, as on a 1280x720 screen) gets the small hero
+    // caelestia4: a short window (the page under 700 px) gets the small hero
     readonly property bool compactHero: height > 0 && height < 700
 
     title: Tr.tr("About")
@@ -75,7 +75,7 @@ PageBase {
             }
         }
 
-        // Hero. caelestia4: on a short window (a 1280x720 screen) a small logo with the name beside it, so the
+        // Hero. caelestia4: on a short window a small logo with the name beside it, so the
         // settings show without scrolling
         ConnectedRect {
             Layout.fillWidth: true

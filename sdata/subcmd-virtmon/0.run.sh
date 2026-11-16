@@ -5,6 +5,17 @@
 
 ensure_cmds wayvnc lsof jq ip
 
+# caelestia4: the size and rate not given are the focused monitor's, read now (none is written into the repo)
+if [[ -z "$VMON_RESOLUTION" || -z "$VMON_FPS" ]]; then
+  read -r focused_res focused_fps < <(hyprctl -j monitors | jq -r 'map(select(.focused))[0] // empty | "\(.width)x\(.height) \(.refreshRate | round)"')
+  VMON_RESOLUTION=${VMON_RESOLUTION:-$focused_res}
+  VMON_FPS=${VMON_FPS:-$focused_fps}
+  if [[ -z "$VMON_RESOLUTION" || -z "$VMON_FPS" ]]; then
+    echo "No focused monitor to copy the size and rate from; pass --res and --fps."
+    exit 1
+  fi
+fi
+
 start_hypr_mon_guard(){
   if ! pgrep -x hypr_mon_guard >/dev/null 2>&1; then
     if PATH=$PATH:${REPO_ROOT}/sdata/subcmd-virtmon command -v hypr_mon_guard ; then

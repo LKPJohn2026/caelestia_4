@@ -195,7 +195,7 @@ Singleton {
             property JsonObject background: JsonObject {
                 property JsonObject widgets: JsonObject {
                     // caelestia4: the widgets below come from end4-pC (pcwidgets). x and y are in the coordinates of a
-                    // canvas this size (the screen they were placed on, or a preset's 1920x1080); every screen scales
+                    // canvas this size (the screen they were placed on, or a preset's own); every screen scales
                     // them to its own size, so a layout keeps its shape on any aspect ratio. 0 = the screen's own size.
                     property JsonObject canvas: JsonObject {
                         property real width: 0

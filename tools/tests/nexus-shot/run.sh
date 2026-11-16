@@ -6,7 +6,7 @@
 # Usage: tools/tests/nexus-shot/run.sh [-o DIR] [-m WxH] [-w WxH] [-s FILE] [-c FILE] [-t DIR] [--keep] [SPEC...]
 #   SPEC  where to open, as `nexus openAt` takes it (e.g. "appearance", "hyprland/general", "services#weather");
 #         "" or none: the window as it opens. Each spec gives DIR/NN-<spec>.png
-#   -o    where the pictures go (default: a new /tmp/c4nexus.XXXXXX/out)    -m    TEST-1's mode (default 1920x1080)
+#   -o    where the pictures go (default: a new /tmp/c4nexus.XXXXXX/out)    -m    TEST-1's mode WxH (default: the focused monitor's)
 #   -w    resize the Nexus window to WxH before each shot (in the test Hyprland only; the sandbox's shell-tokens.json
 #         lowers Nexus's minimum size so small layouts can be shot)
 #   -s    a Caelestia shell.json for the sandbox (~/.config/caelestia/shell.json; default: none, so all defaults)
@@ -17,7 +17,7 @@
 set -uo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "$here/../../.." || exit 2
-out='' mode=1920x1080 win='' keep=0 specs=() shelljson='' configjson='' tree=dots/.config/quickshell/ii
+out='' mode='' win='' keep=0 specs=() shelljson='' configjson='' tree=dots/.config/quickshell/ii
 while (($#)); do
     case $1 in
         -o) out=$2; shift 2 ;;
@@ -31,6 +31,11 @@ while (($#)); do
     esac
 done
 ((${#specs[@]})) || specs=("")
+# no screen size is written into the repo: without -m, TEST-1 gets the focused monitor's, read now
+if [[ -z $mode ]]; then
+    mode=$(hyprctl monitors -j 2>/dev/null | jq -r 'map(select(.focused))[0] // empty | "\(.width)x\(.height)"')
+fi
+[[ $mode =~ ^[0-9]+x[0-9]+$ ]] || { echo "nexus-shot: no monitor size (no Hyprland to ask?); pass -m WxH"; exit 2; }
 
 # one run at a time: they share card1 (a second Hyprland on it would fail to start)
 exec 9> /tmp/c4-nexus-shot.lock

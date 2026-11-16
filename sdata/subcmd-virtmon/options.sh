@@ -1,8 +1,9 @@
 # Handle args for subcmd: checkdeps
 # shellcheck shell=bash
 
-VMON_RESOLUTION=1920x1080
-VMON_FPS=60
+# caelestia4: empty = the focused monitor's, read from Hyprland when the monitor is made (0.run.sh)
+VMON_RESOLUTION=
+VMON_FPS=
 VMON_POSITION=auto
 VMON_SCALE=1
 VMON_EXTRA=""
@@ -28,10 +29,10 @@ Options:
 
 For the syntax of following options, see also Hyprland Wiki:
   https://wiki.hypr.land/Configuring/Monitors
-      --res <res>  Resolution, by default ${STY_UNDERLINE}$VMON_RESOLUTION${STY_RST}
-      --fps <fps>  Refresh rate and FPS, by default ${STY_UNDERLINE}$VMON_FPS${STY_RST}
+      --res <res>  Resolution WxH, by default the focused monitor's
+      --fps <fps>  Refresh rate and FPS, by default the focused monitor's
       --pos <pos>  Position, by default ${STY_UNDERLINE}$VMON_POSITION${STY_RST}
-                   Examples: ${STY_UNDERLINE}auto-left${STY_RST}, ${STY_UNDERLINE}0x-1080${STY_RST}
+                   Examples: ${STY_UNDERLINE}auto-left${STY_RST}, ${STY_UNDERLINE}auto-right${STY_RST}
       --sca <sca>  Scale, by default ${STY_UNDERLINE}$VMON_SCALE${STY_RST}
       --ext <ext>  Extra properties, e.g. ${STY_UNDERLINE}transform, 1${STY_RST}
 

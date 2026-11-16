@@ -22,7 +22,7 @@ AbstractWidget {
     property bool visibleWhenLocked: Config.options.lock.showWidgets
     property var configEntry: Config.options.background.widgets[configEntryName]
     property string placementStrategy: configEntry.placementStrategy
-    // caelestia4: x and y are stored on Config's widget canvas (a preset's 1920x1080, say) and mapped to this screen
+    // caelestia4: x and y are stored on Config's widget canvas (a preset's own, say) and mapped to this screen
     readonly property var canvas: Config.options.background.widgets.canvas
     readonly property real canvasWidth: canvas.width > 0 ? canvas.width : scaledScreenWidth
     readonly property real canvasHeight: canvas.height > 0 ? canvas.height : scaledScreenHeight

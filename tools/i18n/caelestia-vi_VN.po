@@ -4006,8 +4006,8 @@ msgstr "Phóng to (AI, Upscayl) hay thu nhỏ mỗi ảnh nền về đúng đ�
 msgid "Other shapes"
 msgstr "Ảnh khác tỉ lệ"
 
-msgid "A wallpaper whose shape isn't the screen's (16:9 on 32:9)"
-msgstr "Ảnh nền có tỉ lệ khác màn hình (16:9 trên 32:9)"
+msgid "A wallpaper whose shape isn't the screen's (wider or taller)"
+msgstr "Ảnh nền có tỉ lệ khác màn hình (rộng hoặc cao hơn)"
 
 msgid "Fill, cut off the rest"
 msgstr "Lấp đầy, cắt phần thừa"
