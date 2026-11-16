@@ -6,6 +6,7 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
 import qs.modules.common as E4C // caelestia4: keep (overview, overlay and crosshair live in end-4's config)
+import "../../registry/E4Defaults.js" as E4Defaults
 
 // caelestia4: Panels > Overview & overlay: the workspace overview (Alt+Tab), the overlay widgets (Super+G)
 // and its crosshair. The same keys as end-4's Settings app (Desktop)
@@ -15,48 +16,45 @@ PageBase {
     title: Tr.tr("Overview & overlay")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
         SectionHeader {
-            first: true
             text: Tr.tr("Workspace overview")
         }
 
-        StepperRow {
-            first: true
-            label: Tr.tr("Rows")
-            value: E4C.Config.options.overview.rows
-            from: 1
-            to: 5
-            onMoved: v => E4C.Config.options.overview.rows = v
+        ToggleRow {
+            setting: "e4:overview.enable"
         }
 
         StepperRow {
-            label: Tr.tr("Columns")
-            value: E4C.Config.options.overview.columns
-            from: 1
-            to: 10
-            onMoved: v => E4C.Config.options.overview.columns = v
+            setting: "e4:overview.rows"
         }
 
         StepperRow {
-            label: Tr.tr("Preview size (% of screen)")
-            value: Math.round(E4C.Config.options.overview.scale * 100)
-            from: 5
-            to: 40
-            onMoved: v => E4C.Config.options.overview.scale = v / 100
+            setting: "e4:overview.columns"
+        }
+
+        // caelestia4: overview.scale is a fraction (0.18) shown as a percent: an x: id (scaleOption below)
+        StepperRow {
+            id: scaleRow
+
+            setting: "x:overview.scalePercent"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Alt+Tab skips empty workspaces")
-            subtext: Tr.tr("Hold Alt, press Tab to step through workspaces, release Alt to switch")
-            value: E4C.Config.options.caelestia.overview.altTabSkipEmpty
-            onToggled: E4C.Config.options.caelestia.overview.altTabSkipEmpty = checked
+            setting: "e4:caelestia.overview.altTabSkipEmpty"
+        }
+
+        // caelestia4: the grid's fill order
+        ToggleRow {
+            setting: "e4:overview.orderBottomUp"
+        }
+
+        ToggleRow {
+            setting: "e4:overview.orderRightLeft"
         }
 
         SectionHeader {
@@ -64,26 +62,64 @@ PageBase {
         }
 
         ToggleRow {
-            first: true
-            text: Tr.tr("Darken the screen behind")
-            value: E4C.Config.options.overlay.darkenScreen
-            onToggled: E4C.Config.options.overlay.darkenScreen = checked
+            setting: "e4:overlay.darkenScreen"
         }
 
         ToggleRow {
-            text: Tr.tr("Zoom animation when opening")
-            value: E4C.Config.options.overlay.openingZoomAnimation
-            onToggled: E4C.Config.options.overlay.openingZoomAnimation = checked
+            setting: "e4:overlay.openingZoomAnimation"
         }
 
-        TextFieldRow {
-            last: true
-            label: Tr.tr("Crosshair code")
-            subtext: Tr.tr("In Valorant's format")
-            value: E4C.Config.options.crosshair.code
-            onEditingFinished: v => {
-                if (v !== value)
-                    E4C.Config.options.crosshair.code = v;
+        SliderRow {
+            setting: "e4:overlay.clickthroughOpacity"
+        }
+
+        // caelestia4: one Advanced section, last: the floating image and the crosshair (registry `advanced`)
+        AdvancedSection {
+            // caelestia4: a web address is fine too (FloatingImage.qml loads it as is): no existence check, and no
+            // thumbnail (it would fetch the default web address each time the page opens)
+            // caelestia4: FloatingImage.qml hands the value to curl, which needs an address: a local file is saved as
+            // "file:///…" (shown here as a plain path)
+            PathRow {
+                setting: "e4:overlay.floatingImage.imageSource"
+                mustExist: false
+                value: link.active ? String(link.value ?? "").replace(/^file:\/\//, "") : ""
+                onChosen: path => {
+                    if (path.startsWith("/"))
+                        E4C.Config.options.overlay.floatingImage.imageSource = "file://" + path;
+                }
+            }
+
+            TextFieldRow {
+                setting: "e4:crosshair.code"
+            }
+        }
+
+        // Not an item: it feeds the preview size row
+        QtObject {
+            id: scaleOption
+
+            readonly property Binding _value: Binding {
+                target: scaleRow.link.s
+                property: "customValue"
+                value: Math.round(E4C.Config.options.overview.scale * 100)
+            }
+
+            readonly property Binding _default: Binding {
+                target: scaleRow.link.s
+                property: "customDefault"
+                value: Math.round(E4Defaults.defaults["overview.scale"] * 100)
+            }
+
+            readonly property Connections _writes: Connections {
+                function onCustomSet(v: var): void {
+                    E4C.Config.options.overview.scale = Number(v) / 100;
+                }
+
+                function onCustomReset(): void {
+                    E4C.Config.options.overview.scale = E4Defaults.defaults["overview.scale"];
+                }
+
+                target: scaleRow.link.s
             }
         }
     }

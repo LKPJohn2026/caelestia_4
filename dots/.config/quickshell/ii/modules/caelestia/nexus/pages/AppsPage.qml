@@ -13,7 +13,6 @@ import qs.modules.caelestia.components.containers
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.caelestia.nexus.common
-import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 
 PageBase {
     id: root
@@ -32,20 +31,22 @@ PageBase {
         onLoaded: root.terminalList.current = text().split("\n").map(l => l.trim()).find(l => l && !l.startsWith("#")) ?? ""
     }
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
         // Default applications
         SectionHeader {
-            first: true
             text: Tr.tr("Default applications")
         }
 
+        // caelestia4: each row has its registry id (registry/RegApps.qml): search lands on it, and Media playback and
+        // File manager show the modified dot and reset button that match "Reset page". The terminal is a file, not an
+        // option (x:apps.terminal), so it has no default to reset to and "Reset page" leaves it alone
         DefaultRow {
-            first: true
+            setting: "x:apps.terminal"
+            link.s.customValue: root.terminalList.current
             icon: "terminal"
             label: Tr.trCtx("Terminal", "default app category")
             // caelestia4: the terminal the session uses is ~/.config/xdg-terminals.list (uwsm -T: Super+Return, terminal
@@ -60,18 +61,25 @@ PageBase {
         // caelestia4: no Audio row: general.apps.audio is read by nothing (upstream too)
 
         DefaultRow {
+            setting: "c:general.apps.playback"
             icon: "play_circle"
             label: Tr.trCtx("Media playback", "default app category")
             status: GlobalConfig.general.apps.playback.join(" ")
-            onSelected: app => GlobalConfig.general.apps.playback = app.command
+            onSelected: app => link.set(app.command)
         }
 
         DefaultRow {
-            last: true
+            setting: "c:general.apps.explorer"
             icon: "folder"
             label: Tr.trCtx("File manager", "default app category")
             status: GlobalConfig.general.apps.explorer.join(" ")
-            onSelected: app => GlobalConfig.general.apps.explorer = app.command
+            onSelected: app => link.set(app.command)
+        }
+
+        // caelestia4: end-4's task manager command (session menu, Ctrl+Shift+Esc), from end-4's Settings app. With the
+        // other default apps, not under a "Task manager" header that repeats the row
+        TextFieldRow {
+            setting: "e4:apps.taskManager"
         }
 
         // Library
@@ -80,30 +88,12 @@ PageBase {
         }
 
         NavRow {
-            first: true
-            last: true
             icon: "apps"
             text: Tr.tr("All apps")
             subtext: Tr.tr("Browse installed apps, set favourites and hidden")
-            onClicked: root.nState.openSubPage(1)
+            onClicked: root.nState.openSubPage("all")
         }
 
-        // caelestia4: end-4's task manager command (session menu, Ctrl+Shift+Esc), from end-4's Settings app
-        SectionHeader {
-            text: Tr.tr("Task manager")
-        }
-
-        TextFieldRow {
-            first: true
-            last: true
-            label: Tr.tr("Task manager")
-            subtext: Tr.tr("Session menu and Ctrl+Shift+Esc")
-            value: E4C.Config.options.apps.taskManager
-            onEditingFinished: v => {
-                if (v !== value)
-                    E4C.Config.options.apps.taskManager = v;
-            }
-        }
     }
 
     component DefaultRow: PopupRow {
@@ -111,7 +101,62 @@ PageBase {
 
         readonly property int popupHeight: root.flickable.height - y + root.flickable.contentY - Tokens.padding.large - Tokens.padding.extraExtraLarge
 
+        // caelestia4: a registry id, as on the other rows: the page lands on the row and pulses it, and the row shows
+        // the modified dot and reset button left of the popup button. PopupRow has no `setting` of its own, so these
+        // are added here (not as children: PopupRow's default property is the popup's content)
+        property string setting
+        readonly property RowSetting link: RowSetting {
+            sid: row.setting
+            row: row
+            screen: row.Config.screen
+        }
+        readonly property SettingMarks marks: SettingMarks {
+            // x/y, not anchors: anchoring to `row` warns until `parent` is set
+            parent: row
+            x: row.width - width - Tokens.padding.largeIncreased - row.popup.implicitWidth - Tokens.spacing.medium
+            y: (row.height - height) / 2
+            link: row.link
+            hot: row.activeFocus
+        }
+        readonly property RowPulse pulse: RowPulse {
+            parent: row
+            link: row.link
+        }
+
+        // caelestia4: keyboard choice in the open list (PopupRow only opens and closes it): Up/Down move the
+        // highlight, Enter or Space picks the highlighted app, Esc closes. -1 = nothing highlighted yet
+        property int kbIndex: -1
+        readonly property var apps: {
+            const all = [...DesktopEntries.applications.values];
+            const favourited = new Set(all.filter(a => Strings.testRegexList(GlobalConfig.launcher.favouriteApps, a.id)));
+            return all.sort((a, b) => (favourited.has(b) - favourited.has(a)) || a.name.localeCompare(b.name));
+        }
+
         signal selected(app: DesktopEntry)
+
+        Keys.onPressed: event => {
+            if (!row.popup.open || !row.apps.length)
+                return;
+            if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) {
+                const step = event.key === Qt.Key_Down ? 1 : -1;
+                row.kbIndex = row.kbIndex < 0 ? (step > 0 ? 0 : row.apps.length - 1) : Math.max(0, Math.min(row.apps.length - 1, row.kbIndex + step));
+                event.accepted = true;
+            } else if (row.kbIndex >= 0 && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space)) {
+                const app = row.apps[row.kbIndex];
+                row.popup.open = false;
+                row.selected(app);
+                event.accepted = true;
+            }
+        }
+
+        // A property, not a child: PopupRow's default property is the popup's content
+        readonly property Connections popupWatch: Connections {
+            target: row.popup
+
+            function onOpenChanged(): void {
+                row.kbIndex = -1;
+            }
+        }
 
         keepPopupAsChild: {
             if (root.nState.animatingContainer || root.opacity < 1)
@@ -122,6 +167,9 @@ PageBase {
                 p = p.parent;
             return p?.opacity < 1;
         }
+        // caelestia4: the button that opens the app list
+        popup.icon: "swap_horiz"
+        popup.tooltip: Tr.trCtx("Change", "button")
         popup.topMovement: Math.max(Tokens.sizes.nexus.minPopupHeight - popupHeight, Tokens.padding.large)
 
         Loader {
@@ -134,10 +182,11 @@ PageBase {
                 implicitWidth: Tokens.sizes.nexus.popupWidth
                 implicitHeight: CUtils.clamp(row.popupHeight, Tokens.sizes.nexus.minPopupHeight, Tokens.sizes.nexus.maxPopupHeight)
 
-                model: {
-                    const apps = [...DesktopEntries.applications.values];
-                    const favourited = new Set(apps.filter(a => Strings.testRegexList(GlobalConfig.launcher.favouriteApps, a.id)));
-                    return apps.sort((a, b) => (favourited.has(b) - favourited.has(a)) || a.name.localeCompare(b.name));
+                model: row.apps
+                currentIndex: row.kbIndex
+                onCurrentIndexChanged: {
+                    if (currentIndex >= 0)
+                        positionViewAtIndex(currentIndex, ListView.Contain);
                 }
 
                 delegate: StateLayer {
@@ -151,6 +200,7 @@ PageBase {
                     anchors.right: list.contentItem.right
                     implicitHeight: itemLayout.implicitHeight + itemLayout.anchors.margins * 2
                     radius: Tokens.rounding.small
+                    manualHoverOverride: index === row.kbIndex
 
                     onClicked: {
                         row.popup.open = false;

@@ -30,6 +30,8 @@ Scope {
             if (root.hasFullscreen)
                 return;
             const v = ShellState.forActive();
+            if (!v)
+                return; // caelestia4: no screen with drawers (the monitor dropped off on resume)
             v.launcher = v.dashboard = v.osd = v.utilities = !(v.launcher || v.dashboard || v.osd || v.utilities);
         }
     }
@@ -43,7 +45,8 @@ Scope {
             if (root.hasFullscreen)
                 return;
             const screenState = ShellState.forActive();
-            screenState.dashboard = !screenState.dashboard;
+            if (screenState) // caelestia4: none while the monitor is gone (resume)
+                screenState.dashboard = !screenState.dashboard;
         }
     }
 
@@ -82,7 +85,8 @@ Scope {
             if (root.hasFullscreen)
                 return;
             const screenState = ShellState.forActive();
-            screenState.session = !screenState.session;
+            if (screenState) // caelestia4: none while the monitor is gone (resume)
+                screenState.session = !screenState.session;
         }
     }
 
@@ -95,7 +99,8 @@ Scope {
         onReleased: {
             if (!root.launcherInterrupted && !root.hasFullscreen) {
                 const screenState = ShellState.forActive();
-                screenState.launcher = !screenState.launcher;
+                if (screenState) // caelestia4: none while the monitor is gone (resume)
+                    screenState.launcher = !screenState.launcher;
             }
             root.launcherInterrupted = false;
         }
@@ -118,7 +123,8 @@ Scope {
             if (root.hasFullscreen || !Config.sidebar.enabled)
                 return;
             const screenState = ShellState.forActive();
-            screenState.sidebar = !screenState.sidebar;
+            if (screenState) // caelestia4: none while the monitor is gone (resume)
+                screenState.sidebar = !screenState.sidebar;
         }
     }
 
@@ -131,7 +137,8 @@ Scope {
             if (root.hasFullscreen)
                 return;
             const screenState = ShellState.forActive();
-            screenState.utilities = !screenState.utilities;
+            if (screenState) // caelestia4: none while the monitor is gone (resume)
+                screenState.utilities = !screenState.utilities;
         }
     }
 
@@ -141,19 +148,25 @@ Scope {
                 if (root.hasFullscreen && ["launcher", "session", "dashboard"].includes(drawer))
                     return;
                 const screenState = ShellState.forActive();
+                if (!screenState) {
+                    console.warn(lc, `No screen to toggle "${drawer}" on`); // caelestia4: the monitor is gone (resume)
+                    return;
+                }
                 screenState[drawer] = !screenState[drawer];
             } else {
                 console.warn(lc, `Drawer "${drawer}" does not exist`);
             }
         }
 
+        // caelestia4: with no screen (the monitor dropped off on resume), the answers come from ShellState.detached:
+        // the same drawers, all shut
         function list(): string {
-            const screenState = ShellState.forActive();
+            const screenState = ShellState.forActive() ?? ShellState.detached;
             return Object.keys(screenState).filter(k => typeof screenState[k] === "boolean").join("\n");
         }
 
         function isOpen(drawer: string): string {
-            const screenState = ShellState.forActive();
+            const screenState = ShellState.forActive() ?? ShellState.detached;
             if (typeof screenState[drawer] !== "boolean")
                 return "unknown";
             return screenState[drawer] ? "1" : "0";
@@ -165,6 +178,11 @@ Scope {
     IpcHandler {
         function open(): void {
             WindowFactory.create();
+        }
+
+        // caelestia4: opens Nexus at a route: a page id, its sub-pages' names and a setting, e.g. "panels/taskbar/tray"
+        function openAt(route: string): void {
+            WindowFactory.openAt(route);
         }
 
         target: "nexus"

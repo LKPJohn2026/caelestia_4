@@ -20,6 +20,9 @@ PageBase {
 
     readonly property string script: Quickshell.shellPath("modules/caelestia/utils/scripts/system.py")
     property var data: ({})
+    // caelestia4: true once system.py answered (or failed): a missing value then reads "Unknown", not "Checking…"
+    property bool loaded
+    readonly property string missingValue: !loaded || proc.running ? Tr.tr("Checking…") : Tr.tr("Unknown")
     readonly property var components: data.components ?? []
     readonly property string repo: data.repo ?? ""
     // The Qt this shell process loaded; differs from the installed one after a Qt update until the shell restarts
@@ -38,7 +41,10 @@ PageBase {
             return Tr.tr("Rebuild needed: built with Qt %1, Qt %2 is installed").arg(c.builtQt).arg(root.data.qtInstalled);
         if (c.needsRebuild === false)
             return Tr.tr("Built with Qt %1").arg(c.builtQt);
-        return c.builtQt ? Tr.tr("Built with Qt %1").arg(c.builtQt) : Tr.tr("Built with an unknown Qt version (rebuild once to record it)");
+        if (c.builtQt)
+            return Tr.tr("Built with Qt %1").arg(c.builtQt);
+        // caelestia4: only ask for a rebuild the Rebuild button can do (it needs the source folder)
+        return root.repo ? Tr.tr("Qt version it was built with is unknown. Rebuild once to record it") : Tr.tr("Qt version it was built with is unknown");
     }
 
     // Rebuild commands, run in a terminal. The plugin is installed with the shell stopped: replacing a loaded .so
@@ -69,6 +75,7 @@ PageBase {
                     } catch (e) {
                         root.data = {};
                     }
+                    root.loaded = true;
                 }
             }
         }
@@ -81,18 +88,27 @@ PageBase {
         InfoRow {
             first: true
             label: Tr.tr("Installed")
-            value: root.data.qtInstalled ?? "…"
+            value: root.data.qtInstalled || root.missingValue
         }
 
         InfoRow {
             last: true
             label: Tr.tr("Running in the shell")
-            value: root.qtRunning || "…"
+            value: root.qtRunning || Tr.tr("Unknown")
             subtext: root.data.qtInstalled && root.qtRunning && root.qtRunning !== root.data.qtInstalled ? Tr.tr("Qt was updated: restart the shell (Ctrl+Super+R) after rebuilding") : ""
         }
 
         SectionHeader {
             text: Tr.tr("Shell components")
+        }
+
+        // caelestia4: system.py gave no components (still checking, or it failed)
+        InfoRow {
+            visible: root.components.length === 0
+            first: true
+            last: true
+            icon: root.loaded && !proc.running ? "error" : "sync"
+            label: root.loaded && !proc.running ? Tr.tr("Couldn't read the shell components") : Tr.tr("Checking…")
         }
 
         Repeater {
@@ -113,21 +129,16 @@ PageBase {
                     icon: comp.modelData.needsRebuild === true ? "warning" : "extension"
                     iconColour: comp.modelData.needsRebuild === true ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
                     label: comp.modelData.name === "Caelestia plugin" ? Tr.tr("Caelestia plugin") : comp.modelData.name // system.py's name
-                    value: [comp.modelData.version, comp.modelData.revision].filter(s => s).join(" · ") || "…"
+                    value: [comp.modelData.version, comp.modelData.revision].filter(s => s).join(" · ") || root.missingValue
                     subtext: root.statusFor(comp.modelData)
-                }
-
-                InfoRow {
-                    visible: (comp.modelData.modules ?? []).length > 0
-                    label: Tr.tr("QML modules")
-                    subtext: (comp.modelData.modules ?? []).map(m => `Caelestia.${m}`).join(", ")
                 }
 
                 RowButton {
                     last: true
                     icon: "build"
                     text: Tr.tr("Rebuild")
-                    subtext: comp.modelData.name === "Quickshell" ? Tr.tr("makepkg in packaging/caelestia4-quickshell, in a terminal") : Tr.tr("tools/build-caelestia-plugin.sh, then reinstalls it with the shell stopped")
+                    // caelestia4: what it does, not the commands (rebuildCommand); disabled with the reason
+                    subtext: !root.repo ? (root.loaded ? Tr.tr("Needs the caelestia_4 source folder, which wasn't found") : Tr.tr("Checking…")) : comp.modelData.name === "Quickshell" ? Tr.tr("Builds and reinstalls it in a terminal, then restarts the shell") : Tr.tr("Builds it in a terminal, then reinstalls it with the shell stopped for a moment")
                     disabled: !root.repo
                     onClicked: root.inTerminal(root.rebuildCommand(comp.modelData))
                 }

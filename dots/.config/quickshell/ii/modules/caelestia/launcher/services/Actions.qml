@@ -17,7 +17,8 @@ Searcher {
         return search.slice(GlobalConfig.launcher.actionPrefix.length);
     }
 
-    list: variants.instances
+    // caelestia4: plus "Search settings", which types ">settings " (see NexusSettings)
+    list: [...variants.instances, searchSettings]
     useFuzzy: GlobalConfig.launcher.useFuzzy.actions
 
     Variants {
@@ -29,6 +30,15 @@ Searcher {
         }
 
         Action {}
+    }
+
+    readonly property Action searchSettings: Action {
+        modelData: ({
+                name: Tr.markCtx("Search settings", "launcher action"),
+                description: Tr.mark("Find a setting and open it"),
+                icon: "manage_search",
+                command: ["autocomplete", "settings"]
+            })
     }
 
     component Action: QtObject {

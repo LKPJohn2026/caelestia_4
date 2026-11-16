@@ -1215,5 +1215,7 @@
   "Repo packages updated; AUR packages left for next time": "Đã cập nhật gói từ kho; để lại gói AUR cho lần sau",
   "The shell didn't restart: systemctl --user status caelestia4-shell": "Shell không khởi động lại được: systemctl --user status caelestia4-shell",
   "The shell was rebuilt: run systemctl --user restart caelestia4-shell when you can.": "Shell đã được build lại: hãy chạy systemctl --user restart caelestia4-shell khi tiện.",
-  "The caelestia_4 clone has local changes, and the rebuild includes them.": "Bản clone caelestia_4 có thay đổi cục bộ, và bản build lại đã gồm các thay đổi đó."
+  "The caelestia_4 clone has local changes, and the rebuild includes them.": "Bản clone caelestia_4 có thay đổi cục bộ, và bản build lại đã gồm các thay đổi đó.",
+  "Couldn't switch wallpaper": "Không đổi được hình nền",
+  "No such file: %1": "Không có tệp: %1"
 }

@@ -109,6 +109,13 @@ StackView {
             root.openSubPage(idx, false);
         }
 
+        // navigate() on this page: back to the main page and straight to the new stack, without animation
+        function onSubPagesReset(): void {
+            root.pop(root.get(0), StackView.Immediate);
+            for (const page of root.nState.subPageIdxStack)
+                root.openSubPage(page, true);
+        }
+
         function onSubPageClosed(): void {
             if (root.depth < root.nState.subPageIdxStack.length) {
                 console.log(logCat, "Attempted to close page while depth < stack depth. Ignoring.");

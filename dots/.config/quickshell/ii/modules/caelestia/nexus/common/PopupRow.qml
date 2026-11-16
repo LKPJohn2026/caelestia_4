@@ -20,6 +20,47 @@ ConnectedRect {
     Layout.fillWidth: true
     implicitHeight: navLayout.implicitHeight + navLayout.anchors.margins * 2
 
+    // caelestia4: keyboard: Tab focuses the row, Space/Enter open or close the popup, Esc closes it. Opened with the
+    // mouse, the row takes focus too (no ring) so Esc works. Keyboard support stops at open/close: focus stays on the
+    // row and the popup content (any Item the page passes, e.g. the Apps page's default-app list) gets no keys, so
+    // choosing inside the popup needs the mouse
+    activeFocusOnTab: true
+    Keys.onSpacePressed: popup.open = !popup.open
+    Keys.onReturnPressed: popup.open = !popup.open
+    Keys.onEnterPressed: popup.open = !popup.open
+    Keys.onEscapePressed: event => {
+        if (popup.open)
+            popup.open = false;
+        else
+            event.accepted = false;
+    }
+    onActiveFocusChanged: {
+        if (!activeFocus)
+            focusRing.pointerFocus = false;
+    }
+
+    Accessible.role: Accessible.Button
+    Accessible.name: label.text
+    Accessible.description: status.text
+    Accessible.onPressAction: popup.open = !popup.open
+
+    Connections {
+        target: popup
+
+        function onOpenChanged(): void {
+            if (popup.open && !root.activeFocus) {
+                focusRing.pointerFocus = true;
+                root.forceActiveFocus();
+            }
+        }
+    }
+
+    FocusRing {
+        id: focusRing
+
+        focusItem: root
+    }
+
     StateLayer {
         id: stateLayer
 
@@ -52,7 +93,7 @@ ConnectedRect {
 
                 Layout.fillWidth: true
                 font: Tokens.font.body.small
-                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
             }
 
             StyledText {
@@ -62,7 +103,7 @@ ConnectedRect {
                 visible: text
                 color: Colours.palette.m3outline
                 font: Tokens.font.label.small
-                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
                 animate: true
             }
         }

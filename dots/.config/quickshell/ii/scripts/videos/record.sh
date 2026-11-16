@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # caelestia4: screen recording with gpu-screen-recorder (as Caelestia's `caelestia record`), replacing end-4's
-# wf-recorder: NVENC encoding (HEVC at 7680x2160, where H.264 tops out at 4096 wide) and a real pause.
+# wf-recorder: NVENC encoding (HEVC, so screens wider than H.264's 4096 px limit record) and a real pause.
 # Same flags as end-4's script, so every caller keeps working:
 #   record.sh [--fullscreen] [--sound] [--region "X,Y WxH"]   start; or stop if a recording is running
 #   record.sh --pause                                           pause / resume the running recording

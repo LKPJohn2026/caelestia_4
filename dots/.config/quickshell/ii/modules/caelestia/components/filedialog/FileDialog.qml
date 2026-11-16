@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Caelestia.Config // caelestia4: Config.screen / Tokens.screen
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
@@ -31,6 +32,14 @@ LazyLoader {
 
     FloatingWindow {
         id: root
+        // caelestia4: Caelestia's per-screen config for the content (Tokens.* / Config.* warn without one), kept while
+        // Qt has the window on its nameless placeholder screen (ScreenName)
+        readonly property ScreenName configScreenName: ScreenName {
+            window: root
+        }
+        contentItem.Config.screen: configScreenName.name
+        contentItem.Tokens.screen: configScreenName.name
+
 
         property list<string> cwd: loader.cwd
         property string filterLabel: loader.filterLabel

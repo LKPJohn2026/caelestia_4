@@ -35,6 +35,10 @@ PageBase {
             implicitHeight: headerLayout.implicitHeight + Tokens.padding.medium * 2
             first: true
 
+            ActionMark {
+                sid: "x:network.allNetworks"
+            }
+
             RowLayout {
                 id: headerLayout
 

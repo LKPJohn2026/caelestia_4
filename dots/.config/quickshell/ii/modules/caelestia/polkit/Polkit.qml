@@ -16,20 +16,30 @@ import qs.modules.caelestia.adapters
 
 // caelestia4: polkit authentication dialog in Caelestia style (replaces end-4's modules/ii/polkit in the caelestia
 // family). Same agent (end-4 PolkitService). Every screen gets a dimmed scrim; the dialog itself (and keyboard
-// focus) is on the monitor that was focused when the request came in.
+// focus) is on the monitor that was focused when the request came in, or, if that one is gone, the focused one (dialogOn).
 // Enter = authenticate, Esc = cancel. Wrong password: the field shakes and the error shows; verifying: spinner.
 Scope {
     id: root
 
     readonly property var flow: E4.PolkitService.flow
     property string dialogScreen
+    // caelestia4: where the dialog is now. The monitor focused when the request came may be gone or not real: on resume
+    // a monitor can drop off and Hyprland's focus is on its FALLBACK output, which gets no window (Screens.real). The
+    // dialog then goes to the focused real screen, or the first, and moves back if that monitor returns.
+    readonly property string dialogOn: {
+        const names = Screens.real.map(s => s.name);
+        if (names.includes(dialogScreen))
+            return dialogScreen;
+        const focused = Hypr.focusedMonitor?.name ?? "";
+        return names.includes(focused) ? focused : (names[0] ?? "");
+    }
 
     Connections {
         target: E4.PolkitService
 
         function onActiveChanged(): void {
             if (E4.PolkitService.active)
-                root.dialogScreen = Hypr.focusedMonitor?.name ?? Quickshell.screens[0].name;
+                root.dialogScreen = Hypr.focusedMonitor?.name ?? ""; // caelestia4: no screens[0] (none during a drop)
         }
     }
 
@@ -37,13 +47,13 @@ Scope {
         active: E4.PolkitService.active
 
         sourceComponent: Variants {
-            model: Quickshell.screens
+            model: Screens.real // caelestia4: not Qt's nameless placeholder screen
 
             StyledWindow {
                 id: win
 
                 required property ShellScreen modelData
-                readonly property bool hasDialog: modelData.name === (root.dialogScreen || Hypr.focusedMonitor?.name)
+                readonly property bool hasDialog: modelData.name === root.dialogOn
 
                 screen: modelData
                 name: "polkit"

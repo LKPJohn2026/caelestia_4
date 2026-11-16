@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# no user manager in the sandbox: run the command after "--"
+printf 'systemd-run %s\n' "$*" >> /t/logs/calls.log
+while (($#)) && [[ $1 != -- ]]; do shift; done; shift
+exec "$@"

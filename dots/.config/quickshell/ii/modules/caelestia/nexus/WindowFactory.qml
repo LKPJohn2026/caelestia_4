@@ -25,6 +25,18 @@ Singleton {
         openWindow = nexusComp.createObject(parent ?? dummy, props);
     }
 
+    // caelestia4: opens Nexus at a route ("page/sub#key", NexusState.navigate), or takes the open window there
+    function openAt(route: string): void {
+        if (openWindow) {
+            openWindow.nState.navigate(route);
+            create();
+        } else {
+            create(null, {
+                initialRoute: route
+            });
+        }
+    }
+
     QtObject {
         id: dummy
     }
@@ -34,6 +46,9 @@ Singleton {
 
         FloatingWindow {
             id: win
+
+            property string initialRoute
+            readonly property NexusState nState: nexus.nState
 
             color: Colours.tPalette.m3surface
             surfaceFormat.opaque: false
@@ -49,10 +64,15 @@ Singleton {
             minimumSize.width: contentItem.Tokens.sizes.nexus.minWidth
             minimumSize.height: contentItem.Tokens.sizes.nexus.minHeight
 
-            contentItem.Config.screen: screen.name
-            contentItem.Tokens.screen: screen.name
+            // caelestia4: the screen's name, kept while Qt has the window on its nameless placeholder screen (ScreenName)
+            readonly property ScreenName configScreenName: ScreenName {
+                window: win
+            }
+            contentItem.Config.screen: configScreenName.name
+            contentItem.Tokens.screen: configScreenName.name
 
-            title: Tr.tr("Nexus — %1").arg(PageRegistry.pages[nexus.nState.currentPageIdx].label)
+            // caelestia4: "Nexus — " stays untranslated: hypr/hyprland/rules.lua floats and centres the window by it
+            title: "Nexus — " + (PageRegistry.pages[nexus.nState.currentPageIdx]?.label ?? "")
 
             Component.onDestruction: {
                 if (root.openWindow === win)
@@ -65,6 +85,7 @@ Singleton {
                 anchors.fill: parent
                 nState.screen: win.screen
                 nState.isWindow: true
+                nState.initialRoute: win.initialRoute
                 onClose: win.destroy()
             }
 

@@ -20,6 +20,10 @@ ConnectedRect {
     Layout.fillWidth: true
     implicitHeight: rowLayout.implicitHeight + rowLayout.anchors.margins * 2
 
+    Accessible.role: Accessible.StaticText
+    Accessible.name: label.text
+    Accessible.description: [subtext, value.text].filter(s => s).join(". ")
+
     Component {
         id: iconComp
 
@@ -54,7 +58,7 @@ ConnectedRect {
 
                 Layout.fillWidth: true
                 font: Tokens.font.body.small
-                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
             }
 
             StyledText {
@@ -63,7 +67,7 @@ ConnectedRect {
                 text: root.subtext
                 color: Colours.palette.m3outline
                 font: Tokens.font.label.small
-                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
             }
         }
 

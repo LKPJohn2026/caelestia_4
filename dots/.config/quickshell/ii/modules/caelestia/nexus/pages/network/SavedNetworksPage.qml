@@ -33,6 +33,10 @@ PageBase {
             placeholderIcon: "wifi_find"
             placeholderText: Tr.tr("No saved networks")
 
+            ActionMark {
+                sid: "x:network.savedNetworks"
+            }
+
             model: ScriptModel {
                 values: [...Nmcli.savedConnectionSsids].sort((a, b) => a.localeCompare(b))
             }
@@ -58,7 +62,7 @@ PageBase {
                 onClicked: {
                     root.nState.selectedNetworkSsid = saved.modelData;
                     root.nState.networkDetailsFromSaved = true;
-                    root.nState.openSubPage(3); // Shared network detail/edit sub-page
+                    root.nState.openSubPage("detail");
                 }
 
                 RowLayout {

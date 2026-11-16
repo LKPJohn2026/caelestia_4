@@ -13,7 +13,7 @@ Item {
     required property HyprlandToplevel client
 
     implicitWidth: child.implicitWidth
-    implicitHeight: screen.height * Tokens.sizes.winfo.heightMult
+    implicitHeight: (screen?.height ?? 0) * Tokens.sizes.winfo.heightMult
 
     RowLayout {
         id: child

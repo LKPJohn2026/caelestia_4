@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import Caelestia.Blobs
 import Caelestia.Config
 import qs.modules.caelestia.components
@@ -8,6 +9,8 @@ Item {
     id: root
 
     property alias icon: icon.text
+    // caelestia4: shown on hover while the popup is closed
+    property string tooltip
     property alias color: blobGroup.color
     readonly property alias hovered: btn.containsMouse
     property bool open
@@ -115,11 +118,22 @@ Item {
         hoverEnabled: true
         onClicked: root.open = !root.open
 
+        // caelestia4: a button for screen readers. Keyboard focus stays on the row around it (PopupRow), which
+        // opens and closes the popup with Space/Enter, so this isn't a second tab stop
+        Accessible.role: Accessible.Button
+        Accessible.name: root.tooltip
+        Accessible.onPressAction: root.open = !root.open
+
+        ToolTip.visible: !!root.tooltip && btn.containsMouse && !root.open
+        ToolTip.delay: 500
+        ToolTip.text: root.tooltip
+
         MaterialIcon {
             id: icon
 
             anchors.centerIn: parent
-            text: "view_apps"
+            // caelestia4: was "view_apps", whose three bars read as a missing glyph
+            text: "swap_horiz"
             color: Colours.palette.m3onSurfaceVariant
             fontStyle: Tokens.font.icon.medium
         }

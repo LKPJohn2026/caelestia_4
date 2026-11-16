@@ -420,6 +420,19 @@ Singleton {
                     // what fills a screen of another shape: "cover" (cut off), "contain-blur", "seam" (seam carving)
                     property string mode: "cover"
                 }
+                // caelestia4: a random wallpaper transition at each change (adapters/WallTransition.qml; Nexus → Wallpaper &
+                // style → Transition: Random). Off = shell.json background.wallpaperTransition. `pool` holds Caelestia's
+                // WallTransition names; the default leaves out the six that draw circles or squares,
+                // stretched on a very wide screen (Iris, PolkaDotsCurtain, InkSplash, InkwellDrop, PuzzleRight,
+                // RandomSquares)
+                property JsonObject transitionRandom: JsonObject {
+                    property bool enable: false
+                    property list<string> pool: ["ChromaticBloom", "ColourDistance", "Crossfade", "Crosshatch", "Crosswarp",
+                        "Directional", "DirectionalWipe", "FadeColour", "Glitch", "GlitchDisplace", "HeatMelt", "Morph",
+                        "ParametricGlitch", "Perlin", "Pixelate", "PixelfadeWave", "PlasmaFlow", "Smoke", "SoftWarpFade",
+                        "VoronoiShatter", "ZoomBlurPull"]
+                    property bool noRepeat: true // never the same one twice in a row
+                }
                 property bool hideWhenFullscreen: true
                 property JsonObject parallax: JsonObject {
                     property bool vertical: false

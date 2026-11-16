@@ -11,6 +11,7 @@ import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
 import qs.modules.caelestia.nexus.common
+import qs.modules.caelestia.nexus.pages.network
 
 PageBase {
     id: root
@@ -27,6 +28,8 @@ PageBase {
         spacing: Tokens.spacing.extraSmall / 2
 
         ToggleRow {
+            id: btToggle
+
             first: true
             text: Tr.tr("Bluetooth")
             font: Tokens.font.body.medium
@@ -35,6 +38,12 @@ PageBase {
             onToggled: {
                 if (root.adapter)
                     root.adapter.enabled = checked;
+            }
+
+            ActionMark {
+                parent: btToggle.bg
+                row: btToggle
+                sid: "x:bluetooth.enabled"
             }
         }
 
@@ -158,7 +167,7 @@ PageBase {
 
                                     onClicked: {
                                         root.nState.selectedBtDevice = device.modelData;
-                                        root.nState.openSubPage(1); // Per device info page
+                                        root.nState.openSubPage("device");
                                     }
                                 }
                             }
@@ -180,22 +189,38 @@ PageBase {
             last: true
             icon: "add"
             text: Tr.tr("Pair new device")
+            subtext: root.btEnabled ? "" : Tr.tr("Turn on Bluetooth first")
             disabled: !root.btEnabled
-            onClicked: root.nState.openSubPage(2)
+            onClicked: root.nState.openSubPage("pairing")
+
+            ActionMark {
+                sid: "x:bluetooth.pair"
+            }
         }
 
         ToggleRow {
+            id: discoverableToggle
+
             Layout.topMargin: Tokens.spacing.large - parent.spacing
 
             first: true
             // TRANSLATORS: adjective: other devices can find this computer
             text: Tr.trCtx("Discoverable", "bluetooth setting")
-            subtext: Tr.tr("Allow nearby devices to find this one")
+            // caelestia4: says why it is off while Bluetooth is off
+            subtext: root.btEnabled ? Tr.tr("Allow nearby devices to find this one") : Tr.tr("Turn on Bluetooth first")
             disabled: !root.btEnabled
+            // caelestia4: dims the title and reason too, as "Pair new device" above does (`disabled` only greys the switch)
+            contentItem.opacity: root.btEnabled ? 1 : 0.5
             value: root.adapter?.discoverable ?? false
             onToggled: {
                 if (root.adapter)
                     root.adapter.discoverable = checked;
+            }
+
+            ActionMark {
+                parent: discoverableToggle.bg
+                row: discoverableToggle
+                sid: "x:bluetooth.discoverable"
             }
 
             Behavior on opacity {
@@ -204,15 +229,24 @@ PageBase {
         }
 
         ToggleRow {
+            id: pairableToggle
+
             last: true
             // TRANSLATORS: adjective: other devices are allowed to pair with this computer
             text: Tr.trCtx("Pairable", "bluetooth setting")
-            subtext: Tr.tr("Allow nearby devices to pair with this one")
+            subtext: root.btEnabled ? Tr.tr("Allow nearby devices to pair with this one") : Tr.tr("Turn on Bluetooth first")
             disabled: !root.btEnabled
+            contentItem.opacity: root.btEnabled ? 1 : 0.5
             value: root.adapter?.pairable ?? false
             onToggled: {
                 if (root.adapter)
                     root.adapter.pairable = checked;
+            }
+
+            ActionMark {
+                parent: pairableToggle.bg
+                row: pairableToggle
+                sid: "x:bluetooth.pairable"
             }
 
             Behavior on opacity {

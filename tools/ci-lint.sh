@@ -6,6 +6,8 @@
 #   3. JSON files parse (translations, presets, settings)
 #   4. Python files parse
 #   5. shellcheck (warnings and errors) on this fork's own shell scripts; the ones from end-4 aren't checked
+#   6. Nexus coverage: every end-4 and Caelestia option has a Nexus row or an ignored.json reason, and
+#      registry/E4Defaults.js matches modules/common/Config.qml (tools/nexus-coverage.py; reads files only)
 # Needs: bash, git, luac5.4 (or luac), jq, python3, shellcheck. Locally a missing tool is skipped with a note; in CI
 # (CI=true) it fails.
 set -uo pipefail
@@ -64,6 +66,12 @@ else
   mapfile -d '' scripts < <(tracked install.sh 'tools/*.sh' 'tools/tests/**/*.sh' 'dots/.config/quickshell/ii/scripts/caelestia4/*.sh' 'dots-extra/**/*.sh')
   shellcheck --severity=warning -- "${scripts[@]}" || fail=1
   echo "${#scripts[@]} files"
+fi
+
+echo "== Nexus coverage"
+if ! command -v python3 >/dev/null; then missing python3
+else
+  python3 -I tools/nexus-coverage.py --strict --check-defaults || fail=1
 fi
 
 [[ $fail -eq 0 ]] && echo "ci-lint: OK" || echo "ci-lint: FAILED"

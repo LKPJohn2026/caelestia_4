@@ -26,6 +26,15 @@ DialogRowButton {
             selectedItem = null;
     }
 
+    // caelestia4: Up/Down in the open dialog move the selection (Enter then accepts it)
+    onKeyNavigated: delta => {
+        const keys = (root.model ?? []).map(m => root.keyFor(m));
+        if (!keys.length)
+            return;
+        const cur = keys.indexOf(root.selectedItem);
+        root.selectedItem = keys[cur < 0 ? (delta > 0 ? 0 : keys.length - 1) : Math.max(0, Math.min(keys.length - 1, cur + delta))];
+    }
+
     acceptAllowed: !!selectedItem
     separateContent: true
     horizontalContentMargin: -Tokens.padding.small
@@ -37,6 +46,12 @@ DialogRowButton {
             bottomMargin: Tokens.padding.large
 
             model: root.model
+            currentIndex: (root.model ?? []).findIndex(m => root.keyFor(m) === root.selectedItem)
+            highlightFollowsCurrentItem: false
+            onCurrentIndexChanged: {
+                if (currentIndex >= 0)
+                    positionViewAtIndex(currentIndex, ListView.Contain);
+            }
 
             delegate: StyledRect {
                 id: item
@@ -75,7 +90,7 @@ DialogRowButton {
 
                     text: root.labelFor(item.modelData)
                     color: item.selected ? Colours.palette.m3onTertiaryContainer : Colours.palette.m3onSurface
-                    elide: Text.ElideRight
+                    wrapMode: Text.WordWrap
                 }
 
                 MaterialIcon {

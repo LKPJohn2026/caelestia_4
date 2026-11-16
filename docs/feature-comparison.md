@@ -104,7 +104,7 @@ Status legend:
 | Feature | Status | Notes |
 |---|---|---|
 | PAM lock with clock, profile picture, password field | 🔁 Equivalent | hyprlock with the Caelestia theme (survives monitor drop on wake) |
-| Lock screen extras: notifications, media, weather, resources, fetch | 🔁 Equivalent | hyprlock (Caelestia layout) has weather, system, media, resources and, since 2026-10-14, notifications (app + summary, newest 4); read-only, no media buttons. Kept hyprlock over the in-shell lock: it survives the G95NC dropping off DP on wake |
+| Lock screen extras: notifications, media, weather, resources, fetch | 🔁 Equivalent | hyprlock (Caelestia layout) has weather, system, media, resources and, since 2026-10-14, notifications (app + summary, newest 4); read-only, no media buttons. Kept hyprlock over the in-shell lock: it survives a monitor dropping off DisplayPort on wake |
 
 ### Area picker (modules/areapicker)
 | Feature | Status | Notes |
@@ -144,7 +144,7 @@ Status legend:
 | `caelestia toggle <special workspace>`: communication (Discord…), music (Spotify…), sysmon (btop), todo (Todoist) | ✅ | hyprland/specialws.lua (upstream's Lua toggle): Ctrl+Shift+Esc sysmon (btop), Ctrl+Super+M music, Super+Alt+D communication, Super+R todo; apps start on first use, strays are gathered; apps from ~/.config/caelestia/cli.json `toggles` |
 | `caelestia scheme`: 14 preset schemes × flavours × light/dark × variants | ✅ | `scheme.py set NAME FLAVOUR` / `set dynamic`; a preset survives wallpaper changes; single-mode presets keep their mode |
 | `caelestia screenshot` (region, freeze) | 🔁 Equivalent | region selector |
-| `caelestia record` (region, sound, pause, path to clipboard) | ✅ | record.sh uses gpu-screen-recorder like Caelestia (NVENC, HEVC at 7680x2160): pause/resume (SIGUSR2); region, sound, full screen; stopping copies the file to the clipboard (text/uri-list) |
+| `caelestia record` (region, sound, pause, path to clipboard) | ✅ | record.sh uses gpu-screen-recorder like Caelestia (NVENC, HEVC for screens wider than 4096 px): pause/resume (SIGUSR2); region, sound, full screen; stopping copies the file to the clipboard (text/uri-list) |
 | `caelestia clipboard` (pick / delete entries) | ✅ C | launcher `;` |
 | `caelestia emoji` (+ fetch glyph data) | ✅ C | launcher `:` |
 | `caelestia wallpaper` (set / random / size filter / preview) | 🔁 Equivalent | switchwall.sh, random wallpaper fetch with size + shape filters |
@@ -222,9 +222,9 @@ cli `c5f478d`; the vendored shell was `21a75375`, 19 commits behind; **vendored 
 
 - **Wallpaper transitions**: shader transitions between wallpapers (new Multimedia + Shaders plugin modules, shaders from
   skwd-paper). ✅ 2026-10-22: the background uses Caelestia's WallpaperImpl (27 transitions, picked in Nexus → Wallpaper
-  & style; stills cached as compressed KTX, 16.6 MB instead of ~66 MB at 7680×2160).
+  & style; stills cached as compressed KTX, about 4× smaller than uncompressed).
 - **Video wallpapers inside the shell** (Visual component), shown in Nexus too. 🔁 Hybrid by choice: videos are listed
-  and previewed (first frame / launcher) by Caelestia's Visual, but play on mpvpaper. Measured on 7680×2160 H.264:
+  and previewed (first frame / launcher) by Caelestia's Visual, but play on mpvpaper. Measured on a large H.264 video:
   mpvpaper 2.4 % of a core, QtMultimedia 18 % (CUDA) / 24 % (VAAPI) and +0.5 GB in the shell, since Qt copies every
   decoded frame through system memory.
 - **Pause-wallpaper quick toggle** (utilities). ✅ Added 2026-10-22 for mpvpaper video wallpapers (mpv IPC; remembered across logins).

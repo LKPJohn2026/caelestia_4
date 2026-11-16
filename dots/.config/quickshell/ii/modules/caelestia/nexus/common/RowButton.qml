@@ -14,6 +14,8 @@ ConnectedRect {
     property alias subtext: subLabel.text
     property string trailingIcon
     property alias disabled: stateLayer.disabled
+    // caelestia4: set before giving the row focus after a mouse action, so the ring stays hidden (DialogRowButton)
+    property alias pointerFocus: focusRing.pointerFocus
 
     readonly property alias iconLabel: iconLabel
     readonly property alias label: label
@@ -21,13 +23,43 @@ ConnectedRect {
 
     signal clicked(event: MouseEvent)
 
+    // caelestia4: keyboard: Tab focuses the row, Enter/Space click it (event null)
+    function keyClick(): void {
+        if (!root.disabled)
+            root.clicked(null);
+    }
+
     Layout.fillWidth: true
     implicitHeight: row.implicitHeight + Tokens.padding.medium * 2
+
+    activeFocusOnTab: !disabled
+    Keys.onReturnPressed: keyClick()
+    Keys.onEnterPressed: keyClick()
+    Keys.onSpacePressed: keyClick()
+    onActiveFocusChanged: {
+        if (!activeFocus)
+            focusRing.pointerFocus = false;
+    }
+
+    Accessible.role: Accessible.Button
+    Accessible.name: label.text
+    Accessible.description: subLabel.text
+    Accessible.onPressAction: keyClick()
 
     StateLayer {
         id: stateLayer
 
+        onPressed: {
+            if (root.activeFocus)
+                focusRing.pointerFocus = true;
+        }
         onClicked: e => root.clicked(e)
+    }
+
+    FocusRing {
+        id: focusRing
+
+        focusItem: root
     }
 
     RowLayout {
@@ -66,7 +98,7 @@ ConnectedRect {
                 anchors.right: parent.right
 
                 font: Tokens.font.body.small
-                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
             }
 
             StyledText {
@@ -78,7 +110,7 @@ ConnectedRect {
                 visible: text
                 color: Colours.palette.m3outline
                 font: Tokens.font.label.small
-                elide: Text.ElideRight
+                wrapMode: Text.WordWrap
             }
         }
 

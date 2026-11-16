@@ -11,6 +11,35 @@ Item {
     property int lastPageIdx
     property int animOff
     property Item currentItem
+    property bool ready
+
+    // caelestia4: the open ConfirmDialog or DialogRowButton dialog on the page, or null. A ConfirmDialog moves itself
+    // onto the container while open; a DialogRowButton stays in the page tree (only its card moves). Found by their
+    // API (opened/reject, open/cancel/acceptAllowed), as the dialogs don't report themselves
+    function openDialog(): Item {
+        const find = item => {
+            if (!item)
+                return null;
+            if (item.opened === true && typeof item.reject === "function")
+                return item;
+            if (item.open === true && typeof item.cancel === "function" && "acceptAllowed" in item)
+                return item;
+            for (const child of item.children) {
+                const found = find(child);
+                if (found)
+                    return found;
+            }
+            return null;
+        };
+        return find(container);
+    }
+
+    function closeDialog(dialog: Item): void {
+        if (typeof dialog.reject === "function")
+            dialog.reject();
+        else
+            dialog.cancel();
+    }
 
     function loadPage(idx: int): void {
         if (currentItem)
@@ -41,11 +70,20 @@ Item {
         objectName: "PageContainer"
         anchors.fill: parent
         layer.enabled: opacity < 1
-        Component.onCompleted: root.loadPage(root.nState.currentPageIdx)
+        Component.onCompleted: {
+            // caelestia4: a window opened at a route starts there, without the page-switch animation
+            if (root.nState.initialRoute)
+                root.nState.navigate(root.nState.initialRoute);
+            root.lastPageIdx = root.nState.currentPageIdx;
+            root.ready = true;
+            root.loadPage(root.nState.currentPageIdx);
+        }
     }
 
     Connections {
         function onCurrentPageIdxChanged(): void {
+            if (!root.ready)
+                return;
             switchAnim.complete();
             root.animOff = root.Tokens.padding.extraLarge * (root.nState.currentPageIdx > root.lastPageIdx ? 1 : -1);
             switchAnim.start();

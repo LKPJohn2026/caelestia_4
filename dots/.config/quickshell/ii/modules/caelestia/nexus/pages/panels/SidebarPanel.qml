@@ -6,46 +6,48 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
 
+// caelestia4: reference page for registry rows (registry/RegPanels.qml): each row names its setting and takes title,
+// description, value, range, modified/reset and the "turn on X first" reason from the registry. RowGroup sets the
+// rows' first/last
 PageBase {
     id: root
 
     title: Tr.tr("Sidebar")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
         SectionHeader {
-            first: true
             text: Tr.tr("General")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.trCtx("Enabled", "toggle label")
-            value: Config.sidebar.enabled
-            onToggled: GlobalConfig.sidebar.enabled = checked
+            setting: "c:sidebar.enabled"
         }
 
         ToggleRow {
-            text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
-            value: Config.sidebar.showOnHover
-            onToggled: GlobalConfig.sidebar.showOnHover = checked
+            setting: "c:sidebar.showOnHover"
         }
 
         StepperRow {
-            last: true
-            label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the sidebar opens")
-            value: Config.sidebar.dragThreshold
-            from: 0
-            to: 200
-            stepSize: 5
-            onMoved: v => GlobalConfig.sidebar.dragThreshold = v
+            setting: "c:sidebar.minHoverThreshold"
+        }
+
+        StepperRow {
+            setting: "c:sidebar.dragThreshold"
+        }
+
+        // caelestia4: the picture of the empty notification list (sidebar/NotifDock.qml)
+        SectionHeader {
+            text: Tr.tr("Look")
+        }
+
+        AssetPathRow {
+            setting: "c:paths.noNotifsPic"
+            hint: Tr.tr("None")
         }
     }
 }

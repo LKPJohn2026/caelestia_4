@@ -64,6 +64,7 @@ PageBase {
                 valueLabel: Strings.percentOne(value)
                 value: stream.modelData?.audio?.volume ?? 0
                 enabled: !stream.modelData?.audio?.muted
+                wheelStep: GlobalConfig.services.audioIncrement
                 onMoved: v => Audio.setStreamVolume(stream.modelData, v)
             }
         }

@@ -12,155 +12,115 @@ PageBase {
 
     // caelestia4: presets on = the top edge opens no dashboard (drawers/Interactions.qml)
     readonly property bool presetsOn: E4C.Config.options.background.presetsEnabled
-    readonly property string presetsOffText: Tr.tr("Off while presets are on: Super+M opens the dashboard")
 
     title: Tr.tr("Dashboard")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
-        // General
         SectionHeader {
-            first: true
             text: Tr.tr("General")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.trCtx("Enabled", "toggle label")
-            value: Config.dashboard.enabled
-            onToggled: GlobalConfig.dashboard.enabled = checked
+            id: enabledRow
+
+            setting: "c:dashboard.enabled"
         }
 
         ToggleRow {
-            text: Tr.tr("Show on hover")
-            disabled: root.presetsOn
-            subtext: root.presetsOn ? root.presetsOffText : Tr.tr("Reveal when the cursor reaches the screen edge")
-            value: Config.dashboard.showOnHover
-            onToggled: GlobalConfig.dashboard.showOnHover = checked
+            id: hoverRow
+
+            // caelestia4: off while presets are on: the registry's `requires` gives the "Turn off" link. Super+M opens
+            // nothing while the dashboard itself is off (dashboard/Wrapper.qml), so the hint needs both
+            setting: "c:dashboard.showOnHover"
+            subtext: root.presetsOn && enabledRow.link.value === true ? Tr.tr("Super+M still opens the dashboard") : hoverRow.link.desc
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Show clock seconds")
-            subtext: Tr.tr("Display seconds for the clock in the main panel")
-            value: Config.dashboard.showClockSeconds
-            onToggled: GlobalConfig.dashboard.showClockSeconds = checked
+            setting: "c:dashboard.showClockSeconds"
         }
 
-        // Tabs
+        // caelestia4: presets on = a drag only closes it (drawers/Interactions.qml)
+        StepperRow {
+            id: dragRow
+
+            setting: "c:dashboard.dragThreshold"
+            subtext: root.presetsOn ? Tr.tr("How far to drag up to close the dashboard. Opening by drag is off while presets are on") : dragRow.link.desc
+        }
+
         SectionHeader {
             text: Tr.tr("Tabs")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.tr("Dashboard")
-            value: Config.dashboard.showDashboard
-            onToggled: GlobalConfig.dashboard.showDashboard = checked
+            setting: "c:dashboard.showDashboard"
         }
 
         ToggleRow {
-            text: Tr.tr("Media")
-            value: Config.dashboard.showMedia
-            onToggled: GlobalConfig.dashboard.showMedia = checked
+            setting: "c:dashboard.showMedia"
         }
 
         ToggleRow {
-            text: Tr.tr("Performance")
-            value: Config.dashboard.showPerformance
-            onToggled: GlobalConfig.dashboard.showPerformance = checked
+            setting: "c:dashboard.showPerformance"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Weather")
-            value: Config.dashboard.showWeather
-            onToggled: GlobalConfig.dashboard.showWeather = checked
+            setting: "c:dashboard.showWeather"
         }
 
-        // Performance widgets
+        // caelestia4: end-4's to-do and timer as dashboard tabs
+        ToggleRow {
+            setting: "e4:caelestia.dashboardTodo"
+        }
+
+        ToggleRow {
+            setting: "e4:caelestia.dashboardTimer"
+        }
+
         SectionHeader {
             text: Tr.tr("Performance widgets")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.tr("Battery")
-            value: Config.dashboard.performance.showBattery
-            onToggled: GlobalConfig.dashboard.performance.showBattery = checked
+            setting: "c:dashboard.performance.showBattery"
         }
 
         ToggleRow {
-            text: Tr.tr("GPU")
-            value: Config.dashboard.performance.showGpu
-            onToggled: GlobalConfig.dashboard.performance.showGpu = checked
+            setting: "c:dashboard.performance.showGpu"
         }
 
         ToggleRow {
-            text: Tr.tr("CPU")
-            value: Config.dashboard.performance.showCpu
-            onToggled: GlobalConfig.dashboard.performance.showCpu = checked
+            setting: "c:dashboard.performance.showCpu"
         }
 
         ToggleRow {
-            text: Tr.tr("Memory")
-            value: Config.dashboard.performance.showMemory
-            onToggled: GlobalConfig.dashboard.performance.showMemory = checked
+            setting: "c:dashboard.performance.showMemory"
         }
 
         ToggleRow {
-            text: Tr.tr("Storage")
-            value: Config.dashboard.performance.showStorage
-            onToggled: GlobalConfig.dashboard.performance.showStorage = checked
+            setting: "c:dashboard.performance.showStorage"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Network")
-            value: Config.dashboard.performance.showNetwork
-            onToggled: GlobalConfig.dashboard.performance.showNetwork = checked
+            setting: "c:dashboard.performance.showNetwork"
         }
 
-        // Behaviour
+        // caelestia4: the GIF next to the player (dash/Media.qml)
         SectionHeader {
-            text: Tr.tr("Behaviour")
+            text: Tr.tr("Media card")
         }
 
-        StepperRow {
-            first: true
-            last: true
-            label: Tr.tr("Drag threshold")
-            subtext: root.presetsOn ? root.presetsOffText : Tr.tr("Pixels dragged before the dashboard opens")
-            value: Config.dashboard.dragThreshold
-            from: 0
-            to: 200
-            stepSize: 5
-            onMoved: v => GlobalConfig.dashboard.dragThreshold = v
+        AssetPathRow {
+            setting: "c:paths.mediaGif"
+            hint: Tr.tr("None")
         }
 
-        // caelestia4: end-4's to-do and timer as dashboard tabs
-        SectionHeader {
-            text: Tr.tr("More tabs")
-        }
-
-        ToggleRow {
-            first: true
-            text: Tr.tr("To-do tab")
-            value: E4C.Config.options.caelestia.dashboardTodo
-            onToggled: E4C.Config.options.caelestia.dashboardTodo = checked
-        }
-
-        ToggleRow {
-            last: true
-            text: Tr.tr("Timer tab")
-            subtext: Tr.tr("Pomodoro and stopwatch")
-            value: E4C.Config.options.caelestia.dashboardTimer
-            onToggled: E4C.Config.options.caelestia.dashboardTimer = checked
+        SliderRow {
+            setting: "c:general.mediaGifSpeedAdjustment"
         }
     }
 }

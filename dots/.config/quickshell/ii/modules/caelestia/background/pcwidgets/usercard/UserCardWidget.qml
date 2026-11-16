@@ -457,7 +457,7 @@ AbstractBackgroundWidget {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: CA.ShellState.forActive().session = true
+                                    onClicked: { const s = CA.ShellState.forActive(); if (s) s.session = true; } // caelestia4: null while the monitor is gone
                                 }
                             }
                         }
@@ -736,7 +736,7 @@ AbstractBackgroundWidget {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: CA.ShellState.forActive().session = true
+                                    onClicked: { const s = CA.ShellState.forActive(); if (s) s.session = true; } // caelestia4: null while the monitor is gone
                                 }
                             }
                         }

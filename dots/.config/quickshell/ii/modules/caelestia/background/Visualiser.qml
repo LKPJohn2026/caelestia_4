@@ -16,7 +16,7 @@ Item {
     required property Item wallpaper
 
     readonly property bool shouldBeActive: Config.background.visualiser.enabled && (!Config.background.visualiser.autoHide || (Hypr.monitorFor(screen)?.activeWorkspace?.toplevels?.values.every(t => t.lastIpcObject?.floating) ?? true))
-    property real offset: shouldBeActive ? 0 : screen.height * 0.2
+    property real offset: shouldBeActive ? 0 : (screen?.height ?? 0) * 0.2 // caelestia4: the screen can go (monitor drop)
 
     opacity: shouldBeActive ? 1 : 0
 

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# no journal in the sandbox: run the command with its output in /t/logs/<tag>.log
+tag=cat
+while (($#)); do case $1 in -t) tag=$2; shift 2;; -p|--priority) shift 2;; -t*) tag=${1#-t}; shift;; --) shift; break;; -*) shift;; *) break;; esac; done
+printf 'systemd-cat -t %s %s\n' "$tag" "$*" >> /t/logs/calls.log
+exec "$@" >> "/t/logs/$tag.log" 2>&1

@@ -82,7 +82,38 @@ PageBase {
         }
         if (code === "limit")
             return Tr.tr("GitHub's limit of listings is reached: try again in a while, or sign in with gh auth login");
-        return error || Tr.tr("The repo couldn't be added");
+        return root.friendlyError(error) || Tr.tr("The repo couldn't be added");
+    }
+
+    // caelestia4: the script's error text ("pctrade/x: can't reach github.com ([Errno -3] Temporary failure in name
+    // resolution)", "[Errno 2] No such file or directory: '/x/presets.json'") in plain words; the raw text goes to the log
+    function friendlyError(raw: string): string {
+        const text = String(raw ?? "").trim();
+        if (!text)
+            return "";
+        console.warn(`PresetSelect: ${text}`);
+        const said = [];
+        for (const part of text.split("; ")) {
+            let s;
+            const missing = /No such file or directory: '([^']+)'/.exec(part);
+            if (missing)
+                // TRANSLATORS: %1 = a file name, e.g. presets.json
+                s = Tr.tr("Couldn't read presets: %1 is missing").arg(missing[1].split("/").pop());
+            else if (/can't reach|Errno -[0-9]|Temporary failure|Name or service|timed out|unreachable|Connection (refused|reset)/i.test(part))
+                s = root.catalogNames.length > 0 ? Tr.tr("GitHub couldn't be reached: the list from before is shown") : Tr.tr("GitHub couldn't be reached: check the internet connection");
+            else if (/limit of listings/.test(part))
+                s = Tr.tr("GitHub's limit of listings is reached: try again in a while, or sign in with gh auth login");
+            // caelestia4: anything else is technical too (an added repo's "owner/repo: KeyError"): plain words, never
+            // the raw text (it went to the log above)
+            else if (/^[\w.-]+\/[\w.-]+: /.test(part))
+                // TRANSLATORS: %1 = a GitHub repo, e.g. pctrade/end4-pCpresets
+                s = Tr.tr("Couldn't list the presets of %1").arg(part.slice(0, part.indexOf(": ")));
+            else
+                s = Tr.tr("Couldn't read presets");
+            if (said.indexOf(s) < 0)
+                said.push(s);
+        }
+        return said.join(" ");
     }
 
     function addSource(link: string): void {
@@ -295,7 +326,7 @@ PageBase {
                     if (JSON.stringify(d.sources ?? []) !== JSON.stringify(root.addedSources))
                         root.addedSources = d.sources ?? [];
                     root.fetched = d.fetched ?? 0;
-                    root.catalogError = d.error ?? "";
+                    root.catalogError = root.friendlyError(d.error ?? "");
                 } catch (e) {
                     root.catalogError = text.trim() ? Tr.tr("The gallery couldn't be read") : root.catalogError;
                 }
@@ -405,7 +436,17 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.small
 
+        // caelestia4: not a `setting` row: the script sets e4:background.presetsEnabled and puts the layout in place
+        // (writing the key first would make it think presets are on already). presetsLink only registers the row with
+        // the page, so a search result or link lands on it
         ToggleRow {
+            id: usePresets
+
+            readonly property RowSetting presetsLink: RowSetting {
+                sid: "e4:background.presetsEnabled"
+                row: usePresets
+            }
+
             first: true
             last: true
             disabled: root.runProc.running
@@ -413,6 +454,11 @@ PageBase {
             subtext: root.toggling ? root.status : root.toggleStatus || (root.presetsOn ? Tr.tr("A preset sets the wallpaper, widgets, colours, lock screen and avatar") : Tr.tr("Off: your own wallpaper, widgets and colours; presets aren't applied"))
             value: root.toggling ? root.toggleTo : root.presetsOn
             onToggled: root.setPresetsOn(checked)
+
+            RowPulse {
+                parent: usePresets.bg
+                link: usePresets.presetsLink
+            }
         }
 
         // everything below waits for presets to be on
@@ -455,7 +501,8 @@ PageBase {
                 disabled: root.runProc.running || root.presets.length === 0
                 icon: root.runProc.running && !root.toggling ? "hourglass_top" : "cloud_sync"
                 text: Tr.tr("Update installed presets")
-                subtext: (root.toggling ? "" : root.status) || Tr.tr("Your changes to a preset are kept; pictures stay on this computer")
+                // caelestia4: while disabled, why (R5)
+                subtext: (root.toggling ? "" : root.status) || (root.presets.length === 0 ? Tr.tr("No presets installed yet") : Tr.tr("Your changes to a preset are kept; pictures stay on this computer"))
                 onClicked: root.run(["--update"], Tr.tr("Updating…"), Tr.tr("Installed presets are up to date"))
             }
 
@@ -463,7 +510,7 @@ PageBase {
                 disabled: root.runProc.running || !root.canUndo
                 icon: "undo"
                 text: Tr.tr("Undo the last preset")
-                subtext: Tr.tr("Back to the wallpaper, widgets and lock screen from before it")
+                subtext: root.canUndo ? Tr.tr("Back to the wallpaper, widgets and lock screen from before it") : Tr.tr("Nothing to undo yet")
                 onClicked: root.run(["--undo"], Tr.tr("Restoring…"), Tr.tr("Restored"))
             }
 
@@ -487,10 +534,7 @@ PageBase {
             ToggleRow {
                 last: !E4C.Config.options.background.workspacePresets
 
-                text: Tr.tr("A preset per workspace")
-                subtext: Tr.tr("Going back to a workspace applies its preset again, colours too")
-                value: E4C.Config.options.background.workspacePresets
-                onToggled: E4C.Config.options.background.workspacePresets = checked
+                setting: "e4:background.workspacePresets"
             }
 
             RowButton {

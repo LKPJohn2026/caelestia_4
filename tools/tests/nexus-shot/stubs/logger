@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# the message after the options goes to calls.log
+args=("$@"); out=()
+while (($#)); do case $1 in -t|-p|--tag|--priority) shift 2;; -*) shift;; *) out+=("$1"); shift;; esac; done
+printf 'logger %s\n' "${args[*]}" >> /t/logs/calls.log

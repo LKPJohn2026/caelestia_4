@@ -2,7 +2,8 @@
 # caelestia4: download a random wallpaper and apply it (settings app > Appearance > Wallpaper).
 # Usage: random-wallpaper.sh <wallhaven|konachan|yandere> [min-w min-h [ratio-w ratio-h]]
 #   min-w/min-h  "Only wallpapers that fill my screen": at least this size (0 0 = any size)
-#   ratio-w/h    "Prefer my screen's shape": e.g. 7680 2160 (reduced to 32:9); omitted = any landscape
+#   ratio-w/h    "Prefer my screen's shape": e.g. 2560 1440 (reduced to 16:9), the screen's size read at runtime;
+#                omitted = any landscape
 # Priority: 1) exactly the monitor's resolution (when a size is given), 2) the screen's shape (aspect ratio),
 # 3) the closest shape / any landscape. Servers filter where they can (Wallhaven `resolutions=`, `ratios=`,
 # `atleast=`; Moebooru `width:>= height:>=`); for Moebooru the shape is ranked in a batch of 100 random posts.

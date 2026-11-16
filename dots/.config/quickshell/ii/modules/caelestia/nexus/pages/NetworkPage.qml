@@ -9,9 +9,13 @@ import qs.modules.caelestia.components
 import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.nexus.common
+import qs.modules.caelestia.nexus.pages.network
 
 PageBase {
     id: root
+
+    // caelestia4: the screen's value, the same layer the "Networks shown" row below reads (nexus.* is per screen)
+    readonly property int maxShown: root.Config.nexus.maxNetworksShown
 
     title: Tr.tr("Network")
 
@@ -58,6 +62,8 @@ PageBase {
         }
 
         ToggleRow {
+            id: wifiToggle
+
             Layout.topMargin: Nmcli.hasAvailableEthernet ? Tokens.spacing.large : 0
             first: true
             text: Tr.tr("Wi-Fi")
@@ -65,12 +71,18 @@ PageBase {
             horizontalPadding: Tokens.padding.largeIncreased
             value: Nmcli.wifiEnabled
             onToggled: Nmcli.enableWifi(checked)
+
+            ActionMark {
+                parent: wifiToggle.bg
+                row: wifiToggle
+                sid: "x:network.wifi"
+            }
         }
 
         NetworkList {
-            Layout.bottomMargin: Nmcli.wifiEnabled && Nmcli.networks.length > GlobalConfig.nexus.maxNetworksShown ? 0 : -parent.spacing
+            Layout.bottomMargin: Nmcli.wifiEnabled && Nmcli.networks.length > root.maxShown ? 0 : -parent.spacing
             nState: root.nState
-            limit: GlobalConfig.nexus.maxNetworksShown
+            limit: root.maxShown
 
             Behavior on Layout.bottomMargin {
                 Anim {
@@ -81,14 +93,14 @@ PageBase {
 
         // All networks button, only when > max networks
         RowButton {
-            Layout.preferredHeight: Nmcli.wifiEnabled && Nmcli.networks.length > GlobalConfig.nexus.maxNetworksShown ? implicitHeight : 0
+            Layout.preferredHeight: Nmcli.wifiEnabled && Nmcli.networks.length > root.maxShown ? implicitHeight : 0
             clip: true
 
             icon: "expand_content"
             // TRANSLATORS: %1 = number of networks found
             text: Tr.tr("Show all networks (%1)").arg(Nmcli.networks.length)
             trailingIcon: "chevron_right"
-            onClicked: root.nState.openSubPage(5) // All networks sub-page
+            onClicked: root.nState.openSubPage("all")
 
             Behavior on Layout.preferredHeight {
                 Anim {
@@ -102,7 +114,7 @@ PageBase {
             icon: "bookmark"
             text: Tr.tr("Saved networks")
             trailingIcon: "chevron_right"
-            onClicked: root.nState.openSubPage(6) // Saved networks sub-page
+            onClicked: root.nState.openSubPage("saved")
         }
 
         RowButton {
@@ -110,11 +122,17 @@ PageBase {
             icon: "add"
             text: Tr.tr("Add network")
             disabled: !Nmcli.wifiEnabled
-            onClicked: root.nState.openSubPage(2) // Add network sub-page
+            onClicked: root.nState.openSubPage("add")
+
+            ActionMark {
+                sid: "x:network.addNetwork"
+            }
         }
 
         // ---- VPN -------------------------------------------------------------
         ToggleRow {
+            id: vpnToggle
+
             Layout.topMargin: Tokens.spacing.large
             Layout.fillWidth: true
             first: true
@@ -125,6 +143,12 @@ PageBase {
             // Connectable as long as there's a provider and we're not mid-switch.
             disabled: VPN.connecting || VPN.disconnecting || VPN.providers.length === 0
             onToggled: VPN.toggle()
+
+            ActionMark {
+                parent: vpnToggle.bg
+                row: vpnToggle
+                sid: "x:network.vpn"
+            }
 
             Timer {
                 running: root.visible
@@ -333,7 +357,7 @@ PageBase {
                         icon: "edit"
                         onClicked: {
                             root.nState.editingVpnIndex = provider.index;
-                            root.nState.openSubPage(4); // Add/edit provider sub-page
+                            root.nState.openSubPage("vpn");
                         }
                     }
                 }
@@ -347,7 +371,29 @@ PageBase {
             text: Tr.tr("Add provider")
             onClicked: {
                 root.nState.editingVpnIndex = -1;
-                root.nState.openSubPage(4); // Add/edit provider sub-page
+                root.nState.openSubPage("vpn");
+            }
+
+            ActionMark {
+                sid: "x:network.addVpn"
+            }
+        }
+
+        // caelestia4: options for the Wi-Fi list above (registry/RegNetwork.qml), including how often it rescans
+        RowGroup {
+            Layout.fillWidth: true
+            Layout.topMargin: Tokens.spacing.largeIncreased - parent.spacing
+
+            SectionHeader {
+                text: Tr.tr("Network list")
+            }
+
+            StepperRow {
+                setting: "c:nexus.maxNetworksShown"
+            }
+
+            StepperRow {
+                setting: "c:nexus.networkRescanInterval"
             }
         }
     }

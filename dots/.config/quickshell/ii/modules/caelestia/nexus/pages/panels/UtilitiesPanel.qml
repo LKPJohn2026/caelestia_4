@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
 import Caelestia.I18n
@@ -9,9 +10,19 @@ import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 PageBase {
     id: root
 
+    // caelestia4: the quick toggle buttons are items of the utilities.quickToggles list: each row is an x: id
+    // ("x:utilities.quickToggles.wifi") over its item's `enabled`. The rows need the Quick toggles card (registry
+    // `requires`)
+    readonly property list<string> quickToggleIds: ["wifi", "bluetooth", "mic", "settings", "gameMode", "dnd", "vpn"]
+    readonly property var quickToggleDefaults: GlobalConfig.utilities.descriptorFor("quickToggles").defaultValue ?? []
+
     function isToggleOn(id: string): bool {
         const item = Config.utilities.quickToggles.values.find(t => t.id === id);
         return item?.enabled ?? false;
+    }
+
+    function isToggleOnByDefault(id: string): bool {
+        return Array.from(root.quickToggleDefaults).find(t => t.id === id)?.enabled ?? false;
     }
 
     function setToggleOn(id: string, on: bool): void {
@@ -32,143 +43,98 @@ PageBase {
     title: Tr.tr("Utilities")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
-        // General
         SectionHeader {
-            first: true
             text: Tr.tr("General")
         }
 
         ToggleRow {
-            first: true
-            last: true
-            text: Tr.trCtx("Enabled", "toggle label")
-            subtext: Tr.tr("Show the utilities panel")
-            value: Config.utilities.enabled
-            onToggled: GlobalConfig.utilities.enabled = checked
+            setting: "c:utilities.enabled"
         }
 
-        // Cards
         SectionHeader {
             text: Tr.tr("Cards")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.tr("Keep awake")
-            subtext: Tr.tr("Show the idle inhibitor card")
-            value: Config.utilities.cards.keepAwake
-            onToggled: GlobalConfig.utilities.cards.keepAwake = checked
+            setting: "c:utilities.cards.keepAwake"
         }
 
         ToggleRow {
-            text: Tr.tr("Screen recorder")
-            subtext: Tr.tr("Show the screen recorder card")
-            value: Config.utilities.cards.recorder
-            onToggled: GlobalConfig.utilities.cards.recorder = checked
+            setting: "c:utilities.cards.recorder"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Quick toggles")
-            subtext: Tr.tr("Show the quick toggles card")
-            value: Config.utilities.cards.quickToggles
-            onToggled: GlobalConfig.utilities.cards.quickToggles = checked
+            setting: "c:utilities.cards.quickToggles"
         }
 
-        // Quick toggles
+        // caelestia4: cards added here (end-4's system card and sliders)
+        ToggleRow {
+            setting: "e4:caelestia.utilitiesSystem"
+        }
+
+        ToggleRow {
+            setting: "e4:caelestia.utilitiesSliders"
+        }
+
         SectionHeader {
             text: Tr.tr("Quick toggles")
         }
 
-        ToggleRow {
-            first: true
-            text: Tr.tr("Wi-Fi")
-            subtext: Tr.tr("Toggle wireless networking")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("wifi")
-            onToggled: root.setToggleOn("wifi", checked)
+        Repeater {
+            model: root.quickToggleIds
+
+            ToggleRow {
+                id: toggleRow
+
+                required property string modelData
+
+                setting: "x:utilities.quickToggles." + modelData
+
+                Binding {
+                    target: toggleRow.link.s
+                    property: "customValue"
+                    value: root.isToggleOn(toggleRow.modelData)
+                }
+
+                Binding {
+                    target: toggleRow.link.s
+                    property: "customDefault"
+                    value: root.isToggleOnByDefault(toggleRow.modelData)
+                }
+
+                Connections {
+                    function onCustomSet(v: var): void {
+                        root.setToggleOn(toggleRow.modelData, !!v);
+                    }
+
+                    function onCustomReset(): void {
+                        root.setToggleOn(toggleRow.modelData, root.isToggleOnByDefault(toggleRow.modelData));
+                    }
+
+                    target: toggleRow.link.s
+                }
+            }
         }
 
-        ToggleRow {
-            text: Tr.tr("Bluetooth")
-            subtext: Tr.tr("Toggle the Bluetooth adapter")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("bluetooth")
-            onToggled: root.setToggleOn("bluetooth", checked)
-        }
-
-        ToggleRow {
-            text: Tr.tr("Microphone")
-            subtext: Tr.tr("Mute or unmute the default source")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("mic")
-            onToggled: root.setToggleOn("mic", checked)
-        }
-
-        ToggleRow {
-            text: Tr.tr("Settings")
-            subtext: Tr.tr("Open the settings window")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("settings")
-            onToggled: root.setToggleOn("settings", checked)
-        }
-
-        ToggleRow {
-            text: Tr.tr("Game mode")
-            subtext: Tr.tr("Toggle game mode")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("gameMode")
-            onToggled: root.setToggleOn("gameMode", checked)
-        }
-
-        ToggleRow {
-            text: Tr.tr("Do not disturb")
-            subtext: Tr.tr("Silence notifications")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("dnd")
-            onToggled: root.setToggleOn("dnd", checked)
-        }
-
-        ToggleRow {
-            last: true
-            text: Tr.tr("VPN")
-            subtext: Tr.tr("Connect or disconnect the VPN")
-            disabled: !Config.utilities.cards.quickToggles
-            value: root.isToggleOn("vpn")
-            onToggled: root.setToggleOn("vpn", checked)
-        }
-
-        // caelestia4: cards added here (end-4's sliders, the system card) and the quick toggles' saved layout
-        SectionHeader {
-            text: Tr.tr("More cards")
-        }
-
-        ToggleRow {
-            first: true
-            text: Tr.tr("System card")
-            subtext: Tr.tr("Uptime, reload, settings and session buttons")
-            value: E4C.Config.options.caelestia.utilitiesSystem
-            onToggled: E4C.Config.options.caelestia.utilitiesSystem = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Volume, microphone and brightness sliders")
-            value: E4C.Config.options.caelestia.utilitiesSliders
-            onToggled: E4C.Config.options.caelestia.utilitiesSliders = checked
-        }
-
+        // caelestia4: the quick toggles' saved layout (e4:caelestia.quickToggles)
         RowButton {
-            last: true
             icon: "restart_alt"
             text: Tr.tr("Reset quick toggles")
             subtext: Tr.tr("Order and visibility are edited in the drawer (pencil button). %1 saved").arg((E4C.Config.options.caelestia.quickToggles ?? []).length)
             onClicked: E4C.Config.options.caelestia.quickToggles = []
+        }
+
+        SectionHeader {
+            text: Tr.tr("On-screen keyboard")
+        }
+
+        ToggleRow {
+            setting: "e4:osk.pinnedOnStartup"
         }
     }
 }

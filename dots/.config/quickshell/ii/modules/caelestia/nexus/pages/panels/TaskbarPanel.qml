@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick.Layouts
+import Quickshell
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
@@ -8,122 +9,116 @@ import qs.modules.caelestia.nexus.common
 PageBase {
     id: root
 
+    // caelestia4: the sub-page rows' live summaries
+    function summary(parts: var, empty: string): string {
+        const shown = parts.filter(p => p);
+        return shown.length ? shown.join(" · ") : empty;
+    }
+
+    readonly property string workspaceStyle: {
+        switch (Config.bar.workspaces.displayType) {
+        case BarWorkspaceDisplay.Text:
+            return Tr.tr("Numbers");
+        case BarWorkspaceDisplay.Icons:
+            return Tr.tr("Icons");
+        }
+        return Tr.tr("Shapes");
+    }
+
     title: Tr.tr("Taskbar")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
-        // Behaviour
         SectionHeader {
-            first: true
             text: Tr.tr("Behaviour")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.tr("Persistent")
-            subtext: Tr.tr("Keep the bar visible at all times")
-            value: Config.bar.persistent
-            onToggled: GlobalConfig.bar.persistent = checked
+            setting: "c:bar.persistent"
         }
 
         ToggleRow {
-            text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Reveal the bar when the cursor reaches the screen edge")
-            value: Config.bar.showOnHover
-            onToggled: GlobalConfig.bar.showOnHover = checked
+            setting: "c:bar.showOnHover"
         }
 
         StepperRow {
-            last: true
-            label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the bar reveals")
-            value: Config.bar.dragThreshold
-            from: 0
-            to: 200
-            stepSize: 5
-            onMoved: v => GlobalConfig.bar.dragThreshold = v
+            setting: "c:bar.dragThreshold"
         }
 
-        // Components
+        // caelestia4: saved names are regexes; typed ones that match no screen stay listed until unticked
+        MultiSelectRow {
+            setting: "c:bar.excludedScreens"
+            options: Quickshell.screens.map(s => ({
+                        value: s.name,
+                        label: s.model ? `${s.name} (${s.model})` : s.name
+                    }))
+        }
+
         SectionHeader {
             text: Tr.tr("Components")
         }
 
         NavRow {
-            first: true
             icon: "view_agenda"
             text: Tr.tr("Layout")
-            subtext: Tr.tr("Order and visibility of the bar's items")
-            onClicked: root.nState.openSubPage(11)
+            subtext: Tr.trN("%n item shown", "%n items shown", Config.bar.entries.values.filter(e => e.enabled).length)
+            onClicked: root.nState.openSubPage("barLayout")
         }
 
         NavRow {
             icon: "workspaces"
             text: Tr.tr("Workspaces")
-            subtext: Tr.tr("Indicators, window icons")
-            onClicked: root.nState.openSubPage(6)
+            subtext: root.summary([Tr.trN("%n workspace", "%n workspaces", Config.bar.workspaces.shown), root.workspaceStyle, Config.bar.workspaces.showWindows ? Tr.tr("window icons") : ""], "")
+            onClicked: root.nState.openSubPage("workspaces")
         }
 
         NavRow {
             icon: "web_asset"
             text: Tr.tr("Active window")
-            subtext: Tr.tr("Title display, popout")
-            onClicked: root.nState.openSubPage(7)
+            subtext: root.summary([Config.bar.activeWindow.showTitle ? Tr.tr("Title and icon") : Tr.tr("Icon only"), Config.bar.popouts.activeWindow ? Tr.tr("popout on hover") : ""], "")
+            onClicked: root.nState.openSubPage("activeWindow")
         }
 
         NavRow {
             icon: "widgets"
             text: Tr.tr("Tray")
-            subtext: Tr.tr("System tray icons")
-            onClicked: root.nState.openSubPage(8)
+            subtext: root.summary([Config.bar.tray.compact ? Tr.trCtx("Compact", "taskbar tray layout") : "", Config.bar.tray.recolour ? Tr.tr("Recolour icons") : ""], Tr.tr("System tray icons"))
+            onClicked: root.nState.openSubPage("tray")
         }
 
         NavRow {
             icon: "signal_cellular_alt"
             text: Tr.tr("Status icons")
-            subtext: Tr.tr("Visible indicators")
-            onClicked: root.nState.openSubPage(9)
+            subtext: Tr.trN("%n icon shown", "%n icons shown", Config.bar.statusIcons.values.filter(e => e.enabled).length)
+            onClicked: root.nState.openSubPage("statusIcons")
         }
 
         NavRow {
-            last: true
             icon: "schedule"
             text: Tr.tr("Clock")
-            subtext: Tr.tr("Date, icon, background")
-            onClicked: root.nState.openSubPage(10)
+            // TRANSLATORS: what the taskbar clock shows, e.g. "Time and date · seconds · icon"
+            subtext: root.summary([Config.bar.clock.showDate ? Tr.tr("Time and date") : Tr.tr("Time only"), Config.bar.clock.showSeconds ? Tr.tr("seconds") : "", Config.bar.clock.showIcon ? Tr.tr("icon") : ""], "")
+            onClicked: root.nState.openSubPage("clock")
         }
 
-        // Scroll actions
         SectionHeader {
             text: Tr.tr("Scroll actions")
         }
 
         ToggleRow {
-            first: true
-            text: Tr.tr("Workspaces")
-            subtext: Tr.tr("Scroll over the workspace indicator to switch workspaces")
-            value: Config.bar.scrollActions.workspaces
-            onToggled: GlobalConfig.bar.scrollActions.workspaces = checked
+            setting: "c:bar.scrollActions.workspaces"
         }
 
         ToggleRow {
-            text: Tr.tr("Volume")
-            subtext: Tr.tr("Scroll on the top half of the bar to adjust volume")
-            value: Config.bar.scrollActions.volume
-            onToggled: GlobalConfig.bar.scrollActions.volume = checked
+            setting: "c:bar.scrollActions.volume"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Brightness")
-            subtext: Tr.tr("Scroll on the bottom half of the bar to adjust brightness")
-            value: Config.bar.scrollActions.brightness
-            onToggled: GlobalConfig.bar.scrollActions.brightness = checked
+            setting: "c:bar.scrollActions.brightness"
         }
     }
 }

@@ -21,6 +21,14 @@ Scope {
 
         FloatingWindow {
             id: window
+            // caelestia4: Caelestia's per-screen config for the content (Tokens.* / Config.* warn without one), kept while
+            // Qt has the window on its nameless placeholder screen (ScreenName)
+            readonly property ScreenName configScreenName: ScreenName {
+                window: window
+            }
+            contentItem.Config.screen: configScreenName.name
+            contentItem.Tokens.screen: configScreenName.name
+
 
             title: Tr.tr("Assistant")
             visible: GlobalStates.sidebarLeftOpen

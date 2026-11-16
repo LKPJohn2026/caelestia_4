@@ -4795,12 +4795,6 @@ msgstr "Thiết lập trong cửa sổ vừa mở, rồi kết nối lại ở �
 msgid "Set it up with nmtui in a terminal, or install nm-connection-editor, then connect again here"
 msgstr "Thiết lập bằng nmtui trong terminal, hoặc cài nm-connection-editor, rồi kết nối lại ở đây"
 
-
-
-
-
-
-
 msgid "Ask for the password when updating"
 msgstr "Hỏi mật khẩu khi cập nhật"
 
@@ -4825,3 +4819,7379 @@ msgstr "Đang tắt: nếu bật, mọi chương trình dưới tài khoản nà
 # TRANSLATORS: %1 = workspace name
 msgid "Workspace: %1"
 msgstr "Không gian làm việc: %1"
+
+# TRANSLATORS: %1 chosen out of %2
+msgid "%1 of %2"
+msgstr "%1 trên %2"
+
+msgid "Never the same twice in a row"
+msgstr "Không lặp lại hai lần liền nhau"
+
+msgid "None"
+msgstr "Bỏ chọn hết"
+
+# TRANSLATORS: %1 chosen out of %2
+msgid "Pick from: %1 of %2"
+msgstr "Chọn từ: %1 trên %2"
+
+msgid "Random transitions"
+msgstr "Hiệu ứng ngẫu nhiên"
+
+# TRANSLATORS: %1 transitions to pick from out of %2
+msgid "Transition: Random (%1 of %2)"
+msgstr "Hiệu ứng chuyển: Ngẫu nhiên (%1 trên %2)"
+
+msgid "Assistant, overlay and widgets language"
+msgstr "Ngôn ngữ của trợ lý, lớp phủ và tiện ích"
+
+msgid "Assistant, overlay, translator and desktop widgets"
+msgstr "Trợ lý, lớp phủ, dịch màn hình và tiện ích trên màn nền"
+
+msgid "For the parts with their own translations: assistant, overlay, desktop widgets, region selector, lock screen. Also the language the screen translator translates into"
+msgstr "Cho các phần có bản dịch riêng: trợ lý, lớp phủ, tiện ích trên màn nền, công cụ chọn vùng, màn hình khóa. Cũng là ngôn ngữ mà dịch màn hình dịch sang"
+
+msgid "Location and units: Language & region"
+msgstr "Vị trí và đơn vị: Ngôn ngữ & khu vực"
+
+# TRANSLATORS: %1 = the parent setting's title, %2 = the value it must have
+msgid "Needs “%1” set to %2"
+msgstr "Cần đặt “%1” thành %2"
+
+msgid "Reset these options?"
+msgstr "Đặt lại các tùy chọn này?"
+
+# TRANSLATORS: %1 = the folder of this caelestia_4 clone
+msgid "This adds a sudoers rule (/etc/sudoers.d/zz-caelestia4-update) that lets this account run pacman as root with no password, so updates ask nothing. Any program running under this account could use it too, and pacman can install any package.\n\nA terminal asks for your password once. To undo it, turn this off here, or run sudo %1/tools/update-sudo-rule.sh disable"
+msgstr "Thao tác này thêm một quy tắc sudoers (/etc/sudoers.d/zz-caelestia4-update) cho phép tài khoản này chạy pacman với quyền root mà không cần mật khẩu, nên khi cập nhật sẽ không hỏi gì. Mọi chương trình chạy dưới tài khoản này cũng có thể dùng nó, và pacman có thể cài bất kỳ gói nào.\n\nMột cửa sổ terminal sẽ hỏi mật khẩu của bạn một lần. Để hoàn tác, hãy tắt mục này ở đây, hoặc chạy sudo %1/tools/update-sudo-rule.sh disable"
+
+# TRANSLATORS: %n = how many Hyprland options are reset
+msgid "This undoes the change to %n option set on the Hyprland and Display pages. Hyprland's own config applies again."
+msgid_plural "This undoes the changes to %n options set on the Hyprland and Display pages. Hyprland's own config applies again."
+msgstr[0] "Thao tác này hoàn tác %n tùy chọn đã đặt trên trang Hyprland và Màn hình. Cấu hình riêng của Hyprland sẽ được áp dụng lại."
+
+# TRANSLATORS: %1 = the parent setting's title
+msgid "Turn off “%1” first"
+msgstr "Hãy tắt “%1” trước"
+
+# TRANSLATORS: %1 = the parent setting's title
+msgid "Turn on “%1” first"
+msgstr "Hãy bật “%1” trước"
+
+msgid "Update without a password?"
+msgstr "Cập nhật không cần mật khẩu?"
+
+msgctxt "button"
+msgid "Reset"
+msgstr "Đặt lại"
+
+msgctxt "button"
+msgid "Turn on"
+msgstr "Bật"
+
+# caelestia4: Nexus redesign (registry titles, descriptions, sections, chrome)
+
+msgid "%"
+msgstr "%"
+
+msgid "%1 %"
+msgstr "%1 %"
+
+msgid "%1 K"
+msgstr "%1 K"
+
+msgid "%1 fps in the background"
+msgstr "%1 fps khi chạy nền"
+
+msgid "%1 px"
+msgstr "%1 px"
+
+msgid "%1 s"
+msgstr "%1 giây"
+
+msgid "%1×%2 grid"
+msgstr "Lưới %1×%2"
+
+msgid "%n icon shown"
+msgid_plural "%n icons shown"
+msgstr[0] "Hiện %n biểu tượng"
+
+msgid "%n item"
+msgid_plural "%n items"
+msgstr[0] "%n mục"
+
+msgid "%n item shown"
+msgid_plural "%n items shown"
+msgstr[0] "Hiện %n mục"
+
+msgid "%n setting on this page goes back to its default."
+msgid_plural "%n settings on this page go back to their defaults."
+msgstr[0] "%n cài đặt trên trang này sẽ trở về mặc định."
+
+msgid "%n tab"
+msgid_plural "%n tabs"
+msgstr[0] "%n thẻ"
+
+msgid "%n workspace"
+msgid_plural "%n workspaces"
+msgstr[0] "%n không gian làm việc"
+
+msgid "0 gives square bars"
+msgstr "0 cho cột vuông góc"
+
+msgid "0 gives square corners"
+msgstr "0 cho góc vuông"
+
+msgid "1 = solid; lower lets the desktop show through"
+msgstr "1 = đặc hoàn toàn; thấp hơn để lộ màn nền phía sau"
+
+msgid "A blurred card behind the clock, easier to read on busy wallpapers"
+msgstr "Thẻ làm mờ phía sau đồng hồ, dễ đọc hơn trên hình nền rối mắt"
+
+msgid "A line of your own text under the clock"
+msgstr "Một dòng chữ của riêng bạn dưới đồng hồ"
+
+msgid "A simple to-do list in the dashboard"
+msgstr "Danh sách việc cần làm đơn giản trong bảng điều khiển"
+
+msgid "A small popup with a slider for the new level"
+msgstr "Một bảng nhỏ có thanh trượt hiện mức mới"
+
+msgid "AI off"
+msgstr "Tắt AI"
+
+msgid "AI on"
+msgstr "Bật AI"
+
+msgid "Adds a sudoers rule so updates never ask for the password. Any program under this account could then run pacman as root"
+msgstr "Thêm quy tắc sudoers để cập nhật không bao giờ hỏi mật khẩu. Khi đó mọi chương trình dưới tài khoản này đều có thể chạy pacman với quyền root"
+
+msgid "After a rebuild"
+msgstr "Sau khi build lại"
+
+msgid "After logging in again"
+msgstr "Sau khi đăng nhập lại"
+
+msgid "After restarting apps"
+msgstr "Sau khi khởi động lại ứng dụng"
+
+msgid "All settings"
+msgstr "Tất cả cài đặt"
+
+msgid "Also show window icons on special (scratchpad) workspaces"
+msgstr "Hiện cả biểu tượng cửa sổ trên không gian đặc biệt (scratchpad)"
+
+msgid "Animate the highlight as it moves between workspaces"
+msgstr "Tạo hiệu ứng cho vùng tô sáng khi chuyển giữa các không gian làm việc"
+
+msgid "Animation duration"
+msgstr "Thời lượng hiệu ứng"
+
+msgid "Applies at next lock"
+msgstr "Áp dụng ở lần khoá tiếp theo"
+
+msgid "Battery charge and time left"
+msgstr "Mức pin và thời gian còn lại"
+
+msgid "Battery percent at which the session is saved to disk before the battery runs out (needs hibernation set up). 0 = never"
+msgstr "Phần trăm pin mà tại đó phiên được lưu vào ổ đĩa trước khi hết pin (cần thiết lập ngủ đông). 0 = không bao giờ"
+
+msgid "CPU / memory refresh"
+msgstr "Làm mới CPU / bộ nhớ"
+
+msgid "Caelestia's clock, or end-4's cookie or digital clock widget"
+msgstr "Đồng hồ của Caelestia, hoặc tiện ích đồng hồ cookie hay đồng hồ số của end-4"
+
+msgid "Caelestia's desktop clock"
+msgstr "Đồng hồ màn nền của Caelestia"
+
+msgid "Change “%1”"
+msgstr "Thay đổi “%1”"
+
+msgid "Clock, audio visualiser, widgets"
+msgstr "Đồng hồ, bộ hiển thị âm thanh, tiện ích"
+
+msgid "Close"
+msgstr "Đóng"
+
+msgid "Code, numbers and fixed-width text"
+msgstr "Mã, số và chữ có độ rộng cố định"
+
+msgid "Colour harmony"
+msgstr "Độ hài hòa màu"
+
+msgid "Columns of workspaces in the overview"
+msgstr "Số cột không gian làm việc trong màn tổng quan"
+
+msgid "Command to run, split on spaces (no shell)"
+msgstr "Lệnh cần chạy, tách theo dấu cách (không qua shell)"
+
+msgid "Config files"
+msgstr "Tệp cấu hình"
+
+msgid "Connect VPN at login"
+msgstr "Kết nối VPN khi đăng nhập"
+
+msgid "Content follows your fingers, like a phone"
+msgstr "Nội dung di chuyển theo ngón tay, như trên điện thoại"
+
+msgid "Corner roundness"
+msgstr "Độ bo góc"
+
+msgid "Corners %1 px"
+msgstr "Góc %1 px"
+
+msgid "Costs GPU on every frame while music plays"
+msgstr "Tốn GPU ở mọi khung hình khi đang phát nhạc"
+
+msgid "Costs some GPU on every frame"
+msgstr "Tốn một ít GPU ở mọi khung hình"
+
+msgid "Dark or light colours for the shell and apps"
+msgstr "Màu tối hoặc sáng cho shell và ứng dụng"
+
+msgid "Desktop"
+msgstr "Màn nền"
+
+msgid "Dim everything under the overlay widgets"
+msgstr "Làm tối mọi thứ bên dưới các tiện ích lớp phủ"
+
+msgid "Direct scanout, tearing, games in the background"
+msgstr "Quét trực tiếp, xé hình, game chạy nền"
+
+msgid "Disk space in use"
+msgstr "Dung lượng ổ đĩa đã dùng"
+
+msgid "Dismiss"
+msgstr "Bỏ qua"
+
+msgid "Download and upload speed"
+msgstr "Tốc độ tải xuống và tải lên"
+
+msgid "Draw a background behind the clock"
+msgstr "Vẽ nền phía sau đồng hồ"
+
+msgid "Draw a background behind workspaces that have windows"
+msgstr "Vẽ nền phía sau các không gian làm việc có cửa sổ"
+
+msgid "Draw each modifier key (Super, Ctrl…) in its own box"
+msgstr "Vẽ mỗi phím bổ trợ (Super, Ctrl…) trong một ô riêng"
+
+msgid "Each wallpaper change uses a transition picked at random from the ones chosen below"
+msgstr "Mỗi lần đổi hình nền dùng một hiệu ứng chuyển chọn ngẫu nhiên trong số các hiệu ứng được chọn bên dưới"
+
+msgid "Even when the shell is in light mode. Applies the next time the colours are made (a new wallpaper or scheme)"
+msgstr "Kể cả khi shell ở chế độ sáng. Áp dụng ở lần tạo màu tiếp theo (hình nền hoặc bộ màu mới)"
+
+msgid "Fit to the screen"
+msgstr "Vừa với màn hình"
+
+msgid "Focus follows the mouse: %1"
+msgstr "Tiêu điểm theo chuột: %1"
+
+msgid "Folder for screen recordings"
+msgstr "Thư mục lưu bản ghi màn hình"
+
+msgid "Frame rate in the background"
+msgstr "Tốc độ khung hình khi chạy nền"
+
+msgid "Frames per second for games kept running while you use another window. Lower saves power"
+msgstr "Số khung hình mỗi giây cho game vẫn chạy khi bạn dùng cửa sổ khác. Thấp hơn tiết kiệm điện"
+
+msgid "Gap between windows"
+msgstr "Khoảng cách giữa các cửa sổ"
+
+msgid "Gap to the screen edge"
+msgstr "Khoảng cách tới mép màn hình"
+
+msgid "Gaps %1 / %2 px"
+msgstr "Khoảng cách %1 / %2 px"
+
+msgid "Gaps, borders, blur, tiling layout"
+msgstr "Khoảng cách, viền, làm mờ, bố cục xếp lớp"
+
+msgid "Give up after"
+msgstr "Bỏ cuộc sau"
+
+msgid "Graphics card use and temperature"
+msgstr "Mức dùng và nhiệt độ card đồ họa"
+
+msgid "Hibernate at"
+msgstr "Ngủ đông khi còn"
+
+msgid "Hide after"
+msgstr "Ẩn sau"
+
+msgid "Hide after inactivity"
+msgstr "Ẩn khi không hoạt động"
+
+msgid "Higher makes quiet music move it more"
+msgstr "Cao hơn khiến nhạc nhỏ cũng làm nó chuyển động nhiều hơn"
+
+msgid "Highlight the workspace you are on"
+msgstr "Tô sáng không gian làm việc hiện tại"
+
+msgid "Hold Super to show numbers after"
+msgstr "Giữ Super để hiện số sau"
+
+msgid "How big the clock is"
+msgstr "Kích thước đồng hồ"
+
+msgid "How each workspace is drawn"
+msgstr "Cách vẽ từng không gian làm việc"
+
+msgid "How far the wallpaper is zoomed in; more zoom leaves more room to slide"
+msgstr "Mức phóng to hình nền; phóng càng lớn càng có nhiều chỗ để trượt"
+
+msgid "How long the computer can sit unused before the screen locks"
+msgstr "Thời gian máy không được dùng trước khi khoá màn hình"
+
+msgid "How long the popup stays after the last change, in milliseconds"
+msgstr "Thời gian bảng còn hiện sau lần thay đổi cuối, tính bằng mili giây"
+
+msgid "How long to hold a key before it repeats, in milliseconds"
+msgstr "Thời gian giữ phím trước khi phím lặp lại, tính bằng mili giây"
+
+msgid "How long to listen before saying no song was found"
+msgstr "Thời gian nghe trước khi báo không tìm thấy bài hát"
+
+msgid "How many Wi-Fi networks this page lists before “Show all networks”"
+msgstr "Số mạng Wi-Fi trang này liệt kê trước nút “Hiện tất cả mạng”"
+
+msgid "How much terminal colours lean towards the wallpaper colour. Applies the next time the colours are made (a new wallpaper or scheme)"
+msgstr "Mức màu terminal ngả theo màu hình nền. Áp dụng ở lần tạo màu tiếp theo (hình nền hoặc bộ màu mới)"
+
+msgid "How much the brightness changes per scroll or key press"
+msgstr "Mức thay đổi độ sáng mỗi lần cuộn hoặc nhấn phím"
+
+msgid "How much the volume changes per scroll or key press"
+msgstr "Mức thay đổi âm lượng mỗi lần cuộn hoặc nhấn phím"
+
+msgid "How new windows share the screen"
+msgstr "Cách cửa sổ mới chia sẻ màn hình"
+
+msgid "How often CPU, memory and GPU use update. Lower uses more CPU"
+msgstr "Chu kỳ cập nhật mức dùng CPU, bộ nhớ và GPU. Thấp hơn tốn CPU hơn"
+
+msgid "How often available networks are rescanned. Lower uses more power"
+msgstr "Chu kỳ quét lại mạng khả dụng. Thấp hơn tốn điện hơn"
+
+msgid "How often the media position updates. Lower is smoother but uses more CPU"
+msgstr "Chu kỳ cập nhật vị trí phát. Thấp hơn mượt hơn nhưng tốn CPU hơn"
+
+msgid "How round the inner corners of the screen frame are"
+msgstr "Độ bo của các góc trong khung màn hình"
+
+msgid "How solid the bar, drawers and launcher are"
+msgstr "Độ đặc của thanh, ngăn kéo và trình khởi chạy"
+
+msgid "How tall the visualiser is"
+msgstr "Chiều cao bộ hiển thị âm thanh"
+
+msgid "How the pointer speeds up when you move the mouse fast"
+msgstr "Cách con trỏ tăng tốc khi bạn di chuột nhanh"
+
+msgid "Icon only"
+msgstr "Chỉ biểu tượng"
+
+msgid "Icons instead of names for F1 to F12"
+msgstr "Biểu tượng thay cho tên phím F1 đến F12"
+
+msgid "Icons instead of names for mouse buttons and the wheel"
+msgstr "Biểu tượng thay cho tên nút chuột và con lăn"
+
+msgid "In percent. A bigger step up in volume at once is undone"
+msgstr "Tính bằng phần trăm. Lần tăng âm lượng lớn hơn mức này sẽ bị hoàn tác"
+
+msgid "In percent. The volume can't go above this"
+msgstr "Tính bằng phần trăm. Âm lượng không thể vượt quá mức này"
+
+msgid "In pixels"
+msgstr "Tính bằng pixel"
+
+msgid "In seconds; 0 = never"
+msgstr "Tính bằng giây; 0 = không bao giờ"
+
+msgid "Inner layer opacity"
+msgstr "Độ đục lớp trong"
+
+msgid "Key repeat delay"
+msgstr "Độ trễ lặp phím"
+
+msgid "Key repeat rate"
+msgstr "Tốc độ lặp phím"
+
+msgid "Keyboard, mouse & cursor"
+msgstr "Bàn phím, chuột & con trỏ"
+
+msgid "Larger is softer but uses more GPU"
+msgstr "Lớn hơn thì mềm hơn nhưng tốn GPU hơn"
+
+msgid "Largest allowed jump"
+msgstr "Bước nhảy lớn nhất cho phép"
+
+msgid "Layouts, key repeat, pointer speed, cursor"
+msgstr "Bố cục, lặp phím, tốc độ con trỏ, con trỏ"
+
+msgid "Layouts: %1"
+msgstr "Bố cục: %1"
+
+msgid "Listen again every"
+msgstr "Nghe lại sau mỗi"
+
+msgid "Local AI models only"
+msgstr "Chỉ mô hình AI cục bộ"
+
+msgid "Lock the screen whenever the computer goes to sleep, so it wakes up locked"
+msgstr "Khoá màn hình mỗi khi máy ngủ, để khi thức dậy máy đã được khoá"
+
+msgid "Look & feel"
+msgstr "Giao diện"
+
+msgid "Lyrics, default player, song recognition"
+msgstr "Lời bài hát, trình phát mặc định, nhận diện bài hát"
+
+msgid "Makes terminal text brighter so it stands out from the background. Applies the next time the colours are made (a new wallpaper or scheme)"
+msgstr "Làm chữ trong terminal sáng hơn để nổi bật trên nền. Áp dụng ở lần tạo màu tiếp theo (hình nền hoặc bộ màu mới)"
+
+msgid "Match actions even with typos or missing letters"
+msgstr "Khớp hành động kể cả khi gõ sai hoặc thiếu chữ"
+
+msgid "Match app names even with typos or missing letters"
+msgstr "Khớp tên ứng dụng kể cả khi gõ sai hoặc thiếu chữ"
+
+msgid "Match colour schemes even with typos or missing letters"
+msgstr "Khớp bộ màu kể cả khi gõ sai hoặc thiếu chữ"
+
+msgid "Match scheme variants even with typos or missing letters"
+msgstr "Khớp biến thể bộ màu kể cả khi gõ sai hoặc thiếu chữ"
+
+msgid "Match wallpaper names even with typos or missing letters"
+msgstr "Khớp tên hình nền kể cả khi gõ sai hoặc thiếu chữ"
+
+msgid "Matches the refresh rate to the game's frame rate to avoid tearing. Some screens flicker with it"
+msgstr "Khớp tần số quét với tốc độ khung hình của game để tránh xé hình. Một số màn hình bị nháy khi bật"
+
+msgid "Media & music recognition"
+msgstr "Đa phương tiện & nhận diện nhạc"
+
+msgid "Milliseconds Super must be held before workspace numbers appear"
+msgstr "Số mili giây phải giữ Super trước khi số không gian làm việc hiện ra"
+
+msgid "Most results listed at once"
+msgstr "Số kết quả tối đa liệt kê cùng lúc"
+
+msgid "Most wallpapers shown at once when picking one"
+msgstr "Số hình nền tối đa hiện cùng lúc khi chọn"
+
+msgid "Most window icons shown on one workspace"
+msgstr "Số biểu tượng cửa sổ tối đa trên một không gian làm việc"
+
+msgid "Move between the buttons with h, j, k and l"
+msgstr "Di chuyển giữa các nút bằng h, j, k và l"
+
+msgid "Network list"
+msgstr "Danh sách mạng"
+
+msgid "Networks shown"
+msgstr "Số mạng hiển thị"
+
+msgid "No tearing"
+msgstr "Không xé hình"
+
+msgid "Number of bars in the audio visualisers. More bars use more CPU"
+msgstr "Số cột trong bộ hiển thị âm thanh. Nhiều cột hơn tốn CPU hơn"
+
+msgid "Off: a plain background instead of the picture"
+msgstr "Tắt: nền trơn thay cho hình ảnh"
+
+msgid "Off: updates ask for the password once. Turning this on lets any program under this account run pacman as root"
+msgstr "Tắt: cập nhật hỏi mật khẩu một lần. Bật lên sẽ cho mọi chương trình dưới tài khoản này chạy pacman với quyền root"
+
+msgid "Open in a window"
+msgstr "Mở trong cửa sổ"
+
+msgid "Order and visibility set in the drawer (pencil button)"
+msgstr "Thứ tự và việc hiển thị được đặt trong ngăn kéo (nút bút chì)"
+
+msgid "Padding"
+msgstr "Khoảng đệm"
+
+msgid "Pages"
+msgstr "Trang"
+
+msgid "Panel opacity"
+msgstr "Độ đục của bảng"
+
+msgid "Panels, launcher and widgets follow the wallpaper. Applies the next time the colours are made (a new wallpaper or scheme)"
+msgstr "Bảng, trình khởi chạy và tiện ích theo màu hình nền. Áp dụng ở lần tạo màu tiếp theo (hình nền hoặc bộ màu mới)"
+
+msgid "Play a sound when a timer or Pomodoro session ends"
+msgstr "Phát âm thanh khi hẹn giờ hoặc phiên Pomodoro kết thúc"
+
+msgid "Play sounds for low and critical battery, full charge, and plugging in or unplugging the charger"
+msgstr "Phát âm thanh khi pin yếu, pin cạn, sạc đầy, và khi cắm hoặc rút sạc"
+
+msgid "Polling & tuning"
+msgstr "Cập nhật định kỳ & tinh chỉnh"
+
+msgid "Preview size"
+msgstr "Kích thước xem trước"
+
+msgid "Processor use and temperature"
+msgstr "Mức dùng và nhiệt độ bộ xử lý"
+
+msgid "Qt and KDE apps use the wallpaper colours"
+msgstr "Ứng dụng Qt và KDE dùng màu hình nền"
+
+msgid "Quick toggle buttons"
+msgstr "Các nút bật nhanh"
+
+msgid "Quick toggles layout"
+msgstr "Bố cục nút bật nhanh"
+
+msgid "RAM in use"
+msgstr "RAM đã dùng"
+
+msgid "Random transition"
+msgstr "Hiệu ứng chuyển ngẫu nhiên"
+
+msgid "Refresh rates, visualiser, colour scheme, GPU"
+msgstr "Tần số làm mới, bộ hiển thị âm thanh, bộ màu, GPU"
+
+msgid "Rendering & games"
+msgstr "Kết xuất & game"
+
+msgid "Repeats per second while a key is held"
+msgstr "Số lần lặp mỗi giây khi giữ phím"
+
+msgid "Reset %n setting"
+msgid_plural "Reset %n settings"
+msgstr[0] "Đặt lại %n cài đặt"
+
+msgid "Reset page"
+msgstr "Đặt lại trang"
+
+msgid "Reset this page?"
+msgstr "Đặt lại trang này?"
+
+msgid "Reset to %1"
+msgstr "Đặt lại về %1"
+
+msgid "Reset to default"
+msgstr "Đặt lại về mặc định"
+
+msgid "Reset “%1”"
+msgstr "Đặt lại “%1”"
+
+msgid "Rows of workspaces in the overview"
+msgstr "Số hàng không gian làm việc trong màn tổng quan"
+
+msgid "Save folders, region selector, circle to search"
+msgstr "Thư mục lưu, chọn vùng, khoanh để tìm kiếm"
+
+msgid "Screen frame corner radius"
+msgstr "Bán kính góc khung màn hình"
+
+msgid "Screen frame thickness"
+msgstr "Độ dày khung màn hình"
+
+msgid "See-through panels with the wallpaper blurred behind them; uses a little more GPU"
+msgstr "Bảng trong suốt với hình nền làm mờ phía sau; tốn thêm một ít GPU"
+
+msgid "Selected VPN provider"
+msgstr "Nhà cung cấp VPN đã chọn"
+
+msgid "Sensitivity"
+msgstr "Độ nhạy"
+
+msgid "Show a clock icon next to the time"
+msgstr "Hiện biểu tượng đồng hồ cạnh giờ"
+
+msgid "Show lines through the cursor while selecting a region"
+msgstr "Hiện đường kẻ qua con trỏ khi chọn vùng"
+
+msgid "Show seconds in the time"
+msgstr "Hiện giây trong giờ"
+
+msgid "Show the app launcher"
+msgstr "Hiện trình khởi chạy ứng dụng"
+
+msgid "Show the app name before the window title"
+msgstr "Hiện tên ứng dụng trước tiêu đề cửa sổ"
+
+msgid "Show the dashboard panel"
+msgstr "Hiện bảng điều khiển"
+
+msgid "Show the date next to the time"
+msgstr "Hiện ngày cạnh giờ"
+
+msgid "Show the main tab with the clock, calendar and media"
+msgstr "Hiện thẻ chính với đồng hồ, lịch và đa phương tiện"
+
+msgid "Show the media player tab"
+msgstr "Hiện thẻ trình phát đa phương tiện"
+
+msgid "Show the popup when the brightness changes"
+msgstr "Hiện bảng khi độ sáng thay đổi"
+
+msgid "Show the popup when the microphone volume changes"
+msgstr "Hiện bảng khi âm lượng micrô thay đổi"
+
+msgid "Show the tab with CPU, memory and other resource use"
+msgstr "Hiện thẻ mức dùng CPU, bộ nhớ và tài nguyên khác"
+
+msgid "Show the weather forecast tab"
+msgstr "Hiện thẻ dự báo thời tiết"
+
+msgid "Size"
+msgstr "Kích thước"
+
+msgid "Size of all text in the panels"
+msgstr "Cỡ toàn bộ chữ trong các bảng"
+
+msgid "Size of each workspace preview, in percent of the screen"
+msgstr "Kích thước mỗi bản xem trước không gian làm việc, tính theo phần trăm màn hình"
+
+msgid "Sliders at the top of the utilities panel"
+msgstr "Thanh trượt ở đầu bảng tiện ích"
+
+msgid "Space between the visualiser's bars"
+msgstr "Khoảng cách giữa các cột của bộ hiển thị âm thanh"
+
+msgid "Spacing"
+msgstr "Khoảng cách"
+
+msgid "Suspends the computer. Downloads and other running work stop until it wakes"
+msgstr "Cho máy ngủ. Các bản tải xuống và công việc đang chạy khác sẽ dừng cho đến khi máy thức dậy"
+
+msgid "Tearing allowed"
+msgstr "Cho phép xé hình"
+
+msgid "Text brightness boost"
+msgstr "Tăng độ sáng chữ"
+
+msgid "Text size"
+msgstr "Cỡ chữ"
+
+msgid "The animation shown when the wallpaper changes"
+msgstr "Hiệu ứng hiện khi đổi hình nền"
+
+msgid "The app that opens folders"
+msgstr "Ứng dụng mở thư mục"
+
+msgid "The app that plays media files"
+msgstr "Ứng dụng phát tệp đa phương tiện"
+
+msgid "The command the session menu and Ctrl+Shift+Esc run"
+msgstr "Lệnh mà menu phiên và Ctrl+Shift+Esc chạy"
+
+msgid "The next transition is always a different one"
+msgstr "Hiệu ứng chuyển tiếp theo luôn khác hiệu ứng trước"
+
+msgid "The overlay grows in from the centre"
+msgstr "Lớp phủ mở rộng ra từ giữa"
+
+msgid "The terminal for Super+Return, terminal apps and commands"
+msgstr "Terminal cho Super+Return, ứng dụng terminal và lệnh"
+
+msgid "The text shown under the cookie clock"
+msgstr "Dòng chữ hiện dưới đồng hồ cookie"
+
+msgid "The theme's colours or the album cover's"
+msgstr "Màu của chủ đề hoặc của ảnh bìa album"
+
+msgid "This value isn't valid"
+msgstr "Giá trị này không hợp lệ"
+
+msgid "Time and date"
+msgstr "Giờ và ngày"
+
+msgid "Time before a notification dismisses, when the app sets none"
+msgstr "Thời gian trước khi thông báo tự đóng, khi ứng dụng không đặt"
+
+msgid "Time between tries while listening. Lower finds songs sooner but uses more CPU"
+msgstr "Thời gian giữa các lần thử khi nghe. Thấp hơn tìm ra bài hát sớm hơn nhưng tốn CPU hơn"
+
+msgid "Time only"
+msgstr "Chỉ giờ"
+
+msgid "Title and icon"
+msgstr "Tiêu đề và biểu tượng"
+
+msgid "Tools let the AI run commands and change settings"
+msgstr "Công cụ cho phép AI chạy lệnh và thay đổi cài đặt"
+
+msgid "Transitions, fitting, folder, random wallpapers, parallax"
+msgstr "Hiệu ứng chuyển, cách khớp, thư mục, hình nền ngẫu nhiên, parallax"
+
+msgid "Transparency, size and shape, fonts"
+msgstr "Độ trong suốt, kích thước và hình dạng, phông chữ"
+
+msgid "Turns the screens off to save power. Any key or mouse move turns them back on"
+msgstr "Tắt màn hình để tiết kiệm điện. Nhấn phím bất kỳ hoặc di chuột sẽ bật lại"
+
+msgid "Type this first to calculate"
+msgstr "Gõ ký tự này trước để tính toán"
+
+msgid "Type this first to run a shell command"
+msgstr "Gõ ký tự này trước để chạy lệnh shell"
+
+msgid "Type this first to search clipboard history"
+msgstr "Gõ ký tự này trước để tìm trong lịch sử bộ nhớ tạm"
+
+msgid "Type this first to search emoji"
+msgstr "Gõ ký tự này trước để tìm biểu tượng cảm xúc"
+
+msgid "Undone"
+msgstr "Đã hoàn tác"
+
+msgid "Undone: %1"
+msgstr "Đã hoàn tác: %1"
+
+msgid "Up and down instead of left and right"
+msgstr "Lên xuống thay vì trái phải"
+
+msgid "Upper limit for output volume. Above 100 % sound can distort"
+msgstr "Giới hạn trên của âm lượng đầu ra. Trên 100 % âm thanh có thể bị méo"
+
+msgid "Use less space on the bar"
+msgstr "Chiếm ít chỗ hơn trên thanh"
+
+msgid "VPN providers"
+msgstr "Nhà cung cấp VPN"
+
+msgid "Variable refresh rate"
+msgstr "Tần số quét thay đổi"
+
+msgid "Volume limit"
+msgstr "Giới hạn âm lượng"
+
+msgid "Wallpaper options"
+msgstr "Tùy chọn hình nền"
+
+msgid "When a VPN connects or disconnects"
+msgstr "Khi VPN kết nối hoặc ngắt kết nối"
+
+msgid "When a new song or video starts playing"
+msgstr "Khi một bài hát hoặc video mới bắt đầu phát"
+
+msgid "When caps lock turns on or off"
+msgstr "Khi bật hoặc tắt Caps Lock"
+
+msgid "When do not disturb turns on or off"
+msgstr "Khi bật hoặc tắt Không làm phiền"
+
+msgid "When game mode turns on or off"
+msgstr "Khi bật hoặc tắt chế độ game"
+
+msgid "When num lock turns on or off"
+msgstr "Khi bật hoặc tắt Num Lock"
+
+msgid "When sound moves to other speakers or headphones"
+msgstr "Khi âm thanh chuyển sang loa hoặc tai nghe khác"
+
+msgid "When the charger is plugged in or out"
+msgstr "Khi cắm hoặc rút sạc"
+
+msgid "When the microphone in use changes"
+msgstr "Khi micrô đang dùng thay đổi"
+
+msgid "When you switch to another keyboard layout"
+msgstr "Khi bạn chuyển sang bố cục bàn phím khác"
+
+msgid "Where on the screen the clock sits"
+msgstr "Vị trí đồng hồ trên màn hình"
+
+msgid "Whether pointing at a window is enough to type into it"
+msgstr "Chỉ cần trỏ chuột vào cửa sổ là có thể gõ vào đó hay không"
+
+msgid "Whether the AI chat tab is offered"
+msgstr "Có hiện thẻ trò chuyện AI hay không"
+
+msgid "Which buttons the quick toggles card shows"
+msgstr "Các nút mà thẻ bật nhanh hiển thị"
+
+msgid "Which status icons the bar shows, in order"
+msgstr "Các biểu tượng trạng thái thanh hiển thị, theo thứ tự"
+
+msgid "Which transitions Random picks from"
+msgstr "Các hiệu ứng chuyển mà chế độ Ngẫu nhiên chọn từ đó"
+
+msgid "Widget movement"
+msgstr "Chuyển động tiện ích"
+
+msgid "Width of the coloured line around windows, in pixels; 0 = none"
+msgstr "Độ rộng đường viền màu quanh cửa sổ, tính bằng pixel; 0 = không có"
+
+msgid "Window border"
+msgstr "Viền cửa sổ"
+
+msgid "Window corner radius"
+msgstr "Bán kính góc cửa sổ"
+
+msgid "Windows & effects"
+msgstr "Cửa sổ & hiệu ứng"
+
+msgid "Windows and workspaces slide and fade; off makes everything instant"
+msgstr "Cửa sổ và không gian làm việc trượt và mờ dần; tắt để mọi thứ diễn ra tức thì"
+
+msgid "Zoom"
+msgstr "Thu phóng"
+
+msgid "end-4's resource monitor (overlay, AI tools). Lower uses more CPU"
+msgstr "Trình theo dõi tài nguyên của end-4 (lớp phủ, công cụ AI). Thấp hơn tốn CPU hơn"
+
+msgid "end-4's resource monitor, user agent, config files"
+msgstr "Trình theo dõi tài nguyên của end-4, user agent, tệp cấu hình"
+
+msgid "hides after %1 s"
+msgstr "ẩn sau %1 giây"
+
+msgid "icon"
+msgstr "biểu tượng"
+
+msgid "kitty and other terminals use the wallpaper colours. Applies the next time the colours are made (a new wallpaper or scheme)"
+msgstr "kitty và các terminal khác dùng màu hình nền. Áp dụng ở lần tạo màu tiếp theo (hình nền hoặc bộ màu mới)"
+
+msgid "popout on hover"
+msgstr "bảng chi tiết khi rê chuột"
+
+msgid "px"
+msgstr "px"
+
+msgid "seconds"
+msgstr "giây"
+
+msgid "shows on hover"
+msgstr "hiện khi rê chuột"
+
+msgid "window icons"
+msgstr "biểu tượng cửa sổ"
+
+msgid "“%1” went back to its old value"
+msgstr "“%1” đã trở về giá trị cũ"
+
+msgctxt "an empty list setting"
+msgid "none"
+msgstr "không có"
+
+msgctxt "an empty text setting"
+msgid "empty"
+msgstr "trống"
+
+msgctxt "button"
+msgid "OK"
+msgstr "OK"
+
+msgctxt "setting title and its unit"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+msgctxt "setting value"
+msgid "Off"
+msgstr "Tắt"
+
+msgctxt "setting value"
+msgid "On"
+msgstr "Bật"
+
+msgctxt "snackbar button"
+msgid "Undo"
+msgstr "Hoàn tác"
+
+msgctxt "unit after a setting title"
+msgid "minutes"
+msgstr "phút"
+
+msgctxt "unit after a setting title"
+msgid "ms"
+msgstr "ms"
+
+msgctxt "unit after a setting title"
+msgid "seconds"
+msgstr "giây"
+
+# caelestia4: VPN status reasons (adapters/VPN.qml, shown on the Nexus Network page via Tr.trMarked)
+
+msgid "Failed to parse status"
+msgstr "Không đọc được trạng thái"
+
+msgid "Login required"
+msgstr "Cần đăng nhập"
+
+msgid "Machine authorisation required"
+msgstr "Cần cấp quyền cho máy"
+
+msgid "Permission denied. Run in terminal: %1"
+msgstr "Bị từ chối quyền. Chạy trong terminal: %1"
+
+msgid "Service not running (run: %1)"
+msgstr "Dịch vụ chưa chạy (chạy: %1)"
+
+msgid "Tailscale may not be running"
+msgstr "Có thể Tailscale chưa chạy"
+
+msgid "Unknown WARP status"
+msgstr "Trạng thái WARP không rõ"
+
+msgid "WARP registration required"
+msgstr "Cần đăng ký WARP"
+
+msgid "WireGuard module not loaded. Run: %1"
+msgstr "Chưa nạp mô-đun WireGuard. Chạy: %1"
+
+msgid "100 % is solid; lower lets the desktop show through"
+msgstr "100 % là đặc hẳn; thấp hơn thì nhìn xuyên thấy màn nền"
+
+msgid "A bigger step up in volume at once is undone"
+msgstr "Âm lượng tăng vọt hơn mức này một lần sẽ bị hoàn lại"
+
+msgid "The volume can't go above this"
+msgstr "Âm lượng không thể vượt quá mức này"
+
+msgid "Width of the coloured line around windows; 0 = none"
+msgstr "Độ dày đường viền màu quanh cửa sổ; 0 = không có"
+
+#. TRANSLATORS: unit shown after a number box
+msgctxt "unit after a number"
+msgid "ms"
+msgstr "ms"
+
+msgctxt "unit after a number"
+msgid "s"
+msgstr "giây"
+
+msgctxt "unit after a number"
+msgid "min"
+msgstr "phút"
+
+msgctxt "unit after a number"
+msgid "px"
+msgstr "px"
+
+msgid "%1 of %2 results"
+msgstr "%1 trên %2 kết quả"
+
+msgid "%n result"
+msgid_plural "%n results"
+msgstr[0] "%n kết quả"
+
+msgid "Changed"
+msgstr "Đã đổi"
+
+msgid "No advanced settings"
+msgstr "Không có cài đặt nâng cao"
+
+msgid "No apps match “%1”"
+msgstr "Không có ứng dụng khớp “%1”"
+
+msgid "No settings are changed from their defaults"
+msgstr "Không có cài đặt nào khác mặc định"
+
+msgid "No settings match “%1”"
+msgstr "Không có cài đặt khớp “%1”"
+
+msgid "Search apps"
+msgstr "Tìm ứng dụng"
+
+msgid "Search results"
+msgstr "Kết quả tìm kiếm"
+
+msgid "Try fewer words, or is:changed"
+msgstr "Thử bớt từ, hoặc dùng is:changed"
+
+msgid "Try fewer words, or no filter"
+msgstr "Thử bớt từ, hoặc bỏ bộ lọc"
+
+msgid "Try the app's name, or what it does, such as “browser”."
+msgstr "Thử tên ứng dụng, hoặc việc nó làm, ví dụ “browser”."
+
+# caelestia4: Nexus fix pass (devices, look, panelsB, system), 2026-11-14
+msgid "Low battery"
+msgstr "Pin yếu"
+
+msgid "Critical battery level"
+msgstr "Pin ở mức nguy hiểm"
+
+msgid "How large all widgets are drawn. Automatic (the reset button): as large as in the preset's preview"
+msgstr "Kích thước vẽ của mọi tiện ích. Tự động (nút đặt lại): to như trong ảnh xem trước của preset"
+
+msgid "How see-through the assistant and overlay backgrounds are. Higher is clearer. Needs Transparency on"
+msgstr "Độ trong suốt của nền trợ lý và lớp phủ. Càng cao càng trong. Cần bật Trong suốt"
+
+msgid "API format (openai, gemini, gemini-interactions, mistral)"
+msgstr "Định dạng API (openai, gemini, gemini-interactions, mistral)"
+
+msgid "Highlight other apps' panels"
+msgstr "Làm nổi bật bảng của ứng dụng khác"
+
+msgid "Panels of other programs, such as docks and widgets, can be clicked to select them. The shell's own bar and panels are never picked"
+msgstr "Có thể bấm vào bảng của chương trình khác, như dock và tiện ích, để chọn chúng. Thanh và các bảng của shell không bao giờ được chọn"
+
+msgid "Clipboard and colour reload delay"
+msgstr "Độ trễ đọc bảng nhớ tạm và màu"
+
+msgid "Wait this long after a copy before reading the clipboard history, and after new colours are made before loading them. Raise it if new copies or colours are missing; a higher value slows every colour change"
+msgstr "Chờ chừng này sau khi sao chép rồi mới đọc lịch sử bảng nhớ tạm, và sau khi tạo màu mới rồi mới nạp chúng. Tăng lên nếu thiếu mục sao chép hay màu mới; giá trị cao làm mọi lần đổi màu chậm hơn"
+
+msgid "A scroll step at least this big counts as a mouse wheel, smaller ones as a touchpad. Each step is also divided by it, so a higher value scrolls less. Most wheels send 120 per notch"
+msgstr "Bước cuộn lớn bằng hoặc hơn giá trị này được tính là con lăn chuột, nhỏ hơn là bàn di chuột. Mỗi bước cũng được chia cho giá trị này, nên giá trị cao cuộn ít hơn. Hầu hết con lăn gửi 120 mỗi nấc"
+
+# caelestia4: Nexus P5: descriptions, option labels and font names (2026-11-14)
+msgid "%n changed"
+msgid_plural "%n changed"
+msgstr[0] "%n mục đã đổi"
+
+msgid "%n font"
+msgid_plural "%n fonts"
+msgstr[0] "%n phông chữ"
+
+msgid "A Material Symbols font. Other fonts show the icons' names as words instead"
+msgstr "Một phông Material Symbols. Phông khác hiện tên biểu tượng bằng chữ"
+
+msgid "A PNG, SVG, WebP or GIF. You can also drop one on the sticker"
+msgstr "Ảnh PNG, SVG, WebP hoặc GIF. Bạn cũng có thể thả ảnh lên nhãn dán"
+
+msgid "A clipboard image next to a copied link with one of these words is hidden"
+msgstr "Ảnh trong bảng nhớ tạm đi kèm một liên kết đã sao chép có chứa một trong các từ này sẽ bị ẩn"
+
+msgid "A cookie, digital, daily or pixel clock on the desktop. Turns Caelestia's clock off"
+msgstr "Đồng hồ cookie, kỹ thuật số, hằng ngày hoặc pixel trên màn nền. Tắt đồng hồ của Caelestia"
+
+msgid "A language name or code (en, vi), or “auto” for your system language. Picking one in the tab changes this too"
+msgstr "Tên hoặc mã ngôn ngữ (en, vi), hoặc “auto” để dùng ngôn ngữ hệ thống. Chọn trong thẻ cũng đổi mục này"
+
+msgid "A language name or code (en, vi), or “auto” to detect it. Picking one in the tab changes this too"
+msgstr "Tên hoặc mã ngôn ngữ (en, vi), hoặc “auto” để tự nhận biết. Chọn trong thẻ cũng đổi mục này"
+
+msgid "A line or two of your own text. Double-click it on the desktop to edit"
+msgstr "Một hai dòng chữ của riêng bạn. Nhấp đúp vào nó trên màn nền để sửa"
+
+msgid "A message pops up when the battery drops to each of these levels"
+msgstr "Một thông báo hiện lên khi pin xuống tới từng mức này"
+
+msgid "A notification to unplug the charger when charging reaches this level. 101 = never"
+msgstr "Thông báo rút sạc khi pin sạc tới mức này. 101 = không bao giờ"
+
+msgid "A notification, and a sound if battery sounds are on, when the battery drops to this level"
+msgstr "Một thông báo, kèm âm thanh nếu bật âm thanh pin, khi pin xuống tới mức này"
+
+msgid "A picture in a rounded card, like the other widgets"
+msgstr "Một ảnh trong thẻ bo góc, giống các tiện ích khác"
+
+msgid "A preset sets the wallpaper, widgets, colours, lock screen and avatar. Off: your own"
+msgstr "Preset đặt hình nền, tiện ích, màu, màn hình khóa và ảnh đại diện. Tắt: dùng của riêng bạn"
+
+msgid "A second, urgent notification at this level, saying when the computer will sleep"
+msgstr "Thông báo khẩn thứ hai ở mức này, cho biết khi nào máy sẽ ngủ"
+
+msgid "A soft shadow under the clock, easier to read on light wallpapers"
+msgstr "Bóng mờ dưới đồng hồ, dễ đọc hơn trên hình nền sáng"
+
+msgid "A soft shadow under the text, easier to read on busy wallpapers"
+msgstr "Bóng mờ dưới chữ, dễ đọc hơn trên hình nền nhiều chi tiết"
+
+msgid "AI replies appear piece by piece with a fade"
+msgstr "Câu trả lời AI hiện từng phần, mờ dần vào"
+
+msgid "Animation between the buttons. Empty shows none"
+msgstr "Hiệu ứng chuyển giữa các nút. Để trống là không có"
+
+msgid "Animation next to the player on the dashboard. It moves while music plays"
+msgstr "Hình động cạnh trình phát trên bảng điều khiển. Nó chuyển động khi nhạc đang phát"
+
+msgid "Apps whose id matches one of these patterns (regular expressions) are left out. Apps > app info hides one app"
+msgstr "Ứng dụng có id khớp một trong các mẫu này (biểu thức chính quy) bị bỏ ra. Ứng dụng > thông tin ứng dụng ẩn một ứng dụng"
+
+msgid "Apps whose id matches one of these patterns (regular expressions) come first. Apps > app info pins one app"
+msgstr "Ứng dụng có id khớp một trong các mẫu này (biểu thức chính quy) được xếp đầu. Ứng dụng > thông tin ứng dụng ghim một ứng dụng"
+
+msgid "Apps whose tray icon is not shown on the bar or in the tray popout"
+msgstr "Các ứng dụng có biểu tượng khay không hiện trên thanh hay trong bảng khay"
+
+msgid "At startup, quit mako or dunst without asking. Off: a dialog asks"
+msgstr "Khi khởi động, tắt mako hoặc dunst mà không hỏi. Tắt: một hộp thoại sẽ hỏi"
+
+msgid "Automatic picks one that reads well on the wallpaper"
+msgstr "Tự động chọn màu dễ đọc trên hình nền"
+
+msgid "Bar, drawers, launcher and notifications. Also sets the headline, title and label fonts below"
+msgstr "Thanh, ngăn kéo, trình khởi chạy và thông báo. Cũng đặt phông tiêu đề lớn, tiêu đề và nhãn bên dưới"
+
+msgid "Battery percent at which the computer suspends"
+msgstr "Phần trăm pin mà máy sẽ ngủ"
+
+msgid "Big text: the desktop clock, dashboard numbers, page titles. The panel font sets it too"
+msgstr "Chữ lớn: đồng hồ trên màn nền, số trên bảng điều khiển, tiêu đề trang. Phông chữ bảng cũng đặt nó"
+
+msgid "Blurs the lock screen picture and tints it a little"
+msgstr "Làm mờ ảnh màn hình khóa và phủ chút màu"
+
+msgid "Blurs the wallpaper under the clock's card. Off in game mode"
+msgstr "Làm mờ hình nền dưới thẻ của đồng hồ. Tắt trong chế độ game"
+
+msgid "Caelestia's clock is on the desktop now. Advanced below holds its options; showing end-4's clock switches it off."
+msgstr "Đồng hồ của Caelestia đang ở trên màn nền. Phần Nâng cao bên dưới có các tùy chọn của nó; hiện đồng hồ của end-4 sẽ tắt nó."
+
+msgid "Cards and buttons inside the assistant, overlay and desktop widgets. Higher is clearer"
+msgstr "Thẻ và nút bên trong trợ lý, lớp phủ và tiện ích trên màn nền. Càng cao càng trong"
+
+msgid "Character shown for a workspace with windows in the Numbers style, and in the Icons style when no icon rule matches. Leave blank to show its number. Not used while 'Always show numbers' is on"
+msgstr "Ký tự hiện cho không gian làm việc có cửa sổ trong kiểu Số, và trong kiểu Biểu tượng khi không có quy tắc biểu tượng nào khớp. Để trống để hiện số của nó. Không dùng khi bật 'Luôn hiện số'"
+
+msgid "Character shown for an empty workspace in the Numbers style, and in the Icons style when no icon rule matches. Leave blank to show its number. Not used while 'Always show numbers' is on"
+msgstr "Ký tự hiện cho không gian làm việc trống trong kiểu Số, và trong kiểu Biểu tượng khi không có quy tắc biểu tượng nào khớp. Để trống để hiện số của nó. Không dùng khi bật 'Luôn hiện số'"
+
+msgid "Character shown for the workspace you are on in the Numbers style, and in the Icons style when no icon rule matches. Leave blank to show its number. Not used while 'Always show numbers' is on"
+msgstr "Ký tự hiện cho không gian làm việc bạn đang ở trong kiểu Số, và trong kiểu Biểu tượng khi không có quy tắc biểu tượng nào khớp. Để trống để hiện số của nó. Không dùng khi bật 'Luôn hiện số'"
+
+msgid "Clipboard images are hidden only on a Wi-Fi whose name contains one of these words"
+msgstr "Ảnh trong bảng nhớ tạm chỉ bị ẩn khi dùng Wi-Fi có tên chứa một trong các từ này"
+
+msgid "Colour temperature while the night light is on. Lower is warmer and more orange"
+msgstr "Nhiệt độ màu khi đèn ngủ bật. Càng thấp càng ấm và cam hơn"
+
+msgid "Colours, sensitivity and size: Desktop > Audio visualiser"
+msgstr "Màu, độ nhạy và kích thước: Màn nền > Hiệu ứng âm thanh"
+
+msgid "Dragging its corner on the desktop changes it too"
+msgstr "Kéo góc của nó trên màn nền cũng thay đổi mục này"
+
+msgid "Drop pictures on it to convert them to another format, or to one PDF"
+msgstr "Thả ảnh lên đây để chuyển sang định dạng khác, hoặc gộp thành một tệp PDF"
+
+msgid "Empty: the preset's lock picture, else the desktop wallpaper. Videos are not used"
+msgstr "Trống: ảnh khóa của preset, nếu không thì hình nền màn nền. Không dùng video"
+
+msgid "Empty: ~/.face, the picture other apps use too"
+msgstr "Trống: ~/.face, ảnh mà các ứng dụng khác cũng dùng"
+
+msgid "Extra space added around a circle to search selection"
+msgstr "Khoảng trống thêm quanh vùng chọn khi khoanh để tìm kiếm"
+
+msgid "Extra space added around a highlighted area you click, so its borders are not cut off"
+msgstr "Khoảng trống thêm quanh vùng được làm nổi bật mà bạn bấm, để viền không bị cắt"
+
+msgid "Extra touchpad speed for lists inside desktop widgets, such as the world clock's city list"
+msgstr "Thêm tốc độ bàn di chuột cho danh sách trong tiện ích màn nền, như danh sách thành phố của đồng hồ thế giới"
+
+msgid "Flips which icons stay on the bar and which go behind the expand arrow"
+msgstr "Đảo biểu tượng nào ở lại trên thanh và biểu tượng nào nằm sau mũi tên mở rộng"
+
+msgid "For the digital and daily clocks. Automatic picks one that reads well on the wallpaper"
+msgstr "Cho đồng hồ kỹ thuật số và hằng ngày. Tự động chọn màu dễ đọc trên hình nền"
+
+msgid "Four-letter axis tags and their values, e.g. ROND 25 for rounder letters"
+msgstr "Thẻ trục bốn chữ cái và giá trị của chúng, ví dụ ROND 25 cho chữ tròn hơn"
+
+msgid "From when to when the night light is on, in 24-hour time."
+msgstr "Đèn ngủ bật từ lúc nào đến lúc nào, theo giờ 24 tiếng."
+
+msgid "Higher spreads the shadow wider and softer"
+msgstr "Càng cao bóng càng lan rộng và mềm hơn"
+
+msgid "How big the sticker is. You can also drag its corner"
+msgstr "Kích thước của nhãn dán. Bạn cũng có thể kéo góc của nó"
+
+msgid "How blurred the wallpaper behind the widget cards is"
+msgstr "Độ mờ của hình nền phía sau các thẻ tiện ích"
+
+msgid "How each workspace is drawn. 'Always show numbers' overrides it with numbers"
+msgstr "Cách vẽ từng không gian làm việc. 'Luôn hiện số' thay nó bằng số"
+
+msgid "How fast the session menu GIF plays. 100 % is normal speed"
+msgstr "Tốc độ phát GIF của menu phiên. 100 % là tốc độ thường"
+
+msgid "How long each focus round lasts, here and on the dashboard"
+msgstr "Mỗi lượt tập trung kéo dài bao lâu, ở đây và trên bảng điều khiển"
+
+msgid "How long typing must pause before the text is translated"
+msgstr "Cần ngừng gõ bao lâu thì chữ mới được dịch"
+
+msgid "How many bumps the cookie shape has around its edge"
+msgstr "Số chỗ lồi quanh viền hình cookie"
+
+msgid "How many images the Anime tab loads at a time. waifu.im shows 30 at most"
+msgstr "Số ảnh thẻ Anime tải mỗi lần. waifu.im hiện tối đa 30"
+
+msgid "How many past readings the overlay's resource graphs keep. Each reading is one CPU / memory refresh"
+msgstr "Số lần đo cũ mà đồ thị tài nguyên của lớp phủ giữ lại. Mỗi lần đo là một lần làm mới CPU / bộ nhớ"
+
+msgid "How many pictures each row of the wallpaper and preset grids holds"
+msgstr "Số ảnh trong mỗi hàng của lưới hình nền và preset"
+
+msgid "How much drawers stretch and wobble as they open and close; 0 turns it off"
+msgstr "Mức ngăn kéo co giãn và rung khi mở và đóng; 0 là tắt"
+
+msgid "How often the desktop weather and clock widgets fetch the weather"
+msgstr "Tần suất các tiện ích thời tiết và đồng hồ trên màn nền lấy thời tiết"
+
+msgid "How softly the drawers melt into the screen frame where they meet it"
+msgstr "Mức ngăn kéo hòa mềm vào khung màn hình ở chỗ chúng gặp nhau"
+
+msgid "How special (scratchpad) workspaces are drawn"
+msgstr "Cách vẽ không gian làm việc đặc biệt (scratchpad)"
+
+msgid "How strongly the areas found inside windows are highlighted"
+msgstr "Mức làm nổi bật các vùng tìm thấy bên trong cửa sổ"
+
+msgid "How strongly the picture is blurred. 64 and above look the same"
+msgstr "Mức làm mờ ảnh. Từ 64 trở lên trông như nhau"
+
+msgid "How strongly windows and panels are highlighted"
+msgstr "Mức làm nổi bật cửa sổ và bảng"
+
+msgid "How the daily clock lays out the time, greeting and weather"
+msgstr "Cách đồng hồ hằng ngày sắp xếp giờ, lời chào và thời tiết"
+
+msgid "How visible pinned widgets stay while the overlay is closed"
+msgstr "Mức hiển thị của tiện ích đã ghim khi lớp phủ đóng"
+
+msgid "Icons for apps' windows, by window class or regex. Other apps get an icon from their category"
+msgstr "Biểu tượng cho cửa sổ ứng dụng, theo lớp cửa sổ hoặc regex. Ứng dụng khác lấy biểu tượng theo danh mục của chúng"
+
+msgid "Icons for special workspaces, by name (without “special:”) or regex"
+msgstr "Biểu tượng cho không gian làm việc đặc biệt, theo tên (không có “special:”) hoặc regex"
+
+msgid "Icons for workspaces in the Icons style, by workspace name or regex. Not used while 'Always show numbers' is on"
+msgstr "Biểu tượng cho không gian làm việc trong kiểu Biểu tượng, theo tên không gian làm việc hoặc regex. Không dùng khi bật 'Luôn hiện số'"
+
+msgid "In degrees, clockwise. Double-click the sticker to straighten it"
+msgstr "Tính bằng độ, theo chiều kim đồng hồ. Nhấp đúp vào nhãn dán để xoay thẳng lại"
+
+msgid "In points; Text size (Look & feel) scales it"
+msgstr "Tính bằng point; Cỡ chữ (Giao diện) phóng to thu nhỏ nó"
+
+msgid "Letter case of named workspaces when no label is set"
+msgstr "Kiểu chữ hoa thường của không gian làm việc có tên khi không đặt nhãn"
+
+msgid "Light text on a dark theme becomes dark, and the other way round"
+msgstr "Chữ sáng trên chủ đề tối thành chữ tối, và ngược lại"
+
+msgid "Lines flash where a dropped widget lines up with others or the screen's middle"
+msgstr "Đường kẻ lóe lên khi tiện ích được thả thẳng hàng với tiện ích khác hoặc giữa màn hình"
+
+msgid "Lists in the shell's panels scroll by the speeds below, for both mouse wheels and touchpads"
+msgstr "Danh sách trong các bảng của shell cuộn theo tốc độ bên dưới, cho cả con lăn chuột và bàn di chuột"
+
+msgid "Locks the screen right after you log in, so the desktop is never shown unlocked"
+msgstr "Khóa màn hình ngay sau khi bạn đăng nhập, để màn nền không bao giờ hiện khi chưa khóa"
+
+msgid "Look for new packages on a schedule. Off: only when you press Check now"
+msgstr "Tìm gói mới theo lịch. Tắt: chỉ khi bạn bấm Kiểm tra ngay"
+
+msgid "Make the colours from this colour instead of the wallpaper. Picking a new wallpaper clears it"
+msgstr "Tạo màu từ màu này thay vì từ hình nền. Chọn hình nền mới sẽ xóa nó"
+
+msgid "Material Symbols icon name of the hibernate button"
+msgstr "Tên biểu tượng Material Symbols của nút ngủ đông"
+
+msgid "Material Symbols icon name of the log out button"
+msgstr "Tên biểu tượng Material Symbols của nút đăng xuất"
+
+msgid "Material Symbols icon name of the restart button"
+msgstr "Tên biểu tượng Material Symbols của nút khởi động lại"
+
+msgid "Material Symbols icon name of the shut down button"
+msgstr "Tên biểu tượng Material Symbols của nút tắt máy"
+
+msgid "Mixes a touch of the accent colour into the assistant and overlay background"
+msgstr "Pha chút màu nhấn vào nền của trợ lý và lớp phủ"
+
+msgid "Models added to the AI chat's model list, e.g. from OpenRouter"
+msgstr "Các mô hình thêm vào danh sách mô hình của trò chuyện AI, ví dụ từ OpenRouter"
+
+msgid "Most window icons shown on one workspace, normal or special"
+msgstr "Số biểu tượng cửa sổ tối đa trên một không gian làm việc, thường hoặc đặc biệt"
+
+msgid "Narrow to wide; 100 is normal. Only fonts with a width axis change"
+msgstr "Hẹp đến rộng; 100 là bình thường. Chỉ phông có trục độ rộng mới thay đổi"
+
+msgid "Off: no wallpaper, desktop clock, visualiser or widgets on any screen; Hyprland's own background shows"
+msgstr "Tắt: không có hình nền, đồng hồ màn nền, hiệu ứng âm thanh hay tiện ích trên màn hình nào; hiện nền của chính Hyprland"
+
+msgid "One above the other instead of side by side. The widget's own button switches it too"
+msgstr "Xếp trên dưới thay vì cạnh nhau. Nút riêng của tiện ích cũng chuyển được"
+
+msgid "One per clock, such as Europe/London. The widget's own settings can pick them too"
+msgstr "Mỗi đồng hồ một múi giờ, như Europe/London. Cài đặt riêng của tiện ích cũng chọn được"
+
+msgid "Order of Wallhaven results when you search for tags. Without tags it shows the top list"
+msgstr "Thứ tự kết quả Wallhaven khi bạn tìm theo thẻ. Không có thẻ thì hiện danh sách hàng đầu"
+
+msgid "Panel, monospace, clock and widget fonts, text styles"
+msgstr "Phông chữ bảng, đơn cách, đồng hồ và tiện ích, kiểu chữ"
+
+msgid "Panels you open (launcher, dashboard…) show above fullscreen windows instead of behind them"
+msgstr "Các bảng bạn mở (trình khởi chạy, bảng điều khiển…) hiện trên cửa sổ toàn màn hình thay vì phía sau"
+
+msgid "Picks the shape, hands and date style from the wallpaper's category (sorted by Gemini). Overwrites the choices below"
+msgstr "Chọn hình dạng, kim và kiểu ngày theo loại của hình nền (do Gemini phân loại). Ghi đè các lựa chọn bên dưới"
+
+msgid "Picture or web address the floating image widget shows"
+msgstr "Ảnh hoặc địa chỉ web mà tiện ích ảnh nổi hiển thị"
+
+msgid "Pixels dragged from the right edge before the session menu opens"
+msgstr "Số pixel kéo từ cạnh phải trước khi menu phiên mở"
+
+msgid "Pixels from the top of the right edge where the cursor opens the sidebar, at least"
+msgstr "Số pixel tính từ đỉnh của cạnh phải nơi con trỏ mở thanh bên, tối thiểu"
+
+msgid "Puts black over the picture so the password box stands out. 0 = not darker"
+msgstr "Phủ đen lên ảnh để ô mật khẩu nổi bật. 0 = không tối hơn"
+
+msgid "Rounder letter ends. Only fonts with a roundness axis change, like Google Sans Flex"
+msgstr "Đầu nét chữ tròn hơn. Chỉ phông có trục độ tròn mới thay đổi, như Google Sans Flex"
+
+msgid "Score the extra results and clipboard history by spelling distance instead of fuzzy search. Often odd"
+msgstr "Chấm điểm kết quả thêm và lịch sử bảng nhớ tạm theo khoảng cách chính tả thay vì tìm mờ. Thường kỳ quặc"
+
+msgid "Show a media player under another name, such as YT Music for com.github.th_ch.youtube_music"
+msgstr "Hiện trình phát nhạc dưới tên khác, như YT Music cho com.github.th_ch.youtube_music"
+
+msgid "Show another icon for a tray item: a theme icon name or an image file"
+msgstr "Hiện biểu tượng khác cho một mục khay: tên biểu tượng chủ đề hoặc tệp ảnh"
+
+msgid "Show the Translator tab in the Assistant. Needs translate-shell"
+msgstr "Hiện thẻ Dịch trong Trợ lý. Cần translate-shell"
+
+msgid "Show the grid of workspaces when the overview is opened"
+msgstr "Hiện lưới không gian làm việc khi mở tổng quan"
+
+msgid "Show the window or panel name on each highlighted area"
+msgstr "Hiện tên cửa sổ hoặc bảng trên từng vùng được làm nổi bật"
+
+msgid "Shown in the bar and the dashboard. “caelestia”, an icon name or an image; empty uses your distro's logo"
+msgstr "Hiện trên thanh và bảng điều khiển. “caelestia”, tên biểu tượng hoặc ảnh; để trống dùng logo bản phân phối của bạn"
+
+msgid "Shown in the sidebar when there are no notifications"
+msgstr "Hiện trong thanh bên khi không có thông báo"
+
+msgid "Shows each typed character as a different Material shape instead of a plain dot"
+msgstr "Hiện mỗi ký tự gõ vào thành một hình Material khác nhau thay vì dấu chấm thường"
+
+msgid "Shows the cookie clock's second hand and moves its date each second. Uses a little more power"
+msgstr "Hiện kim giây của đồng hồ cookie và dời ngày mỗi giây. Tốn thêm chút điện"
+
+msgid "Small text: buttons, the bar's status, notification details. The panel font sets it too"
+msgstr "Chữ nhỏ: nút, trạng thái trên thanh, chi tiết thông báo. Phông chữ bảng cũng đặt nó"
+
+msgid "Suggest areas found inside windows, such as images and blocks of text"
+msgstr "Gợi ý các vùng tìm thấy bên trong cửa sổ, như ảnh và khối chữ"
+
+msgid "Suspends the computer at the level below while it is not charging"
+msgstr "Cho máy ngủ ở mức bên dưới khi không sạc"
+
+msgid "Text lines up left near the left edge and right near the right edge. Off: always centred"
+msgstr "Chữ căn trái khi gần cạnh trái và căn phải khi gần cạnh phải. Tắt: luôn căn giữa"
+
+msgid "Text made only of numbers in the desktop widgets and the assistant, such as dates and slider values"
+msgstr "Chữ chỉ gồm số trong tiện ích màn nền và trợ lý, như ngày và giá trị thanh trượt"
+
+msgid "Text or Nerd Font icon shown for the Super key. Empty shows “Super”"
+msgstr "Chữ hoặc biểu tượng Nerd Font hiện cho phím Super. Để trống hiện “Super”"
+
+msgid "The AI model that enlarges small wallpapers. Changing it makes new copies of the ones shown"
+msgstr "Mô hình AI phóng to hình nền nhỏ. Đổi mô hình sẽ tạo bản sao mới của các hình đang hiện"
+
+msgid "The GIF follows the music's beats per minute divided by this. Higher is slower"
+msgstr "GIF theo nhịp mỗi phút của nhạc chia cho số này. Càng cao càng chậm"
+
+msgid "The Search action opens this address with the picture's link added at the end"
+msgstr "Hành động Tìm kiếm mở địa chỉ này, với liên kết của ảnh thêm vào cuối"
+
+msgid "The assistant, overlay and desktop widgets pick how see-through they are from the wallpaper"
+msgstr "Trợ lý, lớp phủ và tiện ích màn nền tự chọn độ trong suốt theo hình nền"
+
+msgid "The box hides when you stop typing or moving the mouse, and comes back at the next key or move. 0 = never hide"
+msgstr "Ô ẩn đi khi bạn ngừng gõ hoặc di chuột, và hiện lại ở lần nhấn phím hay di chuột tiếp theo. 0 = không bao giờ ẩn"
+
+msgid "The cards one above the other. The arrow on the widget switches it too"
+msgstr "Các thẻ xếp trên dưới. Mũi tên trên tiện ích cũng chuyển được"
+
+msgid "The clocks one above the other. The arrow on the widget switches it too"
+msgstr "Các đồng hồ xếp trên dưới. Mũi tên trên tiện ích cũng chuyển được"
+
+msgid "The cookie shape spins slowly and the second hand sweeps. Costs GPU all the time"
+msgstr "Hình cookie xoay chậm và kim giây quét liên tục. Luôn tốn GPU"
+
+msgid "The date on the desktop's digital clock. ddd = short day name, dddd = full day name, dd = day, MM = month, yyyy = year"
+msgstr "Ngày trên đồng hồ kỹ thuật số của màn nền. ddd = tên thứ ngắn, dddd = tên thứ đầy đủ, dd = ngày, MM = tháng, yyyy = năm"
+
+msgid "The date, the daily clock, the status line and the quote use the digital clock's font instead of the usual one"
+msgstr "Ngày, đồng hồ hằng ngày, dòng trạng thái và trích dẫn dùng phông của đồng hồ kỹ thuật số thay vì phông thường"
+
+msgid "The desktop media widget hides copies of the same player, such as a browser that also shows through Plasma browser integration or playerctld"
+msgstr "Tiện ích phương tiện trên màn nền ẩn bản sao của cùng một trình phát, như trình duyệt cũng hiện qua Plasma browser integration hoặc playerctld"
+
+msgid "The desktop widgets and the lock screen find the place by GPS (GeoClue) instead of the weather location above. Off: they use the weather location"
+msgstr "Tiện ích màn nền và màn hình khóa tìm vị trí bằng GPS (GeoClue) thay vì vị trí thời tiết ở trên. Tắt: dùng vị trí thời tiết"
+
+msgid "The dialog that asks to stop conflicting programs shows a title and a close button"
+msgstr "Hộp thoại hỏi dừng các chương trình xung đột có tiêu đề và nút đóng"
+
+msgid "The hour and minute as numbers in the centre of the dial"
+msgstr "Giờ và phút bằng số ở giữa mặt đồng hồ"
+
+msgid "The longer break after several focus rounds"
+msgstr "Lượt nghỉ dài hơn sau vài lượt tập trung"
+
+msgid "The picture above is used only while this is set. Picking a picture sets it"
+msgstr "Ảnh ở trên chỉ được dùng khi mục này được đặt. Chọn ảnh sẽ đặt nó"
+
+msgid "The picture across the top of the extra large card. Empty: the wallpaper"
+msgstr "Ảnh ngang phía trên của thẻ cực lớn. Trống: hình nền"
+
+msgid "The quick brown fox jumps over the lazy dog. 0123456789"
+msgstr "Con cáo nâu nhanh nhẹn nhảy qua chú chó lười. 0123456789"
+
+msgid "The region selector's Edit action opens Satty instead of Swappy"
+msgstr "Hành động Sửa của bộ chọn vùng mở Satty thay vì Swappy"
+
+msgid "The ring sits anywhere; the others run along the bottom of the screen"
+msgstr "Kiểu vòng đặt ở đâu cũng được; các kiểu khác chạy dọc đáy màn hình"
+
+msgid "The time and date on the cookie and digital desktop clocks"
+msgstr "Giờ và ngày trên đồng hồ cookie và kỹ thuật số của màn nền"
+
+msgid "The workspace numbers and names in the bar. Pick a font with the symbols you use"
+msgstr "Số và tên không gian làm việc trên thanh. Chọn phông có các ký hiệu bạn dùng"
+
+msgid "Thickness of the line you draw for circle to search"
+msgstr "Độ dày nét bạn vẽ khi khoanh để tìm kiếm"
+
+msgid "Titles in the desktop widgets, such as the clock's rotating date"
+msgstr "Tiêu đề trong tiện ích màn nền, như ngày xoay vòng của đồng hồ"
+
+msgid "Titles of cards, dialogs and the calendar. The panel font sets it too"
+msgstr "Tiêu đề của thẻ, hộp thoại và lịch. Phông chữ bảng cũng đặt nó"
+
+msgid "Tray item ids that pinning adds and removes. They stay on the bar, or go behind the expand arrow while “Swap pinned and unpinned” is on"
+msgstr "Id mục khay mà thao tác ghim thêm vào và gỡ ra. Chúng ở lại trên thanh, hoặc nằm sau mũi tên mở rộng khi bật “Đổi chỗ mục ghim và không ghim”"
+
+msgid "Turns warmer colours on and off by itself at the times below"
+msgstr "Tự bật và tắt màu ấm hơn vào các giờ bên dưới"
+
+msgid "Type this and a letter to search apps by one field, e.g. “@i ” for the app id, “@c ” for its category"
+msgstr "Gõ chuỗi này và một chữ cái để tìm ứng dụng theo một trường, ví dụ “@i ” cho id ứng dụng, “@c ” cho danh mục"
+
+msgid "Type this first to run end-4's actions and your scripts. Not the same as the action prefix above"
+msgstr "Gõ chuỗi này trước để chạy hành động của end-4 và script của bạn. Khác với tiền tố hành động ở trên"
+
+msgid "Wait this long after typing before showing maths, command and web results. Keeps typing smooth"
+msgstr "Chờ chừng này sau khi gõ rồi mới hiện kết quả toán, lệnh và web. Giúp gõ mượt"
+
+msgid "Web searches from the launcher and the Assistant skip these sites"
+msgstr "Tìm kiếm web từ trình khởi chạy và Trợ lý bỏ qua các trang này"
+
+msgid "What the action prefix lists: name, icon and the command each runs"
+msgstr "Những gì tiền tố hành động liệt kê: tên, biểu tượng và lệnh mỗi mục chạy"
+
+msgid "What the action prefix lists: name, icon and the command each runs (split on spaces, no shell)"
+msgstr "Những gì tiền tố hành động liệt kê: tên, biểu tượng và lệnh mỗi mục chạy (tách theo dấu cách, không qua shell)"
+
+msgid "When no app matches, offer to run the text, calculate it or search the web for it"
+msgstr "Khi không có ứng dụng nào khớp, đề nghị chạy chữ đó, tính nó hoặc tìm nó trên web"
+
+msgid "Where local .lrc lyrics files are looked for"
+msgstr "Nơi tìm tệp lời bài hát .lrc trên máy"
+
+msgid "Where the system sounds come from: a theme folder in /usr/share/sounds"
+msgstr "Âm thanh hệ thống lấy từ đâu: một thư mục chủ đề trong /usr/share/sounds"
+
+msgid "Which kinds of pictures the Wallhaven source shows"
+msgstr "Loại ảnh mà nguồn Wallhaven hiển thị"
+
+msgid "Widget cards show the wallpaper blurred behind them"
+msgstr "Thẻ tiện ích hiện hình nền làm mờ phía sau chúng"
+
+msgid "Windows make room for the on-screen keyboard instead of going under it, until you unpin it"
+msgstr "Cửa sổ chừa chỗ cho bàn phím ảo thay vì nằm dưới nó, cho đến khi bạn bỏ ghim"
+
+msgid "Windows with these Hyprland tags don't count as open on a workspace"
+msgstr "Cửa sổ có các thẻ Hyprland này không được tính là đang mở trên không gian làm việc"
+
+msgid "With more pending packages than this, the bar's updates icon turns red"
+msgstr "Khi số gói chờ nhiều hơn số này, biểu tượng cập nhật trên thanh chuyển đỏ"
+
+msgid "With more pending packages than this, the bar's updates popout says updating soon is advised"
+msgstr "Khi số gói chờ nhiều hơn số này, bảng cập nhật trên thanh khuyên nên cập nhật sớm"
+
+msgid "Workspace 1 is in the bottom row and numbers go up"
+msgstr "Không gian làm việc 1 ở hàng dưới cùng và số tăng dần lên trên"
+
+msgid "Workspace 1 is on the right and numbers go left"
+msgstr "Không gian làm việc 1 ở bên phải và số tăng dần sang trái"
+
+msgid "Workspaces show their numbers all the time, not only while Super is held. This overrides the workspace style, labels and icons"
+msgstr "Không gian làm việc luôn hiện số, không chỉ khi giữ Super. Mục này ghi đè kiểu, nhãn và biểu tượng không gian làm việc"
+
+msgid "Zerochan asks apps to send a user name. Sent with each Zerochan request"
+msgstr "Zerochan yêu cầu ứng dụng gửi tên người dùng. Được gửi kèm mỗi yêu cầu Zerochan"
+
+msgid "Zooms the blurred picture in a little so its soft edges stay off the screen"
+msgstr "Phóng to ảnh đã làm mờ một chút để viền mềm nằm ngoài màn hình"
+
+msgid "end-4's visualiser. Turning it on turns Caelestia's off"
+msgstr "Hiệu ứng âm thanh của end-4. Bật nó sẽ tắt của Caelestia"
+
+msgid "end-4's weather card, separate from the clock. Location and units: Language & region"
+msgstr "Thẻ thời tiết của end-4, tách khỏi đồng hồ. Vị trí và đơn vị: Ngôn ngữ & khu vực"
+
+msgid "“%1” isn't installed, so another font shows instead"
+msgstr "“%1” chưa được cài, nên một phông khác hiện thay"
+
+msgctxt "a 24-hour time field hint"
+msgid "HH:MM"
+msgstr "HH:MM"
+
+msgctxt "a chosen value that is not available"
+msgid "%1 (not here now)"
+msgstr "%1 (hiện không có)"
+
+msgctxt "a collapsible section"
+msgid "Collapsed"
+msgstr "Đã thu gọn"
+
+msgctxt "a collapsible section"
+msgid "Expanded"
+msgstr "Đã mở rộng"
+
+msgctxt "a duration"
+msgid "%1 %2"
+msgstr "%1 %2"
+
+msgctxt "a list setting's summary"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+msgctxt "an empty list setting"
+msgid "None"
+msgstr "Không có"
+
+msgctxt "button"
+msgid "Use this folder"
+msgstr "Dùng thư mục này"
+
+msgctxt "chosen items and how many more"
+msgid "%1 +%2"
+msgstr "%1 +%2"
+
+msgctxt "end of a time range"
+msgid "To"
+msgstr "Đến"
+
+msgctxt "every option chosen"
+msgid "All"
+msgstr "Tất cả"
+
+msgctxt "font size"
+msgid "Extra large"
+msgstr "Cực lớn"
+
+msgctxt "font size"
+msgid "Large"
+msgstr "Lớn"
+
+msgctxt "font size"
+msgid "Medium"
+msgstr "Vừa"
+
+msgctxt "font size"
+msgid "Small"
+msgstr "Nhỏ"
+
+msgctxt "font weight"
+msgid "Black"
+msgstr "Cực đậm"
+
+msgctxt "font weight"
+msgid "Bold"
+msgstr "Đậm"
+
+msgctxt "font weight"
+msgid "Extra bold"
+msgstr "Rất đậm"
+
+msgctxt "font weight"
+msgid "Extra light"
+msgstr "Rất mảnh"
+
+msgctxt "font weight"
+msgid "Light"
+msgstr "Mảnh"
+
+msgctxt "font weight"
+msgid "Medium"
+msgstr "Vừa"
+
+msgctxt "font weight"
+msgid "Regular"
+msgstr "Thường"
+
+msgctxt "font weight"
+msgid "Semi-bold"
+msgstr "Nửa đậm"
+
+msgctxt "font weight"
+msgid "Thin"
+msgstr "Siêu mảnh"
+
+msgctxt "letter case"
+msgid "As written"
+msgstr "Như đã viết"
+
+msgctxt "letter case"
+msgid "Lower case"
+msgstr "Chữ thường"
+
+msgctxt "letter case"
+msgid "Upper case"
+msgstr "Chữ hoa"
+
+msgctxt "start of a time range"
+msgid "From"
+msgstr "Từ"
+
+msgctxt "time range"
+msgid "to"
+msgstr "đến"
+
+msgctxt "unit after a number"
+msgid "h"
+msgstr "giờ"
+
+msgctxt "wallhaven category"
+msgid "Anime"
+msgstr "Anime"
+
+msgctxt "wallhaven category"
+msgid "General"
+msgstr "Chung"
+
+msgctxt "wallhaven category"
+msgid "People"
+msgstr "Người"
+
+msgctxt "wallhaven sorting"
+msgid "Best match"
+msgstr "Khớp nhất"
+
+msgctxt "wallhaven sorting"
+msgid "Most favourites"
+msgstr "Nhiều yêu thích nhất"
+
+msgctxt "wallhaven sorting"
+msgid "Most viewed"
+msgstr "Nhiều lượt xem nhất"
+
+msgctxt "wallhaven sorting"
+msgid "Newest"
+msgstr "Mới nhất"
+
+msgctxt "wallhaven sorting"
+msgid "Random"
+msgstr "Ngẫu nhiên"
+
+msgctxt "wallhaven sorting"
+msgid "Top list"
+msgstr "Danh sách hàng đầu"
+
+# caelestia4: Nexus P5: titles, sections and search keywords (2026-11-14)
+msgid "%1 settings"
+msgstr "%1 cài đặt"
+
+msgid "0 for no outline"
+msgstr "0 là không có viền"
+
+msgid "2.4 ghz"
+msgstr "2.4 ghz"
+
+msgid "5 ghz"
+msgstr "5 ghz"
+
+msgid "A cut-out picture with an outline"
+msgstr "Ảnh cắt hình có viền"
+
+msgid "A file"
+msgstr "Một tệp"
+
+msgid "A folder"
+msgstr "Một thư mục"
+
+msgid "A mark for each hour inside the dial"
+msgstr "Một vạch cho mỗi giờ bên trong mặt đồng hồ"
+
+msgid "A month calendar card"
+msgstr "Thẻ lịch tháng"
+
+msgid "A picture of your own, cut to a shape"
+msgstr "Ảnh của riêng bạn, cắt theo một hình"
+
+msgid "A soft shadow under each widget card"
+msgstr "Bóng mờ dưới mỗi thẻ tiện ích"
+
+msgid "A sticky note to type in"
+msgstr "Một tờ ghi chú để gõ vào"
+
+msgid "API key name"
+msgstr "Tên khóa API"
+
+msgid "Accent colour"
+msgstr "Màu nhấn"
+
+msgid "Add"
+msgstr "Thêm"
+
+msgid "Align to the side it's on"
+msgstr "Căn theo phía nó đang ở"
+
+msgid "Alignment"
+msgstr "Căn chỉnh"
+
+msgid "Always show numbers"
+msgstr "Luôn hiện số"
+
+msgid "Animate changes"
+msgstr "Tạo hiệu ứng khi đổi"
+
+msgid "App field search prefix"
+msgstr "Tiền tố tìm theo trường ứng dụng"
+
+msgid "Arch"
+msgstr "Vòm"
+
+msgid "Around the edge"
+msgstr "Quanh viền"
+
+msgid "Arrow"
+msgstr "Mũi tên"
+
+msgid "Assistant background transparency"
+msgstr "Độ trong suốt nền trợ lý"
+
+msgid "Assistant content transparency"
+msgstr "Độ trong suốt nội dung trợ lý"
+
+msgid "Assistant: automatic transparency"
+msgstr "Trợ lý: độ trong suốt tự động"
+
+msgid "Automatic checks"
+msgstr "Kiểm tra tự động"
+
+msgid "Axis"
+msgstr "Trục"
+
+msgid "Badge"
+msgstr "Huy hiệu"
+
+msgid "Banner"
+msgstr "Biểu ngữ"
+
+msgid "Battery percent"
+msgstr "Phần trăm pin"
+
+msgid "Big sun"
+msgstr "Mặt trời lớn"
+
+msgid "Black"
+msgstr "Đen"
+
+msgid "Blur behind the card"
+msgstr "Làm mờ phía sau thẻ"
+
+msgid "Blur strength"
+msgstr "Độ mờ"
+
+msgid "Blur the picture"
+msgstr "Làm mờ ảnh"
+
+msgid "Blurred backgrounds"
+msgstr "Nền làm mờ"
+
+msgid "Body text"
+msgstr "Chữ nội dung"
+
+msgid "Body text sizes"
+msgstr "Cỡ chữ nội dung"
+
+msgid "Body text, large"
+msgstr "Chữ nội dung, lớn"
+
+msgid "Body text, medium"
+msgstr "Chữ nội dung, vừa"
+
+msgid "Body text, small"
+msgstr "Chữ nội dung, nhỏ"
+
+msgid "Bold"
+msgstr "Đậm"
+
+msgid "Boom"
+msgstr "Nổ lớn"
+
+msgid "Box"
+msgstr "Hộp"
+
+msgid "Bubble"
+msgstr "Bong bóng"
+
+msgid "Bumps"
+msgstr "Chỗ lồi"
+
+msgid "Bun"
+msgstr "Bánh bao"
+
+msgid "Burst"
+msgstr "Bùng nổ"
+
+msgid "Card opacity"
+msgstr "Độ đục của thẻ"
+
+msgid "Card size"
+msgstr "Kích thước thẻ"
+
+msgid "Centre the dialog title"
+msgstr "Căn giữa tiêu đề hộp thoại"
+
+msgid "Charged notice at"
+msgstr "Báo sạc đầy ở mức"
+
+msgid "Check every"
+msgstr "Kiểm tra mỗi"
+
+msgid "Check for updates"
+msgstr "Kiểm tra cập nhật"
+
+msgid "Choose a folder"
+msgstr "Chọn thư mục"
+
+msgid "Choose a font"
+msgstr "Chọn phông chữ"
+
+msgid "Circle"
+msgstr "Hình tròn"
+
+msgid "Circle line width"
+msgstr "Độ dày nét khoanh"
+
+msgid "Clam shell"
+msgstr "Vỏ sò"
+
+msgid "Classic"
+msgstr "Cổ điển"
+
+msgid "Clock style"
+msgstr "Kiểu đồng hồ"
+
+msgid "Clock text in the digital font"
+msgstr "Chữ đồng hồ dùng phông kỹ thuật số"
+
+msgid "Clock widget font"
+msgstr "Phông tiện ích đồng hồ"
+
+msgid "Clocks"
+msgstr "Đồng hồ"
+
+msgid "Cloud"
+msgstr "Đám mây"
+
+msgid "Clover, 4 leaves"
+msgstr "Cỏ bốn lá"
+
+msgid "Clover, 8 leaves"
+msgstr "Cỏ tám lá"
+
+msgid "Conflicting programs"
+msgstr "Chương trình xung đột"
+
+msgid "Cookie, 12 sides"
+msgstr "Cookie, 12 cạnh"
+
+msgid "Cookie, 4 sides"
+msgstr "Cookie, 4 cạnh"
+
+msgid "Cookie, 6 sides"
+msgstr "Cookie, 6 cạnh"
+
+msgid "Cookie, 7 sides"
+msgstr "Cookie, 7 cạnh"
+
+msgid "Cookie, 9 sides"
+msgstr "Cookie, 9 cạnh"
+
+msgid "Critical (red message)"
+msgstr "Nghiêm trọng (thông báo đỏ)"
+
+msgid "Critical battery notice at"
+msgstr "Báo pin nguy hiểm ở mức"
+
+msgid "Current workspace label"
+msgstr "Nhãn không gian làm việc hiện tại"
+
+msgid "Custom scroll speed"
+msgstr "Tốc độ cuộn tùy chỉnh"
+
+msgid "Daily"
+msgstr "Hằng ngày"
+
+msgid "Dangerous"
+msgstr "Nguy hiểm"
+
+msgid "Darken the picture"
+msgstr "Làm tối ảnh"
+
+msgid "Date"
+msgstr "Ngày"
+
+msgid "Default"
+msgstr "Mặc định"
+
+msgid "Delay before extra results"
+msgstr "Độ trễ trước kết quả thêm"
+
+msgid "Description"
+msgstr "Mô tả"
+
+msgid "Desktop layer"
+msgstr "Lớp màn nền"
+
+msgid "Desktop widgets and apps"
+msgstr "Tiện ích màn nền và ứng dụng"
+
+msgid "Dial marks"
+msgstr "Vạch mặt đồng hồ"
+
+msgid "Diamond"
+msgstr "Hình thoi"
+
+msgid "Digital art"
+msgstr "Nghệ thuật số"
+
+msgid "Digits stacked or side by side"
+msgstr "Chữ số xếp chồng hay cạnh nhau"
+
+msgid "Direction"
+msgstr "Hướng"
+
+msgid "Distro logo"
+msgstr "Logo bản phân phối"
+
+msgid "Dot"
+msgstr "Chấm"
+
+msgid "Drawer stretch"
+msgstr "Độ co giãn ngăn kéo"
+
+msgid "Edit with Satty"
+msgstr "Sửa bằng Satty"
+
+msgid "Empty workspace label"
+msgstr "Nhãn không gian làm việc trống"
+
+msgid "Empty: the style's font"
+msgstr "Trống: phông của kiểu"
+
+msgid "Endpoint"
+msgstr "Điểm cuối"
+
+msgid "Ends the next day"
+msgstr "Kết thúc vào hôm sau"
+
+msgid "Error"
+msgstr "Lỗi"
+
+msgid "Extra AI models"
+msgstr "Mô hình AI thêm"
+
+msgid "Extra large"
+msgstr "Cực lớn"
+
+msgid "Extra wide"
+msgstr "Rất rộng"
+
+msgid "Fade in replies"
+msgstr "Câu trả lời hiện mờ dần"
+
+msgid "Fan"
+msgstr "Quạt"
+
+msgid "Favourite apps"
+msgstr "Ứng dụng yêu thích"
+
+msgid "Fill from the bottom"
+msgstr "Điền từ dưới lên"
+
+msgid "Fill from the right"
+msgstr "Điền từ phải sang"
+
+msgid "Filled"
+msgstr "Tô đầy"
+
+msgid "Find weather location by GPS"
+msgstr "Tìm vị trí thời tiết bằng GPS"
+
+msgid "Floating image"
+msgstr "Ảnh nổi"
+
+msgid "Flower"
+msgstr "Bông hoa"
+
+msgid "Focus rounds until the long break"
+msgstr "Số lượt tập trung trước khi nghỉ dài"
+
+msgid "Font"
+msgstr "Phông chữ"
+
+msgid "GIF speed"
+msgstr "Tốc độ GIF"
+
+msgid "Gem"
+msgstr "Đá quý"
+
+msgid "Ghost"
+msgstr "Bóng ma"
+
+msgid "Half circle"
+msgstr "Nửa hình tròn"
+
+msgid "Headline font"
+msgstr "Phông tiêu đề lớn"
+
+msgid "Headline sizes"
+msgstr "Cỡ tiêu đề lớn"
+
+msgid "Headlines"
+msgstr "Tiêu đề lớn"
+
+msgid "Headlines, large"
+msgstr "Tiêu đề lớn, lớn"
+
+msgid "Headlines, medium"
+msgstr "Tiêu đề lớn, vừa"
+
+msgid "Headlines, small"
+msgstr "Tiêu đề lớn, nhỏ"
+
+msgid "Heart"
+msgstr "Trái tim"
+
+msgid "Hibernate icon"
+msgstr "Biểu tượng ngủ đông"
+
+msgid "Hidden apps"
+msgstr "Ứng dụng bị ẩn"
+
+msgid "Hidden icons"
+msgstr "Biểu tượng bị ẩn"
+
+msgid "Hide duplicate players"
+msgstr "Ẩn trình phát trùng lặp"
+
+msgid "Hide the password box after"
+msgstr "Ẩn ô mật khẩu sau"
+
+msgid "High fidelity"
+msgstr "Độ trung thực cao"
+
+msgid "Highlight pictures and text"
+msgstr "Làm nổi bật ảnh và chữ"
+
+msgid "Home folder"
+msgstr "Thư mục nhà"
+
+msgid "Horizontal"
+msgstr "Ngang"
+
+msgid "Hour hand"
+msgstr "Kim giờ"
+
+msgid "Hour marks"
+msgstr "Vạch giờ"
+
+msgid "Hours above minutes"
+msgstr "Giờ nằm trên phút"
+
+msgid "Hover area height"
+msgstr "Chiều cao vùng rê chuột"
+
+msgid "How dark the shadow is"
+msgstr "Độ đậm của bóng"
+
+msgid "How end-4's clock looks"
+msgstr "Giao diện đồng hồ của end-4"
+
+msgid "How far a touchpad swipe scrolls"
+msgstr "Một lần vuốt bàn di chuột cuộn bao xa"
+
+msgid "How far one wheel notch scrolls"
+msgstr "Một nấc con lăn cuộn bao xa"
+
+msgid "How lines line up when there are several"
+msgstr "Cách căn các dòng khi có nhiều dòng"
+
+msgid "How many clocks it shows"
+msgstr "Số đồng hồ hiển thị"
+
+msgid "How solid the card behind the clock is"
+msgstr "Độ đục của thẻ phía sau đồng hồ"
+
+msgid "How the date is shown on the dial"
+msgstr "Cách hiện ngày trên mặt đồng hồ"
+
+msgid "How thick the letters are"
+msgstr "Độ dày của chữ"
+
+msgid "Icon"
+msgstr "Biểu tượng"
+
+msgid "Icon font"
+msgstr "Phông biểu tượng"
+
+msgid "Icon font and sizes"
+msgstr "Phông và cỡ biểu tượng"
+
+msgid "Icon replacements"
+msgstr "Thay biểu tượng"
+
+msgid "Icons, extra large"
+msgstr "Biểu tượng, cực lớn"
+
+msgid "Icons, large"
+msgstr "Biểu tượng, lớn"
+
+msgid "Icons, medium"
+msgstr "Biểu tượng, vừa"
+
+msgid "Icons, small"
+msgstr "Biểu tượng, nhỏ"
+
+msgid "Ignored window tags"
+msgstr "Thẻ cửa sổ bị bỏ qua"
+
+msgid "Image search address"
+msgstr "Địa chỉ tìm kiếm ảnh"
+
+msgid "Images per page"
+msgstr "Số ảnh mỗi trang"
+
+msgid "In a row"
+msgstr "Thành hàng"
+
+msgid "In points"
+msgstr "Tính bằng point"
+
+msgid "Italic"
+msgstr "Nghiêng"
+
+msgid "Item id"
+msgstr "Id mục"
+
+msgid "Keep turning"
+msgstr "Xoay liên tục"
+
+msgid "Keyboard starts pinned"
+msgstr "Bàn phím ghim sẵn khi mở"
+
+msgid "Label"
+msgstr "Nhãn"
+
+msgid "Label font"
+msgstr "Phông nhãn"
+
+msgid "Label sizes"
+msgstr "Cỡ nhãn"
+
+msgid "Labels"
+msgstr "Nhãn"
+
+msgid "Labels, large"
+msgstr "Nhãn, lớn"
+
+msgid "Labels, medium"
+msgstr "Nhãn, vừa"
+
+msgid "Labels, small"
+msgstr "Nhãn, nhỏ"
+
+msgid "Large"
+msgstr "Lớn"
+
+msgid "Launcher actions"
+msgstr "Hành động trình khởi chạy"
+
+msgid "Left"
+msgstr "Trái"
+
+msgid "Line"
+msgstr "Đường kẻ"
+
+msgid "Lines"
+msgstr "Đường kẻ"
+
+msgid "Lock screen picture"
+msgstr "Ảnh màn hình khóa"
+
+msgid "Lock when the session starts"
+msgstr "Khóa khi phiên bắt đầu"
+
+msgid "Log out icon"
+msgstr "Biểu tượng đăng xuất"
+
+msgid "Long date format"
+msgstr "Định dạng ngày dài"
+
+msgid "Look"
+msgstr "Giao diện"
+
+msgid "Loose matching for search results"
+msgstr "Khớp lỏng cho kết quả tìm kiếm"
+
+msgid "Low battery notice at"
+msgstr "Báo pin yếu ở mức"
+
+msgid "Low battery warnings"
+msgstr "Cảnh báo pin yếu"
+
+msgid "Lyrics folder"
+msgstr "Thư mục lời bài hát"
+
+msgid "Margin around circles"
+msgstr "Lề quanh vùng khoanh"
+
+msgid "Margin around picked areas"
+msgstr "Lề quanh vùng được chọn"
+
+msgid "Match the wallpaper"
+msgstr "Theo hình nền"
+
+msgid "Matching files"
+msgstr "Tệp khớp"
+
+msgid "Media GIF"
+msgstr "GIF phương tiện"
+
+msgid "Media GIF slowdown"
+msgstr "Làm chậm GIF phương tiện"
+
+msgid "Media card"
+msgstr "Thẻ phương tiện"
+
+msgid "Medium"
+msgstr "Vừa"
+
+msgid "Minute hand"
+msgstr "Kim phút"
+
+msgid "Model id"
+msgstr "Id mô hình"
+
+msgid "Monospace"
+msgstr "Đơn cách"
+
+msgid "Monospace sizes"
+msgstr "Cỡ chữ đơn cách"
+
+msgid "Monospace, medium"
+msgstr "Đơn cách, vừa"
+
+msgid "Monospace, small"
+msgstr "Đơn cách, nhỏ"
+
+msgid "Morning"
+msgstr "Buổi sáng"
+
+msgid "Mouse wheel detection"
+msgstr "Nhận biết con lăn chuột"
+
+msgid "Mouse wheel speed"
+msgstr "Tốc độ con lăn chuột"
+
+msgid "Move down"
+msgstr "Chuyển xuống"
+
+msgid "Move up"
+msgstr "Chuyển lên"
+
+msgid "Name"
+msgstr "Tên"
+
+msgid "Name case"
+msgstr "Kiểu chữ của tên"
+
+msgid "Name highlighted areas"
+msgstr "Ghi tên vùng được làm nổi bật"
+
+msgid "Names"
+msgstr "Tên"
+
+msgid "Needs an API key"
+msgstr "Cần khóa API"
+
+msgid "Needs two clocks or more"
+msgstr "Cần từ hai đồng hồ trở lên"
+
+msgid "Night light ends"
+msgstr "Đèn ngủ tắt lúc"
+
+msgid "Night light hours"
+msgstr "Giờ bật đèn ngủ"
+
+msgid "Night light on a schedule"
+msgstr "Đèn ngủ theo lịch"
+
+msgid "Night light warmth"
+msgstr "Độ ấm đèn ngủ"
+
+msgid "No folders in here"
+msgstr "Không có thư mục nào ở đây"
+
+msgid "No notifications picture"
+msgstr "Ảnh khi không có thông báo"
+
+msgid "Nothing here yet"
+msgstr "Chưa có gì ở đây"
+
+msgid "Numbers font"
+msgstr "Phông chữ số"
+
+msgid "Occupied workspace label"
+msgstr "Nhãn không gian làm việc có cửa sổ"
+
+msgid "Off: the title sits on the left"
+msgstr "Tắt: tiêu đề nằm bên trái"
+
+msgid "Offer command, maths and web search"
+msgstr "Gợi ý lệnh, toán và tìm kiếm web"
+
+msgid "On-screen keyboard"
+msgstr "Bàn phím ảo"
+
+msgid "Or drop a picture file on the card"
+msgstr "Hoặc thả tệp ảnh lên thẻ"
+
+msgid "Or drop a picture file on the widget"
+msgstr "Hoặc thả tệp ảnh lên tiện ích"
+
+msgid "Or image file"
+msgstr "Hoặc tệp ảnh"
+
+msgid "Or regex"
+msgstr "Hoặc regex"
+
+msgid "Outline"
+msgstr "Viền"
+
+msgid "Outline colour"
+msgstr "Màu viền"
+
+msgid "Outline width"
+msgstr "Độ dày viền"
+
+msgid "Oval"
+msgstr "Hình bầu dục"
+
+msgid "Panels over fullscreen"
+msgstr "Bảng trên cửa sổ toàn màn hình"
+
+msgid "Pentagon"
+msgstr "Ngũ giác"
+
+msgid "Picture and text highlight strength"
+msgstr "Mức làm nổi bật ảnh và chữ"
+
+msgid "Picture's original file"
+msgstr "Tệp gốc của ảnh"
+
+msgid "Picture, blur, password box, hyprlock"
+msgstr "Ảnh, làm mờ, ô mật khẩu, hyprlock"
+
+msgid "Pill"
+msgstr "Viên thuốc"
+
+msgid "Pin list"
+msgstr "Danh sách ghim"
+
+msgid "Pinned widget opacity"
+msgstr "Độ đục tiện ích đã ghim"
+
+msgid "Pixel"
+msgstr "Pixel"
+
+msgid "Pixel circle"
+msgstr "Hình tròn pixel"
+
+msgid "Pixel triangle"
+msgstr "Tam giác pixel"
+
+msgid "Placement"
+msgstr "Vị trí"
+
+msgid "Player"
+msgstr "Trình phát"
+
+msgid "Player names"
+msgstr "Tên trình phát"
+
+msgid "Pomodoro focus"
+msgstr "Tập trung Pomodoro"
+
+msgid "Pomodoro, countdown and stopwatch cards"
+msgstr "Thẻ Pomodoro, đếm ngược và bấm giờ"
+
+msgid "Prefixes"
+msgstr "Tiền tố"
+
+msgid "Primary"
+msgstr "Chính"
+
+msgid "Primary container"
+msgstr "Nền chính"
+
+msgid "Processor, memory and disk use"
+msgstr "Mức dùng bộ xử lý, bộ nhớ và ổ đĩa"
+
+msgid "Profile"
+msgstr "Hồ sơ"
+
+msgid "Public Wi-Fi names"
+msgstr "Tên Wi-Fi công cộng"
+
+msgid "Puffy diamond"
+msgstr "Hình thoi phồng"
+
+msgid "Region selector"
+msgstr "Bộ chọn vùng"
+
+msgid "Remacri"
+msgstr "Remacri"
+
+msgid "Remove"
+msgstr "Gỡ"
+
+msgid "Resource graph length"
+msgstr "Độ dài đồ thị tài nguyên"
+
+msgid "Restart icon"
+msgstr "Biểu tượng khởi động lại"
+
+msgid "Right"
+msgstr "Phải"
+
+msgid "Roundness"
+msgstr "Độ tròn"
+
+msgid "Rounds before a long break"
+msgstr "Số lượt trước khi nghỉ dài"
+
+msgid "Same as the style"
+msgstr "Giống kiểu"
+
+msgid "Screen frame smoothing"
+msgstr "Làm mượt khung màn hình"
+
+msgid "Screens without a bar"
+msgstr "Màn hình không có thanh"
+
+msgid "Script"
+msgstr "Chữ viết tay"
+
+msgid "Script action prefix"
+msgstr "Tiền tố hành động script"
+
+msgid "Scrolling"
+msgstr "Cuộn"
+
+msgid "Search fonts"
+msgstr "Tìm phông chữ"
+
+msgid "Second hand"
+msgstr "Kim giây"
+
+msgid "Secondary"
+msgstr "Phụ"
+
+msgid "Secondary container"
+msgstr "Nền phụ"
+
+msgid "Session menu GIF"
+msgstr "GIF menu phiên"
+
+msgid "Shadow"
+msgstr "Bóng"
+
+msgid "Shadow softness"
+msgstr "Độ mềm của bóng"
+
+msgid "Shadow strength"
+msgstr "Độ đậm của bóng"
+
+msgid "Shadows"
+msgstr "Bóng"
+
+msgid "Shape"
+msgstr "Hình dạng"
+
+msgid "Shaped password dots"
+msgstr "Chấm mật khẩu có hình"
+
+msgid "Short break"
+msgstr "Nghỉ ngắn"
+
+msgid "Show end-4's clock"
+msgstr "Hiện đồng hồ của end-4"
+
+msgid "Show hidden folders"
+msgstr "Hiện thư mục ẩn"
+
+msgid "Show on the desktop"
+msgstr "Hiện trên màn nền"
+
+msgid "Show snap lines"
+msgstr "Hiện đường căn"
+
+msgid "Show the date"
+msgstr "Hiện ngày"
+
+msgid "Shown as"
+msgstr "Hiện dưới dạng"
+
+msgid "Shown on the card. Empty: your user name"
+msgstr "Hiện trên thẻ. Trống: tên người dùng của bạn"
+
+msgid "Shut down icon"
+msgstr "Biểu tượng tắt máy"
+
+msgid "Sites left out of web searches"
+msgstr "Trang bị loại khỏi tìm kiếm web"
+
+msgid "Slanted"
+msgstr "Xiên"
+
+msgid "Slanted letters"
+msgstr "Chữ nghiêng"
+
+msgid "Sleep at"
+msgstr "Ngủ ở mức"
+
+msgid "Sleep when the battery is almost empty"
+msgstr "Ngủ khi pin gần cạn"
+
+msgid "Small"
+msgstr "Nhỏ"
+
+msgid "Smooth waves instead of rounded bumps"
+msgstr "Sóng mượt thay vì chỗ lồi tròn"
+
+msgid "Soft boom"
+msgstr "Nổ lớn mềm"
+
+msgid "Soft burst"
+msgstr "Bùng nổ mềm"
+
+msgid "Sound theme"
+msgstr "Chủ đề âm thanh"
+
+msgid "Special workspace icons"
+msgstr "Biểu tượng không gian làm việc đặc biệt"
+
+msgid "Special workspace style"
+msgstr "Kiểu không gian làm việc đặc biệt"
+
+msgid "Square"
+msgstr "Hình vuông"
+
+msgid "Stacked"
+msgstr "Xếp chồng"
+
+msgid "Stop other notification apps"
+msgstr "Dừng ứng dụng thông báo khác"
+
+msgid "Suggest updating at"
+msgstr "Khuyên cập nhật khi có"
+
+msgid "Sun"
+msgstr "Mặt trời"
+
+msgid "Super key label"
+msgstr "Nhãn phím Super"
+
+msgid "Swap light and dark colours"
+msgstr "Đảo màu sáng và tối"
+
+msgid "Swap pinned and unpinned"
+msgstr "Đổi chỗ mục ghim và không ghim"
+
+msgid "Tertiary"
+msgstr "Thứ ba"
+
+msgid "Tertiary container"
+msgstr "Nền thứ ba"
+
+msgid "Text colour"
+msgstr "Màu chữ"
+
+msgid "The bar is not shown on these screens"
+msgstr "Thanh không hiện trên các màn hình này"
+
+msgid "The break after each focus round"
+msgstr "Lượt nghỉ sau mỗi lượt tập trung"
+
+msgid "The date under the time"
+msgstr "Ngày dưới giờ"
+
+msgid "The digital clock's font"
+msgstr "Phông của đồng hồ kỹ thuật số"
+
+msgid "The digits animate when the time changes"
+msgstr "Chữ số chuyển động khi giờ thay đổi"
+
+msgid "The line around the cut-out"
+msgstr "Đường viền quanh ảnh cắt"
+
+msgid "The shape the picture is cut to"
+msgstr "Hình dạng để cắt ảnh"
+
+msgid "The song playing, its cover and controls"
+msgstr "Bài đang phát, ảnh bìa và nút điều khiển"
+
+msgid "The time in other places"
+msgstr "Giờ ở nơi khác"
+
+msgid "Theme icon"
+msgstr "Biểu tượng chủ đề"
+
+msgid "There is no such file"
+msgstr "Không có tệp này"
+
+msgid "There is no such folder"
+msgstr "Không có thư mục này"
+
+msgid "Thin"
+msgstr "Mảnh"
+
+msgid "Thin to bold; 400 is regular"
+msgstr "Mảnh đến đậm; 400 là thường"
+
+msgid "This file doesn't exist any more"
+msgstr "Tệp này không còn nữa"
+
+msgid "This folder doesn't exist any more"
+msgstr "Thư mục này không còn nữa"
+
+msgid "Tick every second"
+msgstr "Nhảy mỗi giây"
+
+msgid "Time between update checks"
+msgstr "Khoảng cách giữa các lần kiểm tra cập nhật"
+
+msgid "Time in the middle"
+msgstr "Giờ ở giữa"
+
+msgid "Time zones"
+msgstr "Múi giờ"
+
+msgid "Tint the assistant background"
+msgstr "Phủ màu nền trợ lý"
+
+msgid "Title bar on the conflict dialog"
+msgstr "Thanh tiêu đề trên hộp thoại xung đột"
+
+msgid "Title font"
+msgstr "Phông tiêu đề"
+
+msgid "Title sizes"
+msgstr "Cỡ tiêu đề"
+
+msgid "Titles"
+msgstr "Tiêu đề"
+
+msgid "Titles, large"
+msgstr "Tiêu đề, lớn"
+
+msgid "Titles, medium"
+msgstr "Tiêu đề, vừa"
+
+msgid "Titles, small"
+msgstr "Tiêu đề, nhỏ"
+
+msgid "Touchpad sensitivity"
+msgstr "Độ nhạy bàn di chuột"
+
+msgid "Touchpad speed"
+msgstr "Tốc độ bàn di chuột"
+
+msgid "Translate from"
+msgstr "Dịch từ"
+
+msgid "Translate to"
+msgstr "Dịch sang"
+
+msgid "Translator"
+msgstr "Dịch"
+
+msgid "Translator tab"
+msgstr "Thẻ Dịch"
+
+msgid "Transparency, size and shape"
+msgstr "Độ trong suốt, kích thước và hình dạng"
+
+msgid "Triangle"
+msgstr "Tam giác"
+
+msgid "Type this first to search the web"
+msgstr "Gõ chuỗi này trước để tìm trên web"
+
+msgid "Ultramix balanced"
+msgstr "Ultramix balanced"
+
+msgid "Ultrasharp"
+msgstr "Ultrasharp"
+
+msgid "Unit"
+msgstr "Đơn vị"
+
+msgid "Unsafe link words"
+msgstr "Từ trong liên kết không an toàn"
+
+msgid "Up one folder"
+msgstr "Lên một thư mục"
+
+msgid "Upscaling model"
+msgstr "Mô hình phóng to"
+
+msgid "Upscayl lite (faster)"
+msgstr "Upscayl lite (nhanh hơn)"
+
+msgid "Upscayl standard"
+msgstr "Upscayl standard"
+
+msgid "Value"
+msgstr "Giá trị"
+
+msgid "Variable font axes"
+msgstr "Trục phông biến đổi"
+
+msgid "Vertical"
+msgstr "Dọc"
+
+msgid "Wait before translating"
+msgstr "Chờ trước khi dịch"
+
+msgid "Wallhaven categories"
+msgstr "Danh mục Wallhaven"
+
+msgid "Wallhaven order"
+msgstr "Thứ tự Wallhaven"
+
+msgid "Wallpapers per row"
+msgstr "Số hình nền mỗi hàng"
+
+msgid "Warn about updates at"
+msgstr "Cảnh báo cập nhật khi có"
+
+msgid "Wavy edge"
+msgstr "Viền gợn sóng"
+
+msgid "Weather refresh"
+msgstr "Làm mới thời tiết"
+
+msgid "Web search prefix"
+msgstr "Tiền tố tìm kiếm web"
+
+msgid "Weight"
+msgstr "Độ đậm"
+
+msgid "What goes around the edge of the dial"
+msgstr "Những gì nằm quanh viền mặt đồng hồ"
+
+msgid "What the widget says"
+msgstr "Nội dung tiện ích hiển thị"
+
+msgid "Wide"
+msgstr "Rộng"
+
+msgid "Widget size"
+msgstr "Kích thước tiện ích"
+
+msgid "Widget title font"
+msgstr "Phông tiêu đề tiện ích"
+
+msgid "Width"
+msgstr "Độ rộng"
+
+msgid "Window class"
+msgstr "Lớp cửa sổ"
+
+msgid "Window highlight strength"
+msgstr "Mức làm nổi bật cửa sổ"
+
+msgid "Window icons"
+msgstr "Biểu tượng cửa sổ"
+
+msgid "Work safety"
+msgstr "An toàn nơi làm việc"
+
+msgid "Workspace"
+msgstr "Không gian làm việc"
+
+msgid "Workspace font"
+msgstr "Phông không gian làm việc"
+
+msgid "Workspace icons"
+msgstr "Biểu tượng không gian làm việc"
+
+msgid "You can also drag the card's corner"
+msgstr "Bạn cũng có thể kéo góc thẻ"
+
+msgid "You can also drag the widget's corner"
+msgstr "Bạn cũng có thể kéo góc tiện ích"
+
+msgid "Your picture and name on a card"
+msgstr "Ảnh và tên của bạn trên một thẻ"
+
+msgid "Your to-do list on the wallpaper"
+msgstr "Danh sách việc cần làm trên hình nền"
+
+msgid "Zerochan user name"
+msgstr "Tên người dùng Zerochan"
+
+msgid "Zoom for the blur"
+msgstr "Phóng to cho phần làm mờ"
+
+msgid "above"
+msgstr "phía trên"
+
+msgid "acceleration"
+msgstr "gia tốc"
+
+msgid "accent"
+msgstr "màu nhấn"
+
+msgid "action"
+msgstr "hành động"
+
+msgid "actions"
+msgstr "các hành động"
+
+msgid "activate"
+msgstr "kích hoạt"
+
+msgid "active"
+msgstr "đang dùng"
+
+msgid "active window"
+msgstr "cửa sổ đang dùng"
+
+msgid "adapter"
+msgstr "bộ điều hợp"
+
+msgid "adaptive"
+msgstr "thích ứng"
+
+msgid "adaptive sync"
+msgstr "đồng bộ thích ứng"
+
+msgid "add device"
+msgstr "thêm thiết bị"
+
+msgid "add vpn"
+msgstr "thêm vpn"
+
+msgid "advise"
+msgstr "khuyên"
+
+msgid "ai"
+msgstr "ai"
+
+msgid "aim"
+msgstr "nhắm"
+
+msgid "alarm"
+msgstr "báo thức"
+
+msgid "album"
+msgstr "album"
+
+msgid "alert"
+msgstr "cảnh báo"
+
+msgid "alias"
+msgstr "bí danh"
+
+msgid "align"
+msgstr "căn"
+
+msgid "alignment"
+msgstr "căn chỉnh"
+
+msgid "alpha"
+msgstr "độ trong"
+
+msgid "alt tab"
+msgstr "alt tab"
+
+msgid "always"
+msgstr "luôn luôn"
+
+msgid "am"
+msgstr "sáng"
+
+msgid "amd"
+msgstr "amd"
+
+msgid "amount"
+msgstr "lượng"
+
+msgid "amplify"
+msgstr "khuếch đại"
+
+msgid "analog"
+msgstr "kim"
+
+msgid "angle"
+msgstr "góc"
+
+msgid "animate"
+msgstr "chuyển động"
+
+msgid "animation"
+msgstr "hiệu ứng động"
+
+msgid "animations"
+msgstr "các hiệu ứng động"
+
+msgid "anime"
+msgstr "anime"
+
+msgid "annotate"
+msgstr "chú thích"
+
+msgid "app"
+msgstr "ứng dụng"
+
+msgid "app id"
+msgstr "id ứng dụng"
+
+msgid "apps"
+msgstr "các ứng dụng"
+
+msgid "arch"
+msgstr "arch"
+
+msgid "area"
+msgstr "vùng"
+
+msgid "aspect ratio"
+msgstr "tỉ lệ khung hình"
+
+msgid "assistant"
+msgstr "trợ lý"
+
+msgid "attention"
+msgstr "chú ý"
+
+msgid "audio"
+msgstr "âm thanh"
+
+msgid "aur"
+msgstr "aur"
+
+msgid "aurora"
+msgstr "cực quang"
+
+msgid "auto"
+msgstr "tự động"
+
+msgid "auto connect"
+msgstr "tự kết nối"
+
+msgid "auto hide"
+msgstr "tự ẩn"
+
+msgid "auto lock"
+msgstr "tự khóa"
+
+msgid "autohide"
+msgstr "tự ẩn"
+
+msgid "autologin"
+msgstr "tự đăng nhập"
+
+msgid "automatic"
+msgstr "tự động"
+
+msgid "avatar"
+msgstr "ảnh đại diện"
+
+msgid "away"
+msgstr "vắng mặt"
+
+msgid "axes"
+msgstr "các trục"
+
+msgid "axis"
+msgstr "trục"
+
+msgid "backend"
+msgstr "phần phụ trợ"
+
+msgid "background"
+msgstr "nền"
+
+msgid "backlight"
+msgstr "đèn nền"
+
+msgid "bandwidth"
+msgstr "băng thông"
+
+msgid "banner"
+msgstr "biểu ngữ"
+
+msgid "bar"
+msgstr "thanh"
+
+msgid "bars"
+msgstr "các thanh"
+
+msgid "battery"
+msgstr "pin"
+
+msgid "beat"
+msgstr "nhịp"
+
+msgid "beep"
+msgstr "tiếng bíp"
+
+msgid "bigger"
+msgstr "to hơn"
+
+msgid "binary"
+msgstr "tệp chạy"
+
+msgid "blacklist"
+msgstr "danh sách chặn"
+
+msgid "blank"
+msgstr "trống"
+
+msgid "blend"
+msgstr "hòa trộn"
+
+msgid "blob"
+msgstr "khối"
+
+msgid "block"
+msgstr "chặn"
+
+msgid "blue light"
+msgstr "ánh sáng xanh"
+
+msgid "bluetooth"
+msgstr "bluetooth"
+
+msgid "blur"
+msgstr "làm mờ"
+
+msgid "blurry"
+msgstr "mờ"
+
+msgid "body"
+msgstr "nội dung"
+
+msgid "bold"
+msgstr "đậm"
+
+msgid "bongo cat"
+msgstr "bongo cat"
+
+msgid "booru"
+msgstr "booru"
+
+msgid "boost"
+msgstr "tăng cường"
+
+msgid "boot"
+msgstr "khởi động"
+
+msgid "border"
+msgstr "viền"
+
+msgid "bottom"
+msgstr "dưới cùng"
+
+msgid "boxes"
+msgstr "các ô"
+
+msgid "bpm"
+msgstr "nhịp mỗi phút"
+
+msgid "break"
+msgstr "nghỉ"
+
+msgid "brightness"
+msgstr "độ sáng"
+
+msgid "browse"
+msgstr "duyệt"
+
+msgid "browser"
+msgstr "trình duyệt"
+
+msgid "bt"
+msgstr "bt"
+
+msgid "btop"
+msgstr "btop"
+
+msgid "bumps"
+msgstr "chỗ lồi"
+
+msgid "button"
+msgstr "nút"
+
+msgid "buttons"
+msgstr "các nút"
+
+msgid "bytes"
+msgstr "byte"
+
+msgid "cable"
+msgstr "cáp"
+
+msgid "caelestia"
+msgstr "caelestia"
+
+msgid "caffeine"
+msgstr "cafein"
+
+msgid "calendar"
+msgstr "lịch"
+
+msgid "cap"
+msgstr "giới hạn"
+
+msgid "capital"
+msgstr "chữ hoa"
+
+msgid "caps lock"
+msgstr "caps lock"
+
+msgid "capture"
+msgstr "chụp"
+
+msgid "card"
+msgstr "thẻ"
+
+msgid "cards"
+msgstr "các thẻ"
+
+msgid "case"
+msgstr "chữ hoa thường"
+
+msgid "categories"
+msgstr "các danh mục"
+
+msgid "category"
+msgstr "danh mục"
+
+msgid "cava"
+msgstr "cava"
+
+msgid "celsius"
+msgstr "độ c"
+
+msgid "center"
+msgstr "giữa"
+
+msgid "centre"
+msgstr "căn giữa"
+
+msgid "character"
+msgstr "ký tự"
+
+msgid "characters"
+msgstr "các ký tự"
+
+msgid "charged"
+msgstr "đã sạc đầy"
+
+msgid "charger"
+msgstr "bộ sạc"
+
+msgid "charging"
+msgstr "đang sạc"
+
+msgid "chat"
+msgstr "trò chuyện"
+
+msgid "cheatsheet"
+msgstr "bảng tra cứu"
+
+msgid "check"
+msgstr "kiểm tra"
+
+msgid "circle"
+msgstr "vòng tròn"
+
+msgid "city"
+msgstr "thành phố"
+
+msgid "class"
+msgstr "lớp"
+
+msgid "clean"
+msgstr "dọn dẹp"
+
+msgid "click"
+msgstr "bấm"
+
+msgid "click to focus"
+msgstr "bấm để chọn"
+
+msgid "clipboard"
+msgstr "bảng nhớ tạm"
+
+msgid "cliphist"
+msgstr "cliphist"
+
+msgid "clock"
+msgstr "đồng hồ"
+
+msgid "code"
+msgstr "mã"
+
+msgid "collapse"
+msgstr "thu gọn"
+
+msgid "color"
+msgstr "màu"
+
+msgid "colors"
+msgstr "các màu"
+
+msgid "colour"
+msgstr "màu sắc"
+
+msgid "colours"
+msgstr "các màu sắc"
+
+msgid "columns"
+msgstr "cột"
+
+msgid "command"
+msgstr "lệnh"
+
+msgid "commands"
+msgstr "các lệnh"
+
+msgid "compact"
+msgstr "gọn"
+
+msgid "compose"
+msgstr "soạn"
+
+msgid "conflict"
+msgstr "xung đột"
+
+msgid "connect"
+msgstr "kết nối"
+
+msgid "console"
+msgstr "bảng điều khiển lệnh"
+
+msgid "content"
+msgstr "nội dung"
+
+msgid "contrast"
+msgstr "độ tương phản"
+
+msgid "convert"
+msgstr "chuyển đổi"
+
+msgid "converter"
+msgstr "bộ chuyển đổi"
+
+msgid "cookie"
+msgstr "cookie"
+
+msgid "copy"
+msgstr "sao chép"
+
+msgid "corner"
+msgstr "góc"
+
+msgid "corners"
+msgstr "các góc"
+
+msgid "count"
+msgstr "số lượng"
+
+msgid "countdown"
+msgstr "đếm ngược"
+
+msgid "cover"
+msgstr "ảnh bìa"
+
+msgid "cpu"
+msgstr "cpu"
+
+msgid "critical"
+msgstr "nguy kịch"
+
+msgid "crop"
+msgstr "cắt"
+
+msgid "crosshair"
+msgstr "tâm ngắm"
+
+msgid "ctrl+shift+esc"
+msgstr "ctrl+shift+esc"
+
+msgid "current"
+msgstr "hiện tại"
+
+msgid "cursor"
+msgstr "con trỏ"
+
+msgid "custom"
+msgstr "tùy chỉnh"
+
+msgid "cycles"
+msgstr "chu kỳ"
+
+msgid "daemon"
+msgstr "dịch vụ nền"
+
+msgid "daily"
+msgstr "hằng ngày"
+
+msgid "dangerous"
+msgstr "nguy hiểm"
+
+msgid "dark"
+msgstr "tối"
+
+msgid "darken"
+msgstr "làm tối"
+
+msgid "dashboard"
+msgstr "bảng điều khiển"
+
+msgid "data"
+msgstr "dữ liệu"
+
+msgid "date"
+msgstr "ngày"
+
+msgid "day"
+msgstr "ngày"
+
+msgid "dead keys"
+msgstr "phím chết"
+
+msgid "decimal"
+msgstr "thập phân"
+
+msgid "decoration"
+msgstr "trang trí"
+
+msgid "default"
+msgstr "mặc định"
+
+msgid "default app"
+msgstr "ứng dụng mặc định"
+
+msgid "deform"
+msgstr "biến dạng"
+
+msgid "delay"
+msgstr "độ trễ"
+
+msgid "delta"
+msgstr "bước"
+
+msgid "density"
+msgstr "mật độ"
+
+msgid "depth"
+msgstr "độ sâu"
+
+msgid "desktop"
+msgstr "màn nền"
+
+msgid "details"
+msgstr "chi tiết"
+
+msgid "detect"
+msgstr "phát hiện"
+
+msgid "dial"
+msgstr "mặt đồng hồ"
+
+msgid "dialog"
+msgstr "hộp thoại"
+
+msgid "different"
+msgstr "khác nhau"
+
+msgid "digital"
+msgstr "kỹ thuật số"
+
+msgid "digits"
+msgstr "chữ số"
+
+msgid "dim"
+msgstr "làm mờ tối"
+
+msgid "dino"
+msgstr "khủng long"
+
+msgid "direct scanout"
+msgstr "direct scanout"
+
+msgid "direction"
+msgstr "hướng"
+
+msgid "directory"
+msgstr "thư mục gốc"
+
+msgid "discoverable"
+msgstr "có thể phát hiện"
+
+msgid "disk"
+msgstr "ổ đĩa"
+
+msgid "dismiss"
+msgstr "bỏ qua"
+
+msgid "display"
+msgstr "màn hình"
+
+msgid "distro"
+msgstr "bản phân phối"
+
+msgid "dnd"
+msgstr "dnd"
+
+msgid "do not disturb"
+msgstr "không làm phiền"
+
+msgid "dolphin"
+msgstr "dolphin"
+
+msgid "dots"
+msgstr "dấu chấm"
+
+msgid "download"
+msgstr "tải xuống"
+
+msgid "dpi"
+msgstr "dpi"
+
+msgid "dpms"
+msgstr "dpms"
+
+msgid "drag"
+msgstr "kéo"
+
+msgid "draw"
+msgstr "vẽ"
+
+msgid "drawers"
+msgstr "ngăn kéo"
+
+msgid "drop shadow"
+msgstr "đổ bóng"
+
+msgid "dunst"
+msgstr "dunst"
+
+msgid "duplicate"
+msgstr "trùng lặp"
+
+msgid "duration"
+msgstr "thời lượng"
+
+msgid "dwindle"
+msgstr "dwindle"
+
+msgid "ears"
+msgstr "tai"
+
+msgid "edge"
+msgstr "cạnh"
+
+msgid "edges"
+msgstr "các cạnh"
+
+msgid "edit"
+msgstr "sửa"
+
+msgid "effect"
+msgstr "hiệu ứng"
+
+msgid "effects"
+msgstr "các hiệu ứng"
+
+msgid "emojis"
+msgstr "biểu tượng cảm xúc"
+
+msgid "empty"
+msgstr "trống"
+
+msgid "enable"
+msgstr "bật"
+
+msgid "end"
+msgstr "kết thúc"
+
+msgid "end-4"
+msgstr "end-4"
+
+msgid "endpoint"
+msgstr "điểm cuối"
+
+msgid "engine"
+msgstr "công cụ"
+
+msgid "english"
+msgstr "tiếng anh"
+
+msgid "ethernet"
+msgstr "mạng dây"
+
+msgid "evening"
+msgstr "buổi tối"
+
+msgid "exclude"
+msgstr "loại trừ"
+
+msgid "expanded"
+msgstr "mở rộng"
+
+msgid "expire"
+msgstr "hết hạn"
+
+msgid "explorer"
+msgstr "trình quản lý tệp"
+
+msgid "expo"
+msgstr "expo"
+
+msgid "expressive"
+msgstr "biểu cảm"
+
+msgid "extra large"
+msgstr "cực lớn"
+
+msgid "face"
+msgstr "khuôn mặt"
+
+msgid "factor"
+msgstr "hệ số"
+
+msgid "fade"
+msgstr "mờ dần"
+
+msgid "fahrenheit"
+msgstr "độ f"
+
+msgid "fallback"
+msgstr "dự phòng"
+
+msgid "family"
+msgstr "họ phông"
+
+msgid "fast"
+msgstr "nhanh"
+
+msgid "faster"
+msgstr "nhanh hơn"
+
+msgid "favorite"
+msgstr "ưa thích"
+
+msgid "favourite"
+msgstr "yêu thích"
+
+msgid "file"
+msgstr "tệp"
+
+msgid "file manager"
+msgstr "trình quản lý tệp"
+
+msgid "file picker"
+msgstr "hộp chọn tệp"
+
+msgid "files"
+msgstr "các tệp"
+
+msgid "fill"
+msgstr "tô"
+
+msgid "filter"
+msgstr "bộ lọc"
+
+msgid "find"
+msgstr "tìm"
+
+msgid "fit"
+msgstr "vừa khít"
+
+msgid "fixed width"
+msgstr "độ rộng cố định"
+
+msgid "flat"
+msgstr "phẳng"
+
+msgid "flicker"
+msgstr "nhấp nháy"
+
+msgid "floating image"
+msgstr "ảnh nổi"
+
+msgid "focus"
+msgstr "tập trung"
+
+msgid "focused"
+msgstr "đang chọn"
+
+msgid "folder"
+msgstr "thư mục"
+
+msgid "folders"
+msgstr "các thư mục"
+
+msgid "follow"
+msgstr "theo"
+
+msgid "font"
+msgstr "phông chữ"
+
+msgid "foot"
+msgstr "foot"
+
+msgid "forecast"
+msgstr "dự báo"
+
+msgid "foreground"
+msgstr "tiền cảnh"
+
+msgid "forget"
+msgstr "quên"
+
+msgid "format"
+msgstr "định dạng"
+
+msgid "fps"
+msgstr "fps"
+
+msgid "frame"
+msgstr "khung"
+
+msgid "frame rate"
+msgstr "tốc độ khung hình"
+
+msgid "freedesktop"
+msgstr "freedesktop"
+
+msgid "freehand"
+msgstr "vẽ tay"
+
+msgid "freesync"
+msgstr "freesync"
+
+msgid "frequency"
+msgstr "tần số"
+
+msgid "from"
+msgstr "từ"
+
+msgid "frosted"
+msgstr "mờ đục"
+
+msgid "frosted glass"
+msgstr "kính mờ"
+
+msgid "full"
+msgstr "đầy"
+
+msgid "full charge"
+msgstr "sạc đầy"
+
+msgid "fullscreen"
+msgstr "toàn màn hình"
+
+msgid "function keys"
+msgstr "phím chức năng"
+
+msgid "functions"
+msgstr "chức năng"
+
+msgid "fuzzy"
+msgstr "tìm mờ"
+
+msgid "g-sync"
+msgstr "g-sync"
+
+msgid "gain"
+msgstr "độ khuếch đại"
+
+msgid "game"
+msgstr "trò chơi"
+
+msgid "game mode"
+msgstr "chế độ game"
+
+msgid "games"
+msgstr "các trò chơi"
+
+msgid "gaming"
+msgstr "chơi game"
+
+msgid "gap"
+msgstr "khoảng cách"
+
+msgid "gaps"
+msgstr "các khoảng cách"
+
+msgid "gemini"
+msgstr "gemini"
+
+msgid "general"
+msgstr "chung"
+
+msgid "geoclue"
+msgstr "geoclue"
+
+msgid "gif"
+msgstr "gif"
+
+msgid "glass"
+msgstr "kính"
+
+msgid "glyph"
+msgstr "ký hiệu"
+
+msgid "google"
+msgstr "google"
+
+msgid "google lens"
+msgstr "google lens"
+
+msgid "gps"
+msgstr "gps"
+
+msgid "gpu"
+msgstr "gpu"
+
+msgid "grade"
+msgstr "độ đậm nhạt"
+
+msgid "graph"
+msgstr "đồ thị"
+
+msgid "graphics"
+msgstr "đồ họa"
+
+msgid "greeting"
+msgstr "lời chào"
+
+msgid "grid"
+msgstr "lưới"
+
+msgid "group"
+msgstr "nhóm"
+
+msgid "gsync"
+msgstr "gsync"
+
+msgid "guides"
+msgstr "đường căn"
+
+msgid "hand"
+msgstr "kim"
+
+msgid "hardware cursor"
+msgstr "con trỏ phần cứng"
+
+msgid "harmony"
+msgstr "hài hòa"
+
+msgid "header"
+msgstr "đầu trang"
+
+msgid "headline"
+msgstr "tiêu đề lớn"
+
+msgid "headphones"
+msgstr "tai nghe"
+
+msgid "hearing"
+msgstr "thính giác"
+
+msgid "height"
+msgstr "chiều cao"
+
+msgid "hex"
+msgstr "mã hex"
+
+msgid "hibernate"
+msgstr "ngủ đông"
+
+msgid "hidden"
+msgstr "ẩn"
+
+msgid "hidden network"
+msgstr "mạng ẩn"
+
+msgid "hide"
+msgstr "ẩn đi"
+
+msgid "hidpi"
+msgstr "hidpi"
+
+msgid "highlight"
+msgstr "làm nổi bật"
+
+msgid "history"
+msgstr "lịch sử"
+
+msgid "hjkl"
+msgstr "hjkl"
+
+msgid "hold"
+msgstr "giữ"
+
+msgid "home"
+msgstr "nhà"
+
+msgid "horizontal"
+msgstr "ngang"
+
+msgid "hour"
+msgstr "giờ"
+
+msgid "hours"
+msgstr "các giờ"
+
+msgid "hover"
+msgstr "rê chuột"
+
+msgid "htop"
+msgstr "htop"
+
+msgid "http"
+msgstr "http"
+
+msgid "hypridle"
+msgstr "hypridle"
+
+msgid "hyprlock"
+msgstr "hyprlock"
+
+msgid "hyprsunset"
+msgstr "hyprsunset"
+
+msgid "icons"
+msgstr "biểu tượng"
+
+msgid "identify"
+msgstr "nhận diện"
+
+msgid "identity"
+msgstr "danh tính"
+
+msgid "idle"
+msgstr "nhàn rỗi"
+
+msgid "ids"
+msgstr "các id"
+
+msgid "ignore"
+msgstr "bỏ qua"
+
+msgid "image"
+msgstr "hình ảnh"
+
+msgid "image search"
+msgstr "tìm kiếm ảnh"
+
+msgid "imagemagick"
+msgstr "imagemagick"
+
+msgid "images"
+msgstr "các hình ảnh"
+
+msgid "immediate"
+msgstr "ngay lập tức"
+
+msgid "inactive"
+msgstr "không hoạt động"
+
+msgid "increase"
+msgstr "tăng"
+
+msgid "increment"
+msgstr "bước tăng"
+
+msgid "indicators"
+msgstr "chỉ báo"
+
+msgid "inhibit"
+msgstr "ngăn"
+
+msgid "input"
+msgstr "nhập liệu"
+
+msgid "input method"
+msgstr "bộ gõ"
+
+msgid "instructions"
+msgstr "hướng dẫn"
+
+msgid "intel"
+msgstr "intel"
+
+msgid "internet"
+msgstr "internet"
+
+msgid "interval"
+msgstr "khoảng thời gian"
+
+msgid "invert"
+msgstr "đảo ngược"
+
+msgid "invisible cursor"
+msgstr "con trỏ vô hình"
+
+msgid "italic"
+msgstr "nghiêng"
+
+msgid "items"
+msgstr "các mục"
+
+msgid "jelly"
+msgstr "thạch"
+
+msgid "join"
+msgstr "tham gia"
+
+msgid "jump"
+msgstr "nhảy"
+
+msgid "karaoke"
+msgstr "karaoke"
+
+msgid "kb"
+msgstr "kb"
+
+msgid "kde"
+msgstr "kde"
+
+msgid "keep awake"
+msgstr "giữ máy thức"
+
+msgid "kelvin"
+msgstr "kelvin"
+
+msgid "keybinds"
+msgstr "phím tắt"
+
+msgid "keyboard"
+msgstr "bàn phím"
+
+msgid "keymap"
+msgstr "sơ đồ phím"
+
+msgid "keys"
+msgstr "phím"
+
+msgid "keywords"
+msgstr "từ khóa"
+
+msgid "kib"
+msgstr "kib"
+
+msgid "kill"
+msgstr "tắt hẳn"
+
+msgid "kitty"
+msgstr "kitty"
+
+msgid "known"
+msgstr "đã biết"
+
+msgid "konachan"
+msgstr "konachan"
+
+msgid "kugou"
+msgstr "kugou"
+
+msgid "kvantum"
+msgstr "kvantum"
+
+msgid "label"
+msgstr "nhãn"
+
+msgid "lag"
+msgstr "giật lag"
+
+msgid "lan"
+msgstr "mạng lan"
+
+msgid "language"
+msgstr "ngôn ngữ"
+
+msgid "laptop"
+msgstr "máy tính xách tay"
+
+msgid "large"
+msgstr "lớn"
+
+msgid "latency"
+msgstr "độ trễ mạng"
+
+msgid "launcher"
+msgstr "trình khởi chạy"
+
+msgid "layer"
+msgstr "lớp"
+
+msgid "layers"
+msgstr "các lớp"
+
+msgid "layout"
+msgstr "bố cục"
+
+msgid "left"
+msgstr "trái"
+
+msgid "left handed"
+msgstr "thuận tay trái"
+
+msgid "length"
+msgstr "độ dài"
+
+msgid "level"
+msgstr "mức"
+
+msgid "levels"
+msgstr "các mức"
+
+msgid "levenshtein"
+msgstr "levenshtein"
+
+msgid "light"
+msgstr "sáng"
+
+msgid "limit"
+msgstr "giới hạn"
+
+msgid "line"
+msgstr "đường"
+
+msgid "lines"
+msgstr "các đường"
+
+msgid "links"
+msgstr "liên kết"
+
+msgid "list"
+msgstr "danh sách"
+
+msgid "llm"
+msgstr "llm"
+
+msgid "local"
+msgstr "cục bộ"
+
+msgid "locale"
+msgstr "vùng ngôn ngữ"
+
+msgid "location"
+msgstr "vị trí"
+
+msgid "lock"
+msgstr "khóa"
+
+msgid "lock screen"
+msgstr "màn hình khóa"
+
+msgid "locker"
+msgstr "trình khóa"
+
+msgid "log out"
+msgstr "đăng xuất"
+
+msgid "login"
+msgstr "đăng nhập"
+
+msgid "logo"
+msgstr "logo"
+
+msgid "logout"
+msgstr "thoát phiên"
+
+msgid "long"
+msgstr "dài"
+
+msgid "loud"
+msgstr "to"
+
+msgid "low"
+msgstr "thấp"
+
+msgid "lower"
+msgstr "thấp hơn"
+
+msgid "lrc"
+msgstr "lrc"
+
+msgid "lrclib"
+msgstr "lrclib"
+
+msgid "lyrics"
+msgstr "lời bài hát"
+
+msgid "mac"
+msgstr "mac"
+
+msgid "mako"
+msgstr "mako"
+
+msgid "manual"
+msgstr "thủ công"
+
+msgid "margin"
+msgstr "lề"
+
+msgid "margins"
+msgstr "các lề"
+
+msgid "marks"
+msgstr "vạch"
+
+msgid "markup"
+msgstr "định dạng"
+
+msgid "mask"
+msgstr "mặt nạ"
+
+msgid "master"
+msgstr "master"
+
+msgid "match"
+msgstr "khớp"
+
+msgid "material"
+msgstr "material"
+
+msgid "math"
+msgstr "toán"
+
+msgid "maximum"
+msgstr "tối đa"
+
+msgid "mb"
+msgstr "mb"
+
+msgid "media"
+msgstr "phương tiện"
+
+msgid "medium"
+msgstr "vừa"
+
+msgid "memo"
+msgstr "ghi nhớ"
+
+msgid "memory"
+msgstr "bộ nhớ"
+
+msgid "menu"
+msgstr "menu"
+
+msgid "message"
+msgstr "tin nhắn"
+
+msgid "meta"
+msgstr "meta"
+
+msgid "mib"
+msgstr "mib"
+
+msgid "mic"
+msgstr "mic"
+
+msgid "microphone"
+msgstr "micro"
+
+msgid "middle click"
+msgstr "bấm chuột giữa"
+
+msgid "minute"
+msgstr "phút"
+
+msgid "mirror"
+msgstr "nhân bản"
+
+msgid "mode"
+msgstr "chế độ"
+
+msgid "model"
+msgstr "mô hình"
+
+msgid "models"
+msgstr "các mô hình"
+
+msgid "modules"
+msgstr "mô-đun"
+
+msgid "monitor"
+msgstr "màn hình ngoài"
+
+msgid "monitoring"
+msgstr "giám sát"
+
+msgid "mono"
+msgstr "đơn cách"
+
+msgid "monochrome"
+msgstr "đơn sắc"
+
+msgid "monospace"
+msgstr "phông đơn cách"
+
+msgid "month"
+msgstr "tháng"
+
+msgid "morning"
+msgstr "buổi sáng"
+
+msgid "motion"
+msgstr "chuyển động"
+
+msgid "mouse"
+msgstr "chuột"
+
+msgid "move"
+msgstr "di chuyển"
+
+msgid "movement"
+msgstr "cử động"
+
+msgid "mpris"
+msgstr "mpris"
+
+msgid "mpv"
+msgstr "mpv"
+
+msgid "music"
+msgstr "nhạc"
+
+msgid "mute"
+msgstr "tắt tiếng"
+
+msgid "name"
+msgstr "tên"
+
+msgid "narrow"
+msgstr "hẹp"
+
+msgid "natural"
+msgstr "tự nhiên"
+
+msgid "nautilus"
+msgstr "nautilus"
+
+msgid "netbird"
+msgstr "netbird"
+
+msgid "netease"
+msgstr "netease"
+
+msgid "network"
+msgstr "mạng"
+
+msgid "network speed"
+msgstr "tốc độ mạng"
+
+msgid "networks"
+msgstr "các mạng"
+
+msgid "night"
+msgstr "đêm"
+
+msgid "night light"
+msgstr "đèn ngủ"
+
+msgid "notch"
+msgstr "nấc"
+
+msgid "note"
+msgstr "ghi chú"
+
+msgid "notes"
+msgstr "các ghi chú"
+
+msgid "notification"
+msgstr "thông báo"
+
+msgid "notifications"
+msgstr "các thông báo"
+
+msgid "now playing"
+msgstr "đang phát"
+
+msgid "nsfw"
+msgstr "nsfw"
+
+msgid "num lock"
+msgstr "num lock"
+
+msgid "number"
+msgstr "số"
+
+msgid "numbers"
+msgstr "các số"
+
+msgid "numpad"
+msgstr "bàn phím số"
+
+msgid "nvidia"
+msgstr "nvidia"
+
+msgid "oblique"
+msgstr "xiên"
+
+msgid "occupied"
+msgstr "có cửa sổ"
+
+msgid "off"
+msgstr "tắt"
+
+msgid "on"
+msgstr "bật"
+
+msgid "on-screen display"
+msgstr "hiển thị trên màn hình"
+
+msgid "on-screen keyboard"
+msgstr "bàn phím ảo"
+
+msgid "opacity"
+msgstr "độ đục"
+
+msgid "open"
+msgstr "mở"
+
+msgid "openrouter"
+msgstr "openrouter"
+
+msgid "opsz"
+msgstr "opsz"
+
+msgid "options"
+msgstr "tùy chọn"
+
+msgid "orange"
+msgstr "cam"
+
+msgid "order"
+msgstr "thứ tự"
+
+msgid "orientation"
+msgstr "hướng xoay"
+
+msgid "original"
+msgstr "gốc"
+
+msgid "os"
+msgstr "hệ điều hành"
+
+msgid "osd"
+msgstr "osd"
+
+msgid "osk"
+msgstr "osk"
+
+msgid "outline"
+msgstr "viền ngoài"
+
+msgid "output"
+msgstr "đầu ra"
+
+msgid "overflow"
+msgstr "tràn"
+
+msgid "overlay"
+msgstr "lớp phủ"
+
+msgid "overview"
+msgstr "tổng quan"
+
+msgid "own desktop"
+msgstr "màn nền riêng"
+
+msgid "packages"
+msgstr "các gói"
+
+msgid "pacman"
+msgstr "pacman"
+
+msgid "padding"
+msgstr "khoảng đệm"
+
+msgid "page"
+msgstr "trang"
+
+msgid "pair"
+msgstr "ghép đôi"
+
+msgid "pairable"
+msgstr "có thể ghép đôi"
+
+msgid "pairing"
+msgstr "đang ghép đôi"
+
+msgid "palette"
+msgstr "bảng màu"
+
+msgid "panel"
+msgstr "bảng"
+
+msgid "panels"
+msgstr "các bảng"
+
+msgid "parallax"
+msgstr "thị sai"
+
+msgid "passes"
+msgstr "lượt"
+
+msgid "password"
+msgstr "mật khẩu"
+
+msgid "passwordless"
+msgstr "không mật khẩu"
+
+msgid "paste"
+msgstr "dán"
+
+msgid "path"
+msgstr "đường dẫn"
+
+msgid "pdf"
+msgstr "pdf"
+
+msgid "pending"
+msgstr "đang chờ"
+
+msgid "people"
+msgstr "người"
+
+msgid "per row"
+msgstr "mỗi hàng"
+
+msgid "per workspace"
+msgstr "mỗi không gian làm việc"
+
+msgid "percent"
+msgstr "phần trăm"
+
+msgid "performance"
+msgstr "hiệu năng"
+
+msgid "photo"
+msgstr "ảnh chụp"
+
+msgid "picture"
+msgstr "ảnh"
+
+msgid "pictures"
+msgstr "các ảnh"
+
+msgid "pill"
+msgstr "viên thuốc"
+
+msgid "pin"
+msgstr "ghim"
+
+msgid "pinned"
+msgstr "đã ghim"
+
+msgid "pixel"
+msgstr "pixel"
+
+msgid "place"
+msgstr "nơi"
+
+msgid "placement"
+msgstr "vị trí đặt"
+
+msgid "plasma"
+msgstr "plasma"
+
+msgid "playback"
+msgstr "phát lại"
+
+msgid "player"
+msgstr "trình phát"
+
+msgid "playerctld"
+msgstr "playerctld"
+
+msgid "plug"
+msgstr "cắm"
+
+msgid "plugged"
+msgstr "đã cắm"
+
+msgid "pm"
+msgstr "chiều"
+
+msgid "png"
+msgstr "png"
+
+msgid "pointer"
+msgstr "con trỏ chuột"
+
+msgid "points"
+msgstr "điểm"
+
+msgid "policy"
+msgstr "chính sách"
+
+msgid "polling"
+msgstr "thăm dò"
+
+msgid "pomodoro"
+msgstr "pomodoro"
+
+msgid "pool"
+msgstr "nhóm"
+
+msgid "popout"
+msgstr "bảng bật ra"
+
+msgid "popup"
+msgstr "cửa sổ bật lên"
+
+msgid "portal"
+msgstr "portal"
+
+msgid "position"
+msgstr "vị trí"
+
+msgid "power"
+msgstr "nguồn"
+
+msgid "power menu"
+msgstr "menu nguồn"
+
+msgid "precision"
+msgstr "độ chính xác"
+
+msgid "prefix"
+msgstr "tiền tố"
+
+msgid "preset"
+msgstr "preset"
+
+msgid "presets"
+msgstr "các preset"
+
+msgid "preview"
+msgstr "xem trước"
+
+msgid "primary button"
+msgstr "nút chính"
+
+msgid "primary selection"
+msgstr "vùng chọn chính"
+
+msgid "processes"
+msgstr "tiến trình"
+
+msgid "processor"
+msgstr "bộ xử lý"
+
+msgid "profile"
+msgstr "hồ sơ"
+
+msgid "profiles"
+msgstr "các hồ sơ"
+
+msgid "progress"
+msgstr "tiến độ"
+
+msgid "prompt"
+msgstr "lời nhắc"
+
+msgid "protection"
+msgstr "bảo vệ"
+
+msgid "proton"
+msgstr "proton"
+
+msgid "provider"
+msgstr "nhà cung cấp"
+
+msgid "public"
+msgstr "công cộng"
+
+msgid "qq music"
+msgstr "qq music"
+
+msgid "qt"
+msgstr "qt"
+
+msgid "quality"
+msgstr "chất lượng"
+
+msgid "quick toggles"
+msgstr "nút bật nhanh"
+
+msgid "quiet"
+msgstr "yên lặng"
+
+msgid "quote"
+msgstr "trích dẫn"
+
+msgid "race"
+msgstr "tranh chấp"
+
+msgid "radius"
+msgstr "bán kính"
+
+msgid "ram"
+msgstr "ram"
+
+msgid "random"
+msgstr "ngẫu nhiên"
+
+msgid "rate"
+msgstr "tốc độ"
+
+msgid "raw input"
+msgstr "đầu vào thô"
+
+msgid "readability"
+msgstr "dễ đọc"
+
+msgid "reading"
+msgstr "đọc"
+
+msgid "reboot"
+msgstr "khởi động lại máy"
+
+msgid "recognition"
+msgstr "nhận dạng"
+
+msgid "record"
+msgstr "ghi"
+
+msgid "recorder"
+msgstr "trình ghi"
+
+msgid "recording"
+msgstr "đang ghi"
+
+msgid "red"
+msgstr "đỏ"
+
+msgid "reduce motion"
+msgstr "giảm chuyển động"
+
+msgid "refresh"
+msgstr "làm mới"
+
+msgid "refresh rate"
+msgstr "tần số quét"
+
+msgid "regex"
+msgstr "biểu thức chính quy"
+
+msgid "region"
+msgstr "vùng"
+
+msgid "reload"
+msgstr "tải lại"
+
+msgid "remembered"
+msgstr "đã nhớ"
+
+msgid "remove"
+msgstr "gỡ bỏ"
+
+msgid "rename"
+msgstr "đổi tên"
+
+msgid "repeat"
+msgstr "lặp lại"
+
+msgid "replace"
+msgstr "thay thế"
+
+msgid "rescan"
+msgstr "quét lại"
+
+msgid "resize"
+msgstr "đổi kích thước"
+
+msgid "resolution"
+msgstr "độ phân giải"
+
+msgid "resources"
+msgstr "tài nguyên"
+
+msgid "rest"
+msgstr "nghỉ ngơi"
+
+msgid "restart"
+msgstr "khởi động lại"
+
+msgid "results"
+msgstr "kết quả"
+
+msgid "reveal"
+msgstr "hiện ra"
+
+msgid "reverse"
+msgstr "đảo chiều"
+
+msgid "right"
+msgstr "phải"
+
+msgid "ring"
+msgstr "vòng"
+
+msgid "rond"
+msgstr "rond"
+
+msgid "root"
+msgstr "quyền root"
+
+msgid "rotate"
+msgstr "xoay"
+
+msgid "rotation"
+msgstr "góc xoay"
+
+msgid "round"
+msgstr "tròn"
+
+msgid "rounded"
+msgstr "bo tròn"
+
+msgid "rounding"
+msgstr "bo góc"
+
+msgid "roundness"
+msgstr "độ tròn"
+
+msgid "rounds"
+msgstr "các lượt"
+
+msgid "row"
+msgstr "hàng"
+
+msgid "rows"
+msgstr "các hàng"
+
+msgid "rules"
+msgstr "quy tắc"
+
+msgid "safety"
+msgstr "an toàn"
+
+msgid "samples"
+msgstr "mẫu"
+
+msgid "satty"
+msgstr "satty"
+
+msgid "save"
+msgstr "lưu"
+
+msgid "saved"
+msgstr "đã lưu"
+
+msgid "scale"
+msgstr "tỉ lệ"
+
+msgid "scaling"
+msgstr "co giãn"
+
+msgid "scan"
+msgstr "quét"
+
+msgid "schedule"
+msgstr "lịch"
+
+msgid "scheme"
+msgstr "bảng phối màu"
+
+msgid "schemes"
+msgstr "các bảng phối màu"
+
+msgid "scratchpad"
+msgstr "scratchpad"
+
+msgid "screen"
+msgstr "màn hình"
+
+msgid "screen capture"
+msgstr "chụp màn hình"
+
+msgid "screen edge"
+msgstr "cạnh màn hình"
+
+msgid "screen off"
+msgstr "tắt màn hình"
+
+msgid "screen record"
+msgstr "quay màn hình"
+
+msgid "screenshot"
+msgstr "ảnh chụp màn hình"
+
+msgid "script"
+msgstr "script"
+
+msgid "scroll"
+msgstr "cuộn"
+
+msgid "search"
+msgstr "tìm kiếm"
+
+msgid "second"
+msgstr "giây"
+
+msgid "second hand"
+msgstr "kim giây"
+
+msgid "security"
+msgstr "bảo mật"
+
+msgid "see-through"
+msgstr "nhìn xuyên"
+
+msgid "seed"
+msgstr "màu gốc"
+
+msgid "selected"
+msgstr "đã chọn"
+
+msgid "selection"
+msgstr "vùng chọn"
+
+msgid "selector"
+msgstr "bộ chọn"
+
+msgid "sensitivity"
+msgstr "độ nhạy"
+
+msgid "sensors"
+msgstr "cảm biến"
+
+msgid "session"
+msgstr "phiên"
+
+msgid "settings"
+msgstr "cài đặt"
+
+msgid "shadow"
+msgstr "bóng"
+
+msgid "shape"
+msgstr "hình dạng"
+
+msgid "shapes"
+msgstr "các hình"
+
+msgid "sharp"
+msgstr "sắc nét"
+
+msgid "shazam"
+msgstr "shazam"
+
+msgid "shell"
+msgstr "shell"
+
+msgid "shellcommand"
+msgstr "lệnh shell"
+
+msgid "shortcut"
+msgstr "lối tắt"
+
+msgid "shortcuts"
+msgstr "các lối tắt"
+
+msgid "show"
+msgstr "hiện"
+
+msgid "show all"
+msgstr "hiện tất cả"
+
+msgid "shuffle"
+msgstr "trộn bài"
+
+msgid "shut down"
+msgstr "tắt máy"
+
+msgid "shutdown"
+msgstr "tắt nguồn"
+
+msgid "sidebar"
+msgstr "thanh bên"
+
+msgid "sides"
+msgstr "cạnh"
+
+msgid "silence"
+msgstr "im lặng"
+
+msgid "silent"
+msgstr "không tiếng"
+
+msgid "sine"
+msgstr "hình sin"
+
+msgid "sink"
+msgstr "đầu ra âm thanh"
+
+msgid "sites"
+msgstr "trang web"
+
+msgid "size"
+msgstr "kích thước"
+
+msgid "slanted"
+msgstr "nghiêng"
+
+msgid "slash"
+msgstr "gạch chéo"
+
+msgid "sleep"
+msgstr "ngủ"
+
+msgid "slide"
+msgstr "trượt"
+
+msgid "sliders"
+msgstr "thanh trượt"
+
+msgid "sloppy"
+msgstr "lỏng"
+
+msgid "slow"
+msgstr "chậm"
+
+msgid "small"
+msgstr "nhỏ"
+
+msgid "smaller"
+msgstr "nhỏ hơn"
+
+msgid "smooth"
+msgstr "mượt"
+
+msgid "smoothing"
+msgstr "làm mượt"
+
+msgid "snap"
+msgstr "hít"
+
+msgid "snip"
+msgstr "cắt ảnh"
+
+msgid "soft"
+msgstr "mềm"
+
+msgid "software cursor"
+msgstr "con trỏ phần mềm"
+
+msgid "song"
+msgstr "bài hát"
+
+msgid "songrec"
+msgstr "songrec"
+
+msgid "sorting"
+msgstr "sắp xếp"
+
+msgid "sound"
+msgstr "âm thanh hệ thống"
+
+msgid "source"
+msgstr "nguồn"
+
+msgid "space"
+msgstr "khoảng trống"
+
+msgid "spacing"
+msgstr "giãn cách"
+
+msgid "speaker"
+msgstr "loa"
+
+msgid "speakers"
+msgstr "các loa"
+
+msgid "special"
+msgstr "đặc biệt"
+
+msgid "special workspace"
+msgstr "không gian làm việc đặc biệt"
+
+msgid "spectrum"
+msgstr "phổ"
+
+msgid "speed"
+msgstr "tốc độ"
+
+msgid "spin"
+msgstr "quay"
+
+msgid "split"
+msgstr "chia"
+
+msgid "spotify"
+msgstr "spotify"
+
+msgid "square"
+msgstr "vuông"
+
+msgid "ssid"
+msgstr "ssid"
+
+msgid "stack"
+msgstr "chồng"
+
+msgid "stacked"
+msgstr "xếp chồng"
+
+msgid "standby"
+msgstr "chờ"
+
+msgid "star"
+msgstr "ngôi sao"
+
+msgid "start"
+msgstr "bắt đầu"
+
+msgid "startup"
+msgstr "khởi động cùng máy"
+
+msgid "stats"
+msgstr "thống kê"
+
+msgid "status"
+msgstr "trạng thái"
+
+msgid "steal focus"
+msgstr "giành tiêu điểm"
+
+msgid "steam"
+msgstr "steam"
+
+msgid "step"
+msgstr "bước"
+
+msgid "sticker"
+msgstr "nhãn dán"
+
+msgid "sticky"
+msgstr "dính"
+
+msgid "stopwatch"
+msgstr "bấm giờ"
+
+msgid "storage"
+msgstr "lưu trữ"
+
+msgid "strength"
+msgstr "cường độ"
+
+msgid "stretch"
+msgstr "kéo giãn"
+
+msgid "stroke"
+msgstr "nét"
+
+msgid "style"
+msgstr "kiểu"
+
+msgid "substitute"
+msgstr "thay thế bằng"
+
+msgid "sudo"
+msgstr "sudo"
+
+msgid "sudoers"
+msgstr "sudoers"
+
+msgid "super"
+msgstr "super"
+
+msgid "super+s"
+msgstr "super+s"
+
+msgid "suspend"
+msgstr "tạm ngưng"
+
+msgid "swap"
+msgstr "đổi chỗ"
+
+msgid "swap buttons"
+msgstr "đổi nút"
+
+msgid "swappy"
+msgstr "swappy"
+
+msgid "swipe"
+msgstr "vuốt"
+
+msgid "switch"
+msgstr "chuyển"
+
+msgid "switch layout"
+msgstr "đổi bố cục"
+
+msgid "symbols"
+msgstr "ký hiệu"
+
+msgid "system"
+msgstr "hệ thống"
+
+msgid "system monitor"
+msgstr "giám sát hệ thống"
+
+msgid "system prompt"
+msgstr "lời nhắc hệ thống"
+
+msgid "system sounds"
+msgstr "âm thanh hệ thống"
+
+msgid "tab"
+msgstr "thẻ"
+
+msgid "tags"
+msgstr "thẻ gắn"
+
+msgid "tailscale"
+msgstr "tailscale"
+
+msgid "target"
+msgstr "mục tiêu"
+
+msgid "task manager"
+msgstr "trình quản lý tác vụ"
+
+msgid "taskbar"
+msgstr "thanh tác vụ"
+
+msgid "tasks"
+msgstr "công việc"
+
+msgid "tearing"
+msgstr "xé hình"
+
+msgid "temperature"
+msgstr "nhiệt độ"
+
+msgid "terminal"
+msgstr "terminal"
+
+msgid "text"
+msgstr "chữ"
+
+msgid "theme"
+msgstr "chủ đề"
+
+msgid "theming"
+msgstr "tạo chủ đề"
+
+msgid "thickness"
+msgstr "độ dày"
+
+msgid "thin"
+msgstr "mảnh"
+
+msgid "threshold"
+msgstr "ngưỡng"
+
+msgid "thumbnails"
+msgstr "ảnh thu nhỏ"
+
+msgid "thunar"
+msgstr "thunar"
+
+msgid "ticks"
+msgstr "vạch chia"
+
+msgid "tiling"
+msgstr "xếp lớp"
+
+msgid "tilt"
+msgstr "nghiêng đầu"
+
+msgid "time"
+msgstr "thời gian"
+
+msgid "timeout"
+msgstr "thời gian chờ"
+
+msgid "timer"
+msgstr "hẹn giờ"
+
+msgid "timers"
+msgstr "các hẹn giờ"
+
+msgid "timezone"
+msgstr "múi giờ"
+
+msgid "tint"
+msgstr "phủ màu"
+
+msgid "title"
+msgstr "tiêu đề"
+
+msgid "title bar"
+msgstr "thanh tiêu đề"
+
+msgid "titlebar"
+msgstr "thanh tiêu đề cửa sổ"
+
+msgid "to-do"
+msgstr "việc cần làm"
+
+msgid "toast"
+msgstr "thông báo nhỏ"
+
+msgid "toasts"
+msgstr "các thông báo nhỏ"
+
+msgid "todo"
+msgstr "todo"
+
+msgid "toggles"
+msgstr "nút bật tắt"
+
+msgid "tools"
+msgstr "công cụ"
+
+msgid "top"
+msgstr "trên cùng"
+
+msgid "touch"
+msgstr "chạm"
+
+msgid "touchpad"
+msgstr "bàn di chuột"
+
+msgid "track"
+msgstr "bài"
+
+msgid "trackpad"
+msgstr "trackpad"
+
+msgid "traffic"
+msgstr "lưu lượng"
+
+msgid "trail"
+msgstr "vệt"
+
+msgid "transition"
+msgstr "chuyển cảnh"
+
+msgid "transitions"
+msgstr "các chuyển cảnh"
+
+msgid "translate"
+msgstr "dịch"
+
+msgid "translation"
+msgstr "bản dịch"
+
+msgid "translator"
+msgstr "trình dịch"
+
+msgid "transparency"
+msgstr "độ trong suốt"
+
+msgid "transparent"
+msgstr "trong suốt"
+
+msgid "tray"
+msgstr "khay"
+
+msgid "tunnel"
+msgstr "đường hầm"
+
+msgid "turn off bluetooth"
+msgstr "tắt bluetooth"
+
+msgid "turn off wifi"
+msgstr "tắt wifi"
+
+msgid "typeface"
+msgstr "kiểu chữ"
+
+msgid "typing"
+msgstr "gõ phím"
+
+msgid "typo"
+msgstr "lỗi chính tả"
+
+msgid "ui"
+msgstr "giao diện"
+
+msgid "ultrawide"
+msgstr "siêu rộng"
+
+msgid "unfocused"
+msgstr "không được chọn"
+
+msgid "units"
+msgstr "đơn vị"
+
+msgid "unoccupied"
+msgstr "không có cửa sổ"
+
+msgid "unplug"
+msgstr "rút sạc"
+
+msgid "updates"
+msgstr "cập nhật"
+
+msgid "upper"
+msgstr "chữ in hoa"
+
+msgid "upscale"
+msgstr "phóng to"
+
+msgid "upscayl"
+msgstr "upscayl"
+
+msgid "uptime"
+msgstr "thời gian chạy"
+
+msgid "urgent"
+msgstr "khẩn"
+
+msgid "url"
+msgstr "url"
+
+msgid "usage"
+msgstr "mức dùng"
+
+msgid "user"
+msgstr "người dùng"
+
+msgid "user agent"
+msgstr "user agent"
+
+msgid "useragent"
+msgstr "useragent"
+
+msgid "username"
+msgstr "tên người dùng"
+
+msgid "utilities"
+msgstr "tiện ích hệ thống"
+
+msgid "valorant"
+msgstr "valorant"
+
+msgid "variable"
+msgstr "biến đổi"
+
+msgid "variant"
+msgstr "biến thể"
+
+msgid "variants"
+msgstr "các biến thể"
+
+msgid "vertical"
+msgstr "dọc"
+
+msgid "video"
+msgstr "video"
+
+msgid "vietnamese"
+msgstr "tiếng việt"
+
+msgid "vim"
+msgstr "vim"
+
+msgid "virtual keyboard"
+msgstr "bàn phím ảo"
+
+msgid "visible"
+msgstr "hiển thị"
+
+msgid "visualiser"
+msgstr "hiệu ứng âm thanh"
+
+msgid "visualizer"
+msgstr "trình hiển thị âm thanh"
+
+msgid "volume"
+msgstr "âm lượng"
+
+msgid "vpn"
+msgstr "vpn"
+
+msgid "vrr"
+msgstr "vrr"
+
+msgid "vsync"
+msgstr "vsync"
+
+msgid "wake"
+msgstr "đánh thức"
+
+msgid "wallhaven"
+msgstr "wallhaven"
+
+msgid "wallpaper"
+msgstr "hình nền"
+
+msgid "wallpaper selector"
+msgstr "bộ chọn hình nền"
+
+msgid "wallpapers"
+msgstr "các hình nền"
+
+msgid "warm"
+msgstr "ấm"
+
+msgid "warmth"
+msgstr "độ ấm"
+
+msgid "warning"
+msgstr "cảnh báo"
+
+msgid "warp"
+msgstr "dịch chuyển"
+
+msgid "wave"
+msgstr "sóng"
+
+msgid "wdth"
+msgstr "wdth"
+
+msgid "weather"
+msgstr "thời tiết"
+
+msgid "web"
+msgstr "web"
+
+msgid "web search"
+msgstr "tìm kiếm web"
+
+msgid "webp"
+msgstr "webp"
+
+msgid "weeb"
+msgstr "weeb"
+
+msgid "weight"
+msgstr "độ đậm"
+
+msgid "wheel"
+msgstr "con lăn"
+
+msgid "wi-fi"
+msgstr "wi-fi"
+
+msgid "wide"
+msgstr "rộng"
+
+msgid "widget"
+msgstr "tiện ích"
+
+msgid "widgets"
+msgstr "các tiện ích"
+
+msgid "width"
+msgstr "chiều rộng"
+
+msgid "wifi"
+msgstr "wifi"
+
+msgid "window"
+msgstr "cửa sổ"
+
+msgid "window class"
+msgstr "lớp cửa sổ"
+
+msgid "windows"
+msgstr "các cửa sổ"
+
+msgid "windows key"
+msgstr "phím windows"
+
+msgid "wired"
+msgstr "có dây"
+
+msgid "wireguard"
+msgstr "wireguard"
+
+msgid "wireless"
+msgstr "không dây"
+
+msgid "wlan"
+msgstr "wlan"
+
+msgid "wobble"
+msgstr "rung lắc"
+
+msgid "words"
+msgstr "từ ngữ"
+
+msgid "work"
+msgstr "công việc"
+
+msgid "work safety"
+msgstr "an toàn nơi làm việc"
+
+msgid "workspace"
+msgstr "không gian làm việc"
+
+msgid "workspaces"
+msgstr "các không gian làm việc"
+
+msgid "world"
+msgstr "thế giới"
+
+msgid "x11"
+msgstr "x11"
+
+msgid "xdg-terminals"
+msgstr "xdg-terminals"
+
+msgid "xkb"
+msgstr "xkb"
+
+msgid "xwayland"
+msgstr "xwayland"
+
+msgid "yandere"
+msgstr "yandere"
+
+msgid "zerochan"
+msgstr "zerochan"
+
+msgid "zone"
+msgstr "vùng"
+
+msgid "zoom"
+msgstr "thu phóng"
+
+# caelestia4: Nexus P5b UX fix pass (widgets, look, panels, devices, hyprland), 2026-11-14
+msgid "Weather temperatures"
+msgstr "Nhiệt độ thời tiết"
+
+msgid "Units for the weather forecast"
+msgstr "Đơn vị cho dự báo thời tiết"
+
+msgid "Folder for screen recordings. Made if it doesn't exist yet"
+msgstr "Thư mục lưu bản ghi màn hình. Sẽ được tạo nếu chưa có"
+
+msgid "Battery percent at which the computer suspends. At or above “Hibernate at”, it sleeps before it can hibernate"
+msgstr "Mức pin (%) mà máy sẽ ngủ. Nếu bằng hoặc cao hơn “Ngủ đông khi còn”, máy sẽ ngủ trước khi kịp ngủ đông"
+
+msgid "Sleep and the extra notices are off"
+msgstr "Ngủ và các thông báo phụ đang tắt"
+
+msgid "They only run while the desktop Resources widget or the Daily clock style is on"
+msgstr "Chúng chỉ chạy khi tiện ích Tài nguyên trên màn hình hoặc kiểu đồng hồ Hằng ngày đang bật"
+
+msgid "Keyboard, mouse & touchpad"
+msgstr "Bàn phím, chuột & bàn di chuột"
+
+msgid "No touchpad found"
+msgstr "Không tìm thấy bàn di chuột"
+
+msgid "Touchpad settings show here once a touchpad is connected"
+msgstr "Cài đặt bàn di chuột sẽ hiện ở đây khi có bàn di chuột được kết nối"
+
+msgid "Type scale"
+msgstr "Thang cỡ chữ"
+
+msgid "Text styles"
+msgstr "Kiểu chữ"
+
+msgid "Font, size and weight of headlines, titles, body text, labels and icons"
+msgstr "Phông, cỡ và độ đậm của tiêu đề lớn, tiêu đề, văn bản, nhãn và biểu tượng"
+
+msgid "Motion"
+msgstr "Chuyển động"
+
+msgid "Screen frame"
+msgstr "Khung màn hình"
+
+msgid "Your wallpapers"
+msgstr "Hình nền của bạn"
+
+msgid "From the internet"
+msgstr "Từ Internet"
+
+msgid "Transitions"
+msgstr "Hiệu ứng chuyển"
+
+msgid "Parallax"
+msgstr "Thị sai"
+
+msgid "Where your wallpapers are. The launcher and Wallpapers list it"
+msgstr "Nơi chứa hình nền của bạn. Trình khởi chạy và trang Hình nền liệt kê thư mục này"
+
+msgid "No wallpapers in %1"
+msgstr "Không có hình nền trong %1"
+
+msgid "Put pictures there, or choose the folder that has them"
+msgstr "Hãy đặt ảnh vào đó, hoặc chọn thư mục chứa ảnh"
+
+msgid "Couldn't read presets: %1 is missing"
+msgstr "Không đọc được preset: thiếu %1"
+
+msgid "GitHub couldn't be reached: the list from before is shown"
+msgstr "Không kết nối được GitHub: đang hiện danh sách lần trước"
+
+msgid "GitHub couldn't be reached: check the internet connection"
+msgstr "Không kết nối được GitHub: hãy kiểm tra kết nối Internet"
+
+msgid "Couldn't read presets"
+msgstr "Không đọc được preset"
+
+msgid "Size, shape, transparency, motion, screen frame"
+msgstr "Kích thước, hình dạng, độ trong suốt, chuyển động, khung màn hình"
+
+msgid "Panel, monospace, icon and widget fonts, type scale"
+msgstr "Phông bảng, đơn cách, biểu tượng và widget, thang cỡ chữ"
+
+msgid "Folder, random wallpapers, transitions, fitting, parallax"
+msgstr "Thư mục, hình nền ngẫu nhiên, hiệu ứng chuyển, vừa màn hình, thị sai"
+
+msgid "Panel opacity %1 %, inner layers %2 %"
+msgstr "Độ đục của bảng %1 %, lớp trong %2 %"
+
+msgid "Turn on “%1” first, on Wallpaper & style"
+msgstr "Hãy bật “%1” trước, ở Hình nền & phong cách"
+
+msgid "Bar, drawers, launcher and notifications. Also sets the headline, title and label fonts (Type scale)"
+msgstr "Thanh, ngăn kéo, trình khởi chạy và thông báo. Cũng đặt phông tiêu đề lớn, tiêu đề và nhãn (Thang cỡ chữ)"
+
+msgid "Only for this size"
+msgstr "Chỉ cho cỡ này"
+
+msgid "In points. Text size on Look & feel scales it"
+msgstr "Tính bằng point. Cỡ chữ ở Giao diện phóng to thu nhỏ nó"
+
+msgid "Caelestia clock font"
+msgstr "Phông đồng hồ Caelestia"
+
+msgid "The time and date on Caelestia's desktop clock"
+msgstr "Giờ và ngày trên đồng hồ màn nền của Caelestia"
+
+msgid "Cookie and digital clock font"
+msgstr "Phông đồng hồ cookie và kỹ thuật số"
+
+msgid "The time and date on end-4's cookie and digital desktop clocks"
+msgstr "Giờ và ngày trên đồng hồ cookie và kỹ thuật số của end-4 trên màn nền"
+
+msgid "How see-through the assistant and overlay backgrounds are. Higher is clearer"
+msgstr "Độ trong suốt của nền trợ lý và lớp phủ. Càng cao càng trong"
+
+msgid "Couldn't list the presets of %1"
+msgstr "Không liệt kê được preset của %1"
+
+msgid "No presets installed yet"
+msgstr "Chưa cài preset nào"
+
+msgid "Nothing to undo yet"
+msgstr "Chưa có gì để hoàn tác"
+
+msgid "The folder %1 doesn't exist"
+msgstr "Thư mục %1 không tồn tại"
+
+msgid "Choose the folder that has your wallpapers"
+msgstr "Chọn thư mục chứa hình nền của bạn"
+
+msgid "Wallhaven has all kinds of pictures. Anime sources appear when the Anime tab is shown (Panels > Assistant)"
+msgstr "Wallhaven có đủ loại ảnh. Nguồn anime hiện khi tab Anime đang hiện (Bảng > Trợ lý)"
+
+msgid "Wallhaven has all kinds of pictures; Konachan and yande.re have anime"
+msgstr "Wallhaven có đủ loại ảnh; Konachan và yande.re có anime"
+
+msgid "Wallhaven"
+msgstr "Wallhaven"
+
+msgid "Konachan"
+msgstr "Konachan"
+
+msgid "yande.re"
+msgstr "yande.re"
+
+msgid "To-do"
+msgstr "Việc cần làm"
+
+msgid "Image boards"
+msgstr "Trang ảnh"
+
+msgid "Show the to-do list tab"
+msgstr "Hiện thẻ danh sách việc cần làm"
+
+msgid "Show the Pomodoro and stopwatch tab"
+msgstr "Hiện thẻ Pomodoro và bấm giờ"
+
+msgid "Show the tab with anime image boards in the Assistant"
+msgstr "Hiện thẻ trang ảnh anime trong Trợ lý"
+
+msgid "How far to drag up to close the dashboard. Opening by drag is off while presets are on"
+msgstr "Kéo lên bao xa để đóng bảng điều khiển. Không mở được bằng cách kéo khi đang bật bộ cài sẵn"
+
+msgid "How far to drag left from the right edge to open the sidebar, or right to close it"
+msgstr "Kéo sang trái từ cạnh phải bao xa để mở thanh bên, hoặc sang phải để đóng"
+
+msgid "On public Wi-Fi, blur clipboard images copied next to an unsafe link in the launcher's clipboard search"
+msgstr "Khi dùng Wi-Fi công cộng, làm mờ ảnh trong bộ nhớ tạm được sao chép cạnh một liên kết không an toàn, trong mục tìm bộ nhớ tạm của trình khởi chạy"
+
+msgid "Show the Wi-Fi button on the quick toggles card"
+msgstr "Hiện nút Wi-Fi trên thẻ nút nhanh"
+
+msgid "Show the Bluetooth button on the quick toggles card"
+msgstr "Hiện nút Bluetooth trên thẻ nút nhanh"
+
+msgid "Show the microphone mute button on the quick toggles card"
+msgstr "Hiện nút tắt micro trên thẻ nút nhanh"
+
+msgid "Show the button that opens Settings on the quick toggles card"
+msgstr "Hiện nút mở Cài đặt trên thẻ nút nhanh"
+
+msgid "Show the game mode button on the quick toggles card"
+msgstr "Hiện nút chế độ chơi game trên thẻ nút nhanh"
+
+msgid "Show the Do not disturb button on the quick toggles card"
+msgstr "Hiện nút Không làm phiền trên thẻ nút nhanh"
+
+msgid "Show the VPN button on the quick toggles card"
+msgstr "Hiện nút VPN trên thẻ nút nhanh"
+
+msgid "Not set"
+msgstr "Chưa đặt"
+
+msgid "Character shown for an empty workspace in the Numbers style, and in the Icons style when no icon rule matches. Leave blank to show its number"
+msgstr "Ký tự hiện cho không gian làm việc trống ở kiểu Số, và ở kiểu Biểu tượng khi không có quy tắc biểu tượng nào khớp. Để trống để hiện số của nó"
+
+msgid "Character shown for a workspace with windows in the Numbers style, and in the Icons style when no icon rule matches. Leave blank to show its number"
+msgstr "Ký tự hiện cho không gian làm việc có cửa sổ ở kiểu Số, và ở kiểu Biểu tượng khi không có quy tắc biểu tượng nào khớp. Để trống để hiện số của nó"
+
+msgid "Character shown for the workspace you are on in the Numbers style, and in the Icons style when no icon rule matches. Leave blank to show its number"
+msgstr "Ký tự hiện cho không gian làm việc đang dùng ở kiểu Số, và ở kiểu Biểu tượng khi không có quy tắc biểu tượng nào khớp. Để trống để hiện số của nó"
+
+msgid "Fixed"
+msgstr "Cố định"
+
+msgid "This clock has one size. The digital clock and Caelestia's clock can be resized"
+msgstr "Đồng hồ này chỉ có một cỡ. Đồng hồ số và đồng hồ của Caelestia đổi được cỡ"
+
+msgid "Same font for all text"
+msgstr "Một phông cho mọi chữ"
+
+msgid "The clock's other text (date, quote, status line) uses the font below, not the usual one"
+msgstr "Phần chữ khác của đồng hồ (ngày, câu trích, dòng trạng thái) dùng phông bên dưới thay cho phông thường"
+
+msgid "The daily clock's words and the status line use the font below, not the usual one"
+msgstr "Chữ của đồng hồ hằng ngày và dòng trạng thái dùng phông bên dưới thay cho phông thường"
+
+msgid "Used for the digital clock's time, and for all clock text when the switch above is on"
+msgstr "Dùng cho giờ của đồng hồ số, và cho mọi chữ của đồng hồ khi bật công tắc bên trên"
+
+msgid "The time's font. With the switch above on, the other clock text uses it too"
+msgstr "Phông của giờ. Khi bật công tắc bên trên, phần chữ khác của đồng hồ cũng dùng phông này"
+
+msgid "Used for all of the clock's text"
+msgstr "Dùng cho mọi chữ của đồng hồ"
+
+msgid "How big the digital clock's time is"
+msgstr "Cỡ chữ giờ của đồng hồ số"
+
+msgid "Digital and daily clocks"
+msgstr "Đồng hồ số và đồng hồ hằng ngày"
+
+msgid "A square card, or a wide row of clocks. You can also drag its corner on the desktop"
+msgstr "Thẻ vuông, hoặc một hàng đồng hồ nằm ngang. Bạn cũng có thể kéo góc của nó trên màn hình nền"
+
+msgid "Number of clocks"
+msgstr "Số đồng hồ"
+
+msgid "How many time zones it shows, from the list above"
+msgstr "Hiện bao nhiêu múi giờ, lấy từ danh sách bên trên"
+
+# caelestia4: Nexus P5b, strings the fix pass changed (finish agent), 2026-11-14
+msgid "%1°"
+msgstr "%1°"
+
+msgid "0 = square corners"
+msgstr "0 = góc vuông"
+
+msgid "A change that sets the output volume above this is undone"
+msgstr "Thay đổi nào đặt âm lượng đầu ra cao hơn mức này sẽ bị hoàn tác"
+
+msgid "A four-finger swipe sideways drags the workspaces with it. Off: they move the other way"
+msgstr "Vuốt ngang bằng bốn ngón sẽ kéo các không gian làm việc theo. Tắt: chúng đi theo chiều ngược lại"
+
+msgid "A light tap clicks, without pressing the pad down"
+msgstr "Chạm nhẹ là nhấp, không cần nhấn bàn di chuột xuống"
+
+msgid "A line of your own text under the cookie, digital or pixel clock"
+msgstr "Một dòng chữ của riêng bạn dưới đồng hồ cookie, kỹ thuật số hoặc pixel"
+
+msgid "A second notice, with a sound if Audio > Battery warnings is on, when the battery drops to this level"
+msgstr "Thông báo thứ hai, kèm âm thanh nếu bật Âm thanh > Cảnh báo pin, khi pin tụt xuống mức này"
+
+msgid "A soft shadow around each window"
+msgstr "Bóng mờ quanh mỗi cửa sổ"
+
+msgid "Along the bottom of the wallpaper, moving with the sound. A preset may pick its own"
+msgstr "Dọc cạnh dưới hình nền, chuyển động theo âm thanh. Preset có thể chọn kiểu riêng"
+
+msgid "An urgent notice, with a sound if battery sounds are on, saying when the computer will sleep"
+msgstr "Thông báo khẩn, kèm âm thanh nếu bật âm thanh pin, cho biết khi nào máy sẽ ngủ"
+
+msgid "Arranging"
+msgstr "Sắp xếp"
+
+msgid "Button icons"
+msgstr "Biểu tượng nút"
+
+msgid "Caelestia's bars or one of end-4's styles. Off: no visualiser"
+msgstr "Các cột của Caelestia hoặc một kiểu của end-4. Tắt: không có hiệu ứng âm thanh"
+
+msgid "Caelestia's clock"
+msgstr "Đồng hồ của Caelestia"
+
+msgid "Caelestia's clock or one of end-4's styles. Off: no clock"
+msgstr "Đồng hồ của Caelestia hoặc một kiểu của end-4. Tắt: không có đồng hồ"
+
+msgid "Caelestia's visualiser"
+msgstr "Hiệu ứng âm thanh của Caelestia"
+
+msgid "Card behind it"
+msgstr "Thẻ phía sau"
+
+msgid "Characters per second while a key is held"
+msgstr "Số ký tự mỗi giây khi giữ phím"
+
+msgid "City name, or empty to detect it automatically. With GPS on, the desktop widgets and lock screen use GPS instead"
+msgstr "Tên thành phố, hoặc để trống để tự phát hiện. Khi bật GPS, tiện ích màn nền và màn hình khóa dùng GPS thay thế"
+
+msgid "Click runs the app's action"
+msgstr "Nhấp sẽ chạy hành động của ứng dụng"
+
+msgid "Clipboard only"
+msgstr "Chỉ vào bộ nhớ tạm"
+
+msgid "Clock on the desktop"
+msgstr "Đồng hồ trên màn nền"
+
+msgid "Clockwise. Double-click the sticker to straighten it"
+msgstr "Theo chiều kim đồng hồ. Nhấp đúp vào nhãn dán để xoay thẳng lại"
+
+msgid "Cookie clock"
+msgstr "Đồng hồ cookie"
+
+msgid "Daily clock"
+msgstr "Đồng hồ hằng ngày"
+
+msgid "Dashboard stats refresh"
+msgstr "Làm mới thông số bảng điều khiển"
+
+msgid "Desktop widgets, the assistant, overlay, region selector and lock screen, which have their own translations"
+msgstr "Tiện ích màn nền, trợ lý, lớp phủ, công cụ chọn vùng và màn hình khóa, vốn có bản dịch riêng"
+
+msgid "Digital clock"
+msgstr "Đồng hồ số"
+
+msgid "Drag to expand distance"
+msgstr "Khoảng kéo để mở rộng"
+
+msgid "Draw a rounded background behind the tray icons"
+msgstr "Vẽ nền bo góc phía sau các biểu tượng khay"
+
+msgid "Extra keyboard rules, e.g. grp:alt_shift_toggle (Alt+Shift switches layout) or caps:escape"
+msgstr "Quy tắc bàn phím thêm, ví dụ grp:alt_shift_toggle (Alt+Shift đổi bố cục) hoặc caps:escape"
+
+msgid "Fixes an invisible or flickering pointer. Automatic turns it on where needed (NVIDIA)"
+msgstr "Sửa con trỏ bị ẩn hoặc nhấp nháy. Tự động sẽ bật khi cần (NVIDIA)"
+
+msgid "Frames per second for apps you can't see, such as a game behind another window. Lower saves power"
+msgstr "Số khung hình mỗi giây cho ứng dụng bạn không nhìn thấy, như game nằm sau cửa sổ khác. Thấp hơn thì tiết kiệm điện"
+
+msgid "Games that ask for it skip vsync: lowest input lag, with a visible tear line"
+msgstr "Game yêu cầu sẽ bỏ qua vsync: độ trễ nhập thấp nhất, nhưng thấy đường xé hình"
+
+msgid "Grab a window's edge with the mouse to resize it"
+msgstr "Dùng chuột nắm cạnh cửa sổ để đổi kích thước"
+
+msgid "Hands"
+msgstr "Kim đồng hồ"
+
+msgid "Hide pop-ups after"
+msgstr "Ẩn thông báo bật lên sau"
+
+msgid "Hide pop-ups by themselves"
+msgstr "Tự ẩn thông báo bật lên"
+
+msgid "Hide when the mouse is still"
+msgstr "Ẩn khi chuột đứng yên"
+
+msgid "Hides the pointer after this long; 0 never hides it"
+msgstr "Ẩn con trỏ sau khoảng thời gian này; 0 thì không bao giờ ẩn"
+
+msgid "Highest volume"
+msgstr "Âm lượng cao nhất"
+
+msgid "How big Caelestia's clock is"
+msgstr "Kích thước đồng hồ của Caelestia"
+
+msgid "How far a notification must be dragged up or down before it expands or collapses"
+msgstr "Phải kéo thông báo lên hoặc xuống bao xa thì nó mới mở rộng hoặc thu gọn"
+
+msgid "How far a notification must be swiped sideways, as a share of its width, before it is dismissed"
+msgstr "Phải vuốt ngang thông báo bao xa, tính theo phần chiều rộng của nó, thì nó mới bị bỏ qua"
+
+msgid "How far a two-finger swipe scrolls; 1 keeps the normal distance"
+msgstr "Vuốt hai ngón cuộn bao xa; 1 giữ khoảng cách bình thường"
+
+msgid "How far one wheel step scrolls; 1 keeps the normal distance"
+msgstr "Mỗi nấc con lăn cuộn bao xa; 1 giữ khoảng cách bình thường"
+
+msgid "How far to drag down from the top edge to open the dashboard, or up to close it"
+msgstr "Kéo xuống từ cạnh trên bao xa để mở bảng điều khiển, hoặc kéo lên để đóng"
+
+msgid "How far to drag left from the right edge to open the session menu, or right to close it"
+msgstr "Kéo sang trái từ cạnh phải bao xa để mở menu phiên, hoặc sang phải để đóng"
+
+msgid "How far to drag right from the left edge to show the bar, or left to hide it"
+msgstr "Kéo sang phải từ cạnh trái bao xa để hiện thanh, hoặc sang trái để ẩn"
+
+msgid "How far to drag up from the bottom edge to open the launcher, or down to close it. Not used while it shows on hover"
+msgstr "Kéo lên từ cạnh dưới bao xa để mở trình khởi chạy, hoặc kéo xuống để đóng. Không dùng khi nó hiện lúc di chuột"
+
+msgid "How long Super must be held before workspace numbers appear"
+msgstr "Phải giữ Super bao lâu thì số không gian làm việc mới hiện"
+
+msgid "How long the popup stays after the last change"
+msgstr "Bảng nhỏ ở lại bao lâu sau lần thay đổi cuối"
+
+msgid "How long to hold a key before it starts repeating"
+msgstr "Giữ phím bao lâu thì phím bắt đầu lặp lại"
+
+msgid "How many past readings the overlay's resource graphs keep. Each reading is one widget and overlay stats refresh"
+msgstr "Số lần đo cũ mà đồ thị tài nguyên của lớp phủ giữ lại. Mỗi lần đo là một lần làm mới thông số tiện ích và lớp phủ"
+
+msgid "How often CPU and memory use update in the desktop resources widget and the overlay. Lower uses more CPU"
+msgstr "Tần suất cập nhật mức dùng CPU và bộ nhớ trong tiện ích tài nguyên trên màn nền và lớp phủ. Thấp hơn thì tốn CPU hơn"
+
+msgid "How often CPU, memory and GPU use update in the dashboard. Lower uses more CPU"
+msgstr "Tần suất cập nhật mức dùng CPU, bộ nhớ và GPU trong bảng điều khiển. Thấp hơn thì tốn CPU hơn"
+
+msgid "How wide the ring is. You can also drag its corner"
+msgstr "Độ rộng của vòng. Bạn cũng có thể kéo góc của nó"
+
+msgid "Ignore the touchpad while typing"
+msgstr "Bỏ qua bàn di chuột khi đang gõ"
+
+msgid "Image sources"
+msgstr "Nguồn ảnh"
+
+msgid "Languages, time and date, units, weather"
+msgstr "Ngôn ngữ, giờ và ngày, đơn vị, thời tiết"
+
+msgid "Latency"
+msgstr "Độ trễ"
+
+msgid "Layouts, key repeat, mouse, touchpad, cursor"
+msgstr "Bố cục, lặp phím, chuột, bàn di chuột, con trỏ"
+
+msgid "Left-handed"
+msgstr "Thuận tay trái"
+
+msgid "Less space around the tray icons"
+msgstr "Ít khoảng trống quanh các biểu tượng khay hơn"
+
+msgid "Mouse"
+msgstr "Chuột"
+
+msgid "Mouse and touchpad. Below 0 is slower, above 0 faster; 0 keeps the device's speed"
+msgstr "Chuột và bàn di chuột. Dưới 0 là chậm hơn, trên 0 là nhanh hơn; 0 giữ tốc độ của thiết bị"
+
+msgid "Natural scrolling"
+msgstr "Cuộn tự nhiên"
+
+msgid "Not a valid pattern"
+msgstr "Mẫu không hợp lệ"
+
+msgid "Notifications, media, screenshots, polling"
+msgstr "Thông báo, đa phương tiện, chụp màn hình, thăm dò"
+
+msgid "Off: no wallpaper, clock, visualiser or widgets on any screen; Hyprland's own background shows"
+msgstr "Tắt: không có hình nền, đồng hồ, hiệu ứng âm thanh hay tiện ích trên màn hình nào; hiện nền của chính Hyprland"
+
+msgid "One per layout, comma separated in the same order, e.g. nodeadkeys"
+msgstr "Mỗi bố cục một mục, cách nhau bằng dấu phẩy theo cùng thứ tự, ví dụ nodeadkeys"
+
+msgid "Over fullscreen apps, hide after"
+msgstr "Trên ứng dụng toàn màn hình, ẩn sau"
+
+msgid "Panels and settings language"
+msgstr "Ngôn ngữ của bảng và cài đặt"
+
+msgid "Pixel clock"
+msgstr "Đồng hồ pixel"
+
+msgid "Pop-ups"
+msgstr "Thông báo bật lên"
+
+msgid "Pop-ups go away after a while. They stay in the notification list"
+msgstr "Thông báo bật lên tự ẩn sau một lúc. Chúng vẫn ở trong danh sách thông báo"
+
+msgid "Pop-ups over a game or fullscreen video go away sooner"
+msgstr "Thông báo bật lên trên game hoặc video toàn màn hình ẩn sớm hơn"
+
+msgid "Pop-ups, toasts, timeouts"
+msgstr "Thông báo bật lên, thông báo nhanh, thời gian chờ"
+
+msgid "Pressing the pad with two fingers right-clicks, three fingers middle-clicks. Off: click the pad's corners"
+msgstr "Nhấn bàn di chuột bằng hai ngón là nhấp chuột phải, ba ngón là nhấp chuột giữa. Tắt: nhấp vào các góc bàn di chuột"
+
+msgid "Prompt and models"
+msgstr "Lời nhắc và mô hình"
+
+msgid "Quote text"
+msgstr "Nội dung trích dẫn"
+
+msgid "Resize by dragging the border"
+msgstr "Đổi kích thước bằng cách kéo viền"
+
+msgid "Results"
+msgstr "Kết quả"
+
+msgid "Right-click with two fingers"
+msgstr "Nhấp chuột phải bằng hai ngón"
+
+msgid "Saving"
+msgstr "Lưu"
+
+msgid "Scroll speed"
+msgstr "Tốc độ cuộn"
+
+msgid "Scrolling, user agent, config files"
+msgstr "Cuộn, user agent, tệp cấu hình"
+
+msgid "Search tuning"
+msgstr "Tinh chỉnh tìm kiếm"
+
+msgid "Set in %1"
+msgstr "Đặt trong %1"
+
+msgid "Settings file loaded"
+msgstr "Đã tải tệp cài đặt"
+
+msgid "Show a quote"
+msgstr "Hiện câu trích dẫn"
+
+msgid "Show over fullscreen apps"
+msgstr "Hiện trên ứng dụng toàn màn hình"
+
+msgid "Show the notification sidebar on the right edge"
+msgstr "Hiện thanh bên thông báo ở cạnh phải"
+
+msgid "Sleep when almost empty"
+msgstr "Ngủ khi pin gần cạn"
+
+msgid "Sliders and volume keys stop here. Above 100 % the sound is boosted and can distort"
+msgstr "Thanh trượt và phím âm lượng dừng ở đây. Trên 100 % âm thanh được khuếch đại và có thể bị méo"
+
+msgid "Sound when a round ends"
+msgstr "Âm báo khi hết một lượt"
+
+msgid "Space between tiled windows"
+msgstr "Khoảng cách giữa các cửa sổ xếp lớp"
+
+msgid "Space between windows and the edges of the screen"
+msgstr "Khoảng cách giữa cửa sổ và các cạnh màn hình"
+
+msgid "Special workspaces"
+msgstr "Không gian làm việc đặc biệt"
+
+msgid "Swaps the left and right buttons"
+msgstr "Đổi chỗ nút trái và nút phải"
+
+msgid "Swipe past the last workspace for a new one"
+msgstr "Vuốt qua không gian làm việc cuối để tạo cái mới"
+
+msgid "Swipe to dismiss distance"
+msgstr "Khoảng vuốt để bỏ qua"
+
+msgid "Tap to click"
+msgstr "Chạm để nhấp"
+
+msgid "Temperature units"
+msgstr "Đơn vị nhiệt độ"
+
+msgid "The bar, dashboard, launcher, notifications and these settings"
+msgstr "Thanh, bảng điều khiển, trình khởi chạy, thông báo và phần cài đặt này"
+
+msgid "The desktop widgets and the lock screen find the place by GPS (GeoClue) instead of the weather location. Off: they use the weather location"
+msgstr "Tiện ích màn nền và màn hình khóa tìm vị trí bằng GPS (GeoClue) thay vì vị trí thời tiết. Tắt: dùng vị trí thời tiết"
+
+msgid "The installed sound theme the system sounds come from"
+msgstr "Chủ đề âm thanh đã cài, nơi lấy âm thanh hệ thống"
+
+msgid "The number pad types numbers right away"
+msgstr "Bàn phím số gõ ra số ngay từ đầu"
+
+msgid "The pointer comes back when the mouse moves"
+msgstr "Con trỏ hiện lại khi chuột di chuyển"
+
+msgid "The temperature and sky next to the time"
+msgstr "Nhiệt độ và bầu trời cạnh giờ"
+
+msgid "The top part of the right edge that opens the sidebar on hover is at least this tall"
+msgstr "Phần trên của cạnh phải mở thanh bên khi di chuột cao ít nhất bằng chừng này"
+
+msgid "Tiling & focus"
+msgstr "Xếp lớp & tiêu điểm"
+
+msgid "Tint the tray icons with the theme colour"
+msgstr "Nhuộm các biểu tượng khay bằng màu giao diện"
+
+msgid "Too many keyboard layouts"
+msgstr "Quá nhiều bố cục bàn phím"
+
+msgid "Touchpad"
+msgstr "Bàn di chuột"
+
+msgid "Turn on Bluetooth first"
+msgstr "Hãy bật Bluetooth trước"
+
+msgid "Undo volume above"
+msgstr "Hoàn tác âm lượng cao hơn"
+
+msgid "Wallpaper and widgets"
+msgstr "Hình nền và tiện ích"
+
+msgid "Warn at"
+msgstr "Cảnh báo khi còn"
+
+msgid "Weather beside it"
+msgstr "Thời tiết bên cạnh"
+
+msgid "What the line under the clock says"
+msgstr "Nội dung dòng chữ dưới đồng hồ"
+
+msgid "When more than 4 keyboard layouts are set; only 4 work at a time"
+msgstr "Khi đặt hơn 4 bố cục bàn phím; mỗi lúc chỉ 4 bố cục hoạt động"
+
+msgid "When the app doesn't say how long its pop-up stays"
+msgstr "Khi ứng dụng không cho biết thông báo bật lên ở lại bao lâu"
+
+msgid "When the panel settings file is loaded, with any problems found in it"
+msgstr "Khi tệp cài đặt bảng được tải, kèm các lỗi tìm thấy trong đó"
+
+msgid "Where on the screen Caelestia's clock sits"
+msgstr "Vị trí đồng hồ của Caelestia trên màn hình"
+
+msgid "Whether notifications pop up over games and fullscreen video"
+msgstr "Thông báo có bật lên trên game và video toàn màn hình hay không"
+
+msgid "Whether toasts pop up over games and fullscreen video"
+msgstr "Thông báo nhanh có bật lên trên game và video toàn màn hình hay không"
+
+msgid "Widget and overlay stats refresh"
+msgstr "Làm mới thông số tiện ích và lớp phủ"
+
+msgid "Widgets"
+msgstr "Tiện ích"
+
+msgid "Widgets and assistant language"
+msgstr "Ngôn ngữ của tiện ích và trợ lý"
+
+msgid "Windows you aren't using are drawn a little darker"
+msgstr "Cửa sổ bạn không dùng được vẽ tối hơn một chút"
+
+msgid "Workarounds"
+msgstr "Cách khắc phục"
+
+msgid "Workspaces follow your fingers"
+msgstr "Không gian làm việc đi theo ngón tay"
+
+msgid "You can also drag its corner on the desktop"
+msgstr "Bạn cũng có thể kéo góc của nó trên màn nền"
+
+msgid "Your palm can't move the pointer while you type"
+msgstr "Lòng bàn tay không thể di chuyển con trỏ khi bạn gõ"
+
+msgid "clear"
+msgstr "xóa"
+
+msgid "clickfinger"
+msgstr "nhấp ngón"
+
+msgid "config"
+msgstr "cấu hình"
+
+msgid "disable"
+msgstr "tắt"
+
+msgid "end-4's weather card, separate from the clock"
+msgstr "Thẻ thời tiết của end-4, tách riêng khỏi đồng hồ"
+
+msgid "expand"
+msgstr "mở rộng"
+
+msgid "gesture"
+msgstr "cử chỉ"
+
+msgid "loaded"
+msgstr "đã tải"
+
+msgid "new"
+msgstr "mới"
+
+msgid "palm"
+msgstr "lòng bàn tay"
+
+msgid "right click"
+msgstr "chuột phải"
+
+msgid "shell.json"
+msgstr "shell.json"
+
+msgid "tap"
+msgstr "chạm"
+
+msgid "two fingers"
+msgstr "hai ngón"
+
+# caelestia4: Nexus P6 fix pass (about, nav, wording, widgets, system text), 2026-11-14
+msgid "Your settings"
+msgstr "Cài đặt của bạn"
+
+msgid "Changed settings"
+msgstr "Cài đặt đã thay đổi"
+
+msgid "See and reset what differs from the defaults"
+msgstr "Xem và đặt lại những gì khác với mặc định"
+
+msgid "Export my changes"
+msgstr "Xuất các thay đổi của tôi"
+
+msgid "Saves your changed settings to a file in your home folder, without passwords or keys"
+msgstr "Lưu các cài đặt bạn đã đổi vào một tệp trong thư mục nhà, không kèm mật khẩu hay khóa"
+
+msgid "Save in another folder"
+msgstr "Lưu vào thư mục khác"
+
+msgid "Export to a folder"
+msgstr "Xuất vào một thư mục"
+
+msgid "Save diagnostics"
+msgstr "Lưu thông tin chẩn đoán"
+
+msgid "Versions, your changes and the recent log in a file for a bug report"
+msgstr "Phiên bản, các thay đổi của bạn và nhật ký gần đây trong một tệp để báo lỗi"
+
+msgid "Open shell.json"
+msgstr "Mở shell.json"
+
+msgid "Caelestia's settings: bar, panels, launcher"
+msgstr "Cài đặt của Caelestia: thanh, bảng, trình khởi chạy"
+
+msgid "Open config.json"
+msgstr "Mở config.json"
+
+msgid "end-4's settings: desktop widgets, lock screen, AI"
+msgstr "Cài đặt của end-4: tiện ích màn hình, màn hình khóa, AI"
+
+msgid "Copy path"
+msgstr "Sao chép đường dẫn"
+
+msgid "Path copied"
+msgstr "Đã sao chép đường dẫn"
+
+msgid "Saved as %1"
+msgstr "Đã lưu thành %1"
+
+msgctxt "snackbar button"
+msgid "Open"
+msgstr "Mở"
+
+msgid "Could not export your settings"
+msgstr "Không xuất được cài đặt của bạn"
+
+msgid "Diagnostics saved, path copied"
+msgstr "Đã lưu thông tin chẩn đoán, đã sao chép đường dẫn"
+
+msgid "Could not collect diagnostics"
+msgstr "Không thu thập được thông tin chẩn đoán"
+
+msgid "%n setting differs from its default."
+msgid_plural "%n settings differ from their defaults."
+msgstr[0] "%n cài đặt khác với mặc định."
+
+msgid "Reset all"
+msgstr "Đặt lại tất cả"
+
+msgid "Nothing changed"
+msgstr "Chưa có gì thay đổi"
+
+msgid "Every setting is at its default."
+msgstr "Mọi cài đặt đều đang ở mặc định."
+
+msgctxt "a setting's default value"
+msgid "Default"
+msgstr "Mặc định"
+
+msgctxt "default value → value now"
+msgid "%1 → %2"
+msgstr "%1 → %2"
+
+msgid "Edited: %1"
+msgstr "Đã sửa: %1"
+
+msgid "Changed: %1"
+msgstr "Đã đổi: %1"
+
+msgid "Reset all settings?"
+msgstr "Đặt lại tất cả cài đặt?"
+
+msgid "%n setting goes back to its default. You can undo this."
+msgid_plural "%n settings go back to their defaults. You can undo this."
+msgstr[0] "%n cài đặt sẽ trở về mặc định. Bạn có thể hoàn tác."
+
+msgid "%n changed setting"
+msgid_plural "%n changed settings"
+msgstr[0] "%n cài đặt đã đổi"
+
+msgid "Copy setting id"
+msgstr "Sao chép mã cài đặt"
+
+msgid "Setting id copied"
+msgstr "Đã sao chép mã cài đặt"
+
+msgid "Or type to find a setting"
+msgstr "Hoặc gõ để tìm một cài đặt"
+
+msgctxt "launcher action"
+msgid "Search settings"
+msgstr "Tìm cài đặt"
+
+msgid "Find a setting and open it"
+msgstr "Tìm một cài đặt và mở nó"
+
+msgid "Vim keys"
+msgstr "Phím kiểu Vim"
+
+msgid "Ctrl+J and Ctrl+K move through the results, as do Ctrl+N and Ctrl+P"
+msgstr "Ctrl+J và Ctrl+K di chuyển qua các kết quả, Ctrl+N và Ctrl+P cũng vậy"
+
+msgid "Ctrl+J and Ctrl+K move between the buttons, as do Ctrl+N and Ctrl+P"
+msgstr "Ctrl+J và Ctrl+K di chuyển giữa các nút, Ctrl+N và Ctrl+P cũng vậy"
+
+msgid "Icons for workspaces in the Icons style, by workspace name or a pattern such as code.*. Not used while 'Always show numbers' is on"
+msgstr "Biểu tượng cho không gian làm việc ở kiểu Biểu tượng, theo tên không gian làm việc hoặc một mẫu như code.*. Không dùng khi 'Luôn hiện số' đang bật"
+
+msgid "Icons for apps' windows, by window class or a pattern such as steam_app_.*. Other apps get an icon from their category"
+msgstr "Biểu tượng cho cửa sổ ứng dụng, theo lớp cửa sổ hoặc một mẫu như steam_app_.*. Ứng dụng khác lấy biểu tượng theo danh mục của chúng"
+
+msgid "Icons for special workspaces, by name (without “special:”) or a pattern such as music.*"
+msgstr "Biểu tượng cho không gian làm việc đặc biệt, theo tên (không có “special:”) hoặc một mẫu như music.*"
+
+msgid "Or a pattern"
+msgstr "Hoặc một mẫu"
+
+msgid "Each workspace preview, as a share of the screen size"
+msgstr "Kích thước mỗi ô xem trước không gian làm việc, so với màn hình"
+
+msgid "The title reads from bottom to top"
+msgstr "Tiêu đề đọc từ dưới lên trên"
+
+msgid "Apps whose id is in this list come first. A pattern starts with ^ and ends with $, such as ^org.gnome.*$. Apps > app info pins one app"
+msgstr "Ứng dụng có id trong danh sách này được xếp đầu. Một mẫu bắt đầu bằng ^ và kết thúc bằng $, như ^org.gnome.*$. Ứng dụng > thông tin ứng dụng ghim từng ứng dụng"
+
+msgid "Apps whose id is in this list are left out. A pattern starts with ^ and ends with $, such as ^steam_app_.*$. Apps > app info hides one app"
+msgstr "Ứng dụng có id trong danh sách này bị bỏ qua. Một mẫu bắt đầu bằng ^ và kết thúc bằng $, như ^steam_app_.*$. Ứng dụng > thông tin ứng dụng ẩn từng ứng dụng"
+
+msgid "A window class, or a pattern such as steam_app_.* (Steam and Proton games)"
+msgstr "Một lớp cửa sổ, hoặc một mẫu như steam_app_.* (trò chơi Steam và Proton)"
+
+msgid "How far a list moves for a swipe as long as one wheel notch"
+msgstr "Danh sách cuộn bao xa khi vuốt một đoạn bằng một nấc con lăn"
+
+msgid "A language name or code, such as en or vi. Leave it empty to detect the language. Picking one in the tab changes this too"
+msgstr "Tên hoặc mã ngôn ngữ, như en hay vi. Để trống để tự nhận ra ngôn ngữ. Chọn trong thẻ cũng đổi mục này"
+
+msgid "A language name or code, such as en or vi. Leave it empty for your system language. Picking one in the tab changes this too"
+msgstr "Tên hoặc mã ngôn ngữ, như en hay vi. Để trống để dùng ngôn ngữ của hệ thống. Chọn trong thẻ cũng đổi mục này"
+
+msgid "Super+M still opens the dashboard"
+msgstr "Super+M vẫn mở bảng điều khiển"
+
+msgid "Add a status icon"
+msgstr "Thêm biểu tượng trạng thái"
+
+msgctxt "battery warning level"
+msgid "%1 Critical"
+msgstr "%1 Nghiêm trọng"
+
+msgid "Show only the last part of the title, such as the app name"
+msgstr "Chỉ hiện phần cuối của tiêu đề, như tên ứng dụng"
+
+msgctxt "taskbar active window: turn the vertical title the other way"
+msgid "Inverted"
+msgstr "Đảo ngược"
+
+msgid "%1 pt"
+msgstr "%1 pt"
+
+msgid "The font, size and weight of each kind of text in the panels. Text size on Look & feel makes them all bigger or smaller"
+msgstr "Phông chữ, cỡ và độ đậm của từng loại chữ trong các bảng. Cỡ chữ ở mục Giao diện phóng to hoặc thu nhỏ tất cả"
+
+msgid "Text size on Look & feel scales it"
+msgstr "Cỡ chữ ở mục Giao diện phóng to hoặc thu nhỏ nó"
+
+msgid "One clock at a time, in the style below"
+msgstr "Mỗi lúc một đồng hồ, theo phong cách bên dưới"
+
+msgid "Caelestia's clock or one of end-4's"
+msgstr "Đồng hồ của Caelestia hoặc một kiểu của end-4"
+
+msgid "One visualiser at a time, in the style below"
+msgstr "Mỗi lúc một hiệu ứng âm thanh, theo phong cách bên dưới"
+
+msgid "Caelestia's bars or one of end-4's"
+msgstr "Các cột của Caelestia hoặc một kiểu của end-4"
+
+msgid "Turn on the picture"
+msgstr "Bật ảnh đại diện"
+
+msgid "Your picture shows only once this is set too. Pick the same file here"
+msgstr "Ảnh của bạn chỉ hiện khi mục này cũng được đặt. Hãy chọn cùng tệp ở đây"
+
+msgid "The update checker isn't installed"
+msgstr "Chưa cài trình kiểm tra cập nhật"
+
+msgid "It comes with the pacman-contrib package"
+msgstr "Nó có trong gói pacman-contrib"
+
+msgid "Couldn't reach the package servers"
+msgstr "Không kết nối được máy chủ gói"
+
+msgid "Check the internet connection, then try again"
+msgstr "Hãy kiểm tra kết nối mạng rồi thử lại"
+
+msgid "Couldn't reach the AUR"
+msgstr "Không kết nối được AUR"
+
+msgid "caelestia_4 source folder not found"
+msgstr "Không tìm thấy thư mục mã nguồn caelestia_4"
+
+msgid "Updates look for the caelestia_4 folder you installed from. Run its installer once more so the shell knows where it is"
+msgstr "Phần cập nhật tìm thư mục caelestia_4 mà bạn đã cài từ đó. Hãy chạy lại trình cài đặt của nó một lần để shell biết thư mục ở đâu"
+
+msgid "This copy isn't linked to an online branch"
+msgstr "Bản này không gắn với nhánh trực tuyến nào"
+
+msgid "So new versions can't be checked for"
+msgstr "Nên không kiểm tra được phiên bản mới"
+
+msgid "Couldn't reach the server"
+msgstr "Không kết nối được máy chủ"
+
+msgid "Showing the last check. Check the internet connection, then try again"
+msgstr "Đang hiện lần kiểm tra trước. Hãy kiểm tra kết nối mạng rồi thử lại"
+
+msgid "The server asked for a sign-in"
+msgstr "Máy chủ yêu cầu đăng nhập"
+
+msgid "Often a short limit on automatic checks: try again later. Showing the last check"
+msgstr "Thường là giới hạn tạm thời với việc kiểm tra tự động: hãy thử lại sau. Đang hiện lần kiểm tra trước"
+
+msgid "Couldn't check"
+msgstr "Không kiểm tra được"
+
+msgid "Try again"
+msgstr "Thử lại"
+
+msgid "Install it"
+msgstr "Cài đặt"
+
+msgid "In a terminal; asks for the password"
+msgstr "Trong cửa sổ dòng lệnh; sẽ hỏi mật khẩu"
+
+msgid "Branch %1"
+msgstr "Nhánh %1"
+
+msgid "Has local changes"
+msgstr "Có thay đổi cục bộ"
+
+msgid "Needs the caelestia_4 source folder"
+msgstr "Cần thư mục mã nguồn caelestia_4"
+
+msgid "This copy has commits of its own, so it can't update by itself. See Updating in the install guide"
+msgstr "Bản này có commit riêng nên không tự cập nhật được. Xem mục Updating trong hướng dẫn cài đặt"
+
+msgid "Commit or set aside the local changes first"
+msgstr "Hãy commit hoặc cất tạm các thay đổi cục bộ trước"
+
+msgid "Nothing new to install"
+msgstr "Không có gì mới để cài"
+
+msgid "Downloads the new version and reinstalls it, in a terminal"
+msgstr "Tải phiên bản mới và cài lại, trong cửa sổ dòng lệnh"
+
+msgid "This adds a system rule that lets this account run pacman as root with no password, so updates ask nothing. Any program running under this account could use it too, and pacman can install any package.\n\nA terminal asks for your password once. To undo it, turn this off here."
+msgstr "Việc này thêm một quy tắc hệ thống cho phép tài khoản này chạy pacman với quyền root mà không cần mật khẩu, nên cập nhật không hỏi gì. Mọi chương trình chạy dưới tài khoản này cũng có thể dùng nó, và pacman có thể cài bất kỳ gói nào.\n\nCửa sổ dòng lệnh sẽ hỏi mật khẩu của bạn một lần. Để hoàn tác, hãy tắt mục này ở đây."
+
+msgid "Qt version it was built with is unknown. Rebuild once to record it"
+msgstr "Không rõ phiên bản Qt đã dùng để biên dịch. Biên dịch lại một lần để ghi lại"
+
+msgid "Needs the caelestia_4 source folder, which wasn't found"
+msgstr "Cần thư mục mã nguồn caelestia_4, nhưng không tìm thấy"
+
+msgid "Builds and reinstalls it in a terminal, then restarts the shell"
+msgstr "Biên dịch và cài lại trong cửa sổ dòng lệnh, rồi khởi động lại shell"
+
+msgid "Builds it in a terminal, then reinstalls it with the shell stopped for a moment"
+msgstr "Biên dịch trong cửa sổ dòng lệnh, rồi cài lại khi tạm dừng shell"
+
+msgid "This name isn't an icon the font knows, so the button shows its letters"
+msgstr "Tên này không phải biểu tượng mà phông chữ biết, nên nút sẽ hiện các chữ cái của nó"
+
+msgid "Choose an icon"
+msgstr "Chọn biểu tượng"
+
+msgid "Search, or type any icon name"
+msgstr "Tìm, hoặc nhập tên biểu tượng bất kỳ"
+
+msgid "Search icons"
+msgstr "Tìm biểu tượng"
+
+msgid "%n icon"
+msgid_plural "%n icons"
+msgstr[0] "%n biểu tượng"
+
+msgid "No icon with that name"
+msgstr "Không có biểu tượng nào tên như vậy"
+
+msgid "Pick an icon"
+msgstr "Hãy chọn một biểu tượng"
+
+msgctxt "button"
+msgid "Change"
+msgstr "Đổi"
+
+msgid "Needs an online branch to update from"
+msgstr "Cần một nhánh trực tuyến để cập nhật"
+
+msgid "Qt version it was built with is unknown"
+msgstr "Không rõ phiên bản Qt đã dùng để biên dịch"
+
+msgid "Couldn't read the shell components"
+msgstr "Không đọc được các thành phần của shell"
+
+msgid "Unknown"
+msgstr "Không rõ"
+
+msgctxt "unit after a number"
+msgid "pt"
+msgstr "pt"
+
+msgid "%1 already does “%2”, made outside Nexus, which can't turn it off. Pick other keys."
+msgstr "%1 đã làm “%2”, được tạo ngoài Nexus nên Nexus không tắt được. Hãy chọn phím khác."
+
+msgid "%1 already does “%2”. Replace turns that shortcut off; Cancel keeps both as they are."
+msgstr "%1 đang dùng cho “%2”. Thay thế sẽ tắt phím tắt đó; Hủy giữ nguyên cả hai."
+
+msgid "%1 shows the same picture as %2"
+msgstr "%1 đang hiển thị giống hệt %2"
+
+msgctxt "value now → value after"
+msgid "%1 → %2"
+msgstr "%1 → %2"
+
+msgid "%1. Today: %2"
+msgstr "%1. Hôm nay: %2"
+
+msgid "%n change made here goes away"
+msgid_plural "%n changes made here go away"
+msgstr[0] "%n thay đổi ở đây sẽ bị bỏ"
+
+msgid "%n setting"
+msgid_plural "%n settings"
+msgstr[0] "%n cài đặt"
+
+msgid "%n setting changes. Your current settings are saved as a backup first, so you can undo this."
+msgid_plural "%n settings change. Your current settings are saved as a backup first, so you can undo this."
+msgstr[0] "%n cài đặt sẽ thay đổi. Cài đặt hiện tại được sao lưu trước, nên bạn có thể hoàn tác."
+
+msgid "%n shortcut"
+msgid_plural "%n shortcuts"
+msgstr[0] "%n phím tắt"
+
+msgid "A backup has that name"
+msgstr "Đã có bản sao lưu mang tên này"
+
+msgid "A few choices to start with. You can change them any time."
+msgstr "Vài lựa chọn để bắt đầu. Bạn có thể đổi chúng bất cứ lúc nào."
+
+msgid "A mouse shortcut: it can be turned off here, not moved."
+msgstr "Phím tắt chuột: có thể tắt ở đây, không đổi phím được."
+
+msgid "A profile with that name exists"
+msgstr "Đã có hồ sơ mang tên này"
+
+msgid "A scroll step at least this big counts as a mouse wheel, smaller ones as a touchpad. Higher also scrolls less per wheel click. 120 suits most mice"
+msgstr "Bước cuộn từ mức này trở lên được tính là con lăn chuột, nhỏ hơn là bàn di chuột. Cao hơn cũng làm mỗi nấc lăn cuộn ít hơn. 120 hợp với hầu hết chuột"
+
+msgid "A second shortcut for the same action."
+msgstr "Phím tắt thứ hai cho cùng thao tác."
+
+msgid "A shell action"
+msgstr "Một thao tác của shell"
+
+msgid "A shortcuts file has a mistake, so this list may miss some. Fix the file, then open this page again."
+msgstr "Một tệp phím tắt có lỗi, nên danh sách này có thể thiếu. Sửa tệp rồi mở lại trang này."
+
+msgid "Added in Nexus"
+msgstr "Được thêm trong Nexus"
+
+msgctxt "shortcut category"
+msgid "Added in Nexus"
+msgstr "Được thêm trong Nexus"
+
+msgid "Added in Nexus."
+msgstr "Được thêm trong Nexus."
+
+msgid "Added “%1”"
+msgstr "Đã thêm “%1”"
+
+msgid "Also works on the lock screen."
+msgstr "Cũng dùng được ở màn hình khóa."
+
+msgctxt "key"
+msgid "Alt (left)"
+msgstr "Alt (trái)"
+
+msgctxt "key"
+msgid "Alt (right)"
+msgstr "Alt (phải)"
+
+msgid "Any keyboard layout"
+msgstr "Mọi bố cục bàn phím"
+
+msgid "Applied “%1”"
+msgstr "Đã áp dụng “%1”"
+
+msgid "Apply arrangement"
+msgstr "Áp dụng bố trí"
+
+msgid "Apply this backup"
+msgstr "Áp dụng bản sao lưu này"
+
+msgid "Apply this profile"
+msgstr "Áp dụng hồ sơ này"
+
+msgid "Apply “%1”?"
+msgstr "Áp dụng “%1”?"
+
+msgid "Applying a preset replaces these. With “Save moves to the preset” on, a widget added or removed here goes into the preset applied last."
+msgstr "Áp dụng một preset sẽ thay thế các widget này. Khi bật “Lưu vị trí vào preset”, widget thêm hoặc gỡ ở đây sẽ được lưu vào preset áp dụng gần nhất."
+
+msgctxt "shortcut category"
+msgid "Apps"
+msgstr "Ứng dụng"
+
+msgid "Apps that come first in the launcher. To add one, open it in Apps and turn on “Favourite”"
+msgstr "Các ứng dụng đứng đầu trong trình khởi chạy. Để thêm, mở ứng dụng trong Ứng dụng và bật “Yêu thích”"
+
+msgid "Apps the launcher leaves out. To add one, open it in Apps and turn on “Hidden”"
+msgstr "Các ứng dụng trình khởi chạy bỏ qua. Để thêm, mở ứng dụng trong Ứng dụng và bật “Ẩn”"
+
+msgid "Arrangement"
+msgstr "Bố trí màn hình"
+
+msgctxt "mouse button"
+msgid "Back button"
+msgstr "Nút lùi"
+
+msgid "Backups"
+msgstr "Bản sao lưu"
+
+msgid "Before %1"
+msgstr "Trước %1"
+
+msgid "bind"
+msgstr "gán phím"
+
+msgid "Brightness down"
+msgstr "Giảm độ sáng"
+
+msgctxt "key"
+msgid "Brightness down"
+msgstr "Giảm độ sáng"
+
+msgid "Brightness up"
+msgstr "Tăng độ sáng"
+
+msgctxt "key"
+msgid "Brightness up"
+msgstr "Tăng độ sáng"
+
+msgid "Change the split between windows"
+msgstr "Đổi tỉ lệ chia giữa các cửa sổ"
+
+msgid "Change, turn off or add shortcuts"
+msgstr "Đổi, tắt hoặc thêm phím tắt"
+
+msgid "Changed · was %1"
+msgstr "Đã đổi · trước là %1"
+
+msgid "Changes here don't work yet"
+msgstr "Thay đổi ở đây chưa có tác dụng"
+
+msgid "Changes here don't work yet, so they can't be saved. Update the dotfiles first."
+msgstr "Thay đổi ở đây chưa có tác dụng nên chưa lưu được. Hãy cập nhật dotfiles trước."
+
+msgid "Changes here show the next time the screen locks."
+msgstr "Thay đổi ở đây có hiệu lực từ lần khoá màn hình tiếp theo."
+
+msgid "Choose a wallpaper"
+msgstr "Chọn hình nền"
+
+msgid "Classic clock"
+msgstr "Đồng hồ cổ điển"
+
+msgid "Click, then press the new keys"
+msgstr "Bấm vào đây, rồi nhấn tổ hợp phím mới"
+
+msgid "Command or app to run"
+msgstr "Lệnh hoặc ứng dụng cần chạy"
+
+msgid "Connect another screen to arrange them side by side"
+msgstr "Cắm thêm màn hình để xếp chúng cạnh nhau"
+
+msgid "Could not apply the profile"
+msgstr "Không áp dụng được hồ sơ"
+
+msgid "Could not delete the profile"
+msgstr "Không xóa được hồ sơ"
+
+msgid "Could not put your settings back"
+msgstr "Không thể khôi phục cài đặt"
+
+msgid "Could not read the profile"
+msgstr "Không đọc được hồ sơ"
+
+msgid "Could not rename the profile"
+msgstr "Không đổi tên được hồ sơ"
+
+msgid "Could not save the profile"
+msgstr "Không lưu được hồ sơ"
+
+msgid "Custom"
+msgstr "Tuỳ chỉnh"
+
+msgid "Custom action"
+msgstr "Thao tác tùy chỉnh"
+
+msgid "Custom format"
+msgstr "Định dạng tuỳ chỉnh"
+
+msgid "Custom…"
+msgstr "Tuỳ chỉnh…"
+
+msgid "d day, M month, yyyy year, ddd day name, MMM month name"
+msgstr "d ngày, M tháng, yyyy năm, ddd tên thứ, MMM tên tháng"
+
+msgid "Day name, day and month name"
+msgstr "Tên thứ, ngày và tên tháng"
+
+msgid "Day, short month name, year"
+msgstr "Ngày, tên tháng viết tắt, năm"
+
+msgid "Day/month/year"
+msgstr "Ngày/tháng/năm"
+
+msgid "Default: %1"
+msgstr "Mặc định: %1"
+
+msgid "Delete “%1”?"
+msgstr "Xóa “%1”?"
+
+msgid "Deleted “%1”"
+msgstr "Đã xóa “%1”"
+
+msgid "Detach or attach the left sidebar"
+msgstr "Tách hoặc gắn thanh bên trái"
+
+msgctxt "button"
+msgid "Done"
+msgstr "Xong"
+
+msgid "Drag the screens to match where they sit on your desk"
+msgstr "Kéo các màn hình cho khớp với vị trí của chúng trên bàn"
+
+msgid "e.g. Work, Gaming, Evening"
+msgstr "ví dụ: Làm việc, Chơi game, Buổi tối"
+
+msgid "Edited"
+msgstr "Đã sửa"
+
+msgid "Empty"
+msgstr "Trống"
+
+msgid "Enter or leave virtual machine mode"
+msgstr "Vào hoặc thoát chế độ máy ảo"
+
+msgid "Every shortcut goes back to its default and the ones added here are removed."
+msgstr "Mọi phím tắt trở về mặc định và các phím tắt thêm ở đây sẽ bị xóa."
+
+msgid "Every widget, the clock and the visualiser too"
+msgstr "Mọi widget, cả đồng hồ và hiệu ứng âm thanh"
+
+msgid "Five workspaces back"
+msgstr "Lùi năm không gian làm việc"
+
+msgid "Five workspaces forward"
+msgstr "Tiến năm không gian làm việc"
+
+msgid "Focus the window on that side"
+msgstr "Chuyển sang cửa sổ phía đó"
+
+msgid "For example tailscale, or any name for another VPN"
+msgstr "Ví dụ tailscale, hoặc tên bất kỳ cho VPN khác"
+
+msgid "For example: firefox, or kitty -e btop"
+msgstr "Ví dụ: firefox, hoặc kitty -e btop"
+
+msgid "For the panels and these settings"
+msgstr "Cho các bảng và phần cài đặt này"
+
+msgctxt "mouse button"
+msgid "Forward button"
+msgstr "Nút tiến"
+
+msgid "From your own shortcuts file."
+msgstr "Từ tệp phím tắt riêng của bạn."
+
+msgid "Helper keys"
+msgstr "Phím hỗ trợ"
+
+msgid "hotkey"
+msgstr "phím nóng"
+
+msgid "How big the classic clock is"
+msgstr "Đồng hồ cổ điển lớn đến đâu"
+
+msgid "How each workspace is drawn. “Always show numbers” overrides it with numbers"
+msgstr "Cách vẽ từng không gian làm việc. “Luôn hiện số” sẽ thay bằng số"
+
+msgid "How often the Wi-Fi list looks for new networks. Lower uses more power"
+msgstr "Wi-Fi tìm mạng mới thường xuyên đến đâu. Thấp hơn thì tốn pin hơn"
+
+msgid "How strongly the picture is blurred. 64 px and above look the same"
+msgstr "Ảnh bị làm mờ mạnh đến đâu. Từ 64 px trở lên trông như nhau"
+
+msgid "How strongly the picture is blurred"
+msgstr "Ảnh bị làm mờ mạnh đến đâu"
+
+msgid "How the clock looks"
+msgstr "Đồng hồ trông thế nào"
+
+msgid "How the date reads on the desktop's digital clock"
+msgstr "Cách ngày hiện trên đồng hồ số của màn hình nền"
+
+msgid "Icons for apps' windows, by app ID or an ID pattern. Other apps get an icon from their category"
+msgstr "Biểu tượng cho cửa sổ ứng dụng, theo ID ứng dụng hoặc mẫu ID. Ứng dụng khác lấy biểu tượng theo danh mục"
+
+msgid "Icons for special workspaces, by name or a name pattern"
+msgstr "Biểu tượng cho không gian làm việc đặc biệt, theo tên hoặc mẫu tên"
+
+msgid "Icons for workspaces in the Icons style, by workspace name or a name pattern. Not used while “Always show numbers” is on"
+msgstr "Biểu tượng cho không gian làm việc ở kiểu Biểu tượng, theo tên không gian làm việc hoặc mẫu tên. Không dùng khi bật “Luôn hiện số”"
+
+msgid "Install the update checker"
+msgstr "Cài trình kiểm tra cập nhật"
+
+msgid "Its colours become the colours of the shell"
+msgstr "Màu của hình nền thành màu của shell"
+
+msgid "Keep as a profile"
+msgstr "Giữ làm hồ sơ"
+
+msgid "Keeps what you changed under a name, without passwords or keys"
+msgstr "Giữ những gì bạn đã đổi dưới một cái tên, không kèm mật khẩu hay khóa"
+
+msgctxt "a key known only by its number"
+msgid "Key %1"
+msgstr "Phím %1"
+
+msgid "keybind"
+msgstr "phím tắt"
+
+msgid "Keyboard shortcuts"
+msgstr "Phím tắt"
+
+msgctxt "key"
+msgid "Keypad %1"
+msgstr "Bàn số %1"
+
+msgid "Keys: %1"
+msgstr "Phím: %1"
+
+msgctxt "mouse button"
+msgid "Left click"
+msgstr "Chuột trái"
+
+msgctxt "shortcut category"
+msgid "Lock & power"
+msgstr "Khóa & nguồn"
+
+msgid "Lock screen blur"
+msgstr "Độ mờ màn hình khoá"
+
+msgid "Made outside Nexus"
+msgstr "Được tạo ngoài Nexus"
+
+msgctxt "shortcut category"
+msgid "Made outside Nexus"
+msgstr "Được tạo ngoài Nexus"
+
+msgid "Made outside Nexus (a plugin or another config file). It can't be changed here."
+msgstr "Được tạo ngoài Nexus (một plugin hoặc tệp cấu hình khác). Không thể đổi ở đây."
+
+msgctxt "shortcut category"
+msgid "Media & volume"
+msgstr "Đa phương tiện & âm lượng"
+
+msgctxt "key"
+msgid "Mic mute"
+msgstr "Tắt mic"
+
+msgctxt "mouse button"
+msgid "Middle click"
+msgstr "Chuột giữa"
+
+msgid "Month/day/year"
+msgstr "Tháng/ngày/năm"
+
+msgid "Move the window"
+msgstr "Di chuyển cửa sổ"
+
+msgctxt "key"
+msgid "Mute"
+msgstr "Tắt tiếng"
+
+msgid "New shortcut"
+msgstr "Phím tắt mới"
+
+msgctxt "key"
+msgid "Next track"
+msgstr "Bài sau"
+
+msgid "Next workspace"
+msgstr "Không gian làm việc kế tiếp"
+
+msgid "Next workspace with windows"
+msgstr "Không gian làm việc có cửa sổ kế tiếp"
+
+msgid "No file chosen"
+msgstr "Chưa chọn tệp"
+
+msgid "No folder chosen"
+msgstr "Chưa chọn thư mục"
+
+msgid "No profiles yet"
+msgstr "Chưa có hồ sơ nào"
+
+msgid "No shortcuts match “%1”"
+msgstr "Không có phím tắt nào khớp “%1”"
+
+msgid "Not until changes here work"
+msgstr "Chưa dùng được khi thay đổi ở đây chưa có tác dụng"
+
+msgid "Nothing changed here yet"
+msgstr "Chưa có thay đổi nào ở đây"
+
+msgid "Number pad"
+msgstr "Bàn số"
+
+msgctxt "shortcut category"
+msgid "Other"
+msgstr "Khác"
+
+msgid "Other Caelestia setting"
+msgstr "Cài đặt Caelestia khác"
+
+msgid "Other end-4 setting"
+msgstr "Cài đặt end-4 khác"
+
+msgid "Panel settings file"
+msgstr "Tệp cài đặt bảng điều khiển"
+
+msgid "Part of a mode, such as virtual machine mode: it can be turned off here, not moved."
+msgstr "Thuộc một chế độ, như chế độ máy ảo: có thể tắt ở đây, không thể đổi phím."
+
+msgid "Passwords and keys are never saved in a profile."
+msgstr "Mật khẩu và khóa không bao giờ được lưu vào hồ sơ."
+
+msgctxt "key"
+msgid "Pause"
+msgstr "Tạm dừng"
+
+msgctxt "key"
+msgid "Play"
+msgstr "Phát"
+
+msgid "Press the new keys… (Esc cancels)"
+msgstr "Nhấn tổ hợp phím mới… (Esc để hủy)"
+
+msgctxt "key"
+msgid "Previous track"
+msgstr "Bài trước"
+
+msgid "Previous workspace"
+msgstr "Không gian làm việc trước đó"
+
+msgid "Previous workspace with windows"
+msgstr "Không gian làm việc có cửa sổ trước đó"
+
+msgid "Profiles"
+msgstr "Hồ sơ cài đặt"
+
+msgid "Put the screens back"
+msgstr "Đưa màn hình về chỗ cũ"
+
+msgid "Reading shortcuts…"
+msgstr "Đang đọc phím tắt…"
+
+msgid "rebind"
+msgstr "gán lại phím"
+
+msgid "Record the screen"
+msgstr "Quay màn hình"
+
+msgid "Record the screen with sound"
+msgstr "Quay màn hình có tiếng"
+
+msgid "Remind that Super + Q closes windows"
+msgstr "Nhắc rằng Super + Q đóng cửa sổ"
+
+msgctxt "button: delete this shortcut"
+msgid "Remove"
+msgstr "Xóa"
+
+msgid "Removed “%1”"
+msgstr "Đã xóa “%1”"
+
+msgid "Rename"
+msgstr "Đổi tên"
+
+msgid "Rename profile"
+msgstr "Đổi tên hồ sơ"
+
+msgctxt "button: give the keys to this shortcut"
+msgid "Replace"
+msgstr "Thay thế"
+
+msgid "Reset all shortcuts"
+msgstr "Đặt lại mọi phím tắt"
+
+msgid "Reset all shortcuts?"
+msgstr "Đặt lại mọi phím tắt?"
+
+msgctxt "button"
+msgid "Reset to default"
+msgstr "Về mặc định"
+
+msgid "Resize the window"
+msgstr "Đổi kích thước cửa sổ"
+
+msgid "Resize the window to %1 × %2"
+msgstr "Đổi cỡ cửa sổ thành %1 × %2"
+
+msgctxt "mouse button"
+msgid "Right click"
+msgstr "Chuột phải"
+
+msgid "Run %1"
+msgstr "Chạy %1"
+
+msgid "Run a command or open an app with your own keys"
+msgstr "Chạy lệnh hoặc mở ứng dụng bằng tổ hợp phím của bạn"
+
+msgid "Run a script"
+msgstr "Chạy một script"
+
+msgid "Runs a command or opens an app when you press the keys."
+msgstr "Chạy một lệnh hoặc mở một ứng dụng khi bạn nhấn tổ hợp phím."
+
+msgid "Same keys as “%1”"
+msgstr "Trùng phím với “%1”"
+
+msgid "Save and switch between sets of settings"
+msgstr "Lưu và chuyển giữa các bộ cài đặt"
+
+msgid "Save current settings"
+msgstr "Lưu cài đặt hiện tại"
+
+msgid "Save your settings to switch back to them later"
+msgstr "Lưu cài đặt của bạn để sau này quay lại dùng"
+
+msgid "Saved as “%1”"
+msgstr "Đã lưu thành “%1”"
+
+msgid "Screen %1"
+msgstr "Màn hình %1"
+
+msgctxt "shortcut category"
+msgid "Screen & zoom"
+msgstr "Màn hình & phóng to"
+
+msgctxt "shortcut category"
+msgid "Screenshots & tools"
+msgstr "Chụp màn hình & công cụ"
+
+msgctxt "mouse wheel"
+msgid "Scroll down"
+msgstr "Cuộn xuống"
+
+msgctxt "mouse wheel"
+msgid "Scroll up"
+msgstr "Cuộn lên"
+
+msgid "Search any setting with Ctrl+F"
+msgstr "Tìm bất kỳ cài đặt nào bằng Ctrl+F"
+
+msgid "Search shortcuts or keys"
+msgstr "Tìm phím tắt hoặc phím"
+
+msgid "Second shortcut"
+msgstr "Phím tắt thứ hai"
+
+msgid "See-through panels with the wallpaper behind them"
+msgstr "Bảng trong suốt, thấy hình nền phía sau"
+
+msgid "Send a test notification"
+msgstr "Gửi thông báo thử"
+
+msgid "Send the window to the next workspace"
+msgstr "Chuyển cửa sổ sang không gian làm việc kế tiếp"
+
+msgid "Send the window to the previous workspace"
+msgstr "Chuyển cửa sổ sang không gian làm việc trước đó"
+
+msgid "Settings put back"
+msgstr "Đã khôi phục cài đặt"
+
+msgctxt "shortcut category"
+msgid "Shell"
+msgstr "Shell"
+
+msgid "Shell settings file"
+msgstr "Tệp cài đặt shell"
+
+msgid "Short day, day/month"
+msgstr "Thứ viết tắt, ngày/tháng"
+
+msgid "Shortcut on"
+msgstr "Bật phím tắt"
+
+msgid "Show or hide the scratchpad"
+msgstr "Hiện hoặc ẩn scratchpad"
+
+msgid "Show the “Keep awake” card, which stops the screen from dimming or locking"
+msgstr "Hiện thẻ “Giữ máy thức”, giúp màn hình không tối đi hay tự khoá"
+
+msgid "Show welcome again"
+msgstr "Hiện lại lời chào"
+
+msgid "Show workspace numbers while held"
+msgstr "Hiện số không gian làm việc khi giữ phím"
+
+msgid "Showing the last check"
+msgstr "Đang hiện lần kiểm tra trước"
+
+msgctxt "button"
+msgid "Skip"
+msgstr "Bỏ qua"
+
+msgid "Some screens are on top of each other: drag one aside"
+msgstr "Có màn hình đang chồng lên nhau: hãy kéo một cái sang bên"
+
+msgid "Some screens don't touch the others: the pointer can't move onto them"
+msgstr "Có màn hình không chạm vào các màn hình khác: con trỏ không thể di chuyển sang đó"
+
+msgid "Some shortcuts could not be read"
+msgstr "Không đọc được một số phím tắt"
+
+msgctxt "key"
+msgid "Space"
+msgstr "Dấu cách"
+
+msgctxt "key"
+msgid "Super (left)"
+msgstr "Super (trái)"
+
+msgctxt "key"
+msgid "Super (right)"
+msgstr "Super (phải)"
+
+msgid "Super or Alt pressed alone, which the shell watches for the launcher and switchers. Turning one off can break those."
+msgstr "Super hoặc Alt nhấn riêng, shell dùng chúng cho trình khởi chạy và trình chuyển. Tắt chúng có thể làm hỏng các chức năng đó."
+
+msgid "Switch windows, backwards"
+msgstr "Chuyển cửa sổ, theo chiều ngược"
+
+msgid "The display settings went back to how they were"
+msgstr "Cài đặt màn hình đã trở về như cũ"
+
+msgid "The first-run card with a few key choices"
+msgstr "Thẻ chào lần đầu với vài lựa chọn chính"
+
+msgid "The number pad twin of another shortcut."
+msgstr "Bản trên bàn số của một phím tắt khác."
+
+msgid "The picture on the hibernate button"
+msgstr "Hình trên nút ngủ đông"
+
+msgid "The picture on the log out button"
+msgstr "Hình trên nút đăng xuất"
+
+msgid "The picture on the restart button"
+msgstr "Hình trên nút khởi động lại"
+
+msgid "The picture on the shut down button"
+msgstr "Hình trên nút tắt máy"
+
+msgid "The profile is deleted for good. Your settings now stay as they are."
+msgstr "Hồ sơ sẽ bị xóa hẳn. Cài đặt hiện tại của bạn vẫn giữ nguyên."
+
+msgid "The connection's name on this computer, such as wg0. WireGuard needs it"
+msgstr "Tên kết nối trên máy này, ví dụ wg0. WireGuard cần tên này"
+
+msgid "This style has one size. Other styles can be resized"
+msgstr "Kiểu này chỉ có một kích thước. Các kiểu khác thì đổi cỡ được"
+
+msgid "This widget has one size. Widget size on the Desktop page scales all widgets"
+msgstr "Tiện ích này chỉ có một kích thước. Kích thước tiện ích ở trang Màn nền đổi cỡ mọi tiện ích"
+
+msgid "Try what it does, such as “screenshot”, or a key, such as “Super + Q”."
+msgstr "Thử tìm theo việc nó làm, như “screenshot”, hoặc theo phím, như “Super + Q”."
+
+msgid "Turned off “%1”"
+msgstr "Đã tắt “%1”"
+
+msgid "Turned on “%1”"
+msgstr "Đã bật “%1”"
+
+msgid "Type this first to run built-in actions and your own scripts. Not the same as the action prefix above"
+msgstr "Gõ ký tự này trước để chạy các thao tác có sẵn và script của bạn. Khác với tiền tố thao tác ở trên"
+
+msgid "Use the arrow keys to move this screen"
+msgstr "Dùng phím mũi tên để di chuyển màn hình này"
+
+msgctxt "shortcut category"
+msgid "Virtual machines"
+msgstr "Máy ảo"
+
+msgid "Volume down"
+msgstr "Giảm âm lượng"
+
+msgctxt "key"
+msgid "Volume down"
+msgstr "Giảm âm lượng"
+
+msgid "Volume up"
+msgstr "Tăng âm lượng"
+
+msgctxt "key"
+msgid "Volume up"
+msgstr "Tăng âm lượng"
+
+msgid "Waiting for keys"
+msgstr "Đang chờ phím"
+
+msgid "WARP, Tailscale and NetBird need no setup: name the provider warp, tailscale or netbird. For WireGuard, name it wireguard and enter its connection name, such as wg0, under Interface. For any other VPN, add the commands that turn it on and off."
+msgstr "WARP, Tailscale và NetBird không cần thiết lập: đặt tên nhà cung cấp là warp, tailscale hoặc netbird. Với WireGuard, đặt tên là wireguard và nhập tên kết nối của nó, ví dụ wg0, vào ô Giao diện. Với VPN khác, hãy thêm lệnh để bật và tắt nó."
+
+msgid "Welcome to Nexus"
+msgstr "Chào mừng đến với Nexus"
+
+msgid "Where on the screen the classic clock sits"
+msgstr "Đồng hồ cổ điển nằm ở đâu trên màn hình"
+
+msgid "Window switcher (Alt held)"
+msgstr "Bộ chuyển cửa sổ (giữ Alt)"
+
+msgctxt "shortcut category"
+msgid "Windows"
+msgstr "Cửa sổ"
+
+msgid "Works on any keyboard layout, beside the shortcut with the same number."
+msgstr "Dùng được với mọi bố cục bàn phím, bên cạnh phím tắt cùng số."
+
+msgctxt "shortcut category"
+msgid "Workspaces"
+msgstr "Không gian làm việc"
+
+msgid "year"
+msgstr "năm"
+
+msgid "Year-month-day"
+msgstr "Năm-tháng-ngày"
+
+msgid "You'll have %1 seconds to keep or revert them"
+msgstr "Bạn có %1 giây để giữ hoặc hoàn tác"
+
+msgid "Your Hyprland setup is older than this page. Update the dotfiles, then changes apply."
+msgstr "Cấu hình Hyprland của bạn cũ hơn trang này. Hãy cập nhật dotfiles, sau đó thay đổi sẽ có tác dụng."
+
+msgid "Your profiles"
+msgstr "Hồ sơ của bạn"
+
+msgid "Your settings already match “%1”"
+msgstr "Cài đặt của bạn đã giống “%1”"
+
+msgid "Your settings are already as they were"
+msgstr "Cài đặt của bạn vẫn đang như trước"
+
+msgid "Your settings as they were before a profile was applied. The last 10 are kept."
+msgstr "Cài đặt của bạn trước khi áp dụng một hồ sơ. Giữ 10 bản gần nhất."
+
+msgid "Your shortcut"
+msgstr "Phím tắt của bạn"
+
+msgid "Zoom in (keypad)"
+msgstr "Phóng to (bàn số)"
+
+msgid "Zoom out (keypad)"
+msgstr "Thu nhỏ (bàn số)"
+
+msgid "“%1” has %2 now, made outside Nexus: after Reset to default both run."
+msgstr "“%1” đang dùng %2, được tạo ngoài Nexus: sau khi đặt lại mặc định, cả hai sẽ cùng chạy."
+
+msgid "“%1” has %2 now: Reset to default turns that shortcut off."
+msgstr "“%1” đang dùng %2: đặt lại mặc định sẽ tắt phím tắt đó."
+
+msgid "“%1” is now %2"
+msgstr "“%1” giờ là %2"

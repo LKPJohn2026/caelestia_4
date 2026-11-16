@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
@@ -24,15 +25,21 @@ PageBase {
         return filterList.some(f => isRegexEntry(f) && new RegExp(f).test(id));
     }
 
-    onAppChanged: {
-        // Auto close when app lost
-        if (!app)
+    // Auto close when app lost. caelestia4: only once the page is up: opened with no app (openAt "apps/info"), closing
+    // during the push made StackView warn "cannot pop while already in the process of completing a push"
+    function _closeIfNoApp(): void {
+        if (!app && StackView.status === StackView.Active)
             nState.closeSubPage();
     }
+
+    onAppChanged: _closeIfNoApp()
+    StackView.onActivated: Qt.callLater(_closeIfNoApp)
 
     title: Tr.tr("App info")
     isSubPage: true
 
+    // caelestia4: Favourite and Hidden are per app (an entry in the launcher's lists), so they have no registry
+    // `setting`: an undo step would act on whichever app is open by then. registry/RegApps.qml has search entries
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top

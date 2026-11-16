@@ -9,6 +9,8 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import Caelestia.Config // caelestia4: Config.screen / Tokens.screen
+import qs.modules.caelestia.components as CComp // caelestia4: ScreenName
 
 Scope {
     id: root
@@ -22,6 +24,14 @@ Scope {
         active: GlobalStates.overlayOpen || OverlayContext.hasPinnedWidgets
         sourceComponent: PanelWindow {
             id: overlayWindow
+            // caelestia4: Caelestia's per-screen config for the content (Tokens.* / Config.* warn without one), kept while
+            // Qt has the window on its nameless placeholder screen (ScreenName)
+            readonly property CComp.ScreenName configScreenName: CComp.ScreenName {
+                window: overlayWindow
+            }
+            contentItem.Config.screen: configScreenName.name
+            contentItem.Tokens.screen: configScreenName.name
+
             exclusionMode: ExclusionMode.Ignore
             WlrLayershell.namespace: "quickshell:overlay"
             WlrLayershell.layer: WlrLayer.Overlay

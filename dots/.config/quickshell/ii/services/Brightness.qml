@@ -19,7 +19,10 @@ Singleton {
     signal brightnessChanged()
 
     property var ddcMonitors: []
-    readonly property list<BrightnessMonitor> monitors: Quickshell.screens.map(screen => monitorComp.createObject(root, {
+    // caelestia4: real monitors only, as modules/caelestia/adapters/Screens.qml's `real`: not Hyprland's FALLBACK output
+    // or Qt's nameless placeholder while a monitor is off on resume (their objects only warn about a dangling screen)
+    readonly property list<ShellScreen> realScreens: Quickshell.screens.filter(s => s.name !== "" && s.name !== "{ NULL SCREEN }" && s.name !== "FALLBACK")
+    readonly property list<BrightnessMonitor> monitors: realScreens.map(screen => monitorComp.createObject(root, {
         screen
     }))
 
@@ -194,7 +197,7 @@ Singleton {
         return (6.600135 + 216.360356 * Math.pow(Math.E, -0.0811129189 * x)) / 100.0;
     }
     Variants {
-        model: Quickshell.screens
+        model: root.realScreens
         Scope {
             id: screenScope
             required property var modelData

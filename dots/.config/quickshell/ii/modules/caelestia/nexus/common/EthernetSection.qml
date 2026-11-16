@@ -40,6 +40,17 @@ ColumnLayout {
         first: true
         implicitHeight: ethHeaderLayout.implicitHeight + Tokens.padding.medium * 2
 
+        // caelestia4: a search hit for "x:network.ethernet" (registry/RegNetwork.qml) lands here (the same as
+        // pages/network/ActionMark.qml, which common/ can't import)
+        RowPulse {
+            id: ethPulse
+
+            link: RowSetting {
+                sid: "x:network.ethernet"
+                row: ethPulse.parent
+            }
+        }
+
         RowLayout {
             id: ethHeaderLayout
 
@@ -104,7 +115,7 @@ ColumnLayout {
             StateLayer {
                 onClicked: {
                     root.nState.selectedEthernetInterface = ethRow.modelData.iface;
-                    root.nState.openSubPage(1);
+                    root.nState.openSubPage("ethernet");
                 }
             }
 

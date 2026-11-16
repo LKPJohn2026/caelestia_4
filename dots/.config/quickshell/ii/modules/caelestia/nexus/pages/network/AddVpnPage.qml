@@ -96,8 +96,10 @@ PageBase {
         StyledText {
             Layout.fillWidth: true
             Layout.leftMargin: Tokens.padding.small
-            // TRANSLATORS: the four names in brackets are provider identifiers, leave them untranslated
-            text: Tr.tr("Built-in names (wireguard, warp, tailscale, netbird) auto-fill their commands. For others, provide the connect/disconnect commands.")
+            // caelestia4: plain words for users; the four names are what nameField matches (adapters VPN). WireGuard has
+            // no default interface (wireguardAdapter sets none), so it needs the Interface field
+            // TRANSLATORS: product names; the lower-case ones are what the user types (exact match), leave them untranslated. wg0 is an example name
+            text: Tr.tr("WARP, Tailscale and NetBird need no setup: name the provider warp, tailscale or netbird. For WireGuard, name it wireguard and enter its connection name, such as wg0, under Interface. For any other VPN, add the commands that turn it on and off.")
             color: Colours.palette.m3onSurfaceVariant
             font: Tokens.font.body.small
             wrapMode: Text.WordWrap
@@ -110,8 +112,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.small
             placeholderText: Tr.tr("Provider name")
             leadingIcon: "vpn_key"
-            // TRANSLATORS: id here means the provider identifier, e.g. wireguard
-            supportingText: Tr.tr("Built-in id or a custom name")
+            // TRANSLATORS: "tailscale" is a product name typed as-is, leave it untranslated
+            supportingText: Tr.tr("For example tailscale, or any name for another VPN")
             errorText: Tr.tr("Provider name is required")
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
 
@@ -137,7 +139,9 @@ PageBase {
             Layout.fillWidth: true
             placeholderText: Tr.trCtx("Interface", "network interface")
             leadingIcon: "lan"
-            supportingText: Tr.tr("Network interface (for WireGuard / status checks)")
+            // caelestia4: plain words; wg0 is the usual WireGuard name
+            // TRANSLATORS: wg0 is an example name, leave it untranslated
+            supportingText: Tr.tr("The connection's name on this computer, such as wg0. WireGuard needs it")
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
 
             onAccepted: connectField.forceActiveFocus()

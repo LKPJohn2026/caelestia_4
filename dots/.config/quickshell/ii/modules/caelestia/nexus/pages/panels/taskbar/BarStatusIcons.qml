@@ -59,8 +59,8 @@ PageBase {
 
             rootParent: root.flickable
             icon: "add"
-            label: Tr.tr("Add entry")
-            header: Tr.tr("Add new entry")
+            label: Tr.tr("Add item")
+            header: Tr.tr("Add a status icon")
             acceptLabel: Tr.trCtx("Add", "button")
 
             model: {
@@ -90,10 +90,7 @@ PageBase {
         ToggleRow {
             first: true
             last: true
-            text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show a details popout when hovering the status icons")
-            value: Config.bar.popouts.statusIcons
-            onToggled: GlobalConfig.bar.popouts.statusIcons = checked
+            setting: "c:bar.popouts.statusIcons"
         }
     }
 }

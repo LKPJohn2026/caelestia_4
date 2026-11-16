@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""caelestia4: wallpapers at the screen's own resolution. A still smaller than the screen (in device pixels: 7680x2160
-for a 5120x1440 screen at 1.5x) is upscaled by Upscayl's AI (upscayl-bin, its 4x models) and one larger is downscaled,
-to the smallest size that covers the screen, the whole picture kept (a 16:9 one on a 32:9 screen: 7680x4352). Only a
-copy that Qt couldn't load (over MAX_PIXELS: tall pictures, 7680x10240 for a phone photo) loses the ends of its long
-side, kept centred. The copy goes to ~/.cache/caelestia4/wallpaper-fit, the original stays as it is; index.json says
-which copy is whose, and the shell shows the copy once it's there (modules/caelestia/adapters/Wallpapers.qml).
+"""caelestia4: wallpapers at the screen's own resolution. A still smaller than the screen (in device pixels: 3840x2160
+for a 2560x1440 screen at 1.5x) is upscaled by Upscayl's AI (upscayl-bin, its 4x models) and one larger is downscaled,
+to the smallest size that covers the screen, the whole picture kept (a 16:9 one on a wider screen: as wide as the
+screen, and taller). Only a copy that Qt couldn't load (over MAX_PIXELS: tall pictures, such as a portrait phone photo
+on a wide screen) loses the ends of its long side, kept centred. The copy goes to ~/.cache/caelestia4/wallpaper-fit,
+the original stays as it is; index.json says which copy is whose, and the shell shows the copy once it's there
+(modules/caelestia/adapters/Wallpapers.qml).
 Caelestia's renderer never upscales (its texture is at most the picture's own size, stretched when drawn), so this is
 what makes it sharp.
 
@@ -22,7 +23,7 @@ Usage: wallpaper-fit.py IMAGE...   copies for these (made once, then reused unti
                                    The KEEP copies shown last stay, older ones go
        wallpaper-fit.py --keep IMAGE...
                                    the same, and these copies stay for good (a whole folder made ahead of time:
-                                   ~6 MB each at 7680x4352); only a picture that's gone loses its copy
+                                   a few MB each, more on a larger screen); only a picture that's gone loses its copy
 Settings: illogical-impulse config.json background.wallpaperFit {enable, model, mode} (Nexus > Wallpaper & style)."""
 import ctypes
 import fcntl
@@ -45,7 +46,7 @@ II_CONFIG = os.path.join(CONFIG, "illogical-impulse/config.json")
 UPSCAYL = shutil.which("upscayl-bin") or "/usr/share/upscayl/bin/upscayl-bin"
 MODELS = "/usr/share/upscayl/models"
 VIDEOS = (".mp4", ".webm", ".mkv", ".avi", ".mov", ".gif")
-KEEP = 40  # copies kept (the most recently shown): ~5-10 MB each at 7680x4352
+KEEP = 40  # copies kept (the most recently shown): a few MB each, more on a larger screen
 CLOSE = 0.02  # within 2% of the screen already: shown as it is
 # Qt reads a picture whole before Caelestia's renderer crops it to the screen, and refuses one over 256 MiB (4 bytes a
 # pixel); JPEG stops at 65500 px a side
@@ -54,7 +55,7 @@ MAX_SIDE = 65_000
 RETRIES = 2  # an upscale that fell back to Lanczos is tried again on the next runs, this many times
 MODES = ("cover", "contain-blur", "seam")
 SEAM_MAX = 2.0  # seam carving past twice the width (or height) bends and repeats what it keeps
-SEAM_TIMEOUT = 600  # a 3840x2160 picture widened to 7680x2160 takes ~25 s
+SEAM_TIMEOUT = 600  # a 16:9 4K picture widened to twice its width takes ~25 s
 BLUR_SHRINK = 8  # the background is blurred at 1/8 of the screen's size and scaled up: the same look, ~60x faster
 # upscayl-bin can stall on a picture (one ran for 50 minutes at 2x on a 5000x1803 PNG): past this, Lanczos instead
 UPSCAYL_TIMEOUT = 300

@@ -16,6 +16,7 @@ require("hyprland.execs")
 require("hyprland.general")
 require("hyprland.rules")
 require("hyprland.colors")
+if is_file_exists(HOME .. "/.config/hypr/custom/nexus-keybinds.lua") then require("custom.nexus-keybinds") end -- caelestia4: shortcuts changed in Nexus (before the keybinds: it changes them as they are made)
 require("hyprland.keybinds")
 require("hyprland.resizer") -- caelestia4: Caelestia's window resizer (PiP, Bitwarden, size tags)
 require("hyprland.session") -- caelestia4: reopen apps on their workspaces at login

@@ -11,36 +11,34 @@ PageBase {
     title: Tr.tr("Clock")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
-        ToggleRow {
-            first: true
-            text: Tr.trCtx("Background", "taskbar clock: draw a background behind the clock")
-            value: Config.bar.clock.background
-            onToggled: GlobalConfig.bar.clock.background = checked
+        // caelestia4: General and Style, as on the other taskbar pages
+        SectionHeader {
+            text: Tr.tr("General")
         }
 
         ToggleRow {
-            text: Tr.tr("Show date")
-            value: Config.bar.clock.showDate
-            onToggled: GlobalConfig.bar.clock.showDate = checked
+            setting: "c:bar.clock.showDate"
         }
 
         ToggleRow {
-            text: Tr.tr("Show icon")
-            value: Config.bar.clock.showIcon
-            onToggled: GlobalConfig.bar.clock.showIcon = checked
+            setting: "c:bar.clock.showSeconds"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Style")
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Show seconds")
-            value: Config.bar.clock.showSeconds
-            onToggled: GlobalConfig.bar.clock.showSeconds = checked
+            setting: "c:bar.clock.showIcon"
+        }
+
+        ToggleRow {
+            setting: "c:bar.clock.background"
         }
     }
 }

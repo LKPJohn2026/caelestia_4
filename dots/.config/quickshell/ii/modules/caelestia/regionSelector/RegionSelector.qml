@@ -6,6 +6,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs // caelestia4: keep
 import qs.modules.common as E4C // caelestia4: keep
+import qs.modules.caelestia.adapters // caelestia4: Screens.real
 
 // caelestia4: end-4's region tools (modules/ii/regionSelector/RegionSelector.qml) with the Caelestia-styled
 // RegionSelection. Same IPC target ("region") and global shortcuts (regionScreenshot/Search/Ocr/Record/RecordWithSound).
@@ -45,7 +46,7 @@ Scope {
     }
 
     Variants {
-        model: Quickshell.screens
+        model: Screens.real // caelestia4: not Qt's nameless placeholder screen
 
         delegate: Loader {
             id: loader

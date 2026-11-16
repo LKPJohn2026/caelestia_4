@@ -1,9 +1,11 @@
 // caelestia4: Caelestia's wallpaper renderer (upstream 1c406e4e): Caelestia.Multimedia's Visual (stills cached as
-// compressed KTX textures sized to the screen) and a transition shader from Caelestia.Shaders, picked by
-// shell.json background.wallpaperTransition (Nexus → Wallpaper & style).
+// compressed KTX textures sized to the screen) and a transition shader from Caelestia.Shaders, played by
+// TransitionPlayer with the shader WallTransition picks (shell.json background.wallpaperTransition, Nexus → Wallpaper &
+// style), asked once per change when the old frame is captured: a pick made then can't be redrawn with another shader.
 // Hybrid: only stills play here. A video wallpaper stays on mpvpaper (end-4's switchwall.sh; ~2% of a core instead of
-// ~18% for QtMultimedia at 7680x2160), so `source` is its first-frame thumbnail and the background goes see-through
-// while mpvpaper runs (Background.qml videoShowing). A video previewed from the launcher shows its first frame.
+// ~18% for QtMultimedia on a high-resolution screen), so `source` is its first-frame thumbnail and the background goes
+// see-through while mpvpaper runs (Background.qml videoShowing). A video previewed from the launcher shows its first
+// frame.
 import QtQuick
 import Caelestia
 import Caelestia.Config
@@ -14,19 +16,9 @@ import qs.modules.caelestia.adapters
 Item {
     id: root
 
-    readonly property transitionShader shader: {
-        CUtils.dependency(Config.background.wallpaperTransition);
-        let transition = CUtils.enumToString(Config.background, "wallpaperTransition");
-        if (!transition)
-            return Shaders.crossfade;
-
-        transition = transition[0].toLowerCase() + transition.slice(1);
-        return Shaders[transition] ?? Shaders.crossfade;
-    }
-
     property string source: Wallpapers.current
     property ShaderEffectSource currentCapture: capture1
-    property real transitionProgress: 1
+    readonly property real transitionProgress: transition.progress
     // caelestia4: the same picture at another resolution (Wallpapers.displayPath: its copy fitted to the screen) is
     // swapped in without the transition: the old frame stays until the new one is ready, then it's simply there
     property var sameWallpaper: (a, b) => Wallpapers.sameWallpaper(a, b)
@@ -36,9 +28,9 @@ Item {
     onSourceChanged: {
         quietSwap = sameWallpaper(shownSource, source);
         shownSource = source;
-        transitionAnim.stop();
+        transition.stop();
 
-        if (transitionProgress < 1) {
+        if (transition.progress < 1) {
             currentCapture = currentCapture === capture1 ? capture2 : capture1;
             currentCapture.sourceItem = transition;
         } else {
@@ -54,13 +46,24 @@ Item {
         live.source = source;
     }
 
-    NumberAnimation on transitionProgress {
-        id: transitionAnim
+    // the old frame is frozen in `capture`: it becomes the transition's first frame, and the shader for this change is
+    // picked now (the animation-speed scale is this screen's, so the time is worked out here)
+    function captured(capture: ShaderEffectSource): void {
+        capture.visible = false;
+        transition.from = capture;
+        // a quiet swap (the same picture, fitted) shows no transition: no pick, so a random one isn't used up on it
+        const s = root.quietSwap ? WallTransition.chosenFor(Config.background) : WallTransition.pick(Config.background, root);
+        transition.prepare(s, s.duration * Tokens.anim.durations.scale);
+        live.source = root.source;
+        if (live.ready)
+            root.finishTransition();
+    }
 
-        running: false
-        duration: root.shader.duration * Tokens.anim.durations.scale
-        easing: root.shader.easing
-        to: 1
+    function finishTransition(): void {
+        if (quietSwap)
+            transition.jumpToEnd();
+        else
+            transition.start();
     }
 
     ShaderEffectSource {
@@ -70,21 +73,7 @@ Item {
         live: false
         visible: false
 
-        onScheduledUpdateCompleted: {
-            visible = false;
-            transition.from = this;
-            root.transitionProgress = 0;
-            live.source = root.source;
-            if (live.ready)
-                root.finishTransition();
-        }
-    }
-
-    function finishTransition(): void {
-        if (quietSwap)
-            transitionProgress = 1;
-        else
-            transitionAnim.start();
+        onScheduledUpdateCompleted: root.captured(this)
     }
 
     ShaderEffectSource {
@@ -94,14 +83,7 @@ Item {
         live: false
         visible: false
 
-        onScheduledUpdateCompleted: {
-            visible = false;
-            transition.from = this;
-            root.transitionProgress = 0;
-            live.source = root.source;
-            if (live.ready)
-                root.finishTransition();
-        }
+        onScheduledUpdateCompleted: root.captured(this)
     }
 
     Visual {
@@ -118,15 +100,10 @@ Item {
         }
     }
 
-    ShaderEffect {
+    TransitionPlayer {
         id: transition
 
-        property Item from
-        property Item to: live
-        property real progress: root.transitionProgress
-
         anchors.fill: parent
-        visible: root.transitionProgress < 1
-        fragmentShader: root.shader.url
+        to: live
     }
 }

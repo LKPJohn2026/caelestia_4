@@ -177,5 +177,7 @@ hl.layer_rule({ match = { namespace = "gtk4-layer-shell" }, no_anim = true})
 hl.window_rule({match = {class = "^(btop)$" },                                                           workspace = "special:sysmon"})
 hl.window_rule({match = {class = "^(feishin|Supersonic|Plexamp|Spotify|Cider|com.github.th-ch.youtube-music|com-maxrave-simpmusic-MainKt)$" }, workspace = "special:music"})
 hl.window_rule({match = {initial_title = "^(Spotify|Spotify Free)$" },                                   workspace = "special:music"})
-hl.window_rule({match = {class = "^(discord|equibop|vesktop|whatsapp)$" },                               workspace = "special:communication"})
+-- silent: chat clients start at login (caelestia4-vesktop.service) and run there without popping up; the toggle
+-- shows the workspace before it starts one, so opening it by hand still shows it
+hl.window_rule({match = {class = "^(discord|equibop|vesktop|whatsapp)$" },                               workspace = "special:communication silent"})
 hl.window_rule({match = {class = "^(todoist)$" },                                                        workspace = "special:todo"})

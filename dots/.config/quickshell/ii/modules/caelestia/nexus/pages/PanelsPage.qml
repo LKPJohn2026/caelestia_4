@@ -7,85 +7,119 @@ import qs.modules.common as E4C // caelestia4: keep (end-4 settings)
 PageBase {
     id: root
 
+    // caelestia4: the rows' live summaries ("Enabled · 5 tabs · shows on hover")
+    function status(on: bool): string {
+        return on ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status");
+    }
+
+    function summary(parts: var): string {
+        return parts.filter(p => p).join(" · ");
+    }
+
+    readonly property string hoverText: Tr.tr("shows on hover")
+    readonly property int dashboardTabs: [Config.dashboard.showDashboard, Config.dashboard.showMedia, Config.dashboard.showPerformance, Config.dashboard.showWeather, E4C.Config.options.caelestia.dashboardTodo, E4C.Config.options.caelestia.dashboardTimer].filter(t => t).length
+
     title: Tr.tr("Panels")
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
         NavRow {
-            first: true
             icon: "dashboard"
             text: Tr.tr("Dashboard")
-            subtext: Config.dashboard.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(1)
+            subtext: Config.dashboard.enabled ? root.summary([root.status(true), Tr.trN("%n tab", "%n tabs", root.dashboardTabs), Config.dashboard.showOnHover && !E4C.Config.options.background.presetsEnabled ? root.hoverText : ""]) : root.status(false)
+            onClicked: root.nState.openSubPage("dashboard")
         }
 
         NavRow {
             icon: "dock_to_bottom"
             text: Tr.tr("Taskbar")
-            subtext: Config.bar.persistent ? Tr.tr("Always visible") : Config.bar.showOnHover ? Tr.tr("Reveal on hover") : Tr.tr("Reveal on drag")
-            onClicked: root.nState.openSubPage(2)
+            subtext: root.summary([Config.bar.persistent ? Tr.tr("Always visible") : Config.bar.showOnHover ? Tr.tr("Reveal on hover") : Tr.tr("Reveal on drag"), Tr.trN("%n item", "%n items", Config.bar.entries.values.filter(e => e.enabled).length)])
+            onClicked: root.nState.openSubPage("taskbar")
         }
 
         NavRow {
             icon: "apps"
             text: Tr.tr("Launcher")
-            subtext: Config.launcher.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(3)
+            subtext: root.summary([root.status(Config.launcher.enabled), Config.launcher.enabled && Config.launcher.showOnHover ? root.hoverText : ""])
+            onClicked: root.nState.openSubPage("launcher")
         }
 
         NavRow {
             icon: "dock_to_right"
             text: Tr.tr("Sidebar")
-            subtext: Config.sidebar.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(4)
+            subtext: root.summary([root.status(Config.sidebar.enabled), Config.sidebar.enabled && Config.sidebar.showOnHover ? root.hoverText : ""])
+            onClicked: root.nState.openSubPage("sidebar")
         }
 
+        // caelestia4: no toggle count: the card's buttons also come from end-4's extras and the saved drawer layout
         NavRow {
             icon: "construction"
             text: Tr.tr("Utilities")
-            subtext: Config.utilities.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(5)
+            subtext: root.summary([root.status(Config.utilities.enabled), Config.utilities.enabled && Config.utilities.cards.quickToggles ? Tr.tr("Quick toggles") : ""])
+            onClicked: root.nState.openSubPage("utilities")
         }
 
         NavRow {
             icon: "neurology"
             text: Tr.tr("Assistant")
-            subtext: Tr.tr("AI, anime tab, work safety")
-            onClicked: root.nState.openSubPage(14)
+            subtext: {
+                switch (E4C.Config.options.policies.ai) {
+                case 1:
+                    return Tr.tr("AI on");
+                case 2:
+                    return Tr.tr("Local AI models only");
+                }
+                return Tr.tr("AI off");
+            }
+            onClicked: root.nState.openSubPage("assistant")
         }
 
         NavRow {
             icon: "grid_view"
             text: Tr.tr("Overview & overlay")
-            subtext: Tr.tr("Alt+Tab, Super+G")
-            onClicked: root.nState.openSubPage(15)
+            // TRANSLATORS: %1 rows by %2 columns of workspaces in the overview
+            subtext: root.summary([Tr.tr("Alt+Tab, Super+G"), Tr.tr("%1×%2 grid").arg(E4C.Config.options.overview.rows).arg(E4C.Config.options.overview.columns)])
+            onClicked: root.nState.openSubPage("overview")
         }
 
         NavRow {
             icon: "keyboard"
             text: Tr.tr("Keybind cheatsheet")
             subtext: "Super+/"
-            onClicked: root.nState.openSubPage(16)
+            onClicked: root.nState.openSubPage("cheatsheet")
         }
 
         NavRow {
             icon: "tune"
             text: Tr.tr("On-screen display")
-            subtext: Config.osd.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(13)
+            subtext: root.summary([root.status(Config.osd.enabled), Config.osd.enabled ? Tr.tr("hides after %1 s").arg(Math.round(Config.osd.hideDelay / 100) / 10) : ""])
+            onClicked: root.nState.openSubPage("osd")
         }
 
         NavRow {
-            last: true
             icon: "power_settings_new"
             text: Tr.tr("Session menu")
-            subtext: Config.session.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
-            onClicked: root.nState.openSubPage(12)
+            subtext: root.status(Config.session.enabled)
+            onClicked: root.nState.openSubPage("session")
         }
 
+        // caelestia4: options for all panels, not one (they were on the taskbar page)
+        SectionHeader {
+            text: Tr.tr("General")
+        }
+
+        ToggleRow {
+            setting: "c:general.showOverFullscreen"
+        }
+
+        // caelestia4: "caelestia" and icon names are not files: save what is typed. Empty shows the distro's logo
+        PathRow {
+            setting: "c:general.logo"
+            mustExist: false
+            hint: Tr.tr("Distro logo")
+        }
     }
 }

@@ -113,11 +113,8 @@ StyledRect {
             onToggled: checked ? E4.HyprlandAntiFlashbangShader.enable() : E4.HyprlandAntiFlashbangShader.disable()
         }
 
-        Toggle {
-            label: Tr.tr("Adapt display brightness")
-            value: E4C.Config.options.light.antiFlashbang.enable
-            onToggled: E4C.Config.options.light.antiFlashbang.enable = checked
-        }
+        // caelestia4: no "Adapt display brightness" here: it wrote e4:light.antiFlashbang.enable, which only end-4's
+        // services/Brightness.qml reads, and that is never created (adapters/Brightness.qml has no such dimming)
     }
 
     component Toggle: RowLayout {

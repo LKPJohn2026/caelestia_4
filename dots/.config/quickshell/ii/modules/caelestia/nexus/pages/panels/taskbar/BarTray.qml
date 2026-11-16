@@ -1,48 +1,70 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick.Layouts
+import Quickshell.Services.SystemTray
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
 
+// caelestia4: reference page for registry rows (registry/RegPanels.qml): `setting` gives each row its title, value and
+// write; RowGroup sets first/last
 PageBase {
     id: root
 
     title: Tr.tr("Tray")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
 
-        ToggleRow {
-            first: true
-            text: Tr.trCtx("Background", "taskbar tray: draw a background behind the tray")
-            value: Config.bar.tray.background
-            onToggled: GlobalConfig.bar.tray.background = checked
+        // caelestia4: General and Style, as on the other taskbar pages
+        SectionHeader {
+            text: Tr.tr("General")
+        }
+
+        // caelestia4: the apps in the tray now; hidden ids of apps that are not running stay listed
+        MultiSelectRow {
+            setting: "c:bar.tray.hiddenIcons"
+            options: SystemTray.items.values.map(i => ({
+                        value: i.id,
+                        label: i.title && i.title !== i.id ? `${i.title} (${i.id})` : i.id
+                    }))
         }
 
         ToggleRow {
-            // TRANSLATORS: tint system tray icons with the theme accent colour
-            text: Tr.tr("Recolour icons")
-            value: Config.bar.tray.recolour
-            onToggled: GlobalConfig.bar.tray.recolour = checked
+            setting: "c:bar.popouts.tray"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Style")
         }
 
         ToggleRow {
-            text: Tr.trCtx("Compact", "taskbar tray layout")
-            value: Config.bar.tray.compact
-            onToggled: GlobalConfig.bar.tray.compact = checked
+            setting: "c:bar.tray.background"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show the tray menu popout when hovering")
-            value: Config.bar.popouts.tray
-            onToggled: GlobalConfig.bar.popouts.tray = checked
+            setting: "c:bar.tray.recolour"
+        }
+
+        ToggleRow {
+            setting: "c:bar.tray.compact"
+        }
+
+        AdvancedSection {
+            ToggleRow {
+                setting: "e4:tray.invertPinnedItems"
+            }
+
+            KeyValueListRow {
+                setting: "e4:tray.pinnedItems"
+            }
+
+            KeyValueListRow {
+                setting: "c:bar.tray.iconSubs"
+            }
         }
     }
 }

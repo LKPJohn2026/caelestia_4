@@ -46,7 +46,8 @@ StyledListView {
         if (isE4Text(text))
             return "e4";
         if (text.startsWith(prefix)) {
-            for (const action of ["calc", "scheme", "variant"])
+            // caelestia4: ">settings tray" searches Nexus's settings (NexusSettings)
+            for (const action of ["calc", "scheme", "variant", "settings"])
                 if (text.startsWith(`${prefix}${action} `))
                     return action;
 
@@ -99,6 +100,8 @@ StyledListView {
             return Schemes.query(text);
         case "variant":
             return M3Variants.query(text);
+        case "settings":
+            return NexusSettings.results;
         case "e4":
             return E4.LauncherSearch.results;
         default:
@@ -112,6 +115,14 @@ StyledListView {
         property: "query"
         value: root.displayText
         when: root.displayState === "e4"
+    }
+
+    // caelestia4: feed the typed text to the settings search while in the "settings" state
+    property Binding settingsQueryBinding: Binding {
+        target: NexusSettings
+        property: "text"
+        value: root.displayText
+        when: root.displayState === "settings"
     }
 
     model: ScriptModel {
@@ -185,6 +196,13 @@ StyledListView {
 
             PropertyChanges {
                 root.delegate: variantItem
+            }
+        },
+        State {
+            name: "settings"
+
+            PropertyChanges {
+                root.delegate: actionItem
             }
         },
         State {

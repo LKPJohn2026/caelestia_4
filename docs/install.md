@@ -127,7 +127,7 @@ log is copied to `~/.local/state/caelestia4/hyprland-lockfail.log`.
 
 The machine suspends after 15 idle minutes by default (Nexus → Power & idle).
 
-**NVIDIA with a monitor that drops off its link on wake** (seen with a Samsung G95NC on DP 2.1): set suspend to "Never".
+**NVIDIA with a monitor that drops off its link on wake** (seen on DisplayPort 2.1): set suspend to "Never".
 The monitor comes back, and Hyprland 0.57 disconnects a client that was drawing with NVIDIA's explicit sync at that
 moment (`wp_linux_drm_syncobj_surface_v1 error 3: Missing buffer`). The victim varies: hyprlock (the "lock screen
 died" screen) or Xwayland (every X11 app, Steam included, until you log out and back in; Hyprland doesn't start

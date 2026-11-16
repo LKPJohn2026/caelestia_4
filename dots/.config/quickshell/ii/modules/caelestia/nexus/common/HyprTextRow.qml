@@ -1,24 +1,36 @@
+import QtQml
 import QtQuick
 import qs.services as E4 // caelestia4: keep (HyprlandConfig: hypr/hyprland/shellOverrides/main.lua)
 import qs.modules.common.models.hyprland as E4H // caelestia4: keep
 import qs.modules.caelestia.nexus.common
 
 // caelestia4: free-text Hyprland option (keyboard layouts, XKB options), read live and saved to the shell overrides
-// when editing finishes. Hyprland reports an empty string option as "[[EMPTY]]"
+// when editing finishes. Hyprland reports an empty string option as "[[EMPTY]]". New rows use
+// `TextFieldRow { setting: "h:<option>" }` instead; with `setting` set this row is just that
 TextFieldRow {
     id: root
 
-    required property string key
+    property string key
 
-    value: opt.value === "[[EMPTY]]" ? "" : String(opt.value ?? "")
+    value: {
+        const v = root.setting ? root.link.value : opt.value;
+        return v === "[[EMPTY]]" ? "" : String(v ?? "");
+    }
     onEditingFinished: v => {
-        if (v !== root.value)
+        if (!root.setting && v !== root.value)
             E4.HyprlandConfig.set(root.key, v);
     }
 
-    E4H.HyprlandConfigOption {
-        id: opt
+    // Only the old way reads the option itself (the setting has its own reader)
+    readonly property var opt: optInst.object ?? ({})
 
-        key: root.key
+    Instantiator {
+        id: optInst
+
+        model: root.setting ? 0 : 1
+
+        E4H.HyprlandConfigOption {
+            key: root.key
+        }
     }
 }

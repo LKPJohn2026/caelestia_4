@@ -37,8 +37,12 @@ PanelWindow {
         bottom: true
     }
 
-    contentItem.Config.screen: screen.name
-    contentItem.Tokens.screen: screen.name
+    // caelestia4: the screen's name, kept while Qt has the window on its nameless placeholder screen (ScreenName)
+    readonly property ScreenName configScreenName: ScreenName {
+        window: root
+    }
+    contentItem.Config.screen: configScreenName.name
+    contentItem.Tokens.screen: configScreenName.name
 
     readonly property string screenshotDir: E4C.Directories.screenshotTemp
     readonly property string screenshotPath: `${root.screenshotDir}/image-${screen.name}`

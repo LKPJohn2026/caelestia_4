@@ -14,11 +14,25 @@ ConnectedRect {
     id: root
 
     property alias label: label.text
-    property string subtext
-    property string value
+    property string subtext: link.desc
+    property string value: link.active ? String(link.value ?? "") : ""
     property alias placeholderText: area.placeholderText
 
+    // caelestia4: a registry id: the area shows the setting and saves it when it loses focus (onEditingFinished still
+    // runs); modified/reset, the applies chip and the disabled reason as on the other rows
+    property string setting
+    readonly property RowSetting link: RowSetting {
+        sid: root.setting
+        row: root
+        screen: root.Config.screen
+    }
+
     signal editingFinished(value: string)
+
+    onEditingFinished: v => {
+        if (link.active && v !== root.value)
+            link.set(v);
+    }
 
     Component.onDestruction: {
         if (area.text !== value)
@@ -27,6 +41,14 @@ ConnectedRect {
 
     Layout.fillWidth: true
     implicitHeight: column.implicitHeight + Tokens.padding.medium * 2
+
+    HoverHandler {
+        id: hover
+    }
+
+    RowPulse {
+        link: root.link
+    }
 
     ColumnLayout {
         id: column
@@ -39,12 +61,24 @@ ConnectedRect {
         anchors.rightMargin: Tokens.padding.largeIncreased
         spacing: Tokens.spacing.small
 
-        StyledText {
-            id: label
-
+        RowLayout {
             Layout.fillWidth: true
-            font: Tokens.font.body.small
-            elide: Text.ElideRight
+            spacing: Tokens.spacing.medium
+
+            StyledText {
+                id: label
+
+                Layout.fillWidth: true
+                text: root.link.title
+                font: Tokens.font.body.small
+                wrapMode: Text.WordWrap
+                opacity: root.link.blocked ? 0.5 : 1
+            }
+
+            SettingMarks {
+                link: root.link
+                hot: hover.hovered || area.activeFocus
+            }
         }
 
         StyledText {
@@ -54,6 +88,12 @@ ConnectedRect {
             color: Colours.palette.m3outline
             font: Tokens.font.label.small
             wrapMode: Text.WordWrap
+            opacity: root.link.blocked ? 0.5 : 1
+        }
+
+        SettingNotes {
+            Layout.fillWidth: true
+            link: root.link
         }
 
         StyledRect {
@@ -61,6 +101,7 @@ ConnectedRect {
             implicitHeight: Math.max(area.implicitHeight, Tokens.font.body.small.pixelSize * 8)
             radius: Tokens.rounding.small
             color: Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
+            opacity: root.link.blocked ? 0.5 : 1
 
             T.TextArea {
                 id: area
@@ -74,6 +115,9 @@ ConnectedRect {
                 selectionColor: Qt.alpha(Colours.palette.m3primary, 0.4)
                 selectedTextColor: color
                 font: Tokens.font.body.small
+                readOnly: root.link.blocked
+                Accessible.name: root.label
+                Accessible.description: root.subtext
 
                 onActiveFocusChanged: {
                     if (!activeFocus && text !== root.value)
@@ -81,5 +125,9 @@ ConnectedRect {
                 }
             }
         }
+    }
+
+    FocusRing {
+        focusItem: area
     }
 }

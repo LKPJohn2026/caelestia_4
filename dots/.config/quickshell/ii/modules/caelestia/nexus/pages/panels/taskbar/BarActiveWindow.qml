@@ -11,46 +11,39 @@ PageBase {
     title: Tr.tr("Active window")
     isSubPage: true
 
-    ColumnLayout {
+    RowGroup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         width: root.cappedWidth
-        spacing: Tokens.spacing.extraSmall / 2
+
+        // caelestia4: General and Style, as on the other taskbar pages
+        SectionHeader {
+            text: Tr.tr("General")
+        }
 
         // caelestia4: upstream #2097
         ToggleRow {
-            first: true
-            text: Tr.tr("Show title")
-            subtext: Tr.tr("Off: only the app's icon")
-            value: Config.bar.activeWindow.showTitle
-            onToggled: GlobalConfig.bar.activeWindow.showTitle = checked
+            setting: "c:bar.activeWindow.showTitle"
         }
 
         ToggleRow {
-            text: Tr.trCtx("Compact", "taskbar active window layout")
-            value: Config.bar.activeWindow.compact
-            onToggled: GlobalConfig.bar.activeWindow.compact = checked
+            setting: "c:bar.activeWindow.showOnHover"
         }
 
         ToggleRow {
-            text: Tr.trCtx("Inverted", "taskbar active window: swap the title and class order")
-            value: Config.bar.activeWindow.inverted
-            onToggled: GlobalConfig.bar.activeWindow.inverted = checked
+            setting: "c:bar.popouts.activeWindow"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Style")
         }
 
         ToggleRow {
-            text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Only show the active window title while hovering")
-            value: Config.bar.activeWindow.showOnHover
-            onToggled: GlobalConfig.bar.activeWindow.showOnHover = checked
+            setting: "c:bar.activeWindow.compact"
         }
 
         ToggleRow {
-            last: true
-            text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show a window details popout when hovering")
-            value: Config.bar.popouts.activeWindow
-            onToggled: GlobalConfig.bar.popouts.activeWindow = checked
+            setting: "c:bar.activeWindow.inverted"
         }
     }
 }
