@@ -2,6 +2,9 @@
 //@ pragma Env QS_NO_RELOAD_POPUP=1
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 //@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
+// caelestia4: no widget style from qtengine (Darkly): the shell draws no widgets, and Darkly watches the colour scheme
+// file by its absolute path, which KConfig doesn't support ("Watching absolute paths is not supported")
+//@ pragma Env QT_STYLE_OVERRIDE=Fusion
 
 // Remove two slashes below and adjust the value to change the UI scale
 ////@ pragma Env QT_SCALE_FACTOR=1

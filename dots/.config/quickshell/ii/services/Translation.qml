@@ -42,8 +42,10 @@ Singleton {
     TranslationScanner {
         id: scanGeneratedLanguagesProcess
         translationsDir: root.generatedTranslationsDir
+        fallbackLanguages: [] // caelestia4: the folder is usually not there at all
         onLanguagesScanned: (languages) => {
             root.availableGeneratedLanguages = [...languages];
+            generatedTranslationFileView.reread();
         }
     }
 
@@ -69,6 +71,7 @@ Singleton {
         id: generatedTranslationFileView
         translationsDir: root.generatedTranslationsDir
         languageCode: root.languageCode
+        available: root.availableGeneratedLanguages
         onContentLoaded: (data) => {
             root.generatedTranslations = data;
             root.isLoading = false;
@@ -94,6 +97,7 @@ Singleton {
     component TranslationScanner: Process {
         id: translationScanner
         required property string translationsDir
+        property var fallbackLanguages: ["en_US"]
         signal languagesScanned(var languages)
 
         command: ["find", translationScanner.translationsDir, "-name", "*.json", "-exec", "basename", "{}", ".json", ";"]
@@ -103,14 +107,14 @@ Singleton {
             id: languagesCollector
             onStreamFinished: {
                 const output = languagesCollector.text;
-                const files = output.trim().split('\n').map(f => f.trim());
+                const files = output.trim().split('\n').map(f => f.trim()).filter(f => f.length > 0);
                 translationScanner.languagesScanned(files);
             }
         }
 
         onExited: (exitCode, exitStatus) => {
             if (exitCode !== 0) {
-                translationScanner.languagesScanned(["en_US"]);
+                translationScanner.languagesScanned(translationScanner.fallbackLanguages);
             }
         }
     }
@@ -119,10 +123,17 @@ Singleton {
         id: translationReader
         required property string translationsDir
         property string languageCode: root.languageCode
+        // caelestia4: the languages found in translationsDir (null = not checked). A language not there isn't read,
+        // so a missing file doesn't log "Read of ... failed: File does not exist"
+        property var available: null
         signal contentLoaded(var data)
 
         function reread() { // Proper reload in case the file was incorrect before
             translationReader.path = "";
+            if (translationReader.available !== null && !translationReader.available.includes(translationReader.languageCode)) {
+                translationReader.contentLoaded({});
+                return;
+            }
             translationReader.path = `${translationReader.translationsDir}/${translationReader.languageCode}.json`;
             translationReader.reload();
         }
