@@ -1,0 +1,86 @@
+diff --git a/src/core/iconimageprovider.cpp b/src/core/iconimageprovider.cpp
+index 1dbe3e7..f75b425 100644
+--- a/src/core/iconimageprovider.cpp
++++ b/src/core/iconimageprovider.cpp
+@@ -2,15 +2,42 @@
+ #include <algorithm>
+ 
+ #include <qcolor.h>
++#include <qcoreapplication.h>
+ #include <qicon.h>
+ #include <qlogging.h>
++#include <qnamespace.h>
++#include <qobject.h>
+ #include <qpainter.h>
+ #include <qpixmap.h>
++#include <qquickimageprovider.h>
+ #include <qsize.h>
+ #include <qstring.h>
+ 
++QQuickImageResponse*
++IconImageProvider::requestImageResponse(const QString& id, const QSize& requestedSize) {
++	// caelestia4: made here in the image thread, answered on the GUI thread (see the header). The response lives on the
++	// GUI thread, so the queued call is dropped if it is deleted first (a cancelled request, the engine going away)
++	auto* response = new IconImageResponse();
++	response->moveToThread(QCoreApplication::instance()->thread());
++
++	QMetaObject::invokeMethod(
++	    response,
++	    [response, id, requestedSize]() {
++		    response->image = IconImageProvider::renderIcon(id, nullptr, requestedSize).toImage();
++		    emit response->finished();
++	    },
++	    Qt::QueuedConnection
++	);
++
++	return response;
++}
++
++QQuickTextureFactory* IconImageResponse::textureFactory() const {
++	return QQuickTextureFactory::textureFactoryForImage(this->image);
++}
++
+ QPixmap
+-IconImageProvider::requestPixmap(const QString& id, QSize* size, const QSize& requestedSize) {
++IconImageProvider::renderIcon(const QString& id, QSize* size, const QSize& requestedSize) {
+ 	QString iconName;
+ 	QString fallbackName;
+ 	QString path;
+diff --git a/src/core/iconimageprovider.hpp b/src/core/iconimageprovider.hpp
+index 57e2604..3b7a4c7 100644
+--- a/src/core/iconimageprovider.hpp
++++ b/src/core/iconimageprovider.hpp
+@@ -1,13 +1,19 @@
+ #pragma once
+ 
++#include <qimage.h>
+ #include <qpixmap.h>
+ #include <qquickimageprovider.h>
+ 
+-class IconImageProvider: public QQuickImageProvider {
++// caelestia4: an asynchronous provider. Qt Quick asks for icons in its image thread, and an icon theme engine from the
++// platform theme (KDE's KIconEngine, which qtengine uses) can't be made there: KF6 keeps one KIconLoader per thread,
++// and one made off the GUI thread parents objects to the application and filters its events from the wrong thread, so
++// it logs QObject warnings and misses palette changes. Each request is answered on the GUI thread instead, queued, so
++// the image thread never waits on it (no hang when the engine goes away with requests still open).
++class IconImageProvider: public QQuickAsyncImageProvider {
+ public:
+-	explicit IconImageProvider(): QQuickImageProvider(QQuickImageProvider::Pixmap) {}
++	QQuickImageResponse* requestImageResponse(const QString& id, const QSize& requestedSize) override;
+ 
+-	QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize) override;
++	static QPixmap renderIcon(const QString& id, QSize* size, const QSize& requestedSize);
+ 
+ 	static QPixmap missingPixmap(const QSize& size);
+ 
+@@ -17,3 +23,10 @@ public:
+ 	    const QString& fallback = QString()
+ 	);
+ };
++
++class IconImageResponse: public QQuickImageResponse {
++public:
++	[[nodiscard]] QQuickTextureFactory* textureFactory() const override;
++
++	QImage image;
++};
