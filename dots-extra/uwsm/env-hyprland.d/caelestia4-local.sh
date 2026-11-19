@@ -25,8 +25,8 @@ fi
 
 # No KDE in XDG_CURRENT_DESKTOP since Plasma went (2026-10-28): the keys moved from KWallet to gnome-keyring.
 # Chromium / Electron pick their key store from it and an unknown desktop gets
-# the unencrypted "basic" store, so Brave, Vesktop and Claude are given --password-store=gnome-libsecret (their
-# flags files / launcher) by tools/keyring-switch.sh finish.
+# the unencrypted "basic" store, so each app with a key is told its store (KWallet or gnome-keyring) in its flags file,
+# argv.json or launcher: tools/keyring-switch.sh status / set.
 export XDG_CURRENT_DESKTOP=Hyprland
 
 # Dates and times in another language than the system's (weekday / month names in the shell and this session's apps).

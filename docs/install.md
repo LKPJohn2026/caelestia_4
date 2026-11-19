@@ -224,13 +224,17 @@ What Plasma provided, and what does it here:
 | Plasma had | Here |
 |---|---|
 | Login screen (plasmalogin) | greetd + ReGreet in a Hyprland of its own: `tools/greetd-setup.sh` (re-run it to refresh its colours / wallpaper), or the login screen you already have |
-| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by the login screen's PAM; `tools/keyring-switch.sh` moves an existing KWallet's keys |
+| KWallet (Secret Service, unlocked at login) | gnome-keyring, unlocked by the login screen's PAM; `tools/keyring-switch.sh` moves an existing KWallet's keys, and puts each browser / Electron app on KWallet or gnome-keyring |
 | Tray registry (kded6) | `caelestia4-sni-watcher` (docs/uwsm.md) |
 | Qt theme / colours | qtengine (`packaging/caelestia4-qtengine`) + Darkly, colours from caelestia-cli (cli.json enableQt) |
 | GTK theme / colours | adw-gtk3 + caelestia-cli's gtk.css (enableGtk) |
 | KDE portal | Wormhole's Open / Save dialogs, GTK's as the fallback |
 
-Chromium-based browsers and Electron apps read their keys with `--password-store=gnome-libsecret` (`install-main.sh`
-writes the flags files you don't have; Claude's is its launcher, by `tools/keyring-switch.sh`): Chromium and Electron pick the key store from `XDG_CURRENT_DESKTOP`, and an unknown desktop (Hyprland) would give them
-the unencrypted "basic" store. Before removing packages, check what pacman can't see: QML imports
+Chromium and Electron pick their key store from `XDG_CURRENT_DESKTOP`, and an unknown desktop (Hyprland) would give
+them the unencrypted "basic" store, so each app with a key is told its store. `tools/keyring-switch.sh status` lists
+them (found from the desktop entries, on any install) with where that's set: `~/<data folder>/argv.json` for the
+VS Code family, the flags file the app's launcher reads, or else a copy of its desktop entry in
+`~/.local/share/applications`. `tools/keyring-switch.sh set gnome|kwallet APP...` (or `--all`) moves apps either way,
+their key with them, read back first; `install-main.sh` puts the apps with no store and no key yet on gnome-keyring.
+gh, Zed and the shell's API keys follow whoever serves `org.freedesktop.secrets` (gnome-keyring here). Before removing packages, check what pacman can't see: QML imports
 (org.kde.syntaxhighlighting is one), commands the scripts call, Qt image plugins.

@@ -323,23 +323,27 @@ if d.get("apps", {}).get("taskManager") == "plasma-systemmonitor --page-name Pro
 PY
 
 # caelestia4: Chromium and Electron pick their key store from the desktop's name, and an unknown one (Hyprland) gets the
-# unencrypted "basic" store. Flags files get it too when they name no store (tools/keyring-switch.sh moved an old
-# KWallet's keys, a separate matter)
+# unencrypted "basic" store. The browsers' flags files get gnome-keyring when they name no store; then every installed
+# app with a key of its own and no store yet (tools/keyring-switch.py finds them from the desktop entries). An app set
+# to KWallet, or with a key already in one of the stores, is left as it is: tools/keyring-switch.sh moves those.
 # An account with a KWallet keeps its keys there until it's moved: the flag alone would lock its apps out of them
 if [[ -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwalletd/kdewallet.kwl" && ! -e "$CFG/brave-flags.conf" && ! -e "$CFG/chrome-flags.conf" ]]; then
-  warn "this account has a KWallet: tools/keyring-switch.sh moves its keys and sets the browsers' key store"
+  warn "this account has a KWallet: tools/keyring-switch.sh status shows each app's store and moves its key"
 else
   for f in chrome code thorium; do copy_file_if_missing "$DOTS/$f-flags.conf" "$CFG/$f-flags.conf"; done
-  for f in chrome code thorium chromium brave brave-origin vesktop electron; do
+  for f in chrome code thorium chromium brave brave-origin; do
     flags="$CFG/$f-flags.conf"
     grep -qsE '^[[:space:]]*--?password-store' "$flags" && continue
     # A file that's already there, on an account with a KWallet: only tools/keyring-switch.sh may change its store
     [[ -e "$flags" && -e "${XDG_DATA_HOME:-$HOME/.local/share}/kwalletd/kdewallet.kwl" ]] && continue
     backup "$flags"
-    append_line "$flags" "# caelestia4: keys in gnome-keyring (libsecret)
+    append_line "$flags" "# caelestia4 (tools/keyring-switch.py): keys in gnome-keyring
 --password-store=gnome-libsecret"
   done
 fi
+# The apps run in the Hyprland session, whatever desktop this install runs from
+KEYRING_SWITCH_DESKTOP=Hyprland python3 "$REPO/tools/keyring-switch.py" set gnome --all --unset-only \
+  || warn "tools/keyring-switch.py couldn't set the apps' key store: tools/keyring-switch.sh status"
 
 # ---- dirs caelestia-cli would normally create ----
 mkdir -p "$STATE/caelestia" "${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/imagecache/notifs"

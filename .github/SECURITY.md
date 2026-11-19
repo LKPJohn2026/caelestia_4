@@ -20,7 +20,7 @@ shouldn't. For example:
 - the scripts that run `sudo`: `tools/update-sudo-rule.sh` (and the sudoers rule it installs),
   `tools/greetd-setup.sh`, `tools/fonts-install.sh` and the update script (`scripts/caelestia4/system-update.sh`);
   and the installers that change your session (`tools/install-main.sh`, `tools/uwsm-setup.sh`,
-  `tools/keyring-switch.sh`);
+  `tools/keyring-switch.sh` with `tools/keyring-switch.py`);
 - secrets: API keys and the keyring, files written with wrong permissions, secrets in logs.
 
 Problems in Hyprland, Quickshell, Qt, greetd or another package belong to that project. If one of them comes from
