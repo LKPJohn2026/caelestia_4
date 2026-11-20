@@ -5,6 +5,7 @@
 # Before running: take a snapshot (sudo snapper create -d "caelestia_4 sync ...").
 # After a Caelestia bump: re-copy changed upstream files into modules/caelestia/ by hand,
 # run tools/port-imports.sh on them, and update the version pins in build-caelestia-plugin.sh.
+# A repo with no licence file at the top of its tree is refused; ALLOW_UNLICENSED=1 overrides (see require_licence).
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
@@ -16,16 +17,42 @@ fi
 
 [[ -z "$(git status --porcelain)" ]] || { echo "Working tree not clean; commit or stash first." >&2; exit 1; }
 
+# Code without a licence can't be redistributed, and everything vendored here so far is GPL-3.0. Before anything is
+# merged this looks at the top of the fetched tree for a LICENSE, LICENCE or COPYING file (any extension) or a REUSE
+# LICENSES/ directory. It prints the commit it checked, and that commit, not the ref, is what gets merged.
+# ALLOW_UNLICENSED=1 is for a repo whose licence is stated somewhere else: write down where in docs/feature-comparison.md.
+require_licence() {
+  local url="$1" ref="$2" rev tree
+  git fetch --quiet --no-tags "$url" "$ref" >&2 || { echo "Could not fetch $ref from $url" >&2; exit 1; }
+  # This runs inside $(...), where bash drops set -e, hence the explicit exits
+  rev=$(git rev-parse 'FETCH_HEAD^{commit}') || exit 1
+  # Read the whole listing first: grep -q on a pipe can SIGPIPE git under pipefail and fail a good repo
+  tree=$(git ls-tree "$rev") || exit 1
+  if awk -F'\t' '($1 ~ / blob / && tolower($2) ~ /^(licen[cs]e|copying)([.-].*)?$/) || ($1 ~ / tree / && $2 == "LICENSES") { found = 1 }
+      END { exit !found }' <<<"$tree"; then
+    echo "$rev"; return 0
+  fi
+  if [[ "${ALLOW_UNLICENSED:-}" == 1 ]]; then
+    echo "!! $url at $ref has no licence file; vendoring anyway (ALLOW_UNLICENSED=1)" >&2
+    echo "$rev"; return 0
+  fi
+  echo "$url at $ref has no licence file (LICENSE, LICENCE, COPYING or LICENSES/), so it is not vendored." >&2
+  echo "Ask upstream to add one, or set ALLOW_UNLICENSED=1 if its licence is stated elsewhere." >&2
+  exit 1
+}
+
 case "${1:-}" in
   caelestia)
     tag="${2:?Caelestia tag required, e.g. v2.6.0}"
+    rev=$(require_licence https://github.com/caelestia-dots/shell.git "$tag")
+    # Merge the commit the licence check saw, so a tag moved in between can't slip in.
     # -S: the squash commit must be signed too (ruleset secure-main rejects unsigned commits)
-    git subtree pull -S --prefix third_party/caelestia-shell https://github.com/caelestia-dots/shell.git "$tag" --squash \
+    git subtree merge -S --prefix third_party/caelestia-shell "$rev" --squash \
       -m "Update vendored caelestia-dots/shell to $tag"
     echo ">> Update VERSION/GIT_REVISION in tools/build-caelestia-plugin.sh for $tag"
     ;;
   *)
-    sed -n '2,7p' "$0"; exit 2 ;;
+    sed -n '2,8p' "$0"; exit 2 ;;
 esac
 
 ./tools/build-caelestia-plugin.sh

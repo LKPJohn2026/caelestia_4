@@ -13,10 +13,19 @@ hover fixes + Nexus "Show on hover", `caelestia:toggleDnd`, CachingImage → Vis
 Quickshell's IconImage), video previews play on hover, the plugin unloads idle media players. Equivalent: upstream's
 Super+Shift+number silent move is Super+Alt+number here.
 
+Pending adopt-lib migration (checked 2026-11-20): upstream's `refactor/adopt-lib` branch is gone; its commits
+(VisualAnalyser, FileCache from lib) are now on `refactor/scheme-migrate` (41 ahead of main), with open PRs #2241
+(multimedia on lib), #2245 (the plugin's CMake does `find_package(caelestia)`, so lib must be built first) and #2299
+(IPC from lib). None is merged. [caelestia-dots/lib](https://github.com/caelestia-dots/lib) (created 2026-10-18,
+main `b8c18461` 2026-11-12) has **no licence**: no LICENSE or COPYING file, nothing in the README, no SPDX headers, and
+GitHub detects none. The shell and the plugin vendored here are GPL-3.0. Nothing here pulls from lib yet, and
+tools/sync-upstreams.sh refuses to vendor a tree without a licence file (`ALLOW_UNLICENSED=1` overrides). Do the
+migration on its own branch once lib has a licence; see Gaps item 7.
+
 Status legend:
 - ✅ **C**: Caelestia feature, working here as in Caelestia
 - ✅ **E→C**: end-4 feature, working here in Caelestia style
-- ✅ **E**: end-4 feature, working here in end-4 style (settings app)
+- ✅ **E**: end-4 feature, working here in end-4 style
 - 🔁 **Equivalent**: the other project's version covers it
 - ⚠️ **Partial**: works, but something from upstream is missing
 - ❌ **Missing**: not available here
@@ -155,7 +164,7 @@ Status legend:
 | uwsm session files | ✅ | own setup (tools/uwsm-setup.sh), uwsm-only |
 | App themes: foot, fish, starship, fastfetch, btop | ✅ | foot, fish, starship themed; btop + fastfetch now too (apptheme.py) |
 | File manager: Thunar (manifest component) | ✅ 2026-10-27 | Atlas (AstraSuite, Caelestia's tokens, colours from scheme.json; `packaging/caelestia4-atlas`) opens folders, Super+E, Caelestia `apps.explorer`; Thunar stays as the fallback |
-| Open / Save dialogs (Caelestia: whatever portal the desktop has) | ✅ 2026-10-27 | Wormhole's FileChooser (`packaging/caelestia4-wormhole`) in the Hyprland session, KDE's as the fallback. Only that interface: Wormhole's Inhibit / GlobalShortcuts are stubs and its Camera grants access without asking; Background / Clipboard / Usb / Wallpaper are pinned to kde so its UseIn key doesn't pick them |
+| Open / Save dialogs (Caelestia: whatever portal the desktop has) | ✅ 2026-10-27 | Wormhole's FileChooser (`packaging/caelestia4-wormhole`) in the Hyprland session, GTK's as the fallback. Only that interface: Wormhole's Inhibit / GlobalShortcuts / RemoteDesktop are stubs, so `hyprland-portals.conf` takes the rest from hyprland and gtk and pins Background / Clipboard / Usb / Wallpaper to none, RemoteDesktop to none (hypr-kdeconnect when that bridge is installed), so its UseIn key doesn't pick them |
 | App themes: Firefox, Zen, spicetify (Spotify), VS Code, Zed, Thunar, micro, nvim | ✅ partly | apptheme.py after every colour change: btop, cava, Zed, Zen, Brave, Cursor/VS Code/VSCodium (scheme.json), Thunar (gtk-3.0/thunar.css), Spotify (spicetify color.ini, live via `spicetify watch -s`), nvim (colorscheme watches scheme.json), micro ("simple" = terminal palette). Not here: Firefox (no profile yet) |
 
 ---
@@ -185,8 +194,8 @@ Status legend:
 | Right sidebar: quick toggles, sliders, notifications, calendar, todo, timer, Wi-Fi/Bluetooth/volume/night-light dialogs | ✅ E→C | utilities drawer + dashboard + sidebar; dialogs open the Nexus pages |
 | Wallpaper selector (Ctrl+Super+T) | ✅ E→C | + videos listed |
 | Cheatsheet (keybinds + periodic table) | ✅ E→C | |
-| Settings app | ✅ E | rebuilt pages, Vietnamese |
-| Welcome / first-run app | ✅ E | Super+Shift+Alt+/ |
+| Settings app | 🔁 Equivalent | Caelestia's Nexus is the one settings app (Super+I); it has every row end-4's had, and end-4's was removed 2026-10-27 |
+| Welcome / first-run app | ❌ Missing | removed 2026-10-27 with end-4's settings app; docs/install.md covers the first login |
 | Clipboard history (cliphist) | ✅ | launcher `;` and Super+V |
 | Emoji picker | ✅ | launcher `:` and Super+. |
 | Music recognition (SongRec) | ✅ E→C | toggle |
@@ -238,7 +247,7 @@ moving the backend to Caelestia; colours / wallpapers / recorder / idle inhibito
 the vendored plugin is at 29fcf69a and the wallpaper is drawn by Caelestia's renderer (applying still goes through
 end-4's switchwall.sh, videos through mpvpaper). Step 3: caelestia-cli makes the colours (wallpaper or preset), end-4 gets them
 through its postHook (`scheme.py bridge`); btop / nvtop / Zed / Spotify are themed by caelestia-cli itself. end-4-only
-features (assistant, overlay, region tools, todo / timer, settings app…) keep their end-4 services.
+features (assistant, overlay, region tools, todo / timer…) keep their end-4 services; their settings are in Nexus.
 
 Still open (review 2026-10-22):
 
@@ -257,7 +266,8 @@ Still open (review 2026-10-22):
 5. **App themes**: ✅ 2026-10-26 Discord (Vesktop) via caelestia-cli's Midnight theme (cli.json enableDiscord; enable it once
    in Vesktop > Settings > Themes) and Brave / Brave Origin's frame colour. Firefox still not themed.
 6. **Lock screen** cards are read-only (hyprlock): no media buttons, notifications not clickable. Kept on purpose.
-7. **Upstream `refactor/adopt-lib`** (shell, 37 commits, not merged as of 2026-10-27): `Caelestia.Scheme` (C++ Colours
+7. **Upstream adopt-lib work** (shell, now `refactor/scheme-migrate` plus PRs #2241/#2245/#2299, none merged as of
+   2026-11-20; blocked here until caelestia-dots/lib has a licence): `Caelestia.Scheme` (C++ Colours
    and Wallpapers, smart scheme in the shell, random wallpaper), a blur controller (`appearance.transparency.blurEnabled`
    + Nexus switch), launcher wallpaper search, and `Caelestia.Images` removed for `VisualAnalyser`. When it merges the
    Colours adapter's ImageAnalyser has to move to VisualAnalyser, and the colours could come from the shell instead of

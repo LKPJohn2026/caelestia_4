@@ -5,7 +5,7 @@ import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
 
 // caelestia4: sub-page of WallpaperAndStyle (route appearance/look): Caelestia's appearance scales and frame
-// (shell.json), the same keys as end-4's Settings app (Appearance), so both stay in step, and end-4's own transparency.
+// (shell.json), with what end-4's Settings app had under Appearance, and end-4's own transparency.
 // Percent rows show the 0-2 scales as 0-200 % (StepperRow, entry `scale`). Fonts: FontsPage.qml. Most-used first; one
 // Advanced section, last: the assistant's own transparency and the frame's smoothing
 PageBase {

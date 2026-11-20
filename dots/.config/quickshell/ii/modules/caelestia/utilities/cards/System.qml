@@ -13,7 +13,7 @@ import qs.modules.caelestia.nexus
 import qs.services as E4 // caelestia4: keep
 
 // caelestia4: end-4's sidebar system row (sidebarRight/SidebarRightContent SystemButtonRow) in Caelestia style:
-// uptime, reload Hyprland + Quickshell, end-4 settings app, session menu.
+// uptime, reload Hyprland + Quickshell, settings (Nexus, in place of end-4's settings app), session menu.
 StyledRect {
     id: root
 

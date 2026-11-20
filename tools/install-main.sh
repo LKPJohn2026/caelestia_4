@@ -225,7 +225,8 @@ copy_file_if_missing "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-
 sed -i -e 's/^org\.freedesktop\.impl\.portal\.FileChooser = \(wormhole;\)\?kde$/org.freedesktop.impl.portal.FileChooser = wormhole;gtk/' \
     -e 's/^\(org\.freedesktop\.impl\.portal\.\(Background\|Clipboard\|Usb\|Wallpaper\)\) = kde$/\1 = none/' \
     "$CFG/xdg-desktop-portal/hyprland-portals.conf"
-# and the KDE pins (Background, Clipboard, Usb, Wallpaper) added to an existing file, so Wormhole stays FileChooser-only
+# and pins an existing file lacks (Background, Clipboard, Usb, Wallpaper, RemoteDesktop) added, so Wormhole stays
+# FileChooser-only
 python3 - "$DOTS/xdg-desktop-portal/hyprland-portals.conf" "$CFG/xdg-desktop-portal/hyprland-portals.conf" <<'PY'
 import sys
 src, dst = sys.argv[1:]
@@ -235,6 +236,15 @@ if new:
     with open(dst, "a") as f:
         f.writelines(new)
 PY
+# caelestia4: RemoteDesktop to hypr-kdeconnect's bridge (KDE Connect's remote input) while its .portal file exists, none
+# otherwise: a pin to a portal that isn't installed is skipped, and Wormhole's stub would then win through its UseIn key
+if [[ -f /usr/share/xdg-desktop-portal/portals/hypr-kdeconnect.portal ]]; then
+    sed -i 's/^\(org\.freedesktop\.impl\.portal\.RemoteDesktop\) = none$/\1 = hypr-kdeconnect/' \
+        "$CFG/xdg-desktop-portal/hyprland-portals.conf"
+else
+    sed -i 's/^\(org\.freedesktop\.impl\.portal\.RemoteDesktop\) = hypr-kdeconnect$/\1 = none/' \
+        "$CFG/xdg-desktop-portal/hyprland-portals.conf"
+fi
 # caelestia4: Hyprland-session file associations (Thunar for folders); merged so the user's other entries stay
 python3 - "$DOTS/hyprland-mimeapps.list" "$CFG/hyprland-mimeapps.list" <<'PY'
 import sys, os

@@ -15,7 +15,8 @@ git remote get-url upstream >/dev/null 2>&1 || git remote add --no-tags upstream
 git fetch -q --no-tags upstream # its tags stay out of this clone, and out of a push of tags
 reviewed=$(cat "$MARK" 2>/dev/null || git merge-base HEAD upstream/main)
 
-# end-4 code removed here on purpose (2026-11: Arch-family only, no other distros or end-4's file installer).
+# end-4 code removed here on purpose (2026-11: Arch-family only, no other distros or end-4's file installer; Nexus
+# instead of end-4's Settings app).
 # A pick keeps these removed even when an upstream commit adds a new file under them.
 removed_prefixes=(
   sdata/dist-fedora/ sdata/dist-gentoo/ sdata/dist-nix/ sdata/uv/shell.nix
@@ -24,6 +25,9 @@ removed_prefixes=(
   sdata/dist-arch/illogical-impulse-quickshell-git/ sdata/dist-arch/outdate-detect-mode
   sdata/dist-arch/previous_dependencies.conf sdata/dist-arch/uninstall-deps.sh
   dots-extra/via-nix/ dots-extra/fedora/
+  # end-4's Settings and Welcome apps: Nexus is the one settings app (README, docs/install.md)
+  dots/.config/quickshell/ii/settings.qml dots/.config/quickshell/ii/welcome.qml
+  dots/.config/quickshell/ii/modules/settings/
 )
 is_removed() {
   local p

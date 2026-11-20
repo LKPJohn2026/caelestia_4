@@ -4,10 +4,9 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.nexus.common
 
-// caelestia4: Hyprland options (Caelestia has none): end-4 Settings' Windows and Input pages plus options neither app
-// had. Read live from Hyprland, saved to hypr/hyprland/shellOverrides/main.lua (end-4's HyprlandConfig, loaded last,
-// so it wins over custom/*.lua), which Hyprland reloads on change. The same keys as end-4's Settings app, so both stay
-// in step. This page is an overview: the options are on three sub-pages (pages/hyprland/), each with live summaries
+// caelestia4: Hyprland options (Caelestia has none): what end-4's Settings app had on its Windows and Input pages,
+// plus options neither app had. Read live from Hyprland, saved to hypr/hyprland/shellOverrides/main.lua (end-4's
+// HyprlandConfig, loaded last, so it wins over custom/*.lua), which Hyprland reloads on change. This page is an overview: the options are on three sub-pages (pages/hyprland/), each with live summaries
 // here; their entries are in registry/RegHyprland.qml
 PageBase {
     id: root

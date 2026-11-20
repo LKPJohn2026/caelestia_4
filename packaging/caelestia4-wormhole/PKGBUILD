@@ -1,7 +1,8 @@
 # caelestia_4: Wormhole (AstraSuite), a Material 3 xdg-desktop-portal backend. Pinned to one verified revision.
 # Only its FileChooser is used (dots/.config/xdg-desktop-portal/hyprland-portals.conf): many of its other interfaces
-# are still stubs that answer "success" without doing anything (Inhibit, GlobalShortcuts; Camera grants access
-# without asking), so it must never be the default backend. It starts on demand through D-Bus activation.
+# are still stubs that answer "success" without doing anything (Inhibit, GlobalShortcuts, RemoteDesktop, which drops
+# the input), so it must never be the default backend. Its Camera is never called: xdg-desktop-portal asks Access and
+# Lockdown for camera access, not a Camera backend. It starts on demand through D-Bus activation.
 
 _pkgname=wormhole
 _commit=f9687c1038df6b567abbb9e0d1be2ec4307e5d9e # v1.0.2-4
