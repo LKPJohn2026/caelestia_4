@@ -148,26 +148,38 @@ turned off again in each new Hyprland session.
 ## Updating
 
 **Packages:** Nexus > Updates > *Update everything* (or the bar's updates popout) runs
-`~/.config/quickshell/ii/scripts/caelestia4/system-update.sh` in a terminal, with no questions: repo packages, then AUR
+`~/.config/quickshell/ii/scripts/caelestia4/system-update.sh` in a terminal, with no questions besides the password: repo
+packages, then AUR
 packages, then this repo's Qt packages and the Caelestia plugin if Qt moved to a new minor release. After such a rebuild
 it restarts the shell, unless a window is fullscreen, the screen is locked or your clone has local changes, when a
-notification tells you to. The terminal closes by itself on success and stays open on a failure; the log is `~/.local/state/caelestia4/update.log`. For
-no password either, once:
+notification tells you to. The terminal closes by itself on success and stays open on a failure; the log is
+`~/.local/state/caelestia4/update.log`. Without a password rule it asks for the password once, at the start. For the
+repo upgrade with no password, once:
 
 ```bash
 sudo tools/update-sudo-rule.sh enable
 ```
 
+The rule names two commands exactly, with no wildcards: `pacman -Syu --noconfirm` (the repo upgrade) and
+`pacman -Sy --needed --noconfirm` with the keyrings the update refreshes first (`archlinux-keyring`, `cachyos-keyring`,
+when installed), each also as `systemd-run --scope --quiet --collect /usr/bin/pacman …`, which is how the update runs
+them. These install only signed packages from the repos in `/etc/pacman.conf`, so nothing under your account can
+become root through the rule. Everything else still asks: the update asks for the password right before the AUR step
+(yay, paru) or a rebuild of this repo's Qt packages, and only when that step has something to do. Refused, the AUR
+packages are left for next time, a rebuild that couldn't install is reported like a failed one, and that run doesn't ask
+again.
+
 > [!WARNING]
-> Both skip a safeguard. AUR packages are built and installed without you seeing their build scripts, and a malicious one
-> can run code as root. The password rule is close to root for every program under your account, because `pacman -U`
-> installs any package. Turn the rule off with `sudo tools/update-sudo-rule.sh disable` or the *Update without a
-> password* switch in Nexus > Updates; `tools/update-sudo-rule.sh status` says whether pacman runs with no password.
->
-> The rule covers pacman with any arguments because the AUR step (yay, paru) and the Qt rebuild install packages with
-> `pacman -U`. A rule limited to the keyring and repo upgrade commands would be safer, since those install only signed
-> repo packages, but the AUR step and the rebuild would then ask for the password. Without any rule, every update asks
-> for the password once, at the start.
+> *Update everything* skips a safeguard: AUR packages are built and installed without you seeing their build scripts,
+> and a malicious one can run code as root. Turn the rule off with `sudo tools/update-sudo-rule.sh disable` or the
+> *Repo upgrades without a password* switch in Nexus > Updates. `tools/update-sudo-rule.sh status` says `on (split)`,
+> `off`, or `on (pacman-wide, …)` when pacman runs with any arguments: that is close to root for every program under
+> your account, as `pacman -U` installs any package. If it names the older rule this tool made, run
+> `sudo tools/update-sudo-rule.sh enable` again (or turn the switch off and on) to replace it. If it names another
+> sudoers file, neither can change that file: edit it with `sudo visudo -f <file>`. Until then the update works as
+> before, asking nothing. When sudo doesn't say (it lists rules only with a password, `Defaults listpw`, or it isn't
+> sudo 1.9's format, such as sudo-rs), status says `can't tell (…)` and the update asks for the password at the start;
+> `sudo tools/update-sudo-rule.sh status` also says whether the rule file is there, and whether it is the older one.
 
 Some things still stop the update for you to look at, like a package conflict that would need removing something.
 
@@ -283,8 +295,8 @@ named here):
 `~/.local/share/caelestia4/profiles` and your wallpapers.
 Outside your home, `./install.sh` installs packages (and, after asking, `yay-bin` and the packages that replace
 conflicting ones such as PulseAudio), enables and starts NetworkManager and Bluetooth, puts fonts in
-`/usr/local/share/fonts/caelestia4` and, if you agree, sets up greetd; the sudo rule for updates is only made by
-`tools/update-sudo-rule.sh`. The full list is under [System-wide (sudo)](#system-wide-sudo).
+`/usr/local/share/fonts/caelestia4` and, if you agree, sets up greetd; the sudo rule for updates (the repo upgrade and its keyrings,
+nothing else) is only made by `tools/update-sudo-rule.sh`. The full list is under [System-wide (sudo)](#system-wide-sudo).
 
 ### Settings kept in both files
 
@@ -439,9 +451,11 @@ creates when missing, or sets a few keys in, aren't copied there.
 
 ### Only when you run them
 
-- `sudo tools/update-sudo-rule.sh enable` (or the passwordless-updates switch in Nexus > Updates, which runs it):
-  `/etc/sudoers.d/zz-caelestia4-update`, pacman with no password. Undo: `sudo tools/update-sudo-rule.sh disable`, or
-  the same switch.
+- `sudo tools/update-sudo-rule.sh enable` (or the *Repo upgrades without a password* switch in Nexus > Updates, which
+  runs it): `/etc/sudoers.d/zz-caelestia4-update`, the repo upgrade and the keyrings with no password (the commands
+  are under [Updating](#updating)). Running it again replaces the file, an older pacman-wide one too. Undo:
+  `sudo tools/update-sudo-rule.sh disable`, or the same switch; `tools/update-sudo-rule.sh status` then says `off`,
+  unless another sudoers rule still allows it.
 - Brave's frame colour ([step 3](#3-one-time-choices-after-the-first-login)): you create
   `/etc/brave/policies/managed`, then `apptheme.py` writes `caelestia.json` in it. Undo:
   `sudo rm /etc/brave/policies/managed/caelestia.json && sudo rmdir /etc/brave/policies/managed` (`rmdir` keeps a

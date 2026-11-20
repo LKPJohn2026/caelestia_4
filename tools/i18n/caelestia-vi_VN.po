@@ -4798,17 +4798,32 @@ msgstr "Thiết lập bằng nmtui trong terminal, hoặc cài nm-connection-edi
 msgid "Ask for the password when updating"
 msgstr "Hỏi mật khẩu khi cập nhật"
 
-msgid "Update without a password"
-msgstr "Cập nhật không cần mật khẩu"
+msgid "Repo upgrades without a password"
+msgstr "Nâng cấp gói từ kho không cần mật khẩu"
 
-msgid "On: any program under this account can run pacman as root"
-msgstr "Đang bật: mọi chương trình dưới tài khoản này đều chạy được pacman với quyền root"
+msgid "On: repo upgrades ask nothing; AUR updates and shell rebuilds ask for the password"
+msgstr "Đang bật: nâng cấp gói từ kho không hỏi gì; cập nhật AUR và biên dịch lại shell vẫn hỏi mật khẩu"
 
 msgid "Running in a terminal…"
 msgstr "Đang chạy trong terminal…"
 
 msgid "No questions; AUR build scripts aren't reviewed"
 msgstr "Không hỏi gì; không xem lại script build của AUR"
+
+msgid "Repo packages with no password; AUR updates and rebuilds ask for it. AUR build scripts aren't reviewed"
+msgstr "Gói từ kho không cần mật khẩu; cập nhật AUR và biên dịch lại sẽ hỏi. Không xem lại script build của AUR"
+
+msgid "On, with an older rule that lets any program under this account run pacman as root. Turn this off and on again to narrow it"
+msgstr "Đang bật, với quy tắc cũ cho mọi chương trình dưới tài khoản này chạy pacman với quyền root. Tắt rồi bật lại để thu hẹp nó"
+
+msgid "On through another sudoers rule (%1) that lets any program under this account run pacman as root, or more. This switch can't change it"
+msgstr "Đang bật qua một quy tắc sudoers khác (%1) cho mọi chương trình dưới tài khoản này chạy pacman với quyền root, hoặc hơn thế. Công tắc này không thay đổi được nó"
+
+msgid "file unknown"
+msgstr "không rõ tệp"
+
+msgid "Can't tell: this sudo doesn't say whether updates need the password, so they ask for it at the start"
+msgstr "Không xác định được: sudo này không cho biết cập nhật có cần mật khẩu hay không, nên sẽ hỏi mật khẩu lúc bắt đầu"
 
 msgid "The password once, then no questions; AUR build scripts aren't reviewed"
 msgstr "Hỏi mật khẩu một lần rồi không hỏi gì nữa; không xem lại script build của AUR"
@@ -4877,8 +4892,8 @@ msgstr "Hãy tắt “%1” trước"
 msgid "Turn on “%1” first"
 msgstr "Hãy bật “%1” trước"
 
-msgid "Update without a password?"
-msgstr "Cập nhật không cần mật khẩu?"
+msgid "Upgrade repo packages without a password?"
+msgstr "Nâng cấp gói từ kho không cần mật khẩu?"
 
 msgctxt "button"
 msgid "Reset"
@@ -4962,8 +4977,8 @@ msgstr "Tắt AI"
 msgid "AI on"
 msgstr "Bật AI"
 
-msgid "Adds a sudoers rule so updates never ask for the password. Any program under this account could then run pacman as root"
-msgstr "Thêm quy tắc sudoers để cập nhật không bao giờ hỏi mật khẩu. Khi đó mọi chương trình dưới tài khoản này đều có thể chạy pacman với quyền root"
+msgid "Adds a sudoers rule for the repo upgrade and its signing keys alone, signed packages only: nothing under this account can become root through it. AUR updates and shell rebuilds still ask for the password"
+msgstr "Thêm quy tắc sudoers chỉ cho việc nâng cấp gói từ kho và khóa ký của chúng, chỉ gồm gói đã ký: không gì dưới tài khoản này có thể thành root qua nó. Cập nhật AUR và biên dịch lại shell vẫn hỏi mật khẩu"
 
 msgid "After a rebuild"
 msgstr "Sau khi build lại"
@@ -5304,8 +5319,8 @@ msgstr "Số cột trong bộ hiển thị âm thanh. Nhiều cột hơn tốn C
 msgid "Off: a plain background instead of the picture"
 msgstr "Tắt: nền trơn thay cho hình ảnh"
 
-msgid "Off: updates ask for the password once. Turning this on lets any program under this account run pacman as root"
-msgstr "Tắt: cập nhật hỏi mật khẩu một lần. Bật lên sẽ cho mọi chương trình dưới tài khoản này chạy pacman với quyền root"
+msgid "Off: updates ask for the password once, at the start"
+msgstr "Tắt: cập nhật hỏi mật khẩu một lần, lúc bắt đầu"
 
 msgid "Open in a window"
 msgstr "Mở trong cửa sổ"
@@ -11358,8 +11373,8 @@ msgstr "Không có gì mới để cài"
 msgid "Downloads the new version and reinstalls it, in a terminal"
 msgstr "Tải phiên bản mới và cài lại, trong cửa sổ dòng lệnh"
 
-msgid "This adds a system rule that lets this account run pacman as root with no password, so updates ask nothing. Any program running under this account could use it too, and pacman can install any package.\n\nA terminal asks for your password once. To undo it, turn this off here."
-msgstr "Việc này thêm một quy tắc hệ thống cho phép tài khoản này chạy pacman với quyền root mà không cần mật khẩu, nên cập nhật không hỏi gì. Mọi chương trình chạy dưới tài khoản này cũng có thể dùng nó, và pacman có thể cài bất kỳ gói nào.\n\nCửa sổ dòng lệnh sẽ hỏi mật khẩu của bạn một lần. Để hoàn tác, hãy tắt mục này ở đây."
+msgid "This adds a system rule that lets this account upgrade the packages from your repos, and their signing keys, with no password. Those are signed packages only, so nothing running under this account can become root through the rule. AUR updates and shell rebuilds still ask for the password.\n\nA terminal asks for your password once. To undo it, turn this off here."
+msgstr "Việc này thêm một quy tắc hệ thống cho phép tài khoản này nâng cấp các gói từ kho của bạn, cùng khóa ký của chúng, mà không cần mật khẩu. Đó chỉ là các gói đã được ký, nên không chương trình nào chạy dưới tài khoản này có thể thành root qua quy tắc này. Cập nhật AUR và biên dịch lại shell vẫn hỏi mật khẩu.\n\nCửa sổ dòng lệnh sẽ hỏi mật khẩu của bạn một lần. Để hoàn tác, hãy tắt mục này ở đây."
 
 msgid "Qt version it was built with is unknown. Rebuild once to record it"
 msgstr "Không rõ phiên bản Qt đã dùng để biên dịch. Biên dịch lại một lần để ghi lại"

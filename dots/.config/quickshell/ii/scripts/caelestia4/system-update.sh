@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-# caelestia4: update everything with no questions: repo packages, AUR packages, then the packages built from this repo and
-# the Caelestia plugin if Qt moved to a new minor release. Nexus > Updates and the bar's popout run this in a terminal,
-# which closes by itself on success and stays open on a failure.
+# caelestia4: update everything with no questions besides the password: repo packages, AUR packages, then the packages
+# built from this repo and the Caelestia plugin if Qt moved to a new minor release. Nexus > Updates and the bar's popout
+# run this in a terminal, which closes by itself on success and stays open on a failure.
 #
-# Shaped after Omarchy's update (one run at a time, free space, no sleeping, pacman in a PID 1 scope). No password with
-# the rule of tools/update-sudo-rule.sh; without it sudo asks at the start. What can't be answered safely still stops the
-# update: --noconfirm says no to removing a conflicting package, and that is for a person to look at.
+# Shaped after Omarchy's update (one run at a time, free space, no sleeping, pacman in a PID 1 scope). With the rule of
+# tools/update-sudo-rule.sh the keyrings and the repo upgrade need no password, and sudo asks only right before the AUR
+# step or a rebuild, when that step has something to do; with that tool's older rule (pacman with any arguments) nothing
+# asks; without a rule sudo asks at the start. What can't be answered safely still stops the update: --noconfirm says
+# no to removing a conflicting package, and that is for a person to look at.
+# shellcheck disable=SC2154 # (the c4_ variables are set by update-sudo-state.sh, sourced below)
 set -uo pipefail
 
 self=$(readlink -f -- "${BASH_SOURCE[0]}")
 source "$(dirname -- "$self")/tr.sh"
+# c4_sudo_state, c4_nopasswd, c4_pacman_cmd and the keyrings, shared with tools/update-sudo-rule.sh
+source "$(dirname -- "$self")/update-sudo-state.sh"
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/caelestia4"
 log_file="$state_dir/update.log"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/caelestia4-update.lock"
@@ -66,10 +71,20 @@ if [[ $avail =~ ^[0-9]+$ ]] && ((avail < min_free_gib * 1024 * 1024 * 1024)); th
   finish_failed "$(tr_ "Only %1 GiB free on /: an update needs at least %2 GiB." "$((avail / 1024 / 1024 / 1024))" "$min_free_gib")"
 fi
 
-# ---- sudo: the rule (asked by running it, ignoring a password given earlier), or one password kept fresh for long builds
-if ! sudo -n -k /usr/bin/pacman --version >/dev/null 2>&1; then
-  warn "$(tr_ "No password rule (tools/update-sudo-rule.sh): sudo asks now.")"
-  sudo true || finish_failed "$(tr_ "sudo was refused.")"
+# ---- sudo: what the rules let run with no password (asked of sudo, which runs nothing for it and ignores a password given
+# earlier): split (the keyrings and the repo upgrade), wide (any pacman command), off, or unknown (sudo doesn't say,
+# which is taken as off)
+c4_sudo_state
+password_given=""
+password_refused=""
+# The password, once, kept fresh for long builds. Says why first; fails if sudo refused it, and from then on without
+# asking again: the steps after it are skipped as they would be
+ask_password() {
+  [[ $c4_state == wide || -n $password_given ]] && return 0
+  [[ -z $password_refused ]] || return 1
+  warn "$1"
+  sudo -v {lock_fd}>&- || { password_refused=1; return 1; }
+  password_given=1
   (
     exec {lock_fd}>&-
     while kill -0 "$$" 2>/dev/null; do
@@ -79,16 +94,16 @@ if ! sudo -n -k /usr/bin/pacman --version >/dev/null 2>&1; then
   ) &
   keepalive=$!
   trap 'kill "$keepalive" 2>/dev/null' EXIT
+}
+if [[ $c4_state != split && $c4_state != wide ]]; then
+  ask_password "$(tr_ "No password rule (tools/update-sudo-rule.sh): sudo asks now.")" || finish_failed "$(tr_ "sudo was refused.")"
 fi
 
 # A pacman in this session's scope dies when upgrading systemd re-executes the user manager, half way through its
-# transaction. A PID 1 scope survives that
+# transaction. A PID 1 scope survives that (c4_pacman_cmd: the command, in the form the sudo rule names)
 root_pacman() {
-  if [[ -d /run/systemd/system ]]; then
-    sudo systemd-run --scope --quiet --collect /usr/bin/pacman "$@" {lock_fd}>&-
-  else
-    sudo /usr/bin/pacman "$@" {lock_fd}>&-
-  fi
+  c4_pacman_cmd "$@"
+  sudo "${c4_cmd[@]}" {lock_fd}>&-
 }
 
 qt_minor() { pacman -Q qt6-base 2>/dev/null | sed -E 's/^\S+ ([0-9]+\.[0-9]+).*/\1/'; }
@@ -96,13 +111,21 @@ qt_before=$(qt_minor)
 
 # ---- repo packages. The keyrings first: an old one fails the whole upgrade on a signature. Their failing doesn't stop
 # anything: if it matters, the upgrade says so
+# (In c4_keyrings' order, which the rule's commands follow)
 keyrings=()
-for k in archlinux-keyring cachyos-keyring; do
+for k in "${c4_keyrings[@]}"; do
   pacman -Q "$k" >/dev/null 2>&1 && pacman -Si "$k" >/dev/null 2>&1 && keyrings+=("$k")
 done
 if ((${#keyrings[@]})); then
   heading "$(tr_ "Signing keys")"
-  root_pacman -Sy --needed --noconfirm "${keyrings[@]}" || warn "$(tr_ "The signing keys could not be updated.")"
+  # (The rule covers them unless this script's list of keyrings changed after it was made)
+  c4_pacman_cmd -Sy --needed --noconfirm "${keyrings[@]}"
+  if [[ $c4_state == split ]] && ! c4_nopasswd "${c4_cmd[@]}" \
+    && ! ask_password "$(tr_ "The sudo rule doesn't cover these signing keys: sudo asks now. Run sudo tools/update-sudo-rule.sh enable again to add them.")"; then
+    warn "$(tr_ "The signing keys could not be updated.")"
+  else
+    root_pacman -Sy --needed --noconfirm "${keyrings[@]}" || warn "$(tr_ "The signing keys could not be updated.")"
+  fi
 fi
 
 heading "$(tr_ "Repo packages")"
@@ -131,7 +154,18 @@ if [[ -n $(pacman -Qqm 2>/dev/null) ]]; then
       aur_args+=(--skipreview --removemake --nosudoloop)
     fi
     # (A language's own toolchain settings would build with the wrong Go)
-    env -u GOROOT -u GOBIN "$helper" "${aur_args[@]}" {lock_fd}>&- || aur_failed=$(tr_ "%1 stopped: read why above." "$helper")
+    run_helper() { env -u GOROOT -u GOBIN "$helper" "$@" {lock_fd}>&-; }
+    # Whether the helper has an update to install, ours left out as above (a failed check counts as none: sudo then
+    # asks by itself if it has to)
+    aur_pending() { { run_helper -Qua 2>/dev/null || true; } | awk '$1 !~ /^(caelestia4-|illogical-impulse-)/ { n++ } END { exit !n }'; }
+    # With the split rule the helper's pacman asks for the password: asked here, only when there is an update to install
+    if [[ $c4_state == split && -z $password_given ]] && aur_pending \
+      && ! ask_password "$(tr_ "AUR updates install with the password: sudo asks now.")"; then
+      aur_skipped=1
+      warn "$(tr_ "No password: AUR packages are left for next time.")"
+    else
+      run_helper "${aur_args[@]}" || aur_failed=$(tr_ "%1 stopped: read why above." "$helper")
+    fi
   else
     aur_skipped=1
     warn "$(tr_ "The AUR can't be reached: its packages are left for next time.")"
@@ -168,10 +202,20 @@ if [[ $qt_before != "$qt_after" ]] || needs "Quickshell" || needs "Caelestia plu
   if [[ -z $repo || ! -d $repo/packaging/caelestia4-quickshell ]]; then
     rebuild_failed=$(tr_ "The caelestia_4 clone wasn't found: rebuild Quickshell and the plugin by hand (docs/install.md).")
   else
+    builds=()
     for p in caelestia4-quickshell caelestia4-qtengine caelestia4-atlas caelestia4-wormhole; do
-      if pacman -Q "$p" >/dev/null 2>&1 && [[ -d $repo/packaging/$p ]]; then
-        build_local "$p" || rebuild_failed="${rebuild_failed:+$rebuild_failed, }$p"
-      fi
+      pacman -Q "$p" >/dev/null 2>&1 && [[ -d $repo/packaging/$p ]] && builds+=("$p")
+    done
+    # Installing them (and makepkg's build dependencies) asks for the password with the split rule. Refused, they stay
+    # as they are, and the plugin, which needs none, is still built
+    if ((${#builds[@]})) && ! ask_password "$(tr_ "The rebuild installs packages built here: sudo asks now.")"; then
+      warn "$(tr_ "No password: %1 not rebuilt." "${builds[*]}")"
+      rebuild_failed=$(printf '%s, ' "${builds[@]}")
+      rebuild_failed=${rebuild_failed%, }
+      builds=()
+    fi
+    for p in "${builds[@]}"; do
+      build_local "$p" || rebuild_failed="${rebuild_failed:+$rebuild_failed, }$p"
     done
     "$repo/tools/build-caelestia-plugin.sh" {lock_fd}>&- || rebuild_failed="${rebuild_failed:+$rebuild_failed, }Caelestia plugin"
     if [[ -n $rebuild_failed ]]; then

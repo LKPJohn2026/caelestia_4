@@ -18,7 +18,8 @@ shouldn't. For example:
 - command injection through data the shell reads: wallpaper and file names, media metadata and cover-art URLs,
   notifications, clipboard contents, network names, AI chat replies;
 - the scripts that run `sudo`: `tools/update-sudo-rule.sh` (and the sudoers rule it installs),
-  `tools/greetd-setup.sh`, `tools/fonts-install.sh` and the update script (`scripts/caelestia4/system-update.sh`);
+  `tools/greetd-setup.sh`, `tools/fonts-install.sh` and the update script (`scripts/caelestia4/system-update.sh`,
+  with `scripts/caelestia4/update-sudo-state.sh`, which names the rule's commands);
   and the installers that change your session (`tools/install-main.sh`, `tools/uwsm-setup.sh`,
   `tools/keyring-switch.sh` with `tools/keyring-switch.py`);
 - secrets: API keys and the keyring, files written with wrong permissions, secrets in logs.

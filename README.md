@@ -61,8 +61,8 @@ PulseAudio and other conflicting builds are replaced after asking, a pacman hook
 and Bluetooth turned on, fonts in `/usr/local/share/fonts/caelestia4`, and with no login screen yet greetd + ReGreet in
 `/etc/greetd` and `/etc/pam.d/greetd`. In your account: the configs, `caelestia4-*` systemd user units, the portal
 config, and the key store of your browsers and Electron apps (flags files, `argv.json`, desktop entries), which other
-desktops on the account see too, as they see the GTK theme set in dconf. A sudo rule for password-free updates is there
-only if you turn it on.
+desktops on the account see too, as they see the GTK theme set in dconf. A sudo rule that lets repo upgrades run with no
+password is there only if you turn it on.
 
 ## Documentation
 

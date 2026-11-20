@@ -21,7 +21,14 @@ Singleton {
     readonly property bool checking: checkProc.running
     readonly property bool terminalOpen: terminalProc.running
     property bool passwordlessChecked
-    property bool passwordlessUpdates // pacman runs with no password (the rule of tools/update-sudo-rule.sh, or another)
+    // The repo upgrade runs with no password (the rule of tools/update-sudo-rule.sh, or another); with the wide one any
+    // pacman command does (that tool's older rule, or one from another sudoers file, passwordlessEntry, which that tool
+    // can't change), else AUR updates and rebuilds still ask. Unknown: sudo doesn't say (taken as off)
+    property bool passwordlessUpdates
+    property bool passwordlessWide
+    property bool passwordlessWideOther
+    property bool passwordlessUnknown
+    property string passwordlessEntry
     readonly property string checked: data.checked ?? ""
     readonly property var repoPackages: data.repo?.packages ?? []
     readonly property var aurPackages: data.aur?.packages ?? []
@@ -66,7 +73,8 @@ Singleton {
         terminalProc.running = true;
     }
 
-    // Asks nothing (scripts/caelestia4/system-update.sh) and closes by itself unless something failed
+    // Asks only for the password, where sudo needs it (scripts/caelestia4/system-update.sh), and closes by itself unless
+    // something failed
     function updatePackages(): void {
         if (terminalProc.running)
             return;
@@ -85,7 +93,8 @@ Singleton {
             runInTerminal(`cd '${caelestia4.path}' && { git pull --ff-only || { echo "${Tr.tr("git pull failed. If the server asked for a sign-in, try again later: see Updating in docs/install.md")}"; false; }; } && tools/install-main.sh`);
     }
 
-    // Asked of sudo itself, only where it's shown: when pacman does need a password, every try is an alert in sudo's log
+    // Asked of sudo itself (scripts/caelestia4/update-sudo-state.sh, which runs nothing as root), only where it's shown:
+    // when a password is needed, every try is an alert in sudo's log
     function checkPasswordless(): void {
         passwordlessProc.running = true;
     }
@@ -146,11 +155,21 @@ Singleton {
     Process {
         id: passwordlessProc
 
-        command: ["sudo", "-n", "-k", "/usr/bin/pacman", "--version"]
-        stdout: StdioCollector {}
+        command: ["bash", Quickshell.shellPath("scripts/caelestia4/update-sudo-state.sh")]
+        stdout: StdioCollector {
+            id: passwordlessOut
+        }
         stderr: StdioCollector {}
         onExited: code => {
-            root.passwordlessUpdates = code === 0;
+            // The state (split, wide own, wide other, off, off unlisted or unknown), then the deciding sudoers file
+            const lines = code === 0 ? passwordlessOut.text.split("\n") : [];
+            const words = (lines[0] ?? "off").trim().split(" ");
+            const state = words[0] || "off";
+            root.passwordlessUpdates = state === "split" || state === "wide";
+            root.passwordlessWide = state === "wide";
+            root.passwordlessWideOther = state === "wide" && words[1] !== "own";
+            root.passwordlessUnknown = state === "unknown";
+            root.passwordlessEntry = (lines[1] ?? "").trim();
             root.passwordlessChecked = true;
         }
     }

@@ -9,8 +9,8 @@ QtObject {
             "x:updates.passwordless": {
                 route: "updates",
                 section: Tr.mark("System"),
-                title: Tr.mark("Update without a password"),
-                desc: Tr.mark("Adds a sudoers rule so updates never ask for the password. Any program under this account could then run pacman as root"),
+                title: Tr.mark("Repo upgrades without a password"),
+                desc: Tr.mark("Adds a sudoers rule for the repo upgrade and its signing keys alone, signed packages only: nothing under this account can become root through it. AUR updates and shell rebuilds still ask for the password"),
                 keywords: [Tr.mark("sudo"), Tr.mark("sudoers"), Tr.mark("password"), Tr.mark("pacman"), Tr.mark("root"), Tr.mark("passwordless"), Tr.mark("updates")],
                 type: "bool",
                 default: false

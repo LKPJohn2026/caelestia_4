@@ -135,18 +135,20 @@ PageBase {
         RowButton {
             icon: "download"
             text: Tr.tr("Update everything")
-            subtext: SystemUpdates.terminalOpen ? Tr.tr("Running in a terminal…") : SystemUpdates.passwordlessUpdates ? Tr.tr("No questions; AUR build scripts aren't reviewed") : Tr.tr("The password once, then no questions; AUR build scripts aren't reviewed")
+            subtext: SystemUpdates.terminalOpen ? Tr.tr("Running in a terminal…") : SystemUpdates.passwordlessWide ? Tr.tr("No questions; AUR build scripts aren't reviewed") : SystemUpdates.passwordlessUpdates ? Tr.tr("Repo packages with no password; AUR updates and rebuilds ask for it. AUR build scripts aren't reviewed") : Tr.tr("The password once, then no questions; AUR build scripts aren't reviewed")
             disabled: root.checking || root.total === 0 || SystemUpdates.terminalOpen
             onClicked: SystemUpdates.updatePackages()
         }
 
-        // caelestia4: a sudoers rule, not a config option (x:updates.passwordless): the row shows whether pacman runs
-        // with no password and turns the rule on or off in a terminal. Turning it on asks first; turning it off doesn't
+        // caelestia4: a sudoers rule, not a config option (x:updates.passwordless): the row shows whether the repo upgrade
+        // runs with no password (and whether an older rule, or another file's, lets all of pacman) and turns the rule on
+        // or off in a terminal. Turning it on asks first; turning it off doesn't
         ToggleRow {
             id: passwordlessRow
 
-            // caelestia4: true while "Update without a password?" asks, so the switch stays on meanwhile (it would flip
-            // back after 2 s); `askStep` is the undo step the switch recorded, dropped again if the answer is Cancel
+            // caelestia4: true while "Upgrade repo packages without a password?" asks, so the switch stays on meanwhile
+            // (it would flip back after 2 s); `askStep` is the undo step the switch recorded, dropped again if the answer
+            // is Cancel
             property bool asking
             property var askStep: null
 
@@ -159,8 +161,9 @@ PageBase {
 
             setting: "x:updates.passwordless"
             // caelestia4: the rule's script is in the caelestia_4 folder; say why the switch is off-limits
-            subtext: root.c4Loaded && !root.c4.path ? Tr.tr("Needs the caelestia_4 source folder, which wasn't found") : SystemUpdates.terminalOpen ? Tr.tr("Running in a terminal…") : SystemUpdates.passwordlessUpdates ? Tr.tr("On: any program under this account can run pacman as root") : Tr.tr("Off: updates ask for the password once. Turning this on lets any program under this account run pacman as root")
-            disabled: !root.c4.path || SystemUpdates.terminalOpen
+            subtext: root.c4Loaded && !root.c4.path ? Tr.tr("Needs the caelestia_4 source folder, which wasn't found") : SystemUpdates.terminalOpen ? Tr.tr("Running in a terminal…") : SystemUpdates.passwordlessWideOther ? Tr.tr("On through another sudoers rule (%1) that lets any program under this account run pacman as root, or more. This switch can't change it").arg(SystemUpdates.passwordlessEntry || Tr.tr("file unknown")) : SystemUpdates.passwordlessWide ? Tr.tr("On, with an older rule that lets any program under this account run pacman as root. Turn this off and on again to narrow it") : SystemUpdates.passwordlessUnknown ? Tr.tr("Can't tell: this sudo doesn't say whether updates need the password, so they ask for it at the start") : SystemUpdates.passwordlessUpdates ? Tr.tr("On: repo upgrades ask nothing; AUR updates and shell rebuilds ask for the password") : Tr.tr("Off: updates ask for the password once, at the start")
+            // (A rule from another sudoers file stays whatever this does: off would flip back on)
+            disabled: !root.c4.path || SystemUpdates.terminalOpen || SystemUpdates.passwordlessWideOther
             link.s.customValue: SystemUpdates.passwordlessUpdates || passwordlessRow.asking
             link.s.customDefault: false
 
@@ -201,9 +204,9 @@ PageBase {
         ConfirmDialog {
             id: passwordlessConfirm
 
-            title: Tr.tr("Update without a password?")
+            title: Tr.tr("Upgrade repo packages without a password?")
             // caelestia4: no file names or commands here; docs/install.md has them
-            text: Tr.tr("This adds a system rule that lets this account run pacman as root with no password, so updates ask nothing. Any program running under this account could use it too, and pacman can install any package.\n\nA terminal asks for your password once. To undo it, turn this off here.")
+            text: Tr.tr("This adds a system rule that lets this account upgrade the packages from your repos, and their signing keys, with no password. Those are signed packages only, so nothing running under this account can become root through the rule. AUR updates and shell rebuilds still ask for the password.\n\nA terminal asks for your password once. To undo it, turn this off here.")
             confirmText: Tr.trCtx("Turn on", "button")
             onAccepted: {
                 const go = !!root.c4.path && !SystemUpdates.terminalOpen && !SystemUpdates.passwordlessUpdates;
