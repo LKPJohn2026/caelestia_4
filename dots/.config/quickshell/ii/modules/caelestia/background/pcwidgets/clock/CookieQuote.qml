@@ -48,6 +48,7 @@ Item {
                 id: quoteStyledText
                 horizontalAlignment: Text.AlignLeft
                 text: Config.options.background.widgets.clock.quote.text
+                textFormat: Text.PlainText // caelestia4: a quote from a preset or typed in; as rich text an <img> in it fetches any URL
                 color: Appearance.colors.colOnSecondaryContainer
                 font {
                     family: Config.options.background.widgets.clock.quote.followClock ? Config.options.background.widgets.clock.digital.font.family : Appearance.font.family.reading 

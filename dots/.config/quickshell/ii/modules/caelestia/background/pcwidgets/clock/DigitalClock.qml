@@ -66,6 +66,7 @@ ColumnLayout {
         visible: Config.options.background.widgets.clock.quote.enable && Config.options.background.widgets.clock.quote.text.length > 0
         font.pixelSize: Appearance.font.pixelSize.normal
         text: Config.options.background.widgets.clock.quote.text
+        textFormat: Text.PlainText // caelestia4: a quote from a preset or typed in; as rich text an <img> in it fetches any URL
         animateChange: false
         color: clockColumn.colText
         horizontalAlignment: clockColumn.textHorizontalAlignment

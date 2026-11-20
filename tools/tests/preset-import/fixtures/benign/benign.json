@@ -1,0 +1,85 @@
+{
+  "appearance": {
+    "palette": {
+      "type": "scheme-tonal-spot",
+      "accentColor": "#7aa2f7"
+    }
+  },
+  "background": {
+    "wallpaperPath": "/home/someone/Pictures/wall.png",
+    "lockWall": "lock.jpg",
+    "widgets": {
+      "clock": {
+        "enable": true,
+        "placementStrategy": "free",
+        "x": 120.5,
+        "y": 80,
+        "style": "cookie",
+        "color": "primary",
+        "styleLocked": "digital",
+        "cookie": {
+          "sides": 12,
+          "dialNumberStyle": "numbers",
+          "hourHandStyle": "fill",
+          "useSineCookie": false
+        },
+        "digital": {
+          "font": {
+            "family": "Google Sans Flex",
+            "weight": 350,
+            "size": 90
+          }
+        },
+        "quote": {
+          "enable": true,
+          "text": "Rock & roll, 1 < 2\nsecond line",
+          "followClock": false
+        }
+      },
+      "worldClock": {
+        "enable": true,
+        "x": 400,
+        "y": 100,
+        "sizeMode": "2x2",
+        "timezones": ["Asia/Ho_Chi_Minh", "Europe/London", "Etc/GMT+5", "America/Argentina/Buenos_Aires"],
+        "clockCount": 4
+      },
+      "customImage": {
+        "enable": true,
+        "x": 900,
+        "y": 300,
+        "path": "/home/someone/Downloads/cat.png",
+        "shape": "Cookie12Sided",
+        "size": 240
+      },
+      "sticker": {
+        "enable": true,
+        "x": 1500,
+        "y": 700,
+        "path": "cat.png",
+        "outlineColor": "#ffffff",
+        "outlineWidth": 8,
+        "rotation": -12,
+        "items": []
+      },
+      "customText": {
+        "enable": true,
+        "x": 960,
+        "y": 900,
+        "content": "Hey, spaceboy, I'm not\ntalking to myself",
+        "fontFamily": "Caveat",
+        "fontSize": 72,
+        "color": "tertiary"
+      },
+      "visualizer": {
+        "enable": true,
+        "style": "ring",
+        "x": 0,
+        "y": 0
+      },
+      "endFourPcOnly": {
+        "enable": true
+      }
+    }
+  }
+}

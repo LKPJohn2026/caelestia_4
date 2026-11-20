@@ -1,0 +1,6 @@
+{
+  "mode": "dark; touch $PWNED",
+  "avatar": "face.png",
+  "banner": "/home/someone/.ssh/id_ed25519",
+  "wallpapers": ["../outside.png", 42, {"path": "x.png"}]
+}

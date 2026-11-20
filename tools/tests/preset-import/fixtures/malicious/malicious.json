@@ -1,0 +1,75 @@
+{
+  "apps": {
+    "terminal": "kitty -e sh -c 'touch $PWNED'"
+  },
+  "autostart": ["sh -c 'touch $PWNED'"],
+  "appearance": {
+    "palette": {
+      "type": "scheme-x; touch $PWNED",
+      "accentColor": "$(touch $PWNED)"
+    }
+  },
+  "background": {
+    "wallpaperPath": "../../../../../etc/passwd",
+    "lockWall": "secret.png",
+    "widgets": {
+      "clock": {
+        "enable": true,
+        "x": "100; touch $PWNED",
+        "y": 1e300,
+        "color": "$(touch $PWNED)",
+        "command": "touch $PWNED",
+        "cookie": "not an object",
+        "digital": {
+          "font": {
+            "family": ["a", "list"],
+            "size": true
+          }
+        },
+        "quote": {
+          "enable": true,
+          "text": "<img src=\"https://tracker.invalid/pixel.png\">"
+        }
+      },
+      "worldClock": {
+        "enable": true,
+        "x": 1,
+        "y": 2,
+        "timezones": ["Asia/Tokyo'; touch $PWNED; '", "Europe/London"]
+      },
+      "weather": {
+        "enable": true,
+        "x": 10,
+        "y": 10,
+        "sizeMode": {"nested": "object"},
+        "exec": "hyprctl dispatch exec 'touch $PWNED'"
+      },
+      "customImage": {
+        "enable": true,
+        "x": 0,
+        "y": 0,
+        "path": "../../../../.ssh/id_ed25519.png"
+      },
+      "sticker": {
+        "enable": true,
+        "x": 0,
+        "y": 0,
+        "path": "$(touch PWNED).png",
+        "outlineColor": "red; touch $PWNED",
+        "size": 1000000,
+        "outlineWidth": -5
+      },
+      "customText": {
+        "enable": true,
+        "x": 0,
+        "y": 0,
+        "content": "control \u0007 characters",
+        "fontFamily": "Caveat",
+        "fontSize": 999999
+      }
+    }
+  },
+  "hyprland": {
+    "exec-once": ["touch $PWNED"]
+  }
+}

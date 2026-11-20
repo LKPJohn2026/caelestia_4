@@ -5,6 +5,11 @@ A preset is end4-pC's whole config.json plus its pictures. Only what this shell 
 preset can't set commands like apps.*): the desktop widgets end4-pC and this shell share (pcwidgets: clock, weather,
 calendar, media, custom image, user card, world clock, resources, notes, timers, to-do, image converter, visualizer) at the preset's positions, the colours
 (style, accent colour, light / dark), the wallpaper, the lock screen wallpaper, the banner (on the user card) and the avatar. The bar layout, AI, apps, Hyprland input and autostart are left alone.
+Each widget's fields are checked too, whatever repo the preset came from (WIDGET_FIELDS): a field this shell hasn't got
+is left out, a value of the wrong kind is left out and said, a number outside the range Nexus allows for that field
+is brought back to its end and said, and a picture is only a name, looked for in the folders
+PRESET says below (never through a link out of them). worldClock's time zones go into a bash -c in services/WorldClock.qml,
+which already quotes them; here they are also held to a time zone's own characters.
 
 Widget positions stay in the preset's own coordinates (background.widgets.canvas); each screen scales the room
 around each widget to its own size, so widgets against an edge stay there on any screen shape.
@@ -154,6 +159,51 @@ WIDGETS = ["clock", "weather", "calendar", "media", "customImage", "userCard", "
 # end4-pC's visualizer defaults: most presets keep only enable and a place, and a style left from the preset before
 # (an aurora, a ring) mustn't stay on
 VISUALIZER_DEFAULTS = {"z": -1000, "style": "bars", "colorSource": "theme", "sensitivity": 1, "height": 260, "ringSize": 380}
+# what a preset's widget may set, and of what kind: background.widgets in modules/common/Config.qml, field for field
+# (tools/tests/preset-import checks the two match). Anything else in a preset's widget is left out, and so is a value
+# of the wrong kind: a preset is someone else's file, from any repo, the main one too.
+#   bool, num (at most MAX_NUMBER either way), ("num", lo, hi) (the same, then brought into lo..hi: the min and max
+#   of the field in Nexus's registry, which the tests check; a cookie with a million sides would hang the shell), name (a short string: a style, a font, a shape), color ("" or a colour
+#   name or #hex), text (shown as it is: nothing shaped like a tag and no entities, which Qt's Text would read as rich
+#   text, with <img> fetching any URL), zones (worldClock: services/WorldClock.qml quotes them for its bash -c; as well,
+#   only a tz name's own characters), picture (a name: found in the preset's folder by apply's picture(), never the
+#   path the preset says)
+PLACED = {"enable": "bool", "placementStrategy": "name", "x": "num", "y": "num", "z": "num"}
+WIDGET_FIELDS = {
+    "clock": {**PLACED, "showOnlyWhenLocked": "bool", "style": "name", "color": "color", "styleLocked": "name",
+              "cookie": {"aiStyling": "bool", "sides": ("num", 3, 40), "dialNumberStyle": "name", "hourHandStyle": "name",
+                         "minuteHandStyle": "name", "secondHandStyle": "name", "dateStyle": "name",
+                         "timeIndicators": "bool", "hourMarks": "bool", "dateInClock": "bool",
+                         "constantlyRotate": "bool", "useSineCookie": "bool"},
+              "digital": {"adaptiveAlignment": "bool", "showDate": "bool", "animateChange": "bool", "vertical": "bool",
+                          "font": {"family": "name", "weight": ("num", 100, 1000), "width": ("num", 25, 150),
+                                   "size": ("num", 30, 300), "roundness": ("num", 0, 100)}},
+              "daily": {"variant": "name"},
+              "pixel": {"orientation": "name"},
+              "quote": {"enable": "bool", "text": "text", "followClock": "bool"}},
+    "weather": {**PLACED, "sizeMode": "name", "expanded": "bool"},
+    "calendar": {**PLACED, "sizeMode": "name"},
+    "media": {**PLACED, "showControls": "bool", "showLyrics": "bool", "showTitles": "bool", "backgroundShape": "name",
+              "sizeMode": "name"},
+    "customImage": {**PLACED, "path": "picture", "shape": "name", "size": ("num", 80, 800)},
+    "userCard": {**PLACED, "sizeMode": "name"},
+    "worldClock": {**PLACED, "timezones": "zones", "sizeMode": "name", "vertical": "bool", "clockCount": ("num", 1, 4)},
+    "resources": {**PLACED, "vertical": "bool"},
+    "notes": dict(PLACED),
+    "timers": {**PLACED, "vertical": "bool"},
+    "todo": dict(PLACED),
+    "images": dict(PLACED),
+    "imageCard": {**PLACED, "path": "picture", "sizeMode": "name"},
+    "sticker": {**PLACED, "path": "picture", "size": ("num", 60, 800), "rotation": ("num", -180, 180),
+                "outlineColor": "color", "outlineWidth": ("num", 0, 24)},
+    "customText": {**PLACED, "content": "text", "fontFamily": "name", "fontSize": ("num", 12, 400), "color": "color",
+                   "alignment": "name", "shadow": "bool"},
+    "visualizer": {**PLACED, "style": "name", "colorSource": "name", "sensitivity": ("num", 0.3, 3),
+                   "height": ("num", 80, 600), "ringSize": ("num", 200, 900)},
+}
+MAX_NUMBER = 1e6  # a place or size on the canvas is a few thousand at most
+MAX_TEXT = 2000
+TIMEZONE = re.compile(r"[A-Za-z0-9_+-]{1,40}(?:/[A-Za-z0-9_+-]{1,40}){0,2}")
 # the canvas end4-pC presets are authored on (the preset format's, not a screen's): widget x / y are pixels on it
 PRESET_CANVAS = {"width": 1920, "height": 1080}
 # what moving, resizing and turning a desktop widget with the mouse changes (--save-layout): where it is, which one is on
@@ -253,12 +303,76 @@ def put_face(src):
     os.replace(tmp, FACE)
 
 
+def inside(p, d):
+    """p is a file in d once links are followed: a link in a preset's folder (a clone's, say) to ~/.ssh/... isn't"""
+    try:
+        return p.is_file() and p.resolve().is_relative_to(d.resolve())
+    except (OSError, RuntimeError):  # a loop of links
+        return False
+
+
 def find_picture(name, dirs):
     for d in dirs:
         p = d / name
-        if p.is_file():
+        if inside(p, d):
             return p
     return None
+
+
+def good_value(kind, v):
+    """v is something a preset may set as this kind of field (WIDGET_FIELDS)"""
+    def plain(s, limit, lines=False):
+        return isinstance(s, str) and len(s) <= limit \
+            and all(ord(c) >= 32 and c != "\x7f" or (lines and c in "\n\t") for c in s)
+    if isinstance(kind, tuple):  # ("num", lo, hi): the range is clean_widget's
+        kind = kind[0]
+    if kind == "bool":
+        return isinstance(v, bool)
+    if kind == "num":
+        # compared, never turned into a float: a 400-digit number is an int too big for one. NaN and inf compare false
+        return isinstance(v, (int, float)) and not isinstance(v, bool) and -MAX_NUMBER <= v <= MAX_NUMBER
+    if kind == "name":
+        return plain(v, 200)
+    if kind == "color":
+        return isinstance(v, str) and bool(re.fullmatch(r"#?[A-Za-z0-9]{0,32}", v))
+    if kind == "text":
+        # Qt reads a string with a tag or an entity in its first line as rich text, and its parser skips the spaces
+        # after a "<": so nothing shaped like a tag at all, and no entity ("1 < 2" and "Rock & roll" are fine)
+        return plain(v, MAX_TEXT, lines=True) and not re.search(r"<[^<>]*>|&#?\w+;", v)
+    if kind == "zones":
+        return isinstance(v, list) and len(v) <= 8 and all(
+            isinstance(z, str) and TIMEZONE.fullmatch(z) and ".." not in z for z in v)
+    if kind == "picture":
+        return isinstance(v, str)
+    return False
+
+
+def clean_widget(key, entry, fields=None, where=None):
+    """(a preset's widget with only what WIDGET_FIELDS allows, the values left out for being of the wrong kind, the
+    numbers brought into their field's range, each said in a line). Fields this shell doesn't have (end4-pC's own) are
+    left out without a word"""
+    fields = WIDGET_FIELDS[key] if fields is None else fields
+    where = where or key
+    out, bad, moved = {}, [], []
+    for k, v in entry.items():
+        kind = fields.get(k)
+        if kind is None:
+            continue
+        if isinstance(kind, dict):
+            if isinstance(v, dict):
+                out[k], more, more_moved = clean_widget(key, v, kind, f"{where}.{k}")
+                bad += more
+                moved += more_moved
+            else:
+                bad.append(f"{where}.{k}")
+        elif good_value(kind, v):
+            out[k] = list(v) if isinstance(v, list) else v
+            if isinstance(kind, tuple) and not kind[1] <= v <= kind[2]:
+                out[k] = kind[1] if v < kind[1] else kind[2]
+                moved.append(f"{where}.{k} ({v} is outside {kind[1]} to {kind[2]}: {out[k]} instead)")
+        else:
+            bad.append(f"{where}.{k}")
+    return out, bad, moved
 
 
 def preset_json(pdir):
@@ -788,6 +902,8 @@ def thumbs(names):
 def sync(repo):
     """Every wallpaper and preset of a clone of Blapples/wallpapers into this computer (no download)"""
     repo = repo.resolve()
+    if (repo / "presets").is_symlink():  # a clone's link: to any folder on this computer
+        sys.exit(f"{repo / 'presets'}: a link, not the repo's own folder")
 
     # every wallpaper: the ones wallpapers.json lists, and any other picture at the top of the repo
     listed = [w["filename"] for w in load(repo / "wallpapers.json")] if (repo / "wallpapers.json").is_file() else []
@@ -796,7 +912,7 @@ def sync(repo):
     copied = missing = 0
     for n in names:
         src, dst = repo / n, BLAPPLES_PICS / n
-        if not safe_name(n) or not src.is_file():
+        if not safe_name(n) or not inside(src, repo):
             missing += 1
             print(f"  - listed but not in the repo: {n}")
         elif not dst.is_file() or dst.stat().st_size != src.stat().st_size:
@@ -805,7 +921,7 @@ def sync(repo):
     print(f"wallpapers: {len(names) - missing} in {BLAPPLES_PICS} ({copied} new or changed)")
 
     # every preset, whole (its json, meta.json, previews and pictures), into the library
-    presets = [d for d in sorted((repo / "presets").iterdir()) if d.is_dir() and preset_json(d)]
+    presets = [d for d in sorted((repo / "presets").iterdir()) if d.is_dir() and not d.is_symlink() and preset_json(d)]
     for d in presets:
         sync_preset(d, LIBRARY / d.name)
     print(f"presets: {len(presets)} in {LIBRARY}  (apply one: tools/preset-import.py NAME)")
@@ -816,7 +932,7 @@ def sync_preset(src_dir, dst_dir):
     base = dst_dir / ".upstream"  # each file as the last sync left it, to tell an edit here from a change upstream
     base.mkdir(parents=True, exist_ok=True)
     for src in sorted(src_dir.iterdir()):
-        if not src.is_file():
+        if not src.is_file() or src.is_symlink():  # a clone's link: to anything on this computer
             continue
         dst, old = dst_dir / src.name, base / src.name
         # a file changed here since the last sync (or, before the first one, one that differs at all) is kept
@@ -1491,7 +1607,8 @@ def apply(preset_arg, args):
         sys.exit(f"{pdir}: can't read it ({type(e).__name__})")
     name = pdir.name
     search = [pdir, (args.wallpapers or pdir.parent.parent).resolve(), BLAPPLES_PICS]
-    search += [d for d in sorted(pdir.parent.iterdir()) if d.is_dir() and d != pdir]
+    # no linked folder: presets/zz -> ~/Pictures/private in a clone passes inside(), which follows the folder's link too
+    search += [d for d in sorted(pdir.parent.iterdir()) if d.is_dir() and not d.is_symlink() and d != pdir]
 
     pbg = as_dict(preset.get("background"))
     pwidgets = {k: v for k, v in as_dict(pbg.get("widgets")).items() if isinstance(v, dict)}
@@ -1535,7 +1652,8 @@ def apply(preset_arg, args):
         if key not in pwidgets:
             widgets.setdefault(key, {})["enable"] = False
             continue
-        entry = json.loads(json.dumps(pwidgets[key]))
+        entry, bad, moved = clean_widget(key, pwidgets[key])
+        skipped += [f"{b} (not a value this shell takes)" for b in bad] + moved
         if key == "visualizer":
             entry = {**VISUALIZER_DEFAULTS, **entry}
         if key in ("customImage", "imageCard", "sticker"):
