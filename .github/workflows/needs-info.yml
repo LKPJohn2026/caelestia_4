@@ -31,10 +31,13 @@ jobs:
           days-before-pr-close: -1
           stale-issue-label: stale
           stale-issue-message: >
-            This issue is waiting for an answer from the reporter (see the question above). Without one it will be
-            closed in 7 days. It can always be reopened with the missing details.
+            This issue is waiting for an answer from the reporter: see the question above. Without one it will be
+            closed in 7 days. Any comment moves that date back, and the reporter's reply takes the issue off the
+            waiting list. If the question is unclear, say so and it will be asked differently.
           close-issue-message: >
-            Closed because the details asked for didn't come. Comment with them and it will be reopened.
+            Closed after two weeks without the details asked for above. This is not a judgement on the report.
+            If you opened it, comment here with those details and the issue reopens by itself; there is no need to
+            open a new one.
           close-issue-reason: not_planned
 
   answered:
