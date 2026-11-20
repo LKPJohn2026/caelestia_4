@@ -3332,6 +3332,36 @@ msgstr "Bạn có 15 giây để giữ hoặc hoàn tác"
 msgid "Adaptive sync"
 msgstr "Đồng bộ thích ứng"
 
+msgid "HDR"
+msgstr "HDR"
+
+msgid "Switch to HDR for fullscreen HDR video"
+msgstr "Chuyển sang HDR khi xem video HDR toàn màn hình"
+
+msgid "When a fullscreen window plays HDR (a browser on YouTube), the screen goes into HDR mode. On many screens that looks grey and washed out; off, the video is shown in SDR"
+msgstr "Khi một cửa sổ toàn màn hình phát nội dung HDR (trình duyệt mở YouTube), màn hình chuyển sang chế độ HDR. Trên nhiều màn hình, chế độ này trông xám và nhạt màu; khi tắt, video được hiển thị ở SDR"
+
+msgid "HDR, brightness from the screen's EDID"
+msgstr "HDR, độ sáng theo EDID của màn hình"
+
+msgid "hdr"
+msgstr "hdr"
+
+msgid "auto hdr"
+msgstr "hdr tự động"
+
+msgid "grey"
+msgstr "xám"
+
+msgid "gray"
+msgstr "xám"
+
+msgid "washed out"
+msgstr "nhạt màu"
+
+msgid "youtube"
+msgstr "youtube"
+
 msgid "Variable refresh rate (VRR / FreeSync / G-Sync)"
 msgstr "Tần số quét thay đổi (VRR / FreeSync / G-Sync)"
 

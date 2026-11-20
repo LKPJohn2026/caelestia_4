@@ -304,5 +304,12 @@ hl.config({
 
     xwayland = {
         force_zero_scaling = true
+    },
+
+    -- caelestia4: Hyprland's default (1) puts an HDR-capable screen in HDR mode whenever a fullscreen window asks
+    -- for it (a browser playing an HDR video), and on many screens that mode looks grey and washed out. Off: the
+    -- browser maps the video to SDR. Nexus > Display > HDR changes it
+    render = {
+        cm_auto_hdr = 0
     }
 })

@@ -445,5 +445,15 @@ PageBase {
             last: true
             setting: "h:misc:vrr"
         }
+
+        SectionHeader {
+            text: Tr.tr("HDR")
+        }
+
+        SelectRow {
+            first: true
+            last: true
+            setting: "h:render:cm_auto_hdr"
+        }
     }
 }

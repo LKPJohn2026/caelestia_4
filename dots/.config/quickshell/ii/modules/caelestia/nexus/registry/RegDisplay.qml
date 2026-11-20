@@ -99,6 +99,29 @@ QtObject {
                     }
                 ],
                 default: 0
+            },
+            "h:render:cm_auto_hdr": {
+                route: "display",
+                section: Tr.mark("HDR"),
+                title: Tr.mark("Switch to HDR for fullscreen HDR video"),
+                desc: Tr.mark("When a fullscreen window plays HDR (a browser on YouTube), the screen goes into HDR mode. On many screens that looks grey and washed out; off, the video is shown in SDR"),
+                keywords: [Tr.mark("hdr"), Tr.mark("auto hdr"), Tr.mark("colour"), Tr.mark("color"), Tr.mark("grey"), Tr.mark("gray"), Tr.mark("washed out"), Tr.mark("youtube"), Tr.mark("video"), Tr.mark("fullscreen")],
+                type: "enum",
+                options: [
+                    {
+                        value: 0,
+                        label: Tr.mark("Off")
+                    },
+                    {
+                        value: 1,
+                        label: Tr.mark("HDR")
+                    },
+                    {
+                        value: 2,
+                        label: Tr.mark("HDR, brightness from the screen's EDID")
+                    }
+                ],
+                default: 0
             }
         })
 }
