@@ -7,7 +7,13 @@
 #   4. Python files parse
 #   5. shellcheck (warnings and errors) on this fork's own shell scripts; the ones from end-4 aren't checked
 #   6. Nexus coverage: every end-4 and Caelestia option has a Nexus row or an ignored.json reason, and
-#      registry/E4Defaults.js matches modules/common/Config.qml (tools/nexus-coverage.py; reads files only)
+#      registry/E4Defaults.js matches modules/common/Config.qml, and every setting kept in both shell.json and
+#      config.json is synced from its Caelestia key (tools/nexus-coverage.py; reads files only)
+#   7. no monitor data: connector names, monitor descriptions, modes and scales are read at run time, never written
+#      in (tools/lint-monitors.sh; generic patterns, Caelestia's vendored shell included, see that file), and that
+#      check's own tests (tools/tests/lint-monitors/run.sh; throwaway git repos in a temporary directory)
+#   8. preset-import.py takes only what a preset may set (tools/tests/preset-import/run.py: its fixtures applied in a
+#      fake HOME with stub commands, offline)
 # Needs: bash, git, luac5.4 (or luac), jq, python3, shellcheck. Locally a missing tool is skipped with a note; in CI
 # (CI=true) it fails.
 set -uo pipefail
@@ -71,7 +77,19 @@ fi
 echo "== Nexus coverage"
 if ! command -v python3 >/dev/null; then missing python3
 else
-  python3 -I tools/nexus-coverage.py --strict --check-defaults || fail=1
+  python3 -I tools/nexus-coverage.py --strict --check-defaults --check-mirrors || fail=1
+fi
+
+echo "== Monitor data"
+tools/lint-monitors.sh || fail=1
+if out=$(tools/tests/lint-monitors/run.sh); then echo "${out##*$'\n'}"
+else grep -v '^ok: ' <<<"$out"; fail=1; fi
+
+echo "== preset-import"
+if ! command -v python3 >/dev/null; then missing python3
+else
+  python3 -I tools/tests/preset-import/run.py | grep -v -e "^  ok" -e "^=="
+  [[ ${PIPESTATUS[0]} -eq 0 ]] || fail=1
 fi
 
 [[ $fail -eq 0 ]] && echo "ci-lint: OK" || echo "ci-lint: FAILED"

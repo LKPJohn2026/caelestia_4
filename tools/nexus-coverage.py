@@ -5,11 +5,13 @@ Lists every end-4 option (modules/common/Config.qml, ids "e4:<path>") and every 
 (third_party/caelestia-shell/plugin/src/Caelestia/Config/*.hpp, ids "c:<path>"), and compares them with the ids the
 Nexus registry has (keys in nexus/registry/Reg*.qml) plus nexus/registry/ignored.json ({id or glob: reason}).
 
-Usage: tools/nexus-coverage.py [--strict] [--emit-defaults] [--check-defaults] [--list]
+Usage: tools/nexus-coverage.py [--strict] [--emit-defaults] [--check-defaults] [--check-mirrors] [--list]
   (none)            counts, then the missing ids grouped by top-level key
   --strict          exit 1 when an id is missing
   --emit-defaults   write nexus/registry/E4Defaults.js (end-4 defaults by dotted path)
   --check-defaults  exit 1 when E4Defaults.js is not what --emit-defaults would write
+  --check-mirrors   exit 1 when a setting kept in both shell.json and config.json could be written to one only
+                    (see check_mirrors)
   --list            print every option id with its default (debugging the parsers)
 """
 import argparse
@@ -26,6 +28,7 @@ C_CONFIG_DIR = ROOT / "third_party/caelestia-shell/plugin/src/Caelestia/Config"
 REGISTRY = II / "modules/caelestia/nexus/registry"
 DEFAULTS_JS = REGISTRY / "E4Defaults.js"
 IGNORED = REGISTRY / "ignored.json"
+SERVICE_LOADER = II / "modules/caelestia/ServiceLoader.qml"
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -384,6 +387,119 @@ def ignored():
     return {k: v for k, v in data.items() if not k.startswith("_")}
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Settings kept in both files: Caelestia's shell.json and end-4's config.json
+
+def end4_wanted():
+    """ServiceLoader.qml's end4Wanted: {end-4 path: the expression its value comes from}"""
+    text = SERVICE_LOADER.read_text()
+    m = re.search(r"\bend4Wanted\s*:\s*\(\s*\{", text)
+    if not m:
+        sys.exit(f"nexus-coverage: no end4Wanted in {SERVICE_LOADER.relative_to(ROOT)}")
+    sc = Scanner(text)
+    sc.i = m.end()
+    out = {}
+    while True:
+        sc.skip_ws()
+        if sc.eof() or sc.s[sc.i] == "}":
+            return out
+        if sc.s[sc.i] not in "\"'":
+            sys.exit(f"nexus-coverage: cannot read end4Wanted in {SERVICE_LOADER.relative_to(ROOT)} near "
+                     f"{sc.s[sc.i:sc.i + 40]!r}")
+        j = sc.i
+        sc.skip_string()
+        key = js_string(sc.s[j:sc.i])
+        sc.skip_ws()
+        if sc.eof() or sc.s[sc.i] != ":":
+            sys.exit(f"nexus-coverage: cannot read end4Wanted[{key!r}] in {SERVICE_LOADER.relative_to(ROOT)}")
+        sc.i += 1
+        sc.skip_ws()
+        out[key] = strip_js_comments(sc.read_expr(stop_at_newline=False))
+        if not sc.eof() and sc.s[sc.i] == ",":
+            sc.i += 1
+
+
+def registry_mirrors():
+    """{registry id: [the ids in its `mirrors`]}, for the entries that have one"""
+    out = {}
+    for f in sorted(REGISTRY.glob("Reg*.qml")):
+        text = f.read_text()
+        for m in re.finditer(r'"((?:c|e4|h|x):[^"\s]+)"\s*:\s*\{', text):
+            sc = Scanner(text)
+            sc.i = m.end() - 1
+            sc.skip_balanced()
+            body = strip_js_comments(text[m.end():sc.i - 1])
+            mm = re.search(r"\bmirrors\s*:\s*\[([^\]]*)\]", body)
+            if mm:
+                out[m.group(1)] = re.findall(r'"([^"]+)"', mm.group(1))
+    return out
+
+
+def check_mirrors(e4, reg, ign):
+    """Errors for the settings kept in both files, and how many there are. ServiceLoader.end4Wanted is the one place
+    an end-4 key follows its Caelestia key, whatever wrote that (a Nexus row, a reset, Undo, a profile, an edit by
+    hand), so:
+      1. each end4Wanted key is an end-4 option with no Nexus row of its own (a row would write config.json alone,
+         and the next sync puts the old value back), and ignored.json names its Caelestia key ("Synced from c:<id>
+         (ServiceLoader)"), an id with a Nexus row
+      2. each e4: id in a registry entry's `mirrors` (same value, also written by the page at once) is in
+         end4Wanted, taken from that entry's key (GlobalConfig.<path>), and ignored.json names that entry
+      3. QML that writes such an end-4 key itself (Config.options.<path> = ... or Config.setNestedValue("<path>", ...))
+         names its Caelestia key in the same file (the setting id or GlobalConfig.<path>), so it copies that value
+         rather than being a second source; and no QML outside the registry uses the end-4 key as a Nexus setting id
+      4. no other ignored.json reason says "Synced from c:<id> (ServiceLoader)": that key isn't in end4Wanted
+    Not seen: writes with a key built at run time (services/Ai.qml's set_shell_config calls setNestedValue(key, ...)),
+    a bracket path (Config.options.bar.weather["city"]) or an assignment split over lines. The next sync puts such
+    a write back. Per-screen files (caelestia/monitors/*/shell.json) aren't synced: end4Wanted reads the global layer."""
+    errors = []
+    wanted = end4_wanted()
+    source = {}
+    for path, expr in sorted(wanted.items()):
+        eid = "e4:" + path
+        if path not in e4:
+            errors.append(f"ServiceLoader.end4Wanted: {eid} is not an end-4 option (modules/common/Config.qml)")
+        if eid in reg:
+            errors.append(f"{eid} has a Nexus row and ServiceLoader.end4Wanted syncs it: the row's writes are undone")
+        m = re.search(r"Synced from (c:[\w.]+) \(ServiceLoader\)", ign.get(eid, ""))
+        if not m:
+            errors.append(f'ignored.json: {eid} needs "Synced from c:<id> (ServiceLoader)" (it is in end4Wanted)')
+            continue
+        source[path] = m.group(1)
+        if m.group(1) not in reg:
+            errors.append(f"ignored.json: {eid} is synced from {m.group(1)}, which has no Nexus row")
+    for eid, reason in sorted(ign.items()):
+        m = re.search(r"Synced from (c:[\w.]+) \(ServiceLoader\)", reason)
+        if m and (not eid.startswith("e4:") or eid[3:] not in wanted):
+            errors.append(f"ignored.json: {eid} says it is synced from {m.group(1)}, but it isn't in "
+                          "ServiceLoader.end4Wanted")
+    for cid, targets in sorted(registry_mirrors().items()):
+        for t in targets:
+            if not t.startswith("e4:"):
+                continue  # a key of the same file, which the page writes
+            path = t[3:]
+            if path not in wanted:
+                errors.append(f"{cid} mirrors {t}, which isn't in ServiceLoader.end4Wanted: only the page writes it")
+                continue
+            if not cid.startswith("c:") or not re.search(r"\bGlobalConfig\." + re.escape(cid[2:]) + r"\b", wanted[path]):
+                errors.append(f"ServiceLoader.end4Wanted[{path!r}] isn't taken from {cid} (GlobalConfig.{cid[2:]})")
+            if source.get(path, cid) != cid:
+                errors.append(f"ignored.json: {t} is synced from {source[path]}, but the registry mirrors it from {cid}")
+    for f in sorted(II.rglob("*.qml")) + sorted(II.rglob("*.js")):
+        if f == SERVICE_LOADER or f == DEFAULTS_JS:
+            continue
+        text = strip_js_comments(f.read_text(errors="replace"))
+        rel = f.relative_to(ROOT)
+        for path, cid in sorted(source.items()):
+            if f.parent != REGISTRY and f'"e4:{path}"' in text:
+                errors.append(f"{rel}: uses e4:{path} as a setting, which writes config.json alone; use {cid}")
+            if not (re.search(r"\bConfig\.options\??\." + re.escape(path) + r"\s*=(?!=)", text)
+                    or re.search(r"\bsetNestedValue\(\s*[\"']" + re.escape(path) + r"[\"']", text)):
+                continue
+            if f'"{cid}"' not in text and not re.search(r"\bGlobalConfig\." + re.escape(cid[2:]) + r"\b", text):
+                errors.append(f"{rel}: writes e4:{path} without naming its Caelestia key {cid}: the next sync undoes it")
+    return errors, len(source)
+
+
 def defaults_js(e4):
     defaults = {k: v for k, (_, v) in sorted(e4.items()) if v is not Ellipsis and v is not None}
     body = json.dumps(defaults, indent=4, ensure_ascii=False)
@@ -398,6 +514,7 @@ def main():
     ap.add_argument("--strict", action="store_true")
     ap.add_argument("--emit-defaults", action="store_true")
     ap.add_argument("--check-defaults", action="store_true")
+    ap.add_argument("--check-mirrors", action="store_true")
     ap.add_argument("--list", action="store_true")
     a = ap.parse_args()
 
@@ -421,7 +538,15 @@ def main():
             rc = 1
         else:
             print("nexus-coverage: E4Defaults.js is up to date")
-    if (a.emit_defaults or a.check_defaults) and not a.strict:
+    if a.check_mirrors:
+        errors, n = check_mirrors(e4, registry_ids(), ignored())
+        for e in errors:
+            print("nexus-coverage: " + e)
+        if errors:
+            rc = 1
+        else:
+            print(f"nexus-coverage: the {n} settings kept in shell.json and config.json follow their Caelestia key")
+    if (a.emit_defaults or a.check_defaults or a.check_mirrors) and not a.strict:
         return rc
     if a.list:
         for k, (t, v) in sorted(e4.items()):

@@ -472,7 +472,7 @@ Singleton {
                     property int swapWarningThreshold: 85
                     property int cpuWarningThreshold: 90
                 }
-                property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
+                property list<string> screenList: [] // List of screen names, as the 'hyprctl monitors' command shows them
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
                     property bool showColorPicker: false
@@ -617,7 +617,7 @@ Singleton {
                 // NotificationPopup but not here, so both read an undefined object
                 property JsonObject forceMonitor: JsonObject {
                     property bool enable: false
-                    property string name: "" // Name of the monitor to show notifications on, like "eDP-1". Find out with 'hyprctl monitors' command
+                    property string name: "" // Name of the monitor to show notifications on, as the 'hyprctl monitors' command shows it
                 }
             }
 

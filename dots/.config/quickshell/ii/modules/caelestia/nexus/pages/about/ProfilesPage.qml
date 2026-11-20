@@ -141,7 +141,7 @@ PageBase {
         else
             placeParts.push(store === "config" ? Tr.tr("Other end-4 setting") : Tr.tr("Other Caelestia setting"));
         if (screen)
-            // TRANSLATORS: a setting for one screen only; %1 is the screen's name (e.g. DP-1)
+            // TRANSLATORS: a setting for one screen only; %1 is the screen's name, as hyprctl monitors shows it
             placeParts.push(Tr.tr("Screen %1").arg(screen));
         return {
             sid: exact ? entry.id : "",

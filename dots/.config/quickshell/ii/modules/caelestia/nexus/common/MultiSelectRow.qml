@@ -97,7 +97,7 @@ SettingRow {
                     if (root.options.length > 1 && root.options.every(o => chosen.some(v => root.link.s.same(v, o.value))))
                         return root.allText;
                     const names = chosen.slice(0, 2).map(v => root.labelFor(v)).join(", ");
-                    // TRANSLATORS: the first chosen items, then how many more ("eDP-1, HDMI-A-1 +2")
+                    // TRANSLATORS: the first chosen items, then how many more (two screen names, then "+2")
                     return chosen.length > 2 ? Tr.trCtx("%1 +%2", "chosen items and how many more").arg(names).arg(chosen.length - 2) : names;
                 }
                 color: Colours.palette.m3onSecondaryContainer

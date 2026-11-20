@@ -11,7 +11,7 @@ sys="${CAELESTIA4_SYSFS:-/sys}"
 gpu=""
 for pass in nvidia sysfs; do
     for dev in "$sys"/class/drm/card*/device; do
-        [[ $dev =~ /card[0-9]+/device$ ]] || continue # not the connectors (card1-DP-1)
+        [[ $dev =~ /card[0-9]+/device$ ]] || continue # not the connectors (cardN-<connector>)
         [[ $(cat "$dev/power/runtime_status" 2>/dev/null) == suspended ]] && continue
         grep -qsx connected "${dev%/device}"-*/status || continue
         if [[ $pass == nvidia ]]; then
