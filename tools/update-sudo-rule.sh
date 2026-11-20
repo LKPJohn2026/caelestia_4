@@ -6,6 +6,14 @@
 # It is still root in practice: `sudo pacman -U` installs any package, and packages run scripts as root. Any program
 # running under this account could use the rule, without asking. Turn it off if that isn't what you want.
 #
+# Why pacman with any arguments: the update runs sudo pacman for the keyrings (-Sy --needed) and the repo upgrade
+# (-Syu), yay and paru run it themselves (-S --asdeps, -U from their cache, -D, -R for --removemake), and the Qt rebuild
+# runs it through makepkg -s (-S --asdeps for build dependencies) and then installs with -U from packaging/ in this
+# clone. A rule naming only the exact keyring and -Syu commands (and their systemd-run forms) would be safer: -Syu
+# installs only signed repo packages, and nothing could use the rule for -U, -R or -D. The repo upgrade would then run
+# with no password, and the password would be asked only when yay or paru have an AUR update or Qt moved to a new minor
+# release. It isn't the default because the button would then sometimes ask.
+#
 #   sudo tools/update-sudo-rule.sh enable
 #   sudo tools/update-sudo-rule.sh disable
 #   tools/update-sudo-rule.sh status          (no sudo needed)

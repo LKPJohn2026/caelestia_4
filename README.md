@@ -55,9 +55,18 @@ offers greetd + ReGreet. Then reboot and pick **Hyprland (uwsm-managed)**. `./in
 first, `--list-deps` the packages. Details, the steps by hand, updating and undoing:
 **[docs/install.md](docs/install.md)**.
 
+What it changes outside the clone, each with its undo:
+[docs/install.md, Undo](docs/install.md#undo-everything-it-changes). In short: packages (the system is upgraded,
+PulseAudio and other conflicting builds are replaced after asking, a pacman hook comes with Quickshell), NetworkManager
+and Bluetooth turned on, fonts in `/usr/local/share/fonts/caelestia4`, and with no login screen yet greetd + ReGreet in
+`/etc/greetd` and `/etc/pam.d/greetd`. In your account: the configs, `caelestia4-*` systemd user units, the portal
+config, and the key store of your browsers and Electron apps (flags files, `argv.json`, desktop entries), which other
+desktops on the account see too, as they see the GTK theme set in dconf. A sudo rule for password-free updates is there
+only if you turn it on.
+
 ## Documentation
 
-- [docs/install.md](docs/install.md) — install, update, undo
+- [docs/install.md](docs/install.md) — install, update, what it changes and how to undo it
 - [docs/uwsm.md](docs/uwsm.md) — how the uwsm session is set up
 - [docs/feature-comparison.md](docs/feature-comparison.md) — what came from where, what's still partial
 
