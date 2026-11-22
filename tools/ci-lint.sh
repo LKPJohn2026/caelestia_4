@@ -10,10 +10,9 @@
 #      registry/E4Defaults.js matches modules/common/Config.qml, and every setting kept in both shell.json and
 #      config.json is synced from its Caelestia key (tools/nexus-coverage.py; reads files only)
 #   7. no monitor data: connector names, monitor descriptions, modes and scales are read at run time, never written
-#      in (tools/lint-monitors.sh; generic patterns, Caelestia's vendored shell included, see that file), and that
-#      check's own tests (tools/tests/lint-monitors/run.sh; throwaway git repos in a temporary directory)
-#   8. preset-import.py takes only what a preset may set (tools/tests/preset-import/run.py: its fixtures applied in a
-#      fake HOME with stub commands, offline)
+#      in (tools/lint-monitors.sh; generic patterns, Caelestia's vendored shell included, see that file)
+#   8. every offline test in tools/tests/<name>/ (run.sh or run.py; throwaway repos, fake HOMEs and stub commands,
+#      never the real system); a folder with a MANUAL file needs a desktop and is only listed
 # Needs: bash, git, luac5.4 (or luac), jq, python3, shellcheck. Locally a missing tool is skipped with a note; in CI
 # (CI=true) it fails.
 set -uo pipefail
@@ -82,15 +81,22 @@ fi
 
 echo "== Monitor data"
 tools/lint-monitors.sh || fail=1
-if out=$(tools/tests/lint-monitors/run.sh); then echo "${out##*$'\n'}"
-else grep -v '^ok: ' <<<"$out"; fail=1; fi
 
-echo "== preset-import"
-if ! command -v python3 >/dev/null; then missing python3
-else
-  python3 -I tools/tests/preset-import/run.py | grep -v -e "^  ok" -e "^=="
-  [[ ${PIPESTATUS[0]} -eq 0 ]] || fail=1
-fi
+# Every offline test: tools/tests/<name>/run.sh or run.py, run from the repo root, exit 0 when it passes. A test that
+# needs a desktop, a display or this fork's Quickshell build has a file named MANUAL in its folder (the reason in it)
+# and is skipped here. On success only the test's last line is shown, on a failure all of its output
+echo "== tests (tools/tests)"
+for dir in tools/tests/*/; do
+  name=$(basename "$dir")
+  [[ -e $dir/MANUAL ]] && { echo "manual: $name"; continue; }
+  if [[ -x $dir/run.sh ]]; then cmd=("$dir/run.sh")
+  elif [[ -f $dir/run.py ]]; then
+    command -v python3 >/dev/null || { missing python3; continue; }
+    cmd=(python3 -I "$dir/run.py")
+  else continue; fi
+  if out=$("${cmd[@]}" 2>&1); then echo "${out##*$'\n'}"
+  else printf '%s\n' "$out" | grep -v -e '^ok: ' -e '^  ok'; echo "FAIL: tools/tests/$name"; fail=1; fi
+done
 
 [[ $fail -eq 0 ]] && echo "ci-lint: OK" || echo "ci-lint: FAILED"
 exit $fail
