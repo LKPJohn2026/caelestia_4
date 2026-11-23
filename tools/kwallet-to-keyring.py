@@ -27,7 +27,16 @@ KEYRING = "org.freedesktop.secrets"
 ROOT = "/org/freedesktop/secrets"
 V2 = "chrome_libsecret_os_crypt_password_v2"
 
-bus = Gio.bus_get_sync(Gio.BusType.SESSION)
+bus = None
+
+
+def connect():
+    """The session bus; with none (outside the desktop session, over ssh) a message rather than a traceback"""
+    global bus
+    try:
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION)
+    except GLib.Error as e:
+        sys.exit(f"no session bus (run this inside your desktop session): nothing read or written ({e.message})")
 
 
 def call(name, path, iface, method, sig, args, ret):
@@ -160,7 +169,11 @@ def write(items):
 def main():
     if len(sys.argv) != 2 or sys.argv[1] not in ("--dry-run", "--write"):
         sys.exit(__doc__)
-    items = read_kwallet()
+    connect()
+    try:
+        items = read_kwallet()
+    except GLib.Error as e:
+        sys.exit(f"KWallet can't be read ({e.message}): nothing written")
     print(f"KWallet: {len(items)} items ({KEYRING} now: {owner(KEYRING) or 'nobody'})")
     out = plan(items)
     print(f"\n{len(out)} items for gnome-keyring:")

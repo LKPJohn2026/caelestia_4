@@ -3,10 +3,11 @@
 end-4 strings: Translation.tr("...") -> dots/.config/quickshell/ii/translations/<lang>.json
 Caelestia strings: Tr.tr / Tr.trCtx / Tr.trN, and Tr.mark / Tr.markCtx / Tr.markN / Tr.markCtxN (data tables,
 translated later with Tr.tr) -> tools/i18n/caelestia-<lang>.po (compiled into the Caelestia plugin)
-Usage: tools/i18n-missing.py [lang=vi_VN] [--json OUT] [--under DIR]
-  (prints counts; --json writes {"end4": [...], "caelestia": [...]}; --under counts only strings used in files under DIR)
+Usage: tools/i18n-missing.py [lang=vi_VN] [--json OUT] [--under DIR] [--strict]
+  (prints counts; --json writes {"end4": [...], "caelestia": [...]}; --under counts only strings used in files under DIR;
+  --strict also lists the missing strings and exits 1 when there are any)
 """
-import argparse, glob, json, os, re
+import argparse, glob, json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QML = os.path.join(ROOT, "dots/.config/quickshell/ii")
@@ -15,6 +16,7 @@ ap = argparse.ArgumentParser(description="List UI strings with no translation ye
 ap.add_argument("lang", nargs="?", default="vi_VN")
 ap.add_argument("--json", metavar="OUT", help='write {"end4": [...], "caelestia": [...]} to OUT')
 ap.add_argument("--under", metavar="DIR", help="only strings used in files under DIR (e.g. the Nexus folder)")
+ap.add_argument("--strict", action="store_true", help="list the missing strings and exit 1 when there are any")
 args = ap.parse_args()
 under = os.path.abspath(args.under) if args.under else None
 lang, out = args.lang, args.json
@@ -54,7 +56,7 @@ for f in [] if under else [*glob.glob(QML + "/scripts/**/*.sh", recursive=True),
     e4.update(unesc(x) for x in pat_sh.findall(s) if not x.startswith("$"))
     e4.update(pat_py.findall(s))
 for f, keys in {os.path.join(QML, "scripts/caelestia4/hyprlock-strings.sh"): re.compile(r'line \w+ "([^"]+)"'),
-                os.path.join(ROOT, "tools/greetd-setup.sh"): pat_py}.items():
+                os.path.join(ROOT, "tools/greetd-gen.py"): pat_py}.items():
     if os.path.exists(f) and not under:
         e4.update(keys.findall(open(f, errors="ignore").read()))
 
@@ -74,3 +76,9 @@ print(f"end-4: {len(e4)} strings, {len(miss_e4)} missing in {os.path.relpath(tfi
 print(f"Caelestia: {len(cae)} strings, {len(miss_cae)} missing in {os.path.relpath(po, ROOT)}")
 if out:
     json.dump({"end4": miss_e4, "caelestia": [list(k) for k in miss_cae]}, open(out, "w"), ensure_ascii=False, indent=1)
+if args.strict and (miss_e4 or miss_cae):
+    for x in miss_e4:
+        print(f"  missing (end-4): {x!r}")
+    for c, x, _ in miss_cae:
+        print(f"  missing (Caelestia): {x!r}" + (f" (context {c!r})" if c else ""))
+    sys.exit(1)

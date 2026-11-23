@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // caelestia4: tests for services/ai/interactions.js (Gemini Interactions API) with SSE streams shaped like
-// the API reference (https://ai.google.dev/api/interactions). Usage: node tools/test-gemini-interactions.js
+// the API reference (https://ai.google.dev/api/interactions). Usage: tools/tests/gemini-interactions/run.sh
 const fs = require("fs");
 const path = require("path");
 const assert = require("assert");
-const src = fs.readFileSync(path.join(__dirname, "../dots/.config/quickshell/ii/services/ai/interactions.js"), "utf8").replace(/^\.pragma library\s*/, "");
+const src = fs.readFileSync(path.join(__dirname, "../../../dots/.config/quickshell/ii/services/ai/interactions.js"), "utf8").replace(/^\.pragma library\s*/, "");
 const I = new Function(src + "\nreturn { buildInput, newState, handleLine, finish, stripThink };")();
 
 const msg = () => ({ rawContent: "", content: "", annotations: [], annotationSources: [], searchQueries: [], providerSteps: [] });

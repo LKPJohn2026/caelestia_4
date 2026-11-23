@@ -86,7 +86,8 @@ redact() {
     line System "$(system_name)"
     line Kernel "$(uname -r)"
     echo
-    echo "== Changed settings (secrets removed)"
+    # (Not "secrets removed": the redaction below would read "removed" as a secret and replace it)
+    echo "== Changed settings (without secrets)"
     "$here/nexus-export.sh" --stdout 2>&1 || echo "(could not export)"
     echo
     echo "== Shell log, last 100 lines"
