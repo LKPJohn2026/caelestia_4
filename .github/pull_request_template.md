@@ -13,7 +13,7 @@ The title becomes the commit message: "Area: what changed".
 (another GPU, several monitors, a laptop...). -->
 
 - [ ] `tools/ci-lint.sh` passes
-- [ ] `tools/compile-check.sh` passes (shell changes)
+- [ ] `tools/ci-qml.sh` passes (shell changes)
 - [ ] I restarted the shell and its journal has no new warnings (shell changes)
 
 ## Screenshots

@@ -1,0 +1,1 @@
+Needs this fork's Quickshell and the Caelestia plugin: run by tools/ci-qml.sh (offscreen, passes on a SMOKE OK line), in CI by .github/workflows/qml.yml

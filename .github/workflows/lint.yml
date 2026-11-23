@@ -1,5 +1,5 @@
-# tools/ci-lint.sh on every push to main and every pull request. It only reads the files: the job has read-only
-# access and no secrets, so pull requests from forks run it the same way.
+# tools/ci-lint.sh on every push to main and every pull request (the QML checks: .github/workflows/qml.yml). It only
+# reads the files: the job has read-only access and no secrets, so pull requests from forks run it the same way.
 name: Lint
 
 on:
@@ -10,9 +10,10 @@ on:
 permissions:
   contents: read
 
+# Only a pull request's newer push cancels its older run: pushes to main each keep their result
 concurrency:
-  group: lint-${{ github.ref }}
-  cancel-in-progress: true
+  group: lint-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint:
@@ -23,14 +24,20 @@ jobs:
         with:
           persist-credentials: false
       - name: Tools
-        # Only what the runner image lacks (it usually has jq and shellcheck, not luac). Ubuntu's mirrors fail now and
-        # then (DNS, a mirror down): apt retries each download, each apt-get is cut off after 3 minutes, and the step
-        # is tried 3 times a minute apart before the job fails
+        # What ci-lint.sh and its tests (tools/tests/*/run.*) need, and only what the runner image lacks (it usually
+        # has python3, node, jq, shellcheck, visudo and PyGObject, not luac). Ubuntu's mirrors fail now and then (DNS,
+        # a mirror down): apt retries each download, each apt-get is cut off after 3 minutes, and the step is tried 3
+        # times a minute apart before the job fails. ci-lint.sh and the tests fail on anything still missing (CI=true)
         run: |
+          has_gi() { python3 -I -c "import gi; gi.require_version('Gio', '2.0')" 2>/dev/null; }
           need=()
+          command -v python3 >/dev/null || need+=(python3)
+          command -v node >/dev/null || need+=(nodejs)
           command -v luac5.4 >/dev/null || command -v luac >/dev/null || need+=(lua5.4)
           command -v jq >/dev/null || need+=(jq)
           command -v shellcheck >/dev/null || need+=(shellcheck)
+          PATH="$PATH:/usr/sbin:/sbin" command -v visudo >/dev/null || need+=(sudo)
+          has_gi || need+=(python3-gi gir1.2-glib-2.0)
           [ "${#need[@]}" -eq 0 ] && { echo "all tools there"; exit 0; }
           echo "installing: ${need[*]}"
           for attempt in 1 2 3; do

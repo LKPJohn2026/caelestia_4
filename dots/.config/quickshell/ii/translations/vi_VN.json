@@ -1220,5 +1220,16 @@
   "The shell was rebuilt: run systemctl --user restart caelestia4-shell when you can.": "Shell đã được build lại: hãy chạy systemctl --user restart caelestia4-shell khi tiện.",
   "The caelestia_4 clone has local changes, and the rebuild includes them.": "Bản clone caelestia_4 có thay đổi cục bộ, và bản build lại đã gồm các thay đổi đó.",
   "Couldn't switch wallpaper": "Không đổi được hình nền",
-  "No such file: %1": "Không có tệp: %1"
+  "No such file: %1": "Không có tệp: %1",
+  "Its name has a line break or another control character: rename the file": "Tên tệp có dấu xuống dòng hoặc ký tự điều khiển khác: hãy đổi tên tệp",
+  "%1 lines, %2 characters": "%1 dòng, %2 ký tự",
+  "(not set)": "(chưa đặt)",
+  "Config change rejected by user": "Người dùng đã từ chối thay đổi cấu hình",
+  "Current value: %1": "Giá trị hiện tại: %1",
+  "Key: %1": "Khóa: %1",
+  "New value:": "Giá trị mới:",
+  "Set `%1` to `%2`": "Đã đặt `%1` thành `%2`",
+  "The AI wants to change this setting": "AI muốn thay đổi cài đặt này",
+  "The AI wants to run this command": "AI muốn chạy lệnh này",
+  "The assistant can't change `%1`: it holds a command, a path, an address or a security setting. Change it in Nexus.": "Trợ lý không thể đổi `%1`: mục này chứa một lệnh, một đường dẫn, một địa chỉ hoặc một thiết lập bảo mật. Hãy đổi nó trong Nexus."
 }

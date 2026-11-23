@@ -1,0 +1,167 @@
+# tools/ci-qml.sh on every push to main, every pull request, once a week and by hand: this fork's Quickshell
+# (packaging/caelestia4-quickshell) and the Caelestia plugin are built in an Arch container, then plugin-smoke and
+# compile-check run as a normal user, compile-check in a private headless sway. The job has read-only access and no
+# secrets, so pull requests from forks run it the same way (no pull_request_target).
+# Caches: the built Quickshell package, the installed plugin and the pinned libcava and M3Shapes builds, each keyed on
+# its sources (the build scripts and the CMake around the plugin too), on the Qt versions (the plugin uses Qt's private
+# API), on the versions of the other libraries it links (a soname bump there breaks a cached binary), and on the ISO
+# week. Pull requests only restore them; pushes to main, the weekly run and manual runs save them. The weekly run
+# restores nothing and builds everything, so an Arch update (Qt, gcc, sway) that breaks the build turns main red
+# instead of someone's first pull request; with the week in the keys its fresh build is saved as the new entry (a
+# save to a key that exists only warns and keeps the old one).
+name: QML
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "41 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One group per event: the weekly and manual runs (on main) never cancel a push's run or are cancelled by one. Only a
+# pull request's newer push cancels its older run; on main a run waits for the one before it
+concurrency:
+  group: qml-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  qml:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    # The rolling tag on purpose, not a digest: the first step upgrades the whole system (pacman -Syu) anyway, so
+    # what a run builds with is that day's Arch either way; the cache keys carry the versions that matter
+    container: archlinux:base-devel
+    env:
+      CI: "true"
+      # The steps run as root and as builder on a checkout neither owns: git may read it anyway
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: safe.directory
+      GIT_CONFIG_VALUE_0: "*"
+      FRESH: ${{ github.event_name == 'schedule' }}
+    steps:
+      - name: pacman keys and git
+        # Before the checkout: without git, actions/checkout downloads a tarball and can't fetch the submodule.
+        # 3 tries 30 s apart; pacman's download sandbox is turned off only if the container can't give it Landlock
+        run: |
+          pacman-key --init
+          pacman-key --populate archlinux
+          ns=()
+          for attempt in 1 2 3; do
+            pacman -Syu --noconfirm --needed "${ns[@]}" git 2>&1 | tee /tmp/pacman.log && exit 0
+            if [ "${#ns[@]}" -eq 0 ] && grep -qiE 'landlock|sandbox' /tmp/pacman.log; then ns=(--disable-sandbox); continue; fi
+            echo "::warning::pacman failed (attempt $attempt of 3)"
+            [ "$attempt" -lt 3 ] && sleep 30
+          done
+          exit 1
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: true
+          persist-credentials: false
+
+      - name: Packages
+        run: tools/ci/arch-deps.sh
+
+      - name: Cache keys
+        id: keys
+        run: |
+          qt=$(pacman -Q qt6-base qt6-declarative | tr ' \n' '-_')
+          plugin=$(tools/build-caelestia-plugin.sh --source-id | tr ' ' '-')
+          [[ -n ${qt%_} && -n $plugin ]] || { echo "no Qt version or plugin source id"; exit 1; }
+          # The versions of what each cached build links besides Qt base/declarative (pacman -Q fails on a missing one)
+          # shellcheck disable=SC1091,SC2154 # the PKGBUILD sets depends
+          qsdeps=$( (source packaging/caelestia4-quickshell/PKGBUILD && pacman -Q "${depends[@]}") | sha256sum | cut -c1-16)
+          pinneddeps=$(pacman -Q fftw iniparser libpipewire qt6-shadertools | sha256sum | cut -c1-16)
+          plugindeps=$(pacman -Q libqalculate aubio lm_sensors libpipewire fftw iniparser qt6-multimedia qt6-shadertools \
+            qt6-svg | sha256sum | cut -c1-16)
+          week=$(date -u +%G-W%V)
+          echo "qt=${qt%_}" >>"$GITHUB_OUTPUT"
+          echo "plugin=$plugin" >>"$GITHUB_OUTPUT"
+          echo "qsdeps=$qsdeps-$week" >>"$GITHUB_OUTPUT"
+          echo "pinneddeps=$pinneddeps-$week" >>"$GITHUB_OUTPUT"
+          echo "plugindeps=$plugindeps-$week" >>"$GITHUB_OUTPUT"
+          echo "Qt: ${qt%_}; plugin source: $plugin; links: qs $qsdeps, pinned $pinneddeps, plugin $plugindeps; week $week"
+
+      # libcava and M3Shapes: not in Arch's repos, built from pinned upstream sources (tools/ci/build-pinned-deps.sh)
+      - name: Restore libcava and M3Shapes
+        id: pinned
+        if: env.FRESH != 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /home/builder/pinned-root
+          key: pinned-${{ hashFiles('tools/ci/build-pinned-deps.sh') }}-${{ steps.keys.outputs.qt }}-${{ steps.keys.outputs.pinneddeps }}
+      - name: Build libcava and M3Shapes (as builder)
+        if: steps.pinned.outputs.cache-hit != 'true'
+        run: runuser -u builder -- env HOME=/home/builder tools/ci/build-pinned-deps.sh /home/builder/pinned-root
+      - name: Save libcava and M3Shapes
+        if: steps.pinned.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /home/builder/pinned-root
+          key: pinned-${{ hashFiles('tools/ci/build-pinned-deps.sh') }}-${{ steps.keys.outputs.qt }}-${{ steps.keys.outputs.pinneddeps }}
+      - name: Install libcava and M3Shapes
+        run: |
+          cp -dR --preserve=mode,timestamps /home/builder/pinned-root/. /
+          ldconfig
+          pkg-config --modversion libcava
+
+      # Quickshell: the PKGBUILD's pinned commit and patch, built by makepkg as builder
+      - name: Restore Quickshell package
+        id: qs
+        if: env.FRESH != 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /home/builder/qs-pkg
+          key: qs-${{ hashFiles('packaging/caelestia4-quickshell/**') }}-${{ steps.keys.outputs.qt }}-${{ steps.keys.outputs.qsdeps }}
+      - name: Build Quickshell (makepkg, as builder)
+        if: steps.qs.outputs.cache-hit != 'true'
+        run: |
+          runuser -u builder -- env HOME=/home/builder bash -c 'set -euo pipefail
+            rm -rf ~/qs-build ~/qs-pkg && mkdir -p ~/qs-build ~/qs-pkg
+            git ls-files -z packaging/caelestia4-quickshell | xargs -0 cp -t ~/qs-build
+            cd ~/qs-build && PKGDEST=~/qs-pkg makepkg --nodeps --noconfirm'
+      - name: Save Quickshell package
+        if: steps.qs.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /home/builder/qs-pkg
+          key: qs-${{ hashFiles('packaging/caelestia4-quickshell/**') }}-${{ steps.keys.outputs.qt }}-${{ steps.keys.outputs.qsdeps }}
+      - name: Install Quickshell
+        run: |
+          pacman -U --noconfirm /home/builder/qs-pkg/caelestia4-quickshell-[0-9]*.pkg.tar.zst
+          qs --version
+
+      # The Caelestia plugin: tools/build-caelestia-plugin.sh as builder, into ~builder/.local/lib/qt6/qml/Caelestia
+      - name: Restore Caelestia plugin
+        id: plugin
+        if: env.FRESH != 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /home/builder/.local/lib/qt6/qml/Caelestia
+          # the source id is the plugin's tree and the translations: the top-level CMakeLists.txt, the build script (flags,
+          # VERSION) and the libcava it links (the pinned build) are hashed in beside it
+          key: plugin-${{ steps.keys.outputs.plugin }}-${{ hashFiles('tools/build-caelestia-plugin.sh', 'third_party/caelestia-shell/CMakeLists.txt', 'tools/ci/build-pinned-deps.sh') }}-${{ steps.keys.outputs.qt }}-${{ steps.keys.outputs.plugindeps }}
+      - name: Build Caelestia plugin (as builder)
+        if: steps.plugin.outputs.cache-hit != 'true'
+        run: runuser -u builder -- env HOME=/home/builder tools/build-caelestia-plugin.sh
+      - name: Save Caelestia plugin
+        if: steps.plugin.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /home/builder/.local/lib/qt6/qml/Caelestia
+          # the source id is the plugin's tree and the translations: the top-level CMakeLists.txt, the build script (flags,
+          # VERSION) and the libcava it links (the pinned build) are hashed in beside it
+          key: plugin-${{ steps.keys.outputs.plugin }}-${{ hashFiles('tools/build-caelestia-plugin.sh', 'third_party/caelestia-shell/CMakeLists.txt', 'tools/ci/build-pinned-deps.sh') }}-${{ steps.keys.outputs.qt }}-${{ steps.keys.outputs.plugindeps }}
+
+      - name: tools/ci-qml.sh (as builder)
+        run: |
+          chown -R builder: /home/builder
+          runuser -u builder -- env HOME=/home/builder tools/ci-qml.sh

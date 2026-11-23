@@ -11,10 +11,12 @@
 #      config.json is synced from its Caelestia key (tools/nexus-coverage.py; reads files only)
 #   7. no monitor data: connector names, monitor descriptions, modes and scales are read at run time, never written
 #      in (tools/lint-monitors.sh; generic patterns, Caelestia's vendored shell included, see that file)
-#   8. every offline test in tools/tests/<name>/ (run.sh or run.py; throwaway repos, fake HOMEs and stub commands,
-#      never the real system); a folder with a MANUAL file needs a desktop and is only listed
-# Needs: bash, git, luac5.4 (or luac), jq, python3, shellcheck. Locally a missing tool is skipped with a note; in CI
-# (CI=true) it fails.
+#   8. a warning (not a failure) when core.hooksPath points into a working tree (tools/git-hooks/install.sh fixes it)
+#   9. every offline test in tools/tests/<name>/ (run.sh or run.py; throwaway repos, fake HOMEs and stub commands,
+#      never the real system). Only listed: a folder with a QML file, which needs this fork's Quickshell and is run by
+#      tools/ci-qml.sh (.github/workflows/qml.yml), and one with a MANUAL file, which needs a desktop
+# Needs: bash, git, luac5.4 (or luac), jq, python3, shellcheck; the tests also node, visudo (sudo) and PyGObject.
+# Locally a missing tool is skipped with a note; in CI (CI=true) it fails.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 2
 
@@ -82,12 +84,32 @@ fi
 echo "== Monitor data"
 tools/lint-monitors.sh || fail=1
 
-# Every offline test: tools/tests/<name>/run.sh or run.py, run from the repo root, exit 0 when it passes. A test that
-# needs a desktop, a display or this fork's Quickshell build has a file named MANUAL in its folder (the reason in it)
-# and is skipped here. On success only the test's last line is shown, on a failure all of its output
+# caelestia4: a clone set up under the old docs (core.hooksPath=tools/git-hooks) runs whatever hooks the checked-out
+# commit holds, in every worktree of the clone. Only a warning (it's this clone's setting, not the change under test):
+# tools/git-hooks/install.sh unsets it and installs a copy in .git/hooks
+echo "== git hooks"
+if hp=$(git config --type=path --get core.hooksPath 2>/dev/null); then
+  [[ $hp == /* ]] || hp="$(git rev-parse --show-toplevel)/$hp"
+  hp=$(realpath -m -- "$hp")
+  intree=
+  while IFS= read -r w; do
+    w=$(realpath -m -- "${w#worktree }")
+    [[ $hp == "$w" || $hp == "$w/"* ]] && intree=$w
+  done < <(git worktree list --porcelain | grep '^worktree ')
+  if [[ -n $intree ]]; then
+    echo "WARN: core.hooksPath ($(git config --show-origin --get core.hooksPath | cut -f1)) is in a working tree, so"
+    echo "      git runs the hooks the checked-out commit holds: run tools/git-hooks/install.sh"
+  else echo "core.hooksPath is outside the working trees"; fi
+else echo "core.hooksPath unset (.git/hooks)"; fi
+
+# Every offline test: tools/tests/<name>/run.sh or run.py, run from the repo root, exit 0 when it passes. Skipped
+# here, each with a file in its folder giving the reason: QML (it needs this fork's Quickshell build; tools/ci-qml.sh
+# runs it, and CI's QML job) and MANUAL (it needs a desktop or a display). On success only the test's last line is
+# shown, on a failure all of its output
 echo "== tests (tools/tests)"
 for dir in tools/tests/*/; do
   name=$(basename "$dir")
+  [[ -e $dir/QML ]] && { echo "qml: $name (tools/ci-qml.sh)"; continue; }
   [[ -e $dir/MANUAL ]] && { echo "manual: $name"; continue; }
   if [[ -x $dir/run.sh ]]; then cmd=("$dir/run.sh")
   elif [[ -f $dir/run.py ]]; then
