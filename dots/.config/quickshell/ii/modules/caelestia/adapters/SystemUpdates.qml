@@ -65,11 +65,13 @@ Singleton {
         checkProc.running = true;
     }
 
-    // In the default terminal (uwsm -T), kept open at the end; a check follows once it's closed
-    function runInTerminal(command: string): void {
+    // In the default terminal (uwsm -T), kept open at the end; a check follows once it's closed. Text (translations) is
+    // never part of the command: it comes in as bash's $1 ("Done...") and $2, $3, ... (`texts`), so a quote or $(...)
+    // in a translation stays text
+    function runInTerminal(command: string, texts: var): void {
         if (terminalProc.running) // (the Process would queue it, and run it when that terminal closes)
             return;
-        terminalProc.command = ["uwsm-app", "-T", "--", "bash", "-c", `${command}; echo; read -rp "${Tr.tr("Done. Press Enter to close.")}"`];
+        terminalProc.command = ["uwsm-app", "-T", "--", "bash", "-c", `${command}; echo; read -rp "$1"`, "bash", Tr.tr("Done. Press Enter to close."), ...(texts ?? [])];
         terminalProc.running = true;
     }
 
@@ -90,7 +92,7 @@ Singleton {
 
     function updateCaelestia4(): void {
         if (caelestia4.path)
-            runInTerminal(`cd '${caelestia4.path}' && { git pull --ff-only || { echo "${Tr.tr("git pull failed. If the server asked for a sign-in, try again later: see Updating in docs/install.md")}"; false; }; } && tools/install-main.sh`);
+            runInTerminal(`cd '${caelestia4.path}' && { git pull --ff-only || { printf '%s\\n' "$2"; false; }; } && tools/install-main.sh`, [Tr.tr("git pull failed. If the server asked for a sign-in, try again later: see Updating in docs/install.md")]);
     }
 
     // Asked of sudo itself (scripts/caelestia4/update-sudo-state.sh, which runs nothing as root), only where it's shown:

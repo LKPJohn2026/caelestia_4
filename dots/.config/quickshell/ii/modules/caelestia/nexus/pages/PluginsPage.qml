@@ -32,8 +32,10 @@ PageBase {
         proc.running = true;
     }
 
+    // caelestia4: the translated "Done..." comes in as bash's $1, never as part of the command, so a quote or $(...) in
+    // a translation stays text
     function inTerminal(command: string): void {
-        Quickshell.execDetached(["uwsm-app", "-T", "--", "bash", "-c", `${command}; echo; read -rp "${Tr.tr("Done. Press Enter to close.")}"`]);
+        Quickshell.execDetached(["uwsm-app", "-T", "--", "bash", "-c", `${command}; echo; read -rp "$1"`, "bash", Tr.tr("Done. Press Enter to close.")]);
     }
 
     function statusFor(c: var): string {

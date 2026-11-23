@@ -140,13 +140,15 @@ def caelestia(*args):
 
 
 def wallpaper_path():
+    """The wallpaper (a video's thumbnail), or "" for none or one with a control character in it: it goes into
+    generated configs (hyprlock's $background_image = {{image}}), where a line break would start a new statement"""
     try:
         with open(SHELL_CONFIG) as f:
             bg = json.load(f)["background"]
         path = bg["wallpaperPath"]
         if re.search(r"\.(mp4|webm|mkv|avi|mov)$", path, re.I) and bg.get("thumbnailPath"):
-            return bg["thumbnailPath"]
-        return path
+            path = bg["thumbnailPath"]
+        return path if isinstance(path, str) and not re.search(r"[\x00-\x1f\x7f]", path) else ""
     except Exception:
         return ""
 

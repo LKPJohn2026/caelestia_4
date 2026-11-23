@@ -180,6 +180,13 @@ switch() {
         notify-send -a "Wallpaper switcher" "$(tr_ "Couldn't switch wallpaper")" "$(tr_ "No such file: %1" "$imgpath")"
         exit 1
     fi
+    # caelestia4: the path goes into generated configs (hyprlock's colors.conf: $background_image = {{image}}), where a
+    # line break would start a new statement, e.g. a label that runs a command at every lock. --noswitch too (the saved one)
+    if [[ "$color_flag" != "1" && "$imgpath" == *[[:cntrl:]]* ]]; then
+        echo "[switchwall.sh] Refused a wallpaper path with a control character in it" >&2
+        notify-send -a "Wallpaper switcher" "$(tr_ "Couldn't switch wallpaper")" "$(tr_ "Its name has a line break or another control character: rename the file")"
+        exit 1
+    fi
 
     # Start Gemini auto-categorization if enabled
     aiStylingEnabled=$(jq -r '.background.widgets.clock.cookie.aiStyling' "$SHELL_CONFIG_FILE")

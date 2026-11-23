@@ -14,6 +14,8 @@
 set -uo pipefail
 source=${1:-wallhaven} minw=${2:-0} minh=${3:-0} rw=${4:-0} rh=${5:-0}
 ua="caelestia4-wallpaper/1.0"
+# Only https, also for the link in the API's reply (curl would fetch a file://, gopher:// or plain http:// one as well)
+proto=(--proto "=https" --proto-redir "=https")
 dir="$(xdg-user-dir PICTURES 2>/dev/null || echo "$HOME/Pictures")/Wallpapers"
 cfg="${XDG_CONFIG_HOME:-$HOME/.config}/illogical-impulse/config.json"
 switchwall="$(dirname "$0")/../colors/switchwall.sh"
@@ -35,12 +37,12 @@ tier=""
 echo "Searching $source…"
 wallhaven() { # wallhaven <extra query> -> "path WxH"
   echo try >> "$net"
-  { curl -fsS -m 20 -A "$ua" "https://wallhaven.cc/api/v1/search?categories=110&purity=100&sorting=random$1" || echo fail >> "$net"; } \
+  { curl -fsS "${proto[@]}" -m 20 -A "$ua" "https://wallhaven.cc/api/v1/search?categories=110&purity=100&sorting=random$1" || echo fail >> "$net"; } \
     | jq -r '.data[0] // empty | "\(.path) \(.resolution)"'
 }
 moebooru() { # moebooru <host> <tags> <limit> <jq filter on the post list> -> "url WxH tier"
   echo try >> "$net"
-  { curl -fsS -m 20 -A "$ua" -G "https://$1/post.json" --data-urlencode "tags=rating:safe order:random $2" --data-urlencode "limit=$3" || echo fail >> "$net"; } \
+  { curl -fsS "${proto[@]}" -m 20 -A "$ua" -G "https://$1/post.json" --data-urlencode "tags=rating:safe order:random $2" --data-urlencode "limit=$3" || echo fail >> "$net"; } \
     | jq -r "$4 // empty | \"\\(.file_url) \\(.width)x\\(.height) \\(.t // \"\")\""
 }
 
@@ -78,14 +80,18 @@ if [[ -z "${link:-}" ]]; then
   exit 2
 fi
 
+# The site picks the link and its extension (part of the file name): https only, a plain extension
+ext="${link##*.}"; ext="${ext%%\?*}"
+[[ "$link" =~ ^https://[^[:space:][:cntrl:]]+$ ]] || { echo "$source gave a link that isn't https: not downloaded"; exit 1; }
+[[ "$ext" =~ ^[A-Za-z0-9]{1,5}$ ]] || { echo "$source gave a link with no usable file type: not downloaded"; exit 1; }
+
 [[ -n "${DRYRUN:-}" ]] && { echo "Would download ${size/x/×} [$tier]: $link"; exit 0; } # testing
 
-ext="${link##*.}"; ext="${ext%%\?*}"
 path="$dir/random_wallpaper.$ext"
 [[ "$path" == "$(jq -r '.background.wallpaperPath' "$cfg" 2>/dev/null)" ]] && path="$dir/random_wallpaper-1.$ext"
 
 echo "Downloading ${size/x/×} ($tier)…"
-curl -fsS -m 120 -A "$ua" -o "$path" "$link" || { echo "Download failed"; exit 1; }
+curl -fsS "${proto[@]}" -m 120 -A "$ua" -o "$path" "$link" || { echo "Download failed"; exit 1; }
 echo "Applying…"
 "$switchwall" --image "$path" >/dev/null 2>&1 || { echo "Couldn't apply the wallpaper (switchwall.sh failed)"; exit 1; }
 echo "Done: ${size/x/×} from $source ($tier)"
