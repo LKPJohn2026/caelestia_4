@@ -38,6 +38,7 @@ mapfile -t qs_deps < <(
   source packaging/caelestia4-quickshell/PKGBUILD && printf '%s\n' "${depends[@]}" "${makedepends[@]}")
 [[ ${#qs_deps[@]} -gt 0 ]] || { echo "arch-deps: no depends read from the PKGBUILD" >&2; exit 1; }
 extra=(cmake ninja pkgconf libqalculate aubio lm_sensors # the plugin
+       fish gettext                                      # its translations (scripts/trs.fish runs msgfmt)
        meson fftw iniparser                              # libcava (tools/ci/build-pinned-deps.sh)
        sway dbus rsync git)                              # the tests
 echo "installing: ${qs_deps[*]} ${extra[*]}"
