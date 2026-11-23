@@ -14,6 +14,7 @@ import Quickshell.Hyprland
 import Qt5Compat.GraphicalEffects
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons (aliased: other control names clash with end-4 widgets)
+import "../../../common/functions/untrusted.js" as Untrusted
 
 Rectangle {
     id: root
@@ -149,15 +150,22 @@ Rectangle {
             visible: root.responseData.message.length > 0
             font.pixelSize: Appearance.font.pixelSize.small
             color: Colours.palette.m3onSurface
-            text: root.responseData.message
+            text: Untrusted.markdownSafe(root.responseData.message) // caelestia4: no remote images or HTML
             wrapMode: Text.WordWrap
             Layout.margins: responsePadding
             textFormat: Text.MarkdownText
             onLinkActivated: (link) => {
+                if (!Untrusted.isWebUrl(link)) return // caelestia4: web links only
                 Qt.openUrlExternally(link)
                 GlobalStates.sidebarLeftOpen = false
             }
             PointingHandLinkHover {}
+            // caelestia4: where a link goes, on hover before the click (its text, chosen by the sender, may say otherwise)
+            StyledToolTip {
+                extraVisibleCondition: false
+                alternativeVisibleCondition: Untrusted.linkPreview(messageText.hoveredLink) !== ""
+                text: Untrusted.linkPreview(messageText.hoveredLink)
+            }
         }
 
         Repeater {

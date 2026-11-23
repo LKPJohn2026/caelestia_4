@@ -85,27 +85,30 @@ Singleton {
     }
 
     function getData() {
-        let command = "curl -s wttr.in";
+        // caelestia4: https (curl takes a bare host as http://, which sent the location in the clear), and the URL goes
+        // to bash as $1, never into its code, so a city with a quote, ; or $(...) is only ever a city
+        let url = "https://wttr.in";
 
         if (root.gpsActive && root.location.valid) {
-            command += `/${root.location.lat},${root.location.long}`;
+            url += `/${Number(root.location.lat)},${Number(root.location.long)}`;
         } else {
-            command += `/${formatCityName(root.city)}`;
+            url += `/${formatCityName(root.city)}`;
         }
 
         // format as json
-        command += "?format=j1";
+        url += "?format=j1";
         // caelestia4: wttr.in translates the description (current_condition.lang_xx) for pcwidgets' weather card
-        command += `\\&lang=${Qt.locale().name.split("_")[0]}`; // escaped: the command runs in sh
-        command += " | ";
+        url += `&lang=${encodeURIComponent(Qt.locale().name.split("_")[0])}`;
         // only take the current weather, location, asytronmy data
-        command += "jq '{current: .current_condition[0], location: .nearest_area[0], astronomy: .weather[0].astronomy[0]}'";
-        fetcher.command[2] = command;
+        fetcher.command = ["bash", "-c",
+            "curl -s -- \"$1\" | jq '{current: .current_condition[0], location: .nearest_area[0], astronomy: .weather[0].astronomy[0]}'",
+            "bash", url];
         fetcher.running = true;
     }
 
     function formatCityName(cityName) {
-        return cityName.trim().split(/\s+/).join('+');
+        // caelestia4: each word URL-encoded (a city name may hold ? & # / or quotes)
+        return String(cityName ?? "").trim().split(/\s+/).map(w => encodeURIComponent(w)).join('+');
     }
 
     Component.onCompleted: {

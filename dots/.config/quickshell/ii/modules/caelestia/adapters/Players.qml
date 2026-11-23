@@ -8,6 +8,7 @@ import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components.misc
+import "../../common/functions/untrusted.js" as Untrusted
 
 Singleton {
     id: root
@@ -62,7 +63,8 @@ Singleton {
             return;
 
         lastNowPlayingKey = key;
-        Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(artist).arg(title), "music_note");
+        // caelestia4: escaped, the toast shows StyledText and a track's tags (or a web page's title) can hold <img>
+        Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(Untrusted.escapeHtml(artist)).arg(Untrusted.escapeHtml(title)), "music_note");
     }
 
     onActiveChanged: lastNowPlayingKey = ""

@@ -15,6 +15,7 @@ import Quickshell.Io
 import Quickshell.Hyprland
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
 import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons
+import "../../../common/functions/untrusted.js" as Untrusted
 
 Button {
     id: root
@@ -25,7 +26,8 @@ Button {
     property string previewDownloadPath
     property string downloadPath
     property string nsfwPath
-    property string fileName: decodeURIComponent((imageData.file_url).substring((imageData.file_url).lastIndexOf('/') + 1))
+    // caelestia4: the API's URL picks the name, so it is cleaned: a decoded %2F..%2F wrote outside the folder, a quote ran code
+    property string fileName: Untrusted.safeFileName(imageData.file_url, "image")
     property string filePath: `${root.previewDownloadPath}/${root.fileName}`
     property int maxTagStringLineLength: 50
     property real imageRadius: CC.Tokens.rounding.small
@@ -36,7 +38,8 @@ Button {
         running: root.manualDownload
         filePath: root.filePath
         referer: root.referer
-        sourceUrl: root.imageData.preview_url ?? root.imageData.sample_url
+        // caelestia4: web URLs only (the API sets it: no file://, no curl option)
+        sourceUrl: Untrusted.isHttpUrl(root.imageData.preview_url ?? root.imageData.sample_url) ? (root.imageData.preview_url ?? root.imageData.sample_url) : ""
         onDone: (path, width, height) => {
             imageObject.source = ""
             imageObject.source = path
@@ -140,20 +143,22 @@ Button {
                             onClicked: {
                                 root.showActions = false
                                 Hyprland.dispatch("hl.config({cursor = {no_warps = true}})")
-                                Qt.openUrlExternally(root.imageData.file_url)
+                                if (Untrusted.isWebUrl(root.imageData.file_url)) // caelestia4: no file:, smb: or app handlers
+                                    Qt.openUrlExternally(root.imageData.file_url)
                                 Hyprland.dispatch("hl.config({cursor = {no_warps = false}})")
                             }
                         }
                         MenuRow {
                             id: sourceButton
-                            visible: root.imageData.source && root.imageData.source.length > 0
+                            visible: Untrusted.isWebUrl(root.imageData.source)
                             Layout.fillWidth: true
                             buttonText: Translation.tr("Go to source (%1)").arg(StringUtils.getDomain(root.imageData.source))
-                            enabled: root.imageData.source && root.imageData.source.length > 0
+                            enabled: Untrusted.isWebUrl(root.imageData.source)
                             onClicked: {
                                 root.showActions = false
                                 Hyprland.dispatch("hl.config({cursor = {no_warps = true}})")
-                                Qt.openUrlExternally(root.imageData.source)
+                                if (Untrusted.isWebUrl(root.imageData.source)) // caelestia4: an uploader sets it; web links only
+                                    Qt.openUrlExternally(root.imageData.source)
                                 Hyprland.dispatch("hl.config({cursor = {no_warps = false}})")
                             }
                         }
@@ -164,11 +169,14 @@ Button {
                             onClicked: {
                                 root.showActions = false;
                                 const targetPath = root.imageData.is_nsfw ? root.nsfwPath : root.downloadPath;
+                                if (!Untrusted.isHttpUrl(root.imageData.file_url)) // caelestia4: http(s) only, never a curl option
+                                    return;
                                 const userAgent = Config.options?.networking?.userAgent ?? ""
-                                const userAgentHeader = userAgent ? ` -H 'User-Agent: ${StringUtils.shellSingleQuoteEscape(userAgent)}'` : ""
-                                Quickshell.execDetached(["bash", "-c", 
-                                    `mkdir -p '${targetPath}' && curl '${StringUtils.shellSingleQuoteEscape(root.imageData.file_url)}'${userAgentHeader}${root.referer ? ` -e '${StringUtils.shellSingleQuoteEscape(root.referer)}'` : ""} -o '${targetPath}/${root.fileName}' && notify-send '${Translation.tr("Download complete")}' '${root.downloadPath}/${root.fileName}' -a 'Shell'`
-                                ])
+                                const curlArgs = (userAgent ? ["-H", `User-Agent: ${userAgent}`] : []).concat(root.referer ? ["-e", root.referer] : [])
+                                // caelestia4: every value goes in as an argument, never into the shell code
+                                Quickshell.execDetached(["bash", "-c",
+                                    'mkdir -p -- "$1" && curl "${@:5}" -o "$1/$2" -- "$3" && notify-send -a Shell -- "$4" "$1/$2"',
+                                    "bash", targetPath, root.fileName, root.imageData.file_url, Translation.tr("Download complete")].concat(curlArgs))
                             }
                         }
                     }

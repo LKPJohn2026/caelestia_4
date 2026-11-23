@@ -6,6 +6,7 @@ import Quickshell.Io
 import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
+import "../../common/functions/untrusted.js" as Untrusted
 
 Singleton {
     id: root
@@ -207,14 +208,14 @@ Singleton {
         connected = false;
         connectedChanged(); // Force bindings to reeval (mainly for switches)
         if (GlobalConfig.utilities.toasts.vpnChanged)
-            Toaster.toast(Tr.tr("VPN connection failed"), reason, "vpn_key_alert");
+            Toaster.toast(Tr.tr("VPN connection failed"), Untrusted.escapeHtml(reason), "vpn_key_alert"); // caelestia4: escaped for the toast's StyledText (it holds the VPN's name)
     }
 
     function reportDisconnectFailure(reason: string): void {
         disconnectPending = false;
         connectedChanged(); // Force bindings to reeval (mainly for switches)
         if (GlobalConfig.utilities.toasts.vpnChanged)
-            Toaster.toast(Tr.tr("VPN disconnection failed"), reason, "vpn_key_alert");
+            Toaster.toast(Tr.tr("VPN disconnection failed"), Untrusted.escapeHtml(reason), "vpn_key_alert"); // caelestia4: as above
     }
 
     function checkStatus(): void {
@@ -447,7 +448,8 @@ Singleton {
         if (!GlobalConfig.utilities.toasts.vpnChanged)
             return;
 
-        const displayName = active.displayName || Tr.tr("VPN");
+        // caelestia4: the name and reasons (from the VPN's own output) escaped, the toast shows StyledText
+        const displayName = Untrusted.escapeHtml(active.displayName || Tr.tr("VPN"));
 
         switch (statusObj.state) {
         case "connected":
@@ -457,12 +459,12 @@ Singleton {
             Toaster.toast(Tr.tr("VPN disconnected"), Tr.tr("Disconnected from %1").arg(displayName), "vpn_key_off");
             break;
         case "needs-auth":
-            const authMsg = statusObj.reason ? Tr.trMarked(statusObj.reason) : Tr.tr("Authentication required");
+            const authMsg = Untrusted.escapeHtml(statusObj.reason ? Tr.trMarked(statusObj.reason) : Tr.tr("Authentication required"));
             Toaster.toast(Tr.tr("VPN authentication required"), Tr.trCtx("%1: %2", "vpn name and reason").arg(displayName).arg(authMsg), "vpn_lock");
             break;
         case "error":
             if (status.state === "connected" || status.state === "connecting" || status.state === "needs-auth") {
-                const errMsg = statusObj.reason ? Tr.trMarked(statusObj.reason) : Tr.tr("Unknown error");
+                const errMsg = Untrusted.escapeHtml(statusObj.reason ? Tr.trMarked(statusObj.reason) : Tr.tr("Unknown error"));
                 Toaster.toast(Tr.tr("VPN error"), Tr.trCtx("%1: %2", "vpn name and reason").arg(displayName).arg(errMsg), "error");
             }
             break;

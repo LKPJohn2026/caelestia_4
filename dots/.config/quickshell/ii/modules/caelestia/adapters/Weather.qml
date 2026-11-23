@@ -52,6 +52,8 @@ Singleton {
         } else if ((!loc || timer.elapsed() > 900) && !ipApiRequestPending && Date.now() >= ipApiBlockedUntil) {
             ipApiRequestPending = true;
 
+            // caelestia4: plain http, as ip-api's free tier has no https: the lookup (and the reply) can be seen and
+            // changed on the way. Setting services.weatherLocation skips it.
             Requests.get("http://ip-api.com/json?fields=status,message,city,lat,lon", (text, metadata) => {
                 ipApiRequestPending = false;
                 recordIpApiRateLimit(metadata);

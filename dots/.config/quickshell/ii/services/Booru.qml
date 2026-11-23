@@ -494,7 +494,8 @@ Singleton {
             return;
         }
         var url = constructRequestUrl(tags, nsfw, limit, page)
-        console.log("[Booru] Making request to " + url)
+        // caelestia4: not the URL: it holds the Gelbooru API key and user ID, and the tags searched for
+        console.log("[Booru] Making request to " + currentProvider + ", page " + page)
 
         const newResponse = root.booruResponseDataComponent.createObject(null, {
             "provider": currentProvider,

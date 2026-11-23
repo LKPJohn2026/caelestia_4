@@ -6,6 +6,8 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
+import qs.modules.common.widgets as EW // caelestia4: end-4's tooltip, for where a link goes
+import "../../common/functions/untrusted.js" as Untrusted
 
 StyledRect {
     id: root
@@ -136,13 +138,23 @@ StyledRect {
 
             Layout.fillWidth: true
             textFormat: Text.MarkdownText
-            text: String(root.modelData?.body ?? "").replace(/(.)\n(?!\n)/g, "$1\n\n") || Tr.tr("No body here! :/")
+            // caelestia4: any app (or a website through the browser) writes the body: no remote images, only simple tags
+            text: Untrusted.notificationMarkdown(String(root.modelData?.body ?? "").replace(/(.)\n(?!\n)/g, "$1\n\n")) || Tr.tr("No body here! :/")
             color: root.modelData?.urgency === "critical" ? Colours.palette.m3secondary : Colours.palette.m3outline
             wrapMode: Text.WordWrap
 
             onLinkActivated: link => {
+                if (!Untrusted.isWebUrl(link))
+                    return; // caelestia4: web links only, no file:, smb: or app handlers
                 Qt.openUrlExternally(link);
                 root.screenState.sidebar = false;
+            }
+
+            // caelestia4: where a link goes, on hover before the click (its text, chosen by the sender, may say otherwise)
+            EW.StyledToolTip {
+                extraVisibleCondition: false
+                alternativeVisibleCondition: Untrusted.linkPreview(bodyText.hoveredLink) !== ""
+                text: Untrusted.linkPreview(bodyText.hoveredLink)
             }
         }
 

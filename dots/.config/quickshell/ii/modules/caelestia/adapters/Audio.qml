@@ -8,6 +8,7 @@ import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
 import Caelestia.Services
+import "../../common/functions/untrusted.js" as Untrusted
 
 Singleton {
     id: root
@@ -134,7 +135,7 @@ Singleton {
         const newSinkName = sink.description || sink.name || Tr.trCtx("Unknown device", "unknown audio device");
 
         if (previousSinkName && previousSinkName !== newSinkName && GlobalConfig.utilities.toasts.audioOutputChanged)
-            Toaster.toast(Tr.tr("Audio output changed"), Tr.tr("Now using: %1").arg(newSinkName), "volume_up");
+            Toaster.toast(Tr.tr("Audio output changed"), Tr.tr("Now using: %1").arg(Untrusted.escapeHtml(newSinkName)), "volume_up"); // caelestia4: escaped for the toast's StyledText
 
         previousSinkName = newSinkName;
     }
@@ -146,7 +147,7 @@ Singleton {
         const newSourceName = source.description || source.name || Tr.trCtx("Unknown device", "unknown audio device");
 
         if (previousSourceName && previousSourceName !== newSourceName && GlobalConfig.utilities.toasts.audioInputChanged)
-            Toaster.toast(Tr.tr("Audio input changed"), Tr.tr("Now using: %1").arg(newSourceName), "mic");
+            Toaster.toast(Tr.tr("Audio input changed"), Tr.tr("Now using: %1").arg(Untrusted.escapeHtml(newSourceName)), "mic"); // caelestia4: as above
 
         previousSourceName = newSourceName;
     }

@@ -11,6 +11,8 @@ import qs.modules.caelestia.components.controls
 import qs.modules.caelestia.components.effects
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.utils
+import qs.modules.common.widgets as EW // caelestia4: end-4's tooltip, for where a link goes
+import "../../common/functions/untrusted.js" as Untrusted
 
 StyledRect {
     id: root
@@ -392,7 +394,8 @@ StyledRect {
 
                 animate: true
                 textFormat: root.bodyTextFormat
-                text: bodyPreviewMetrics.elidedText
+                // caelestia4: Markdown that loads nothing (no remote images) and keeps only simple tags
+                text: root.bodyTextFormat === Text.MarkdownText ? Untrusted.notificationMarkdown(bodyPreviewMetrics.elidedText) : bodyPreviewMetrics.elidedText
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
 
@@ -424,7 +427,7 @@ StyledRect {
 
                 animate: true
                 textFormat: root.bodyTextFormat
-                text: root.modelData.body
+                text: root.bodyTextFormat === Text.MarkdownText ? Untrusted.notificationMarkdown(root.modelData.body) : root.modelData.body // caelestia4: as above
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
@@ -434,8 +437,17 @@ StyledRect {
                     if (!root.expanded)
                         return;
 
+                    if (!Untrusted.isWebUrl(link))
+                        return; // caelestia4: web links only, no file:, smb: or app handlers
                     Qt.openUrlExternally(link);
                     root.modelData.popup = false;
+                }
+
+                // caelestia4: where a link goes, on hover before the click (its text, chosen by the sender, may say otherwise)
+                EW.StyledToolTip {
+                    extraVisibleCondition: false
+                    alternativeVisibleCondition: root.expanded && Untrusted.linkPreview(body.hoveredLink) !== ""
+                    text: Untrusted.linkPreview(body.hoveredLink)
                 }
 
                 opacity: root.expanded ? 1 : 0
