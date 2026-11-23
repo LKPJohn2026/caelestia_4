@@ -12,7 +12,6 @@ import QtQuick.Layouts
 import Quickshell
 import org.kde.syntaxhighlighting
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
-import qs.modules.caelestia.components.controls as CCtl // caelestia4: Caelestia buttons (aliased: other control names clash with end-4 widgets)
 
 ColumnLayout {
     id: root
@@ -252,27 +251,9 @@ ColumnLayout {
                         }
                     }
                 }
-                Loader {
-                    active: root.isCommandRequest && root.messageData.functionPending
-                    visible: active
-                    Layout.fillWidth: true
-                    Layout.margins: 6
-                    Layout.topMargin: 0
-                    sourceComponent: RowLayout {
-                        Item { Layout.fillWidth: true }
-                        RowLayout { // caelestia4: was end-4 ButtonGroup
-                            CCtl.TextButton {
-                                type: CCtl.TextButton.Tonal
-                                text: Translation.tr("Reject")
-                                onClicked: Ai.rejectCommand(root.messageData)
-                            }
-                            CCtl.TextButton {
-                                text: Translation.tr("Approve")
-                                onClicked: Ai.approveCommand(root.messageData)
-                            }
-                        }
-                    }
-                }
+                // caelestia4: no Approve/Reject here. A code block is parsed from the reply's Markdown, so the model
+                // could write one of its own, or hide part of the command from it; the buttons are in the approval
+                // box under the message (AiApprovalBox.qml), which shows functionCall.args itself
             }
 
             // MouseArea to block scrolling

@@ -46,17 +46,24 @@ payload=$(jq -n \
 # echo "$payload" | jq
 
 # Get API key
-API_KEY=$(secret-tool lookup 'application' 'illogical-impulse' | jq -r '.apiKeys.gemini')
+API_KEY=$(secret-tool lookup 'application' 'illogical-impulse' | jq -r '.apiKeys.gemini // empty')
+# caelestia4: no key, no request (it used to send "null")
+if [[ -z "$API_KEY" ]]; then
+    notify-send "Translation failed" "No Gemini API key is set (/key in the AI chat)" -a "$NOTIFICATION_APP_NAME"
+    exit 1
+fi
 
 # Notify start
 notify-send "Translation started" "Will take 2 minutes, and you'll be notified when it's done, so feel free to do something else in the meantime." -a "$NOTIFICATION_APP_NAME"
 
 # Make the request
-response=$(curl "https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent" \
--H "x-goog-api-key: $API_KEY" \
+# caelestia4: the key goes in on stdin (-H @-) and the payload from a pipe, not as arguments, which any process can
+# read in /proc while curl runs (as in gemini-categorize-wallpaper.sh)
+response=$(printf 'x-goog-api-key: %s\n' "$API_KEY" | curl "https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent" \
+-H @- \
 -H 'Content-Type: application/json' \
 -X POST \
--d "$payload" 2> /dev/null)
+--data-binary @<(printf '%s' "$payload") 2> /dev/null)
 # echo "$response" | jq
 
 # Write the result

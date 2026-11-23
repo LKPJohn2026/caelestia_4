@@ -2,7 +2,7 @@
 
 // caelestia4: Gemini Interactions API (https://ai.google.dev/gemini-api/docs/interactions, GA, Google's
 // recommended API; generateContent is now "legacy"). Pure JS so it can be tested outside Quickshell
-// (tools/test-gemini-interactions.js). Used by InteractionsApiStrategy.qml.
+// (tools/tests/gemini-interactions). Used by InteractionsApiStrategy.qml.
 //
 // Requests are stateless (store: false): the whole chat is sent as a list of steps every turn, so editing,
 // regenerating, switching models mid-chat and loading saved chats keep working like with the other providers.

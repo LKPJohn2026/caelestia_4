@@ -8,6 +8,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import qs.services.ai
+import "ai/safety.js" as Safety // caelestia4: config keys the model may ask for, history text around a request
 
 /**
  * Basic service to handle LLM chats. Supports Google's and OpenAI's API formats.
@@ -529,7 +530,7 @@ Singleton {
         promptLoader.reload();
     }
 
-    function addMessage(message, role) {
+    function addMessage(message, role, ephemeral = false) {
         if (message.length === 0) return;
         const aiMessage = aiMessageComponent.createObject(root, {
             "role": role,
@@ -537,6 +538,7 @@ Singleton {
             "rawContent": message,
             "thinking": false,
             "done": true,
+            "ephemeral": ephemeral,
         });
         const id = idForMessage(aiMessage);
         root.messageIDs = [...root.messageIDs, id];
@@ -632,7 +634,8 @@ Singleton {
         if (model.requires_key) {
             const key = root.apiKeys[model.key_id];
             if (key) {
-                root.addMessage(Translation.tr("API key:\n\n```txt\n%1\n```").arg(key), Ai.interfaceRole);
+                // caelestia4: ephemeral, so the key is never written into the saved chats (lastSession.json)
+                root.addMessage(Translation.tr("API key:\n\n```txt\n%1\n```").arg(key), Ai.interfaceRole, true);
             } else {
                 root.addMessage(Translation.tr("No API key set for %1").arg(model.name), Ai.interfaceRole);
             }
@@ -757,12 +760,19 @@ Singleton {
 
                 // Handle response line
                 try {
+                    // caelestia4: the Gemini and Mistral strategies write each call they parse into the message: a
+                    // request waiting for approval keeps its own (see takeFunctionCall)
+                    const pending = requester.message.functionPending
+                        ? { call: requester.message.functionCall, name: requester.message.functionName } : null;
                     const result = requester.currentStrategy.parseResponseLine(data, requester.message);
                     // console.log("[Ai] Parsed response result: ", JSON.stringify(result, null, 2));
+                    if (pending) {
+                        requester.message.functionCall = pending.call;
+                        requester.message.functionName = pending.name;
+                    }
 
                     if (result.functionCall) {
-                        requester.message.functionCall = result.functionCall;
-                        root.handleFunctionCall(result.functionCall.name, result.functionCall.args, requester.message);
+                        root.takeFunctionCall(result.functionCall, requester.message);
                     }
                     if (result.tokenUsage) {
                         root.tokenCount.input = result.tokenUsage.input;
@@ -799,8 +809,7 @@ Singleton {
             // caelestia4: the Interactions strategy reports function calls only once curl has exited, so the
             // follow-up request starts on a stopped Process (and doesn't mark the next message done early)
             if (result.deferredFunctionCall) {
-                message.functionCall = result.deferredFunctionCall;
-                root.handleFunctionCall(result.deferredFunctionCall.name, result.deferredFunctionCall.args, message);
+                root.takeFunctionCall(result.deferredFunctionCall, message);
             }
 
             // Handle error responses
@@ -852,17 +861,49 @@ Singleton {
         root.messageByID[id] = aiMessage;
     }
 
+    // caelestia4: one request per message. While one waits for approval, a later call in the same reply is ignored:
+    // it would replace what the approval box shows, and what Approve runs, under the user's click
+    function takeFunctionCall(call, message: AiMessageData) {
+        if (message.functionPending) {
+            console.log("[AI] Ignoring a function call while another waits for approval: " + call.name);
+            return;
+        }
+        message.functionCall = call;
+        root.handleFunctionCall(call.name, call.args, message);
+    }
+
+    // caelestia4: the function a pending message asks for (the Interactions strategy sets functionCall, not functionName)
+    function pendingFunctionName(message: AiMessageData): string {
+        return message.functionCall?.name ?? message.functionName ?? "";
+    }
+
     function rejectCommand(message: AiMessageData) {
         if (!message.functionPending) return;
         message.functionPending = false; // User decided, no more "thinking"
-        addFunctionOutputMessage(message.functionName, Translation.tr("Command rejected by user"))
+        const name = root.pendingFunctionName(message);
+        addFunctionOutputMessage(name, name === "set_shell_config"
+            ? Translation.tr("Config change rejected by user")
+            : Translation.tr("Command rejected by user"))
     }
 
     function approveCommand(message: AiMessageData) {
         if (!message.functionPending) return;
         message.functionPending = false; // User decided, no more "thinking"
 
-        const responseMessage = createFunctionOutputMessage(message.functionName, "", false);
+        // caelestia4: set_shell_config asks first too (a config key can hold a command the shell runs later), and
+        // sets exactly the key and value the approval box showed
+        if (root.pendingFunctionName(message) === "set_shell_config") {
+            const args = message.functionCall.args;
+            // as handleFunctionCall checked (again here: a saved chat can hold a pending request from before that check)
+            if (typeof args.key !== "string" || typeof args.value !== "string" || Safety.configKeyProblem(args.key) !== "") return;
+            Config.setNestedValue(args.key, args.value);
+            addFunctionOutputMessage("set_shell_config", Translation.tr("Set `%1` to `%2`").arg(args.key).arg(args.value));
+            requester.makeRequest(); // Continue
+            return;
+        }
+
+        // caelestia4: pendingFunctionName, so the output is sent as this call's result with every strategy
+        const responseMessage = createFunctionOutputMessage(root.pendingFunctionName(message), "", false);
         const id = idForMessage(responseMessage);
         root.messageIDs = [...root.messageIDs, id];
         root.messageByID[id] = responseMessage;
@@ -882,7 +923,10 @@ Singleton {
         stdout: SplitParser {
             onRead: (output) => {
                 commandExecutionProc.message.functionResponse += output + "\n\n";
-                const updatedContent = commandExecutionProc.baseMessageContent + `\n\n<think>\n<tt>${commandExecutionProc.message.functionResponse}</tt>\n</think>`;
+                // caelestia4: in a fence, not <tt>: the think block's text goes through Untrusted.markdownSafe, which
+                // shows a tag as text, and copies a fenced block as it is (monospace, spaces kept). The output can't
+                // close the fence or the think block early (Safety.breakFences)
+                const updatedContent = commandExecutionProc.baseMessageContent + `\n\n<think>\n\`\`\`\n${Safety.breakFences(commandExecutionProc.message.functionResponse)}\n\`\`\`\n</think>`;
                 commandExecutionProc.message.rawContent = updatedContent;
                 commandExecutionProc.message.content = updatedContent;
             }
@@ -905,19 +949,38 @@ Singleton {
             addFunctionOutputMessage(name, JSON.stringify(configJson));
             requester.makeRequest();
         } else if (name === "set_shell_config") {
+            // A key that holds a command, a path, an address or a safeguard is refused before any box is shown
+            // (Safety.configKeyProblem): one click must never make a value from a page the model read persistent
+            if (typeof args.key === "string" && Safety.configKeyProblem(args.key) === "protected key") {
+                addFunctionOutputMessage(name, Translation.tr("The assistant can't change `%1`: it holds a command, a path, an address or a security setting. Change it in Nexus.").arg(args.key));
+                return;
+            }
             if (!args.key || !args.value) {
                 addFunctionOutputMessage(name, Translation.tr("Invalid arguments. Must provide `key` and `value`."));
                 return;
             }
-            const key = args.key;
-            const value = args.value;
-            Config.setNestedValue(key, value);
+            // caelestia4: no longer set right away. The user approves the key and the exact value first, in the
+            // approval box under the message (AiMessage.qml), like a shell command
+            // The value must be a string too (what the tool's schema says, but not every API enforces it): an object
+            // would be shown as "[object Object]" and replace a whole part of the config
+            if (typeof args.key !== "string" || Safety.configKeyProblem(args.key) !== "" || typeof args.value !== "string") {
+                addFunctionOutputMessage(name, Translation.tr("Invalid arguments. Must provide `key` and `value`."));
+                return;
+            }
+            const contentToAppend = `\n\n**Config change request**\n`;
+            message.rawContent += contentToAppend;
+            message.content += contentToAppend;
+            message.functionPending = true;
         } else if (name === "run_shell_command") {
-            if (!args.command || args.command.length === 0) {
+            if (typeof args.command !== "string" || args.command.length === 0) { // caelestia4: a string, as the box shows it
                 addFunctionOutputMessage(name, Translation.tr("Invalid arguments. Must provide `command`."));
                 return;
             }
-            const contentToAppend = `\n\n**Command execution request**\n\n\`\`\`command\n${args.command}\n\`\`\``;
+            // caelestia4: the approval box under the message (AiMessage.qml) shows the command that runs, from
+            // functionCall.args, not from this Markdown. The chat's text keeps a fenced copy as a record; a command
+            // that could close the fence early or hide part of itself in a collapsed think block is broken up first
+            const recorded = Safety.canFence(args.command) ? args.command : Safety.breakFences(args.command);
+            const contentToAppend = `\n\n**Command execution request**\n\n\`\`\`command\n${recorded}\n\`\`\``;
             message.rawContent += contentToAppend;
             message.content += contentToAppend;
             message.functionPending = true; // Use thinking to indicate the command is waiting for approval
@@ -926,7 +989,9 @@ Singleton {
     }
 
     function chatToJson() {
-        return root.messageIDs.map(id => {
+        // caelestia4: ephemeral ones stay out, and an API key shown before /key get was ephemeral (Safety.isApiKeyMessage)
+        return root.messageIDs.filter(id => !root.messageByID[id]?.ephemeral
+                && !Safety.isApiKeyMessage(root.messageByID[id]?.role, root.messageByID[id]?.rawContent)).map(id => {
             const message = root.messageByID[id]
             return ({
                 "role": message.role,
@@ -976,7 +1041,12 @@ Singleton {
             chatSaveFile.reload()
             const saveContent = chatSaveFile.text()
             // console.log(saveContent)
-            const saveData = JSON.parse(saveContent)
+            const loaded = JSON.parse(saveContent)
+            // caelestia4: a chat saved after /key get before that was ephemeral holds the key in plain text: it isn't
+            // shown again, and the file is written again without it
+            const saveData = loaded.filter(m => !Safety.isApiKeyMessage(m?.role, m?.rawContent))
+            if (saveData.length !== loaded.length)
+                chatSaveFile.setText(JSON.stringify(saveData))
             root.clearMessages()
             root.messageIDs = saveData.map((_, i) => {
                 return i

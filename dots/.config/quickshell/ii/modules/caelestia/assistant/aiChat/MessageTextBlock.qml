@@ -13,6 +13,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
 import qs.modules.caelestia.components // caelestia4: last, so StyledText is Caelestia's
+import "../../../common/functions/untrusted.js" as Untrusted // caelestia4: images and tags from the reply, link schemes
 
 ColumnLayout {
     id: root
@@ -28,6 +29,11 @@ ColumnLayout {
     property list<string> renderedLatexHashes: []
     property string renderedSegmentContent: ""
     property string shownText: ""
+    // caelestia4: while editing, the text area holds segmentContent itself as plain text (Markdown isn't rendered,
+    // so nothing loads, and the edit keeps the raw text, not the sanitised one shown). switchingFormat: text changes
+    // the switch makes aren't edits
+    property bool plainEditing: false
+    property bool switchingFormat: false
     property bool fadeChunkSplitting: !forceDisableChunkSplitting && !editing && !/\n\|/.test(shownText) && Config.options.sidebar.ai.textFadeIn
 
     Layout.fillWidth: true
@@ -65,6 +71,7 @@ ColumnLayout {
     function handleRenderedLatex(hash, force = false) {
         if (renderedLatexHashes.includes(hash) || force) {
             const imagePath = LatexRenderer.renderedImagePaths[hash];
+            if (!imagePath) return; // caelestia4: not rendered (yet, or MicroTeX failed): keep the text
             const markdownImage = `![latex](${imagePath})`;
 
             const expression = LatexRenderer.processedExpressions[hash];
@@ -77,15 +84,25 @@ ColumnLayout {
     }
     onEditingChanged: {
         if (!editing) {
+            // caelestia4: the edited text first (still shown as plain text), then back to Markdown (sanitised as shown)
+            renderedSegmentContent = segmentContent;
+            root.shownText = renderedSegmentContent;
+            root.plainEditing = false;
             renderLatex()
         } else {
             // console.log("Editing mode enabled", segmentContent)
-            root.shownText = segmentContent
+            root.switchingFormat = true;
+            root.plainEditing = true; // caelestia4: plain text before the raw text goes in
+            root.shownText = segmentContent;
+            root.switchingFormat = false;
         }
     }
 
     onSegmentContentChanged: {
         // console.log("Segment content changed: " + segmentContent);
+        if (root.plainEditing) return; // caelestia4: the user's edit, already in the text area
+        // caelestia4: no image or HTML tag in the reply loads anything when shown: the text area shows it through
+        // Untrusted.markdownSafe, which keeps only the rendered LaTeX images put in here
         renderedSegmentContent = segmentContent;
         if (!root.editing && segmentContent) {
             root.renderLatex();
@@ -94,7 +111,7 @@ ColumnLayout {
 
     onRenderedSegmentContentChanged: {
         // console.log("Rendered segment content changed: " + renderedSegmentContent);
-        if (renderedSegmentContent) {
+        if (renderedSegmentContent && !root.plainEditing) { // caelestia4: not over the text being edited
             root.shownText = renderedSegmentContent;
         }
     }
@@ -163,17 +180,35 @@ ColumnLayout {
             selectionColor: Colours.palette.m3secondaryContainer
             wrapMode: TextEdit.Wrap
             color: root.messageData?.thinking ? Colours.palette.m3outline : Colours.palette.m3onSurface
-            textFormat: renderMarkdown ? TextEdit.MarkdownText : TextEdit.PlainText
-            text: modelData
+            // caelestia4: a reply loads nothing from the network as it shows (an image URL could carry the chat away):
+            // images become links, HTML other than formatting tags is shown as text; the rendered LaTeX (<hex>.svg in
+            // LatexRenderer's folder) stays.
+            // While editing (plainEditing) the raw segmentContent is shown as plain text, so what is saved is what was typed.
+            readonly property bool showMarkdown: root.renderMarkdown && !root.plainEditing
+            // Formatting tags only, rebuilt without attributes (<br> in table cells, H<sub>2</sub>O): they load nothing
+            readonly property var allowTags: ["br", "b", "i", "u", "em", "strong", "sub", "sup", "tt", "code"]
+            readonly property string safeText: showMarkdown ? Untrusted.markdownSafe(modelData, { localImageDir: LatexRenderer.latexOutputPath, allowTags: allowTags }) : modelData
+            textFormat: showMarkdown ? TextEdit.MarkdownText : TextEdit.PlainText
+            text: safeText
+            // caelestia4: a format switch rewrites the text (Qt converts the document): back to safeText
+            onTextFormatChanged: text = Qt.binding(() => textArea.safeText)
 
             onTextChanged: {
-                if (!root.editing) return
+                if (!root.editing || !root.plainEditing || root.switchingFormat) return // caelestia4: only the user's edits
                 segmentContent = text
             }
 
             onLinkActivated: (link) => {
+                if (!Untrusted.isWebUrl(link)) return // caelestia4: web links only, no file:, smb: or app handlers
                 Qt.openUrlExternally(link)
                 GlobalStates.sidebarLeftOpen = false
+            }
+
+            // caelestia4: where a link goes, on hover before the click (its text, chosen by the reply, may say otherwise)
+            StyledToolTip {
+                extraVisibleCondition: false
+                alternativeVisibleCondition: Untrusted.linkPreview(textArea.hoveredLink) !== ""
+                text: Untrusted.linkPreview(textArea.hoveredLink)
             }
 
             MouseArea { // Pointing hand for links

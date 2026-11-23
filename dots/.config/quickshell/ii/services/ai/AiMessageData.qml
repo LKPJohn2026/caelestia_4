@@ -21,5 +21,6 @@ QtObject {
     property string functionResponse
     property bool functionPending: false
     property bool visibleToUser: true
+    property bool ephemeral: false // caelestia4: shown, never saved with the chat (the API key from /key get)
     property var providerSteps: [] // caelestia4: raw model steps from the Gemini Interactions API, resent unchanged
 }

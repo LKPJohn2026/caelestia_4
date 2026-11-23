@@ -33,11 +33,14 @@ GCloudApi {
 
         // print("PENDING STRINGS:", root.pendingStrings)
 
+        // caelestia4: the token goes in the environment (only this user can read it) and to curl through a file
+        // descriptor, not into the bash -c script or curl's arguments, which any process can read in /proc
+        multiproc.environment = ({ "GCLOUD_TOKEN": GoogleCloud.token });
         var seq = [];
         seq.push([ //
             "bash", "-c", //
             `curl -sL -X POST \
--H "Authorization: Bearer ${GoogleCloud.token}" \
+-H @<(printf 'Authorization: Bearer %s\\n' "$GCLOUD_TOKEN") \
 -H "x-goog-user-project: ${GoogleCloud.projectId}" \
 -H "Content-Type: application/json" \
 -d '${StringUtils.shellSingleQuoteEscape(JSON.stringify(payload))}' \

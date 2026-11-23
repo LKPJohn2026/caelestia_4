@@ -220,7 +220,8 @@ Rectangle {
                     AiMessageControlButton {
                         id: editButton
                         activated: root.editing
-                        enabled: root.messageData?.done ?? false
+                        // caelestia4: not while a request waits for approval (an edit here wouldn't change what runs)
+                        enabled: (root.messageData?.done ?? false) && !(root.messageData?.functionPending ?? false)
                         buttonIcon: "edit"
                         onClicked: {
                             root.editing = !root.editing
@@ -323,6 +324,15 @@ Rectangle {
                         forceDisableChunkSplitting: root.messageData?.content.includes("```") ?? true
                     } }
                 }
+            }
+        }
+
+        Loader { // caelestia4: a command or config change the model asks for, waiting for Approve/Reject
+            Layout.fillWidth: true
+            active: root.messageData?.functionPending ?? false
+            visible: active
+            sourceComponent: AiApprovalBox {
+                messageData: root.messageData
             }
         }
 

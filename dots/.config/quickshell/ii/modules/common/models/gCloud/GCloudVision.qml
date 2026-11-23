@@ -56,10 +56,13 @@ GCloudApi {
 > '${payloadFilePath}'`
         ]);
 
+        // caelestia4: the token goes in the environment (only this user can read it) and to curl through a file
+        // descriptor, not into the bash -c script or curl's arguments, which any process can read in /proc
+        lookMultiproc.environment = ({ "GCLOUD_TOKEN": GoogleCloud.token });
         seq.push([
             "bash", "-c",
             `curl -s -X POST \
--H "Authorization: Bearer ${GoogleCloud.token}" \
+-H @<(printf 'Authorization: Bearer %s\\n' "$GCLOUD_TOKEN") \
 -H "x-goog-user-project: ${GoogleCloud.projectId}" \
 -H "Content-Type: application/json" \
 https://vision.googleapis.com/v1/images:annotate \

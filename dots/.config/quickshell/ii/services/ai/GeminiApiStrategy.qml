@@ -11,7 +11,9 @@ ApiStrategy {
     property string buffer: ""
     
     function buildEndpoint(model: AiModel): string {
-        const result = model.endpoint + `?key=\$\{${root.apiKeyEnvVarName}\}`
+        // caelestia4: the key goes in the x-goog-api-key header (buildAuthorizationHeader), not ?key= in the URL,
+        // which is one of curl's arguments
+        const result = model.endpoint
         // console.log("[AI] Endpoint: " + result);
         return result;
     }
@@ -80,8 +82,7 @@ ApiStrategy {
     }
 
     function buildAuthorizationHeader(apiKeyEnvVarName: string): string {
-        // Gemini doesn't use Authorization header, key is in URL
-        return "";
+        return secretHeader("x-goog-api-key", "", apiKeyEnvVarName); // caelestia4: was ?key= in the URL
     }
 
     function parseResponseLine(line, message) {
@@ -214,7 +215,7 @@ ApiStrategy {
         // Initial resumable request defining metadata.
         // The upload url is in the response headers dump them to a file.
         content += 'curl "https://generativelanguage.googleapis.com/upload/v1beta/files"'
-            + ` -H "x-goog-api-key: \$${apiKeyEnvVarName}"`
+            + ` ${secretHeader("x-goog-api-key", "", apiKeyEnvVarName)}` // caelestia4: not in curl's arguments
             + ' -D $tmp_header_file'
             + ' -H "X-Goog-Upload-Protocol: resumable"'
             + ' -H "X-Goog-Upload-Command: start"'
@@ -230,7 +231,7 @@ ApiStrategy {
 
         // Upload the actual file
         content += 'curl "${upload_url}"'
-            + ` -H "x-goog-api-key: \$${apiKeyEnvVarName}"`
+            + ` ${secretHeader("x-goog-api-key", "", apiKeyEnvVarName)}` // caelestia4: not in curl's arguments
             + ' -H "Content-Length: ${NUM_BYTES}"'
             + ' -H "X-Goog-Upload-Offset: 0"'
             + ' -H "X-Goog-Upload-Command: upload, finalize"'

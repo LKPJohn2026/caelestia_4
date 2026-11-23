@@ -29,7 +29,7 @@ ApiStrategy {
     }
 
     function buildAuthorizationHeader(apiKeyEnvVarName: string): string {
-        return `-H "Authorization: Bearer \$\{${apiKeyEnvVarName}\}"`;
+        return secretHeader("Authorization", "Bearer ", apiKeyEnvVarName); // caelestia4: not in curl's arguments
     }
 
     function parseResponseLine(line, message) {

@@ -6,6 +6,7 @@ import qs.modules.common.widgets as E4W // caelestia4: keep (Favicon)
 import qs.modules.caelestia.components
 import qs.modules.caelestia.adapters
 import qs.modules.caelestia.assistant
+import "../../../common/functions/untrusted.js" as Untrusted
 
 // caelestia4: a source the AI cited, as a Caelestia chip with the site's favicon; click opens it
 ChipBase {
@@ -18,7 +19,7 @@ ChipBase {
     horizontalPadding: CC.Tokens.padding.small
 
     onClicked: {
-        if (url) {
+        if (Untrusted.isWebUrl(url)) { // caelestia4: web links only (the citation comes from search results)
             Qt.openUrlExternally(url);
             GlobalStates.sidebarLeftOpen = false;
         }

@@ -43,7 +43,7 @@ ApiStrategy {
     }
 
     function buildAuthorizationHeader(apiKeyEnvVarName: string): string {
-        return `-H "x-goog-api-key: \$\{${apiKeyEnvVarName}\}"`;
+        return secretHeader("x-goog-api-key", "", apiKeyEnvVarName); // caelestia4: not in curl's arguments
     }
 
     function parseResponseLine(line, message) {
