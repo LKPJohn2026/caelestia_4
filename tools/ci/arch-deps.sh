@@ -40,13 +40,19 @@ mapfile -t qs_deps < <(
 extra=(cmake ninja pkgconf libqalculate aubio lm_sensors # the plugin
        fish gettext                                      # its translations (scripts/trs.fish runs msgfmt)
        meson fftw iniparser                              # libcava (tools/ci/build-pinned-deps.sh)
-       sway dbus rsync git)                              # the tests
+       sway dbus rsync git libcap)                       # the tests (libcap: setcap, below)
 echo "installing: ${qs_deps[*]} ${extra[*]}"
 pm -Syu --needed "${qs_deps[@]}" "${extra[@]}"
 
 # Arch rolls: what this run had
 pacman -Q qt6-base qt6-declarative qt6-shadertools sway
 pacman -Qq | grep '^wlroots' | xargs -r pacman -Q
+
+# sway is installed with cap_sys_nice, which the runner's container may not grant: exec then fails with "Operation
+# not permitted". The test compositor needs no realtime priority, so the capability goes (only in this container)
+if command -v setcap >/dev/null && [[ -n $(getcap /usr/bin/sway 2>/dev/null) ]]; then
+  setcap -r /usr/bin/sway && echo "arch-deps: dropped sway's file capability"
+fi
 
 id builder >/dev/null 2>&1 || useradd -m builder
 chown -R builder: "$PWD"
