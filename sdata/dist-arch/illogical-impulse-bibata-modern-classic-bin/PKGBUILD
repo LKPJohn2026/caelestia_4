@@ -10,7 +10,9 @@ conflicts=("bibata-cursor-theme" "bibata-cursor-theme-bin")
 options=('!strip')
 _variant=Bibata-Modern-Classic
 source=("${pkgname%-bin}-$pkgver.tar.xz::$url/releases/download/v$pkgver/$_variant.tar.xz")
-sha256sums=('SKIP')
+# caelestia4: the release asset's checksum (it was SKIP), worked out from v2.0.6's asset (1770592 bytes, as the release
+# lists; uploaded 2024-01-25); a new pkgver needs a new sum
+sha256sums=('4cfe5256374d7a465e05d6590dbc10745dc9d362bf955eaa2ac79b4070b0f3aa')
 
 package() {
   install -dm755 "$pkgdir/usr/share/icons"

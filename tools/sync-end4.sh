@@ -4,11 +4,18 @@
 # Its new commits are reviewed and picked one by one instead of merged:
 #   tools/sync-end4.sh [review]    upstream commits since the last review, with the files each touches that still
 #                                  exist here (kept), removed here, or new upstream; open upstream PRs if gh is set up
-#   tools/sync-end4.sh pick SHA... apply those commits ("Picked from" names each); files removed here stay removed
+#   tools/sync-end4.sh pick SHA... apply those commits ("Picked from" names each); files removed here stay removed;
+#                                  only plain files under dots/ and dots-extra/ go in without asking: anything else
+#                                  added or changed, or executable or a link, waits for a yes (held() below)
 #   tools/sync-end4.sh mark [SHA]  record upstream/main (or SHA) as reviewed (tools/end4-reviewed; commit it)
 # Commits use this repo's git identity (git config user.name / user.email).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# No git hook runs from here: a picked tree can hold hooks (post-index-change and reference-transaction run during the
+# cherry-pick itself), and a core.hooksPath into the tree would read them. For every git call below, fetch included
+NOHOOKS="git -c core.hooksPath=/dev/null"
+n=${GIT_CONFIG_COUNT:-0}
+export "GIT_CONFIG_KEY_$n=core.hooksPath" "GIT_CONFIG_VALUE_$n=/dev/null" GIT_CONFIG_COUNT=$((n + 1))
 
 MARK=tools/end4-reviewed
 git remote get-url upstream >/dev/null 2>&1 || git remote add --no-tags upstream https://github.com/end-4/dots-hyprland.git # a fresh clone
@@ -65,34 +72,87 @@ review() {
   return 0
 }
 
+# held: what of the staged pick waits for a yes, one quoted path a line. caelestia4: an allowlist, not a denylist (a
+# path no rule named, .claude/ or .gitmodules or system/ say, was committed and signed with no prompt): only a plain,
+# non-executable file under dots/ or dots-extra/ (end-4's dots, installed into the user's home) goes in without asking.
+# Everything else is held: the root and its dotfiles (.claude/ settings and hooks run in the maintainer's next Claude
+# Code session, .gitmodules URLs are fetched by CI, .gitattributes filters run on checkout), .github/ tools/ packaging/
+# sdata/ (CI, the tools, the packages, the installer: run with secrets or as root), system/ (installed as root),
+# third_party/, licenses/; under the dots too, anything .git* or .claude* and dots-extra/greetd/ (installed as root for
+# the greeter); and anything executable, a link or a submodule, wherever it is. No sdata/ file is let through: end-4's
+# installer steps run as root. A file only deleted isn't held. An unmerged file is judged by upstream's side of it
+held() {
+  local st nm f
+  while IFS= read -r -d '' st && IFS= read -r -d '' f; do
+    read -r _ nm _ _ st <<<"${st#:}"
+    [[ $st == D* ]] && continue
+    if [[ $st == U* ]]; then
+      nm=$(git ls-files -u -z -- ":(literal)$f" | tr '\0' '\n' | awk -F'[ \t]' '$3 == 3 { print $1; exit }')
+    fi
+    plain_dots "$f" "$nm" || printf '    %q\n' "$f"
+  done < <(git diff --cached --raw --no-renames -z)
+  return 0
+}
+# plain_dots PATH MODE: the one kind of change committed without a yes
+plain_dots() {
+  [[ $2 == 100644 ]] || return 1
+  case $1 in dots/* | dots-extra/*) ;; *) return 1 ;; esac
+  case /$1/ in */.git*/* | */.claude*/* | /dots-extra/greetd/*) return 1 ;; esac
+  return 0
+}
+HELD_WHAT="adds or changes files outside dots/ and dots-extra/ (or .git*, .claude* or dots-extra/greetd/ in them), or executables, links or submodules"
+
 pick() {
   git diff --quiet && git diff --cached --quiet || { echo "working tree not clean" >&2; exit 1; }
-  local sha f
+  local sha f msg list
+  msg=$(git rev-parse --path-format=absolute --git-path caelestia4-pick-msg)
   for sha in "$@"; do
     sha=$(git rev-parse --verify "$sha^{commit}")
     # Applied without committing, then committed as this repo's identity (signed) with the source named in the message
+    printf '%s\n\nPicked from end-4/dots-hyprland@%s (%s).\n' "$(git log -1 --format=%s "$sha")" "$sha" \
+      "$(git log -1 --format='%an, %cs' "$sha")" > "$msg"
     if ! git cherry-pick --no-commit "$sha"; then
       # A change to a file removed here (modify/delete): keep it removed
       while IFS= read -r f; do
         if ! git cat-file -e "HEAD:$f" 2>/dev/null; then git rm -q -- "$f" && echo "kept removed: $f"; fi
       done < <(git diff --name-only --diff-filter=U)
       if [[ -n "$(git diff --name-only --diff-filter=U)" ]]; then
-        echo "conflicts left to resolve, then commit (the message is in $(git rev-parse --git-path MERGE_MSG)):"
-        git diff --name-only --diff-filter=U; exit 1
+        echo "${sha:0:9} has conflicts left to resolve:"
+        git diff --name-only --diff-filter=U | sed 's/^/    /'
+        list=$(held)
+        if [[ -n $list ]]; then
+          echo "and $HELD_WHAT; read them (git diff --cached, git diff) before committing:"
+          echo "$list"
+        fi
+        echo "Then git add them, git cherry-pick --quit, and commit with: $NOHOOKS commit -S -F $msg"
+        echo "(no hooks: the picked tree's own can't run), or undo it all with: $NOHOOKS cherry-pick --abort"
+        exit 1
       fi
     fi
     # A new file under code removed here applies without a conflict: keep it out too
     while IFS= read -r f; do
       if is_removed "$f"; then git rm -q -f -- "$f" && echo "kept removed: $f"; fi
     done < <(git diff --cached --name-only --diff-filter=A)
+    git cherry-pick --quit 2>/dev/null || true
     if git diff --cached --quiet; then
-      git cherry-pick --quit 2>/dev/null || true
       echo "skipped ${sha:0:9}: nothing to apply (already here, or it only touches files removed here)"
       continue
     fi
-    git cherry-pick --quit 2>/dev/null || true
-    git commit -S -q -m "$(git log -1 --format=%s "$sha")" \
-      -m "Picked from end-4/dots-hyprland@$sha ($(git log -1 --format='%an, %cs' "$sha"))."
+    list=$(held)
+    if [[ -n $list ]]; then
+      echo "${sha:0:9} $HELD_WHAT:"
+      echo "$list"
+      local yes=
+      if [[ -t 0 ]]; then read -rp "read them (git diff --cached); commit them with the rest? [y/N] " yes; fi
+      if [[ $yes != [yY] ]]; then
+        echo "not committed: the pick is staged for review (git diff --cached); the SHAs after it weren't picked."
+        echo "Drop a file with git rm --cached, then commit with: $NOHOOKS commit -S -F $msg"
+        echo "(no hooks: the picked tree's own can't run), or undo it all with: $NOHOOKS reset --hard HEAD"
+        exit 1
+      fi
+    fi
+    git commit -S -q -F "$msg"
+    rm -f -- "$msg"
     echo "picked: $(git log -1 --format='%h %s')"
   done
 }
@@ -111,5 +171,5 @@ case "$cmd" in
   review) review ;;
   pick) (($#)) || { echo "usage: $0 pick SHA..." >&2; exit 1; }; pick "$@" ;;
   mark) mark "$@" ;;
-  *) sed -n '2,9p' "$0" >&2; exit 1 ;;
+  *) sed -n '2,11p' "$0" >&2; exit 1 ;;
 esac

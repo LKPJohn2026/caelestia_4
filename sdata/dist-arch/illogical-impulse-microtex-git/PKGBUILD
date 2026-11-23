@@ -1,8 +1,12 @@
 groups=(illogical-impulse)
 pkgname=illogical-impulse-microtex-git
 _pkgname=MicroTeX
-pkgver=r494.0e3707f
-pkgrel=4
+# caelestia4: pinned to one reviewed revision ("Fix build failure", 2026-06-05; a fontconfig include) instead of the
+# branch tip: install.sh builds this and installs it as root, and the shell runs /opt/MicroTeX/LaTeX on chat replies.
+# Move _commit and pkgver together, after reading the new upstream diff.
+_commit=e8c6e58b1306119e51297b02f0b449fa7300416d
+pkgver=r495.e8c6e58
+pkgrel=1
 pkgdesc='MicroTeX for illogical-impulse dotfiles.'
 #pkgdesc="A dynamic, cross-platform, and embeddable LaTeX rendering library"
 arch=("x86_64")
@@ -16,7 +20,7 @@ depends=(
   cairomm
 )
 makedepends=("git" "cmake")
-source=("git+${url}.git")
+source=("$_pkgname::git+${url}.git#commit=$_commit")
 sha256sums=("SKIP")
 
 prepare() {

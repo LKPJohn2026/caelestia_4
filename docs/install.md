@@ -221,12 +221,18 @@ or sign in with `gh auth login`.
 
 Maintainers: Caelestia is merged with `tools/sync-upstreams.sh`. end-4 is a vendored library since 2026-10-27, not an
 upstream to merge: `tools/sync-end4.sh` lists its new commits (and open PRs) since `tools/end4-reviewed`, `pick SHA`
-applies the chosen ones (changes to files removed here stay removed), `mark` records the review.
+applies the chosen ones (changes to files removed here stay removed; one that adds or changes anything under
+`.github/`, `tools/`, `packaging/` or `sdata/`, or any executable or link, is left staged and listed until you say yes,
+and no hook runs while it picks), `mark` records the review.
 
-To stop personal data reaching a public push: `git config core.hooksPath tools/git-hooks`, and list one regex per line
-in `${XDG_CONFIG_HOME:-~/.config}/caelestia4/push-denylist`, never in the repo. `tools/git-hooks/pre-push` then checks
-what the remote's tracking refs don't have yet: names, emails, messages, tags, file names and added lines. It covers
-this clone only, and says in its header what it can't see.
+To stop personal data reaching a public push: run `tools/git-hooks/install.sh`, and list one regex per line in
+`${XDG_CONFIG_HOME:-~/.config}/caelestia4/push-denylist`, never in the repo. The script copies `tools/git-hooks/pre-push`
+into the clone's `.git/hooks/` (and unsets a `core.hooksPath` that points into the tree, as these docs once said to set:
+hooks run from the tree are whatever the checked-out commit holds, so a PR branch or an upstream pick could run its own
+on checkout, or switch the check off). The copy then checks what the remote's tracking refs don't have yet: names,
+emails, messages, tags, file names and added lines. It covers this clone only, says in its header what it can't see, and
+changes only when the script is run again: do that after reading a change to the hook. Never point `core.hooksPath` at
+a folder in the tree.
 
 ## Who owns which file
 

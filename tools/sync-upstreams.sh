@@ -19,24 +19,31 @@ fi
 
 # Code without a licence can't be redistributed, and everything vendored here so far is GPL-3.0. Before anything is
 # merged this looks at the top of the fetched tree for a LICENSE, LICENCE or COPYING file (any extension) or a REUSE
-# LICENSES/ directory. It prints the commit it checked, and that commit, not the ref, is what gets merged.
+# LICENSES/ directory holding one. Only a regular file with something in it counts: not a link (whose target could be
+# anything, or nothing) and not an empty file or one of only blanks. It prints the commit it checked, and that commit,
+# not the ref, is what gets merged.
 # ALLOW_UNLICENSED=1 is for a repo whose licence is stated somewhere else: write down where in docs/feature-comparison.md.
 require_licence() {
   local url="$1" ref="$2" rev tree
   git fetch --quiet --no-tags "$url" "$ref" >&2 || { echo "Could not fetch $ref from $url" >&2; exit 1; }
   # This runs inside $(...), where bash drops set -e, hence the explicit exits
   rev=$(git rev-parse 'FETCH_HEAD^{commit}') || exit 1
-  # Read the whole listing first: grep -q on a pipe can SIGPIPE git under pipefail and fail a good repo
-  tree=$(git ls-tree "$rev") || exit 1
-  if awk -F'\t' '($1 ~ / blob / && tolower($2) ~ /^(licen[cs]e|copying)([.-].*)?$/) || ($1 ~ / tree / && $2 == "LICENSES") { found = 1 }
-      END { exit !found }' <<<"$tree"; then
-    echo "$rev"; return 0
-  fi
+  # Read the whole listing first: grep -q on a pipe can SIGPIPE git under pipefail and fail a good repo.
+  # -l: "mode type object size<TAB>path"; 100644/100755 are files (120000 is a link, 160000 a submodule)
+  tree=$(git ls-tree -l "$rev" && git ls-tree -l -r "$rev" -- LICENSES) || exit 1
+  local obj
+  # each candidate's object: a file, by name, with something in it; then one with more than blanks in it
+  while read -r obj; do
+    [[ -n $(git cat-file blob "$obj" | tr -d '[:space:]') ]] && { echo "$rev"; return 0; }
+  done < <(awk -F'\t' '{ split($1, m, / +/) }
+      (m[1] == "100644" || m[1] == "100755") && m[2] == "blob" && m[4] > 0 &&
+        (tolower($2) ~ /^(licen[cs]e|copying)([.-].*)?$/ || $2 ~ /^LICENSES\/[^\/]+$/) { print m[3] }' <<<"$tree")
   if [[ "${ALLOW_UNLICENSED:-}" == 1 ]]; then
     echo "!! $url at $ref has no licence file; vendoring anyway (ALLOW_UNLICENSED=1)" >&2
     echo "$rev"; return 0
   fi
-  echo "$url at $ref has no licence file (LICENSE, LICENCE, COPYING or LICENSES/), so it is not vendored." >&2
+  echo "$url at $ref has no licence file (LICENSE, LICENCE, COPYING or LICENSES/: a file, not blank, not a link)," >&2
+  echo "so it is not vendored." >&2
   echo "Ask upstream to add one, or set ALLOW_UNLICENSED=1 if its licence is stated elsewhere." >&2
   exit 1
 }

@@ -3,13 +3,17 @@
 
 The list is $XDG_CONFIG_HOME/caelestia4/push-denylist: one Python regex per line, case ignored, ^ and $ matching each
 line, blank lines and # comments skipped, spaces around a pattern ignored. It stays out of the repo. Matches are
-reported by place and list line, never by value, so the output is safe to share.
+reported by place and list line, never by value, so the output is safe to share. Patterns are read in Unicode NFC, and
+text is tried as it is, in NFC and in NFD, so a name with diacritics matches however either was typed; a CR before a
+line's end is dropped first, so $ also ends the lines of a CRLF file, and a lone CR (old Mac files) is tried as a line
+end too.
 
 Checked: ref names; tags (names, taggers, messages, nested ones too); commits' names, emails and messages; file names;
-added lines, binary files as text and with NUL bytes dropped (UTF-16). Not checked: compressed content, and commits
-that this remote's tracking refs already have. A first push to a remote checks its whole history. Anything that can't
-be checked refuses the push. `git push --no-verify` skips all of this."""
-import os, re, subprocess, sys
+added lines, binary files as text and with NUL bytes dropped (UTF-16). Not checked: compressed content, Unicode
+compatibility forms (NFKC: fullwidth letters, ligatures), and commits that this remote's tracking refs already have. A
+first push to a remote checks its whole history. Anything that can't be checked refuses the push. `git push
+--no-verify` skips all of this."""
+import os, re, subprocess, sys, unicodedata
 
 ZERO = re.compile(r"^0+$")
 ENV = {**os.environ, "GIT_NO_REPLACE_OBJECTS": "1"}
@@ -26,6 +30,18 @@ def git(*args):
 
 def text(data):
     return data.decode("utf-8", "surrogateescape")
+
+
+def forms(value):
+    """The ways a text is tried: as it is, NFC and NFD (composed or decomposed diacritics), each also without a CR at a
+    line's end (CRLF files), and with each CR left after that as a line end (lone-CR files)"""
+    out = []
+    for v in (value, unicodedata.normalize("NFC", value), unicodedata.normalize("NFD", value)):
+        crlf = re.sub(r"\r+(?=\n|$)", "", v)
+        for w in (v, crlf, crlf.replace("\r", "\n")):
+            if w not in out:
+                out.append(w)
+    return out
 
 
 def header_value(line):
@@ -49,7 +65,7 @@ def load_patterns():
         if not line or line.startswith("#"):
             continue
         try:
-            patterns.append((number, re.compile(line, re.I | re.M)))
+            patterns.append((number, re.compile(unicodedata.normalize("NFC", line), re.I | re.M)))
         except re.error:
             raise Refuse(f"line {number} of {path} isn't a valid regex") from None
     if not patterns:
@@ -64,16 +80,16 @@ class Scan:
         self.hits = {}  # (what, list line) -> set of places
 
     def matches(self, value):
-        return any(p.search(value) for _, p in self.patterns)
+        return any(p.search(v) for v in forms(value) for _, p in self.patterns)
 
     def place(self, name):
         # A place that is itself a match, or that git still had to quote, can't be shown
         return "(a file name)" if name.startswith('"') or self.matches(name) else name
 
     def check(self, what, place, data):
-        values = [text(data)]
+        values = forms(text(data))
         if b"\0" in data:
-            values.append(text(data.replace(b"\0", b"")))
+            values += forms(text(data.replace(b"\0", b"")))
         for number, pattern in self.patterns:
             if any(pattern.search(v) for v in values):
                 self.hits.setdefault((what, number), set()).add(place)
