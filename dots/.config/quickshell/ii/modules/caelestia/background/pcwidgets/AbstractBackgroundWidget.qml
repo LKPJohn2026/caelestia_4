@@ -148,8 +148,21 @@ AbstractWidget {
         if (!Config.ready) return;
         if (root.placementStrategy === "free" && !root.needsColText) return;
         leastBusyRegionProc.wallpaperPath = root.wallpaperPath;
+        // caelestia4: while locked (the lock screen's copy of the widgets, made at every lock), the desktop's result
+        // for the same wallpaper and size, at once (services/WallpaperRegions.qml)
+        const cached = GlobalStates.screenLocked ? WallpaperRegions.get(leastBusyRegionProc.command) : null;
+        if (cached) {
+            root.applyRegion(cached);
+            return;
+        }
         leastBusyRegionProc.running = false;
         leastBusyRegionProc.running = true;
+    }
+    function applyRegion(parsedContent) {
+        root.dominantColor = parsedContent.dominant_color || Appearance.colors.colPrimary;
+        if (root.placementStrategy === "free") return;
+        root.targetX = parsedContent.center_x * root.wallpaperScale - root.drawnWidth / 2;
+        root.targetY = parsedContent.center_y * root.wallpaperScale - root.drawnHeight / 2;
     }
     Process {
         id: leastBusyRegionProc
@@ -175,10 +188,8 @@ AbstractWidget {
                 const output = leastBusyRegionOutputCollector.text;
                 if (output.length === 0) return;
                 const parsedContent = JSON.parse(output);
-                root.dominantColor = parsedContent.dominant_color || Appearance.colors.colPrimary;
-                if (root.placementStrategy === "free") return;
-                root.targetX = parsedContent.center_x * root.wallpaperScale - root.drawnWidth / 2;
-                root.targetY = parsedContent.center_y * root.wallpaperScale - root.drawnHeight / 2;
+                WallpaperRegions.put(leastBusyRegionProc.command, parsedContent); // caelestia4: for the lock's copy
+                root.applyRegion(parsedContent);
             }
         }
     }

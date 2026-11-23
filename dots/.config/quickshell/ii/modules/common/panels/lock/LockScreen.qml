@@ -13,10 +13,19 @@ Scope {
     id: root
 
     required property Component lockSurface
+    // caelestia4: drawn under lockSurface, opaque and at once (no fade): with session_lock_xray off nothing of the
+    // desktop shows under the lock, so the wallpaper and the lock's widgets come from here. Its `screen` is set
+    property Component backdrop: null
     property alias context: lockContext
     property Component sessionLockSurface: WlSessionLockSurface {
         id: sessionLockSurface
         color: "transparent"
+        Loader {
+            active: GlobalStates.screenLocked && root.backdrop !== null
+            anchors.fill: parent
+            sourceComponent: root.backdrop
+            onLoaded: item.screen = Qt.binding(() => sessionLockSurface.screen)
+        }
         Loader {
             active: GlobalStates.screenLocked
             anchors.fill: parent

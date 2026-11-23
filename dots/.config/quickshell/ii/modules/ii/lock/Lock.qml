@@ -36,6 +36,7 @@ LockScreen {
     lockSurface: LockSurface {
         context: root.context
     }
+    backdrop: LockBackdrop {} // caelestia4: the wallpaper and lock widgets (session_lock_xray is off)
 
     // Single batch for lock and unlock so we don't race multiple hyprctl calls
     Connections {

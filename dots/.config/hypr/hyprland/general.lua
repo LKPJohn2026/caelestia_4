@@ -282,7 +282,12 @@ hl.config({
         swallow_regex = "(foot|kitty|allacritty|Alacritty)",
         on_focus_under_fullscreen = 2,
         allow_session_lock_restore = true,
-        session_lock_xray = true,
+        -- caelestia4: off. With xray the windows stay drawn under the shell's transparent lock surface, and only an
+        -- async move to an empty workspace hides them: a window opened or pinned while locked, or a monitor with no
+        -- data yet, showed the desktop through the lock screen. Off, nothing of the desktop is drawn under the lock
+        -- (the background layer neither), so the shell's lock draws the wallpaper and its widgets itself
+        -- (quickshell/ii/modules/ii/lock/LockBackdrop.qml)
+        session_lock_xray = false,
         initial_workspace_tracking = false,
         focus_on_activate = true,
         -- caelestia4: XDG_CURRENT_DESKTOP is set by the uwsm env (Hyprland; it was Hyprland:KDE while the keys were
