@@ -108,6 +108,16 @@ and ported under `dots/.config/quickshell/ii/modules/caelestia`.
   [CLI](https://github.com/caelestia-dots/cli/graphs/contributors)
 - Community: [Caelestia Discord](https://caelestiashell.com/discord)
 
+### Also built on
+
+| Project | Used here for | Support |
+|---|---|---|
+| **AstraSuite** — [Atlas](https://github.com/AstraSuite/Atlas) | The default file manager: folders, Super+E and Caelestia's `apps.explorer` open in it, coloured live from Caelestia's scheme. Built from source in [`packaging/caelestia4-atlas`](packaging/caelestia4-atlas); Thunar stays as the fallback | [@dim-ghub](https://github.com/dim-ghub), [@eximora-private](https://github.com/eximora-private) and [all contributors](https://github.com/AstraSuite/Atlas/graphs/contributors) |
+| **AstraSuite** — [Wormhole](https://github.com/AstraSuite/Wormhole) | The Open / Save dialog (the FileChooser portal) in the Hyprland session, GTK's as the fallback. Built in [`packaging/caelestia4-wormhole`](packaging/caelestia4-wormhole) | [all contributors](https://github.com/AstraSuite/Wormhole/graphs/contributors) |
+| [**pctrade/end4-pC**](https://github.com/pctrade/end4-pC) | The desktop widgets on the background (clocks, weather, calendar, media, visualizer and its shaders, notes, timers, to-do, …), their liquid-glass cards, and the presets (wallpaper, widgets, colours and lock screen in one, with the online gallery). Ported from commit `8840bd0` under `modules/caelestia/background/pcwidgets` and Nexus's Wallpaper & style page | [@pctrade](https://github.com/pctrade) ([YouTube](https://youtube.com/@nopain.nogain..6783)) and [all contributors](https://github.com/pctrade/end4-pC/graphs/contributors) |
+
+None of them lists a sponsor link: starring the repos and sending fixes upstream is the best way to help.
+
 ### The foundations
 
 - [Quickshell](https://quickshell.org) by [@outfoxxed](https://github.com/outfoxxed) — the toolkit both shells are built on
@@ -125,4 +135,6 @@ The **Sponsor** button of this repository ([.github/FUNDING.yml](.github/FUNDING
 **GPL-3.0**, the same as both upstreams ([LICENSE](LICENSE)). Code from other projects keeps its own notice; the extra
 licence texts are in [licenses/](licenses/). Third-party code: [`third_party/caelestia-shell`](third_party/caelestia-shell)
 (GPL-3.0), Caelestia's preset schemes and app templates from [caelestia-dots/cli](https://github.com/caelestia-dots/cli)
-and [caelestia-dots/caelestia](https://github.com/caelestia-dots/caelestia) (GPL-3.0), rxi's json.lua (MIT).
+and [caelestia-dots/caelestia](https://github.com/caelestia-dots/caelestia) (GPL-3.0), end4-pC's desktop widgets, shaders
+and presets (GPL-3.0), rxi's json.lua (MIT). Atlas and Wormhole (GPL-3.0) are not copied here: their PKGBUILDs build them from
+upstream source.
