@@ -12240,3 +12240,21 @@ msgstr "“%1” đang dùng %2: đặt lại mặc định sẽ tắt phím t�
 
 msgid "“%1” is now %2"
 msgstr "“%1” giờ là %2"
+
+msgid "Share your screen"
+msgstr "Chia sẻ màn hình"
+
+msgid "An app wants to see your screen. Choose what it can see."
+msgstr "Một ứng dụng muốn xem màn hình của bạn. Hãy chọn phần nó được xem."
+
+msgid "Screens"
+msgstr "Màn hình"
+
+msgid "Remember this choice for the app"
+msgstr "Ghi nhớ lựa chọn này cho ứng dụng"
+
+msgid "Region…"
+msgstr "Vùng…"
+
+msgid "Share"
+msgstr "Chia sẻ"

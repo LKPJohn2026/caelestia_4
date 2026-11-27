@@ -397,6 +397,13 @@ creates when missing, or sets a few keys in, aren't copied there.
   `RemoteDesktop = none` becomes `hypr-kdeconnect` while hypr-kdeconnect's `.portal` file is installed, and goes back
   to `none` when it isn't. Only a Hyprland session reads it. Undo: delete it, or edit those lines back (the next install
   or update sets `RemoteDesktop` again; any value other than `none` or `hypr-kdeconnect` stays).
+- **Screen-share picker**: `~/.config/hypr/xdph.conf`, created when missing, points xdg-desktop-portal-hyprland's
+  `custom_picker_binary` at `scripts/caelestia4/share-picker.py`, so the "share your screen" choice is the shell's
+  (XDPH's own picker when the shell isn't running), and sets `allow_token_by_default`, so "Remember this choice" starts
+  ticked: Chromium-based browsers ask twice for one share (their dialog, then the capture) and without a restore token
+  the second asks again. Untick it in the picker for a one-off share. A file an earlier version wrote gets the token
+  line; any other existing file is kept. Undo: delete it, or that block, and
+  `systemctl --user restart xdg-desktop-portal-hyprland`.
 - **File associations**: `~/.config/hyprland-mimeapps.list` gets folders opening in Atlas (then Thunar), merged with
   your entries. Only a Hyprland session reads it. Undo: delete that line.
 - **The uwsm session** (`tools/uwsm-setup.sh`):

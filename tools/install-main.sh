@@ -146,7 +146,7 @@ mkdir -p "$CFG/hypr"
 # caelestia4: hypridle-timeouts.conf is generated from the settings app (Power & idle); --delete removed it, and then
 # hypridle ran with no rules at all: never locked, never turned the screen off, never slept
 rsync -a --delete --exclude 'custom/' --exclude 'monitors.lua' --exclude 'workspaces.lua' --exclude 'hyprland/shellOverrides/main.lua' --exclude 'hypridle-timeouts.conf' \
-      --exclude 'hyprland/colors.lua' --exclude 'hyprlock/colors.conf' --exclude 'hyprlock/lockwall.conf' --exclude 'hyprlock/strings.conf' --exclude 'hyprlock/layout.conf' "$DOTS/hypr/" "$CFG/hypr/"
+      --exclude 'xdph.conf' --exclude 'hyprland/colors.lua' --exclude 'hyprlock/colors.conf' --exclude 'hyprlock/lockwall.conf' --exclude 'hyprlock/strings.conf' --exclude 'hyprlock/layout.conf' "$DOTS/hypr/" "$CFG/hypr/"
 "$CFG/quickshell/ii/scripts/caelestia4/hyprlock-strings.sh" # hyprlock's text in the shell's language
 "$CFG/quickshell/ii/scripts/caelestia4/hyprlock-layout.sh" || true # the layouts for these screens (hyprlock.conf sources the result)
 [[ -f "$CFG/hypr/hyprlock/layout.conf" ]] || cp "$CFG/hypr/hyprlock/layout-full.conf" "$CFG/hypr/hyprlock/layout.conf"
@@ -165,6 +165,24 @@ while IFS= read -r line; do
 done < <(grep '^\$' "$DOTS/hypr/hyprlock/colors.conf")
 [[ -f "$CFG/hypr/hyprlock/lockwall.conf" ]] || cp "$DOTS/hypr/hyprlock/lockwall.conf" "$CFG/hypr/hyprlock/lockwall.conf"
 [[ -d "$CFG/hypr/custom" ]] || cp -a "$DOTS/hypr/custom" "$CFG/hypr/custom"
+# caelestia4: the screen-share picker in the shell's style (modules/caelestia/sharePicker, through
+# scripts/caelestia4/share-picker.py; XDPH's own picker when the shell isn't running). XDPH wants an absolute path and
+# reads the file when it starts; a file the user already has is kept.
+# allow_token_by_default ticks "Remember this choice": Chromium opens one portal session for its own share dialog and
+# another for the capture, and without a restore token from the first the second asks again (each share needed 2-3
+# picks). Chromium asks for a transient token (persist_mode 1: in memory, for that browser instance only)
+if [[ ! -e "$CFG/hypr/xdph.conf" ]]; then
+  printf '# caelestia4: the share picker in Caelestia style; remove this block for XDPH'"'"'s own picker\nscreencopy {\n    custom_picker_binary = %s\n    allow_token_by_default = true\n}\n' \
+      "$CFG/quickshell/ii/scripts/caelestia4/share-picker.py" >"$CFG/hypr/xdph.conf"
+  say "installed $CFG/hypr/xdph.conf"
+  systemctl --user try-restart xdg-desktop-portal-hyprland.service 2>/dev/null || true
+elif grep -q '^# caelestia4: the share picker' "$CFG/hypr/xdph.conf" && ! grep -q 'allow_token_by_default' "$CFG/hypr/xdph.conf"; then
+  # the file an earlier version wrote, without the token default: added (XDPH reads it at its next start)
+  sed -i '/^[[:space:]]*custom_picker_binary[[:space:]]*=/a\    allow_token_by_default = true' "$CFG/hypr/xdph.conf"
+  say "updated $CFG/hypr/xdph.conf (restore tokens on: one pick per share); applies after: systemctl --user restart xdg-desktop-portal-hyprland"
+elif ! grep -q 'custom_picker_binary' "$CFG/hypr/xdph.conf"; then
+  say "kept existing $CFG/hypr/xdph.conf (for the Caelestia share picker add custom_picker_binary = $CFG/quickshell/ii/scripts/caelestia4/share-picker.py under screencopy)"
+fi
 # hypridle's timers: (re)create them from the saved settings when missing (5 / 10 / 15 min and lock before sleep by default)
 if [[ ! -f "$CFG/hypr/hypridle-timeouts.conf" ]]; then
   read -r lockm offm sleepm lockb < <(jq -r '.caelestia.idle // {} | "\(.lockMinutes // 5) \(.screenOffMinutes // 10) \(.suspendMinutes // 15) \(.lockBeforeSleep // true)"' \

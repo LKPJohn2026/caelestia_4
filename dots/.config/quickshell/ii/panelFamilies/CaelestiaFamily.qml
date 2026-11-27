@@ -18,6 +18,7 @@ import qs.modules.caelestia.cheatsheet as CCheatsheet
 import qs.modules.caelestia.overview as COverview
 import qs.modules.caelestia.windowSwitcher as CWindowSwitcher
 import qs.modules.caelestia.polkit as CPolkit
+import qs.modules.caelestia.sharePicker as CSharePicker
 import qs.modules.caelestia.regionSelector as CRegion
 import qs.modules.caelestia.screenTranslator as CTranslator
 import qs.modules.caelestia.assistant as CAssistant
@@ -41,6 +42,7 @@ Scope {
     PanelLoader { component: CRegion.RegionSelector {} } // screenshot / Lens / OCR / record (end-4 logic, Caelestia style)
     PanelLoader { component: CTranslator.ScreenTranslator {} } // screen translator (end-4 Google Cloud logic, Caelestia style)
     PanelLoader { component: CPolkit.Polkit {} } // polkit auth dialog (end-4 PolkitService, Caelestia style)
+    PanelLoader { component: CSharePicker.SharePicker {} } // screen-share picker for XDPH (scripts/caelestia4/share-picker.py)
     PanelLoader { component: CCheatsheet.Cheatsheet {} } // keybinds + periodic table (end-4 data, Caelestia style)
     PanelLoader { component: CAssistant.DetachedWindow {} } // Assistant popped out into a window (Super+Alt+A / Ctrl+D)
 
